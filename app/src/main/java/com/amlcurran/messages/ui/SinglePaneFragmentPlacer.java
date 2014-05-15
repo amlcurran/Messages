@@ -1,8 +1,12 @@
-package com.amlcurran.messages;
+package com.amlcurran.messages.ui;
 
 import android.app.Activity;
 import android.view.LayoutInflater;
 import android.view.View;
+
+import com.amlcurran.messages.MessagesListFragment;
+import com.amlcurran.messages.R;
+import com.amlcurran.messages.ThreadFragment;
 
 public class SinglePaneFragmentPlacer implements FragmentPlacer {
 

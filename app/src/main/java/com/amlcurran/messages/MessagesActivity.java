@@ -5,6 +5,8 @@ import android.os.Bundle;
 
 import com.amlcurran.messages.loaders.MessagesLoader;
 import com.amlcurran.messages.loaders.MessagesLoaderProvider;
+import com.amlcurran.messages.ui.FragmentPlacer;
+import com.amlcurran.messages.ui.SlidingPaneFragmentPlacer;
 
 
 public class MessagesActivity extends Activity implements MessagesLoaderProvider,
