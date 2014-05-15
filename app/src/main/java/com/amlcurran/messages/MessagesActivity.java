@@ -5,26 +5,26 @@ import android.os.Bundle;
 
 import com.amlcurran.messages.loaders.MessagesLoader;
 import com.amlcurran.messages.loaders.MessagesLoaderProvider;
-import com.amlcurran.messages.ui.FragmentPlacer;
-import com.amlcurran.messages.ui.SlidingPaneFragmentPlacer;
+import com.amlcurran.messages.ui.UiController;
+import com.amlcurran.messages.ui.SlidingPaneUiController;
 
 
 public class MessagesActivity extends Activity implements MessagesLoaderProvider,
     MessagesListFragment.Listener {
 
     private final MessagesLoader messagesLoader = new MessagesLoader(this);
-    private FragmentPlacer fragmentPlacer;
+    private UiController uiController;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        fragmentPlacer = new SlidingPaneFragmentPlacer(this);
+        uiController = new SlidingPaneUiController(this);
 
-        setContentView(fragmentPlacer.getView());
+        setContentView(uiController.getView());
 
         if (savedInstanceState == null) {
-            fragmentPlacer.loadMessagesListFragment();
-            fragmentPlacer.loadEmptyFragment();
+            uiController.loadMessagesListFragment();
+            uiController.loadEmptyFragment();
         }
 
     }
@@ -36,7 +36,7 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
 
     @Override
     public void onBackPressed() {
-        if (!fragmentPlacer.backPressed()) {
+        if (!uiController.backPressed()) {
             super.onBackPressed();
         }
     }
@@ -44,7 +44,7 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
     @Override
     public void onConversationSelected(String threadId) {
         ThreadFragment fragment = ThreadFragment.create(threadId);
-        fragmentPlacer.replaceFragment(fragment);
+        uiController.replaceFragment(fragment);
     }
 
 }

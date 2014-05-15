@@ -10,12 +10,12 @@ import com.amlcurran.messages.MessagesListFragment;
 import com.amlcurran.messages.R;
 import com.amlcurran.messages.ThreadFragment;
 
-public class SlidingPaneFragmentPlacer implements FragmentPlacer {
+public class SlidingPaneUiController implements UiController {
 
     private final Activity activity;
     private SlidingPaneLayout slider;
 
-    public SlidingPaneFragmentPlacer(Activity activity) {
+    public SlidingPaneUiController(Activity activity) {
         this.activity = activity;
     }
 

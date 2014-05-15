@@ -8,11 +8,11 @@ import com.amlcurran.messages.MessagesListFragment;
 import com.amlcurran.messages.R;
 import com.amlcurran.messages.ThreadFragment;
 
-public class SinglePaneFragmentPlacer implements FragmentPlacer {
+public class SinglePaneUiController implements UiController {
 
     private Activity activity;
 
-    public SinglePaneFragmentPlacer(Activity activity) {
+    public SinglePaneUiController(Activity activity) {
         this.activity = activity;
     }
 

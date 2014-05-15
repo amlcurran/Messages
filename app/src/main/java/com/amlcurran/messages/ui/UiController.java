@@ -4,7 +4,7 @@ import android.view.View;
 
 import com.amlcurran.messages.ThreadFragment;
 
-public interface FragmentPlacer {
+public interface UiController {
     void loadMessagesListFragment();
 
     void replaceFragment(ThreadFragment fragment);
