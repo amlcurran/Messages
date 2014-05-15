@@ -1,7 +1,6 @@
 package com.amlcurran.messages;
 
 import android.app.Activity;
-import android.app.ListFragment;
 import android.content.Context;
 import android.database.Cursor;
 import android.graphics.Typeface;
@@ -15,16 +14,11 @@ import android.widget.TextView;
 import com.amlcurran.messages.adapters.CursorHelper;
 import com.amlcurran.messages.adapters.CursorSource;
 import com.amlcurran.messages.loaders.CursorLoadListener;
-import com.amlcurran.messages.loaders.MessagesLoader;
-import com.amlcurran.messages.loaders.MessagesLoaderProvider;
 import com.espian.utils.SimpleBinder;
 import com.espian.utils.SourceBinderAdapter;
 
-public class MessagesListFragment extends ListFragment implements CursorLoadListener, AdapterView.OnItemClickListener {
+public class MessagesListFragment extends ListeningCursorListFragment implements CursorLoadListener, AdapterView.OnItemClickListener {
 
-    private SourceBinderAdapter adapter;
-    private CursorSource source;
-    private MessagesLoader loader;
     private Listener listener;
 
     public MessagesListFragment() { }
@@ -32,27 +26,28 @@ public class MessagesListFragment extends ListFragment implements CursorLoadList
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+
         source = new CursorSource();
         adapter = new SourceBinderAdapter<Cursor>(getActivity(), source, new ConversationsBinder());
-
         setListAdapter(adapter);
         getListView().setOnItemClickListener(this);
 
-        loader.loadConversationList(this);
+        loadConversations();
     }
 
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
-        MessagesLoaderProvider messagesLoaderProvider = new ProviderHelper<MessagesLoaderProvider>(MessagesLoaderProvider.class).get(activity);
-        loader = messagesLoaderProvider.getMessagesLoader();
         listener = new ProviderHelper<Listener>(Listener.class).get(activity);
     }
 
     @Override
-    public void onCursorLoaded(Cursor cursor) {
-        source.setCursor(cursor);
-        adapter.notifyDataSetChanged();
+    public void onMessageReceived() {
+        loadConversations();
+    }
+
+    private void loadConversations() {
+        messageLoader.loadConversationList(this);
     }
 
     @Override

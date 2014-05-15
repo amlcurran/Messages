@@ -1,7 +1,5 @@
 package com.amlcurran.messages;
 
-import android.app.Activity;
-import android.app.ListFragment;
 import android.content.Context;
 import android.database.Cursor;
 import android.os.Bundle;
@@ -10,9 +8,6 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.amlcurran.messages.adapters.CursorSource;
-import com.amlcurran.messages.loaders.CursorLoadListener;
-import com.amlcurran.messages.loaders.MessagesLoader;
-import com.amlcurran.messages.loaders.MessagesLoaderProvider;
 import com.espian.utils.SimpleBinder;
 import com.espian.utils.SourceBinderAdapter;
 
@@ -20,13 +15,9 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public class ThreadFragment extends ListFragment implements CursorLoadListener {
+public class ThreadFragment extends ListeningCursorListFragment {
 
     private static final String THREAD_ID = "threadId";
-
-    private MessagesLoader messageLoader;
-    private SourceBinderAdapter adapter;
-    private CursorSource source;
 
     public static ThreadFragment create(String threadId) {
         Bundle bundle = new Bundle();
@@ -39,12 +30,6 @@ public class ThreadFragment extends ListFragment implements CursorLoadListener {
     }
 
     @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-        messageLoader = new ProviderHelper<MessagesLoaderProvider>(MessagesLoaderProvider.class).get(activity).getMessagesLoader();
-    }
-
-    @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
@@ -53,14 +38,16 @@ public class ThreadFragment extends ListFragment implements CursorLoadListener {
         setListAdapter(adapter);
         getListView().setStackFromBottom(true);
 
-        String threadId = getArguments().getString(THREAD_ID);
-        messageLoader.loadThread(threadId, this);
+        loadThread();
     }
 
     @Override
-    public void onCursorLoaded(Cursor cursor) {
-        source.setCursor(cursor);
-        adapter.notifyDataSetChanged();
+    public void onMessageReceived() {
+        loadThread();
+    }
+
+    private void loadThread() {
+        messageLoader.loadThread(getArguments().getString(THREAD_ID), this);
     }
 
     private class ThreadBinder extends SimpleBinder<Cursor> {
