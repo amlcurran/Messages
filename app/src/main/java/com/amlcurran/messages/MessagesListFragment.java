@@ -24,35 +24,28 @@ public class MessagesListFragment extends ListFragment implements CursorLoadList
 
     private SourceBinderAdapter adapter;
     private CursorSource source;
-    private ConversationsBinder binder;
     private MessagesLoader loader;
     private Listener listener;
 
-    public MessagesListFragment() {
-    }
+    public MessagesListFragment() { }
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         source = new CursorSource();
-        binder = new ConversationsBinder();
+        adapter = new SourceBinderAdapter<Cursor>(getActivity(), source, new ConversationsBinder());
 
-        adapter = createConversationListAdapter();
         setListAdapter(adapter);
-
         getListView().setOnItemClickListener(this);
 
         loader.loadConversationList(this);
     }
 
-    private SourceBinderAdapter createConversationListAdapter() {
-        return new SourceBinderAdapter<Cursor>(getActivity(), source, binder);
-    }
-
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
-        loader = new ProviderHelper<MessagesLoaderProvider>(MessagesLoaderProvider.class).get(activity).getMessagesLoader();
+        MessagesLoaderProvider messagesLoaderProvider = new ProviderHelper<MessagesLoaderProvider>(MessagesLoaderProvider.class).get(activity);
+        loader = messagesLoaderProvider.getMessagesLoader();
         listener = new ProviderHelper<Listener>(Listener.class).get(activity);
     }
 
