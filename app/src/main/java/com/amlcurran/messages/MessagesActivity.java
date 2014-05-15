@@ -5,29 +5,25 @@ import android.os.Bundle;
 
 import com.amlcurran.messages.loaders.MessagesLoader;
 import com.amlcurran.messages.loaders.MessagesLoaderProvider;
-import com.amlcurran.messages.loaders.StandardMessagesLoader;
 
 
 public class MessagesActivity extends Activity implements MessagesLoaderProvider,
     MessagesListFragment.Listener {
 
-    private final MessagesLoader messagesLoader = new StandardMessagesLoader(this);
+    private final MessagesLoader messagesLoader = new MessagesLoader(this);
+    private FragmentPlacer fragmentPlacer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_messages);
+        fragmentPlacer = new SlidingPaneFragmentPlacer(this);
+
+        setContentView(fragmentPlacer.getLayoutResource());
 
         if (savedInstanceState == null) {
-            loadMessagesListFragment();
+            fragmentPlacer.loadMessagesListFragment();
         }
 
-    }
-
-    private void loadMessagesListFragment() {
-        getFragmentManager().beginTransaction()
-                .add(R.id.container, new MessagesListFragment())
-                .commit();
     }
 
     @Override
@@ -37,9 +33,8 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
 
     @Override
     public void onConversationSelected(String threadId) {
-        getFragmentManager().beginTransaction()
-                .replace(R.id.container, ThreadFragment.create(threadId))
-                .addToBackStack(null)
-                .commit();
+        ThreadFragment fragment = ThreadFragment.create(threadId);
+        fragmentPlacer.replaceFragment(fragment);
     }
+
 }

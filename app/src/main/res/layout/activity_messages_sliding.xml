@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<view xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    class="android.support.v4.widget.SlidingPaneLayout"
+    android:id="@+id/sliding_pane" >
+
+    <FrameLayout
+        android:layout_width="240dp"
+        android:layout_height="match_parent"
+        android:id="@+id/container" />
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_marginLeft="@dimen/slider_left_margin"
+        android:layout_height="match_parent"
+        android:id="@+id/secondary" />
+
+</view>
