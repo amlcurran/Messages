@@ -8,4 +8,11 @@ public class CursorHelper {
         return cursor.getString(cursor.getColumnIndex(columnName));
     }
 
+    public static long asLong(Cursor cursor, String columnName) {
+        return cursor.getLong(cursor.getColumnIndex(columnName));
+    }
+
+    public static int asInt(Cursor cursor, String columnName) {
+        return cursor.getInt(cursor.getColumnIndex(columnName));
+    }
 }

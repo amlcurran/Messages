@@ -5,18 +5,20 @@ import android.app.ListFragment;
 import android.content.Context;
 import android.database.Cursor;
 import android.os.Bundle;
-import android.provider.Telephony;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TextView;
 
-import com.amlcurran.messages.adapters.CursorHelper;
 import com.amlcurran.messages.adapters.CursorSource;
 import com.amlcurran.messages.loaders.CursorLoadListener;
 import com.amlcurran.messages.loaders.MessagesLoader;
 import com.amlcurran.messages.loaders.MessagesLoaderProvider;
 import com.espian.utils.SimpleBinder;
 import com.espian.utils.SourceBinderAdapter;
+
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class ThreadFragment extends ListFragment implements CursorLoadListener {
 
@@ -62,15 +64,35 @@ public class ThreadFragment extends ListFragment implements CursorLoadListener {
 
     private class ThreadBinder extends SimpleBinder<Cursor> {
 
+        private final DateFormat formatter = new SimpleDateFormat("HH:mm dd-MMM-yy");
+        private final Date date = new Date();
+
         @Override
         public View bindView(View convertView, Cursor item, int position) {
-            ((TextView) convertView).setText(CursorHelper.fromColumn(item, Telephony.Sms.BODY));
+
+            ThreadMessage message = ThreadMessage.fromCursor(item);
+            date.setTime(message.getTimestamp());
+            int backgroundColor;
+            if (message.isFromMe()) {
+                backgroundColor = getResources().getColor(android.R.color.transparent);
+            } else {
+                backgroundColor = getResources().getColor(R.color.theme_colour_20);
+            }
+
+            getTextView(convertView, android.R.id.text1).setText(message.getBody());
+            getTextView(convertView, android.R.id.text2).setText(formatter.format(date));
+            convertView.setBackgroundColor(backgroundColor);
+
             return convertView;
         }
 
         @Override
         public View createView(Context context) {
-            return LayoutInflater.from(context).inflate(android.R.layout.simple_list_item_1, null);
+            return LayoutInflater.from(context).inflate(R.layout.item_thread_item, null);
+        }
+
+        private TextView getTextView(View convertView, int text1) {
+            return (TextView) convertView.findViewById(text1);
         }
 
     }
