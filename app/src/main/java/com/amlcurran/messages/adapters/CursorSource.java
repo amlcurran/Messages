@@ -238,4 +238,8 @@ public class CursorSource implements Source<Cursor> {
     public int getCount() {
         return cursor.getCount();
     }
+
+    public Cursor getCursor() {
+        return cursor;
+    }
 }
