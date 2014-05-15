@@ -221,6 +221,8 @@ public class CursorSource implements Source<Cursor> {
     }
 
     public void setCursor(Cursor cursor) {
+        this.cursor.close();
+
         if (cursor == null) {
             this.cursor = EMPTY;
         } else {
