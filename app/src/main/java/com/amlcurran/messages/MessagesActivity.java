@@ -2,7 +2,6 @@ package com.amlcurran.messages;
 
 import android.app.Activity;
 import android.os.Bundle;
-import android.widget.Toast;
 
 import com.amlcurran.messages.loaders.MessagesLoader;
 import com.amlcurran.messages.loaders.MessagesLoaderProvider;
@@ -38,6 +37,9 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
 
     @Override
     public void onConversationSelected(String threadId) {
-        Toast.makeText(this, threadId, Toast.LENGTH_SHORT).show();
+        getFragmentManager().beginTransaction()
+                .replace(R.id.container, ThreadFragment.create(threadId))
+                .addToBackStack(null)
+                .commit();
     }
 }

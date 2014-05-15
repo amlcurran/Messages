@@ -17,9 +17,6 @@ import com.amlcurran.messages.loaders.MessagesLoader;
 import com.amlcurran.messages.loaders.MessagesLoaderProvider;
 import com.espian.utils.SourceBinderAdapter;
 
-/**
- * A placeholder fragment containing a simple view.
- */
 public class MessagesListFragment extends ListFragment implements CursorLoadListener, AdapterView.OnItemClickListener {
 
     private SourceBinderAdapter adapter;
@@ -65,9 +62,7 @@ public class MessagesListFragment extends ListFragment implements CursorLoadList
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         source.getCursor().moveToPosition(position);
-
         String threadId = CursorHelper.fromColumn(source.getCursor(), Telephony.Sms.THREAD_ID);
-
         listener.onConversationSelected(threadId);
     }
 

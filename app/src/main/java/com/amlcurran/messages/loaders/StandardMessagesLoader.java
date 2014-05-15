@@ -13,9 +13,16 @@ public class StandardMessagesLoader implements MessagesLoader {
     }
 
     @Override
-    public void loadConversationList(CursorLoadListener listener) {
+    public void loadConversationList(CursorLoadListener loadListener) {
         Cursor cursor = activity.getContentResolver().query(Telephony.Threads.CONTENT_URI, null, null, null, Telephony.Sms.DEFAULT_SORT_ORDER);
-        listener.onCursorLoaded(cursor);
+        loadListener.onCursorLoaded(cursor);
+    }
+
+    @Override
+    public void loadThread(String threadId, CursorLoadListener loadListener) {
+        Cursor cursor = activity.getContentResolver().query(Telephony.Sms.CONTENT_URI, null,
+                Telephony.Sms.THREAD_ID + "=?", new String[] { threadId }, Telephony.Sms.DEFAULT_SORT_ORDER);
+        loadListener.onCursorLoaded(cursor);
     }
 
 }
