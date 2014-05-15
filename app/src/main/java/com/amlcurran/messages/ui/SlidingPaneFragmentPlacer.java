@@ -30,7 +30,6 @@ public class SlidingPaneFragmentPlacer implements FragmentPlacer {
     public void replaceFragment(ThreadFragment fragment) {
         activity.getFragmentManager().beginTransaction()
                 .replace(R.id.secondary, fragment)
-                .addToBackStack(null)
                 .commit();
         slider.closePane();
     }
@@ -41,6 +40,15 @@ public class SlidingPaneFragmentPlacer implements FragmentPlacer {
         slider = (SlidingPaneLayout) view.findViewById(R.id.sliding_pane);
         slider.setParallaxDistance((int) activity.getResources().getDimension(R.dimen.slider_parallax));
         return view;
+    }
+
+    @Override
+    public boolean backPressed() {
+        if (!slider.isOpen()) {
+            slider.openPane();
+            return true;
+        }
+        return false;
     }
 
 }

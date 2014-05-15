@@ -35,4 +35,9 @@ public class SinglePaneFragmentPlacer implements FragmentPlacer {
     public View getView() {
         return LayoutInflater.from(activity).inflate(R.layout.activity_messages, null);
     }
+
+    @Override
+    public boolean backPressed() {
+        return false;
+    }
 }

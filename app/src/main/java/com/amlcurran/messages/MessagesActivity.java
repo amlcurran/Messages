@@ -34,6 +34,13 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
     }
 
     @Override
+    public void onBackPressed() {
+        if (!fragmentPlacer.backPressed()) {
+            super.onBackPressed();
+        }
+    }
+
+    @Override
     public void onConversationSelected(String threadId) {
         ThreadFragment fragment = ThreadFragment.create(threadId);
         fragmentPlacer.replaceFragment(fragment);

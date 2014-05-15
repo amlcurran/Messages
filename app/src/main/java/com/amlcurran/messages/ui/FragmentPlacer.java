@@ -10,4 +10,6 @@ public interface FragmentPlacer {
     void replaceFragment(ThreadFragment fragment);
 
     View getView();
+
+    boolean backPressed();
 }

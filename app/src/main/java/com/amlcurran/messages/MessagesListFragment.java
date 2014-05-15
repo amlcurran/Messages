@@ -73,32 +73,41 @@ public class MessagesListFragment extends ListFragment implements CursorLoadList
         void onConversationSelected(String threadId);
     }
 
-    public static class ConversationsBinder extends SimpleBinder<Cursor> {
+    public class ConversationsBinder extends SimpleBinder<Cursor> {
 
         @Override
         public View bindView(View convertView, Cursor item, int position) {
             String person = CursorHelper.fromColumn(item, Telephony.Sms.PERSON);
             String body = CursorHelper.fromColumn(item, Telephony.Sms.BODY);
-            ((TextView) convertView.findViewById(android.R.id.text1)).setText(person);
-            ((TextView) convertView.findViewById(android.R.id.text2)).setText(body);
+            TextView textView1 = getTextView(convertView, android.R.id.text1);
+            TextView textView2 = getTextView(convertView, android.R.id.text2);
+
+            textView1.setText(person);
+            textView2.setText(body);
 
             if (isNotRead(item)) {
-                setUnreadStyle(convertView);
+                setUnreadStyle(convertView, textView1, textView2);
             } else {
-                setReadStyle(convertView);
+                setReadStyle(convertView, textView1, textView2);
             }
 
             return convertView;
         }
 
-        private void setReadStyle(View convertView) {
-            ((TextView) convertView.findViewById(android.R.id.text1)).setTypeface(null, 0);
-            ((TextView) convertView.findViewById(android.R.id.text2)).setTypeface(null, 0);
+        private void setReadStyle(View convertView, TextView textView1, TextView textView2) {
+            textView1.setTypeface(null, 0);
+            textView2.setTypeface(null, 0);
+            textView1.setTextColor(getResources().getColor(android.R.color.primary_text_dark));
         }
 
-        private void setUnreadStyle(View convertView) {
-            ((TextView) convertView.findViewById(android.R.id.text1)).setTypeface(null, Typeface.BOLD);
-            ((TextView) convertView.findViewById(android.R.id.text2)).setTypeface(null, Typeface.ITALIC);
+        private void setUnreadStyle(View convertView, TextView textView1, TextView textView2) {
+            textView1.setTypeface(null, Typeface.BOLD);
+            textView2.setTypeface(null, Typeface.BOLD);
+            textView1.setTextColor(getResources().getColor(R.color.theme_colour));
+        }
+
+        private TextView getTextView(View convertView, int text1) {
+            return (TextView) convertView.findViewById(text1);
         }
 
         private boolean isNotRead(Cursor item) {
