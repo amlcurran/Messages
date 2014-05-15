@@ -40,6 +40,9 @@
         <item name="android:backgroundStacked">@drawable/ab_stacked_solid_messages</item>
         <item name="android:backgroundSplit">@drawable/ab_bottom_solid_messages</item>
         <item name="android:progressBarStyle">@style/ProgressBar.Messages</item>
+        <item name="android:titleTextStyle">@style/ActionBarText</item>
+        <item name="android:displayOptions">showHome|showTitle</item>
+        <item name="android:icon">@android:color/transparent</item>
     </style>
 
     <style name="ActionBar.Transparent.Messages" parent="@android:style/Widget.Holo.ActionBar">
@@ -77,6 +80,11 @@
     <style name="Theme.Messages.Widget" parent="@android:style/Theme.Holo">
         <item name="android:popupMenuStyle">@style/PopupMenu.Messages</item>
         <item name="android:dropDownListViewStyle">@style/DropDownListView.Messages</item>
+    </style>
+
+    <style name="ActionBarText" parent="@android:style/TextAppearance.Inverse">
+        <item name="android:textSize">24sp</item>
+        <item name="android:fontFamily">sans-serif-light</item>
     </style>
 
 </resources>
