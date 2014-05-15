@@ -109,7 +109,7 @@ public class MessagesListFragment extends ListFragment implements CursorLoadList
         }
 
         @Override
-        public View createView(Context context) {
+        public View createView(Context context, int itemViewType) {
             return LayoutInflater.from(context).inflate(R.layout.item_message_preview, null);
         }
     }

@@ -40,12 +40,12 @@ public class SourceBinderAdapter<T> extends BaseAdapter {
 
     @Override
     public int getItemViewType(int position) {
-        return binder.getItemViewType(position);
+        return binder.getItemViewType(position, getItem(position));
     }
 
     @Override
     public int getCount() {
-        return source.getCount() + 1;
+        return source.getCount();
     }
 
     @Override
@@ -62,7 +62,7 @@ public class SourceBinderAdapter<T> extends BaseAdapter {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         if (convertView == null) {
-            convertView = binder.createView(context);
+            convertView = binder.createView(context, getItemViewType(position));
         }
         return binder.bindView(convertView, getItem(position), position);
     }

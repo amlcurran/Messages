@@ -19,10 +19,10 @@ public abstract class SimpleBinder<T> implements Binder<T> {
     public abstract View bindView(View convertView, T item, int position);
 
     @Override
-    public int getItemViewType(int position) {
+    public int getItemViewType(int position, T item) {
         return 0;
     }
 
     @Override
-    public abstract View createView(Context context);
+    public abstract View createView(Context context, int itemViewType);
 }

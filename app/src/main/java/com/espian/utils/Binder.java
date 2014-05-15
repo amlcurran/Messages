@@ -26,7 +26,7 @@ public interface Binder<T> {
 
     View bindView(View convertView, T item, int position);
 
-    int getItemViewType(int position);
+    int getItemViewType(int position, T item);
 
-    View createView(Context context);
+    View createView(Context context, int itemViewType);
 }
