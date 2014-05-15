@@ -13,6 +13,7 @@
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_marginLeft="@dimen/slider_left_margin"
+        android:background="#fbfbfb"
         android:layout_height="match_parent"
         android:id="@+id/secondary" />
 

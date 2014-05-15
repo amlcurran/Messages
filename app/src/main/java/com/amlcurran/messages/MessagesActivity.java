@@ -18,7 +18,7 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
         super.onCreate(savedInstanceState);
         fragmentPlacer = new SlidingPaneFragmentPlacer(this);
 
-        setContentView(fragmentPlacer.getLayoutResource());
+        setContentView(fragmentPlacer.getView());
 
         if (savedInstanceState == null) {
             fragmentPlacer.loadMessagesListFragment();

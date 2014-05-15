@@ -1,6 +1,8 @@
 package com.amlcurran.messages;
 
 import android.app.Activity;
+import android.view.LayoutInflater;
+import android.view.View;
 
 public class SinglePaneFragmentPlacer implements FragmentPlacer {
 
@@ -26,7 +28,7 @@ public class SinglePaneFragmentPlacer implements FragmentPlacer {
     }
 
     @Override
-    public int getLayoutResource() {
-        return R.layout.activity_messages;
+    public View getView() {
+        return LayoutInflater.from(activity).inflate(R.layout.activity_messages, null);
     }
 }

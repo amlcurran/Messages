@@ -2,10 +2,13 @@ package com.amlcurran.messages;
 
 import android.app.Activity;
 import android.support.v4.widget.SlidingPaneLayout;
+import android.view.LayoutInflater;
+import android.view.View;
 
 public class SlidingPaneFragmentPlacer implements FragmentPlacer {
 
     private final Activity activity;
+    private SlidingPaneLayout slider;
 
     public SlidingPaneFragmentPlacer(Activity activity) {
         this.activity = activity;
@@ -16,11 +19,7 @@ public class SlidingPaneFragmentPlacer implements FragmentPlacer {
         activity.getFragmentManager().beginTransaction()
                 .add(R.id.container, new MessagesListFragment())
                 .commit();
-        getSlider().openPane();
-    }
-
-    private SlidingPaneLayout getSlider() {
-        return (SlidingPaneLayout) activity.findViewById(R.id.sliding_pane);
+        slider.openPane();
     }
 
     @Override
@@ -29,12 +28,15 @@ public class SlidingPaneFragmentPlacer implements FragmentPlacer {
                 .replace(R.id.secondary, fragment)
                 .addToBackStack(null)
                 .commit();
-        getSlider().closePane();
+        slider.closePane();
     }
 
     @Override
-    public int getLayoutResource() {
-        return R.layout.activity_messages_sliding;
+    public View getView() {
+        View view = LayoutInflater.from(activity).inflate(R.layout.activity_messages_sliding, null);
+        slider = (SlidingPaneLayout) view.findViewById(R.id.sliding_pane);
+        slider.setParallaxDistance((int) activity.getResources().getDimension(R.dimen.slider_parallax));
+        return view;
     }
 
 }
