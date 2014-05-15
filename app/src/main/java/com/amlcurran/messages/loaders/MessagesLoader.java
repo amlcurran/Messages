@@ -25,7 +25,7 @@ public class MessagesLoader {
     public void loadThread(String threadId, CursorLoadListener loadListener) {
         String selection = Telephony.Sms.THREAD_ID + "=?";
         String[] selectionArgs = {threadId};
-        Cursor cursor = getResolver().query(Telephony.Sms.CONTENT_URI, null, selection, selectionArgs, Telephony.Sms.DEFAULT_SORT_ORDER);
+        Cursor cursor = getResolver().query(Telephony.Sms.CONTENT_URI, null, selection, selectionArgs, Telephony.Sms.DEFAULT_SORT_ORDER.replace("DESC", "ASC"));
         loadListener.onCursorLoaded(cursor);
     }
 

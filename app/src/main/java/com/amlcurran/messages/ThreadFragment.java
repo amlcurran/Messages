@@ -51,6 +51,7 @@ public class ThreadFragment extends ListFragment implements CursorLoadListener {
         source = new CursorSource();
         adapter = new SourceBinderAdapter<Cursor>(getActivity(), source, new ThreadBinder());
         setListAdapter(adapter);
+        getListView().setStackFromBottom(true);
 
         String threadId = getArguments().getString(THREAD_ID);
         messageLoader.loadThread(threadId, this);
