@@ -9,6 +9,7 @@ import android.provider.Telephony;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import com.amlcurran.messages.adapters.CursorHelper;
@@ -30,6 +31,7 @@ public class MessagesListFragment extends ListeningCursorListFragment implements
         source = new CursorSource();
         adapter = new SourceBinderAdapter<Cursor>(getActivity(), source, new ConversationsBinder());
         setListAdapter(adapter);
+        getListView().setChoiceMode(ListView.CHOICE_MODE_SINGLE);
         getListView().setOnItemClickListener(this);
 
         loadConversations();
@@ -85,7 +87,7 @@ public class MessagesListFragment extends ListeningCursorListFragment implements
         private void setReadStyle(View convertView, TextView textView1, TextView textView2) {
             textView1.setTypeface(null, 0);
             textView2.setTypeface(null, 0);
-            textView1.setTextColor(getResources().getColor(android.R.color.primary_text_dark));
+            textView1.setTextColor(getResources().getColor(android.R.color.primary_text_light));
         }
 
         private void setUnreadStyle(View convertView, TextView textView1, TextView textView2) {
