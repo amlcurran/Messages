@@ -6,7 +6,7 @@ import android.database.Cursor;
 import android.os.Bundle;
 
 import com.amlcurran.messages.adapters.AllMessagesAdapter;
-import com.amlcurran.messages.adapters.CursorBinder;
+import com.amlcurran.messages.adapters.AllMessagesBinder;
 import com.amlcurran.messages.adapters.CursorSource;
 import com.amlcurran.messages.loaders.CursorLoadListener;
 import com.amlcurran.messages.loaders.MessagesLoaderProvider;
@@ -20,7 +20,7 @@ public class MessagesListFragment extends ListFragment implements CursorLoadList
     private MessagesLoaderProvider loaderProvider;
     private SourceBinderAdapter adapter;
     private CursorSource source;
-    private CursorBinder binder;
+    private AllMessagesBinder binder;
 
     public MessagesListFragment() {
     }
@@ -29,7 +29,7 @@ public class MessagesListFragment extends ListFragment implements CursorLoadList
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         source = new CursorSource();
-        binder = new CursorBinder();
+        binder = new AllMessagesBinder();
         adapter = createConversationListAdapter();
         setListAdapter(adapter);
 
@@ -38,8 +38,6 @@ public class MessagesListFragment extends ListFragment implements CursorLoadList
 
     private SourceBinderAdapter createConversationListAdapter() {
         return new AllMessagesAdapter(getActivity(), source, binder);
-//        return new SimpleCursorAdapter(getActivity(), android.R.layout.simple_list_item_1, null,
-//                new String[] { Telephony.Sms.Inbox.PERSON, }, new int[] { android.R.id.text1 }, 0);
     }
 
     @Override
@@ -52,6 +50,5 @@ public class MessagesListFragment extends ListFragment implements CursorLoadList
     public void onCursorLoaded(Cursor cursor) {
         source.setCursor(cursor);
         adapter.notifyDataSetChanged();
-        //adapter.swapCursor(cursor);
     }
 }
