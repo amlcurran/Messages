@@ -15,8 +15,8 @@ public class AllMessagesBinder extends SimpleBinder<Cursor> {
 
     @Override
     public View bindView(View convertView, Cursor item, int position) {
-        String person = CursorHelper.fromColumn(item, Telephony.Sms.Inbox.PERSON);
-        String body = CursorHelper.fromColumn(item, Telephony.Sms.Inbox.BODY);
+        String person = CursorHelper.fromColumn(item, Telephony.Sms.PERSON);
+        String body = CursorHelper.fromColumn(item, Telephony.Sms.BODY);
         ((TextView) convertView.findViewById(android.R.id.text1)).setText(person);
         ((TextView) convertView.findViewById(android.R.id.text2)).setText(body);
 
