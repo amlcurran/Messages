@@ -9,6 +9,7 @@ import com.amlcurran.messages.adapters.AllMessagesAdapter;
 import com.amlcurran.messages.adapters.AllMessagesBinder;
 import com.amlcurran.messages.adapters.CursorSource;
 import com.amlcurran.messages.loaders.CursorLoadListener;
+import com.amlcurran.messages.loaders.MessagesLoader;
 import com.amlcurran.messages.loaders.MessagesLoaderProvider;
 import com.espian.utils.SourceBinderAdapter;
 
@@ -17,10 +18,10 @@ import com.espian.utils.SourceBinderAdapter;
  */
 public class MessagesListFragment extends ListFragment implements CursorLoadListener {
 
-    private MessagesLoaderProvider loaderProvider;
     private SourceBinderAdapter adapter;
     private CursorSource source;
     private AllMessagesBinder binder;
+    private MessagesLoader loader;
 
     public MessagesListFragment() {
     }
@@ -33,7 +34,7 @@ public class MessagesListFragment extends ListFragment implements CursorLoadList
         adapter = createConversationListAdapter();
         setListAdapter(adapter);
 
-        loaderProvider.getMessagesLoader().loadConversationList(this);
+        loader.loadConversationList(this);
     }
 
     private SourceBinderAdapter createConversationListAdapter() {
@@ -43,7 +44,8 @@ public class MessagesListFragment extends ListFragment implements CursorLoadList
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
-        loaderProvider = new ProviderHelper<MessagesLoaderProvider>(MessagesLoaderProvider.class).get(activity);
+        loader = new ProviderHelper<MessagesLoaderProvider>(MessagesLoaderProvider.class)
+                .get(activity).getMessagesLoader();
     }
 
     @Override
