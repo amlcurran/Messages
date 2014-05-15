@@ -12,4 +12,6 @@ public interface FragmentPlacer {
     View getView();
 
     boolean backPressed();
+
+    void loadEmptyFragment();
 }

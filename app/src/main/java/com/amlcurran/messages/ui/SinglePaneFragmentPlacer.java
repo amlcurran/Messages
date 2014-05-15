@@ -40,4 +40,9 @@ public class SinglePaneFragmentPlacer implements FragmentPlacer {
     public boolean backPressed() {
         return false;
     }
+
+    @Override
+    public void loadEmptyFragment() {
+
+    }
 }

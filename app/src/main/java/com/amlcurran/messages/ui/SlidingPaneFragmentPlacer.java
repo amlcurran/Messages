@@ -5,6 +5,7 @@ import android.support.v4.widget.SlidingPaneLayout;
 import android.view.LayoutInflater;
 import android.view.View;
 
+import com.amlcurran.messages.EmptyFragment;
 import com.amlcurran.messages.MessagesListFragment;
 import com.amlcurran.messages.R;
 import com.amlcurran.messages.ThreadFragment;
@@ -39,6 +40,7 @@ public class SlidingPaneFragmentPlacer implements FragmentPlacer {
         View view = LayoutInflater.from(activity).inflate(R.layout.activity_messages_sliding, null);
         slider = (SlidingPaneLayout) view.findViewById(R.id.sliding_pane);
         slider.setParallaxDistance((int) activity.getResources().getDimension(R.dimen.slider_parallax));
+        slider.setShadowResource(R.drawable.slider_shadow);
         return view;
     }
 
@@ -49,6 +51,13 @@ public class SlidingPaneFragmentPlacer implements FragmentPlacer {
             return true;
         }
         return false;
+    }
+
+    @Override
+    public void loadEmptyFragment() {
+        activity.getFragmentManager().beginTransaction()
+                .replace(R.id.secondary, new EmptyFragment())
+                .commit();
     }
 
 }

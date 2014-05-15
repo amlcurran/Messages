@@ -24,6 +24,7 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
 
         if (savedInstanceState == null) {
             fragmentPlacer.loadMessagesListFragment();
+            fragmentPlacer.loadEmptyFragment();
         }
 
     }
