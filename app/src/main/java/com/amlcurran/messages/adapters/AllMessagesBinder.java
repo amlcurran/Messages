@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TextView;
 
+import com.amlcurran.messages.R;
 import com.espian.utils.SimpleBinder;
 
 public class AllMessagesBinder extends SimpleBinder<Cursor> {
@@ -29,11 +30,13 @@ public class AllMessagesBinder extends SimpleBinder<Cursor> {
     }
 
     private void setReadStyle(View convertView) {
+        ((TextView) convertView.findViewById(android.R.id.text1)).setTypeface(null, 0);
         ((TextView) convertView.findViewById(android.R.id.text2)).setTypeface(null, 0);
     }
 
     private void setUnreadStyle(View convertView) {
-        ((TextView) convertView.findViewById(android.R.id.text2)).setTypeface(null, Typeface.BOLD_ITALIC);
+        ((TextView) convertView.findViewById(android.R.id.text1)).setTypeface(null, Typeface.BOLD);
+        ((TextView) convertView.findViewById(android.R.id.text2)).setTypeface(null, Typeface.ITALIC);
     }
 
     private boolean isNotRead(Cursor item) {
@@ -43,6 +46,6 @@ public class AllMessagesBinder extends SimpleBinder<Cursor> {
 
     @Override
     public View createView(Context context) {
-        return LayoutInflater.from(context).inflate(android.R.layout.simple_list_item_2, null);
+        return LayoutInflater.from(context).inflate(R.layout.item_message_preview, null);
     }
 }
