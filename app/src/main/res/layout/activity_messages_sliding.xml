@@ -1,20 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
-<view xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    class="android.support.v4.widget.SlidingPaneLayout"
-    android:id="@+id/sliding_pane" >
+    android:layout_height="match_parent">
 
-    <FrameLayout
-        android:layout_width="240dp"
-        android:layout_height="match_parent"
-        android:id="@+id/container" />
-
-    <FrameLayout
+    <view xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
-        android:layout_marginLeft="@dimen/slider_left_margin"
-        android:background="#fbfbfb"
         android:layout_height="match_parent"
-        android:id="@+id/secondary" />
+        class="android.support.v4.widget.SlidingPaneLayout"
+        android:id="@+id/sliding_pane">
 
-</view>
+        <FrameLayout
+            android:layout_width="240dp"
+            android:layout_height="match_parent"
+            android:id="@+id/container" />
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_marginLeft="@dimen/slider_left_margin"
+            android:background="#fbfbfb"
+            android:layout_height="match_parent"
+            android:id="@+id/secondary" />
+
+    </view>
+
+    <ImageButton
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:id="@+id/imageButton"
+        android:layout_gravity="left|bottom"
+        android:background="@drawable/new_button2_bg"
+        android:layout_marginLeft="8dp"
+        android:layout_marginBottom="8dp"
+        android:src="@drawable/ic_action_add_white" />
+
+</FrameLayout>

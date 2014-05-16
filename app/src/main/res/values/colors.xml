@@ -4,5 +4,6 @@
     <color name="theme_colour_40">#661d9900</color>
     <color name="theme_colour_20">#331d9900</color>
     <color name="theme_colour_light">#93c388</color>
+    <color name="theme_colour_dark">#ff0f4f00</color>
     <color name="empty_hint_color">#C0C0C0</color>
 </resources>
