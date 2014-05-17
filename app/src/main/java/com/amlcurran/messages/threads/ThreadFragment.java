@@ -90,7 +90,7 @@ public class ThreadFragment extends ListeningCursorListFragment<ThreadMessage> i
 
     private void sendMessage() {
         if (!TextUtils.isEmpty(smsEntryField.getText())) {
-            listener.onSendMessage(sendAddress, smsEntryField.getText());
+            listener.onSendMessage(sendAddress, smsEntryField.getText().toString());
         }
     }
 
@@ -147,7 +147,7 @@ public class ThreadFragment extends ListeningCursorListFragment<ThreadMessage> i
     }
 
     public interface Listener {
-        void onSendMessage(String address, CharSequence message);
+        void onSendMessage(String address, String message);
     }
 
 }

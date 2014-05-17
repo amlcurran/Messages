@@ -2,9 +2,12 @@ package com.amlcurran.messages;
 
 import android.app.Activity;
 import android.app.Fragment;
+import android.app.PendingIntent;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.telephony.SmsManager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.View;
@@ -15,14 +18,17 @@ import com.amlcurran.messages.conversationlist.ConversationListFragment;
 import com.amlcurran.messages.loaders.MessagesLoader;
 import com.amlcurran.messages.loaders.MessagesLoaderProvider;
 import com.amlcurran.messages.threads.ThreadFragment;
-import com.amlcurran.messages.ui.UiController;
 import com.amlcurran.messages.ui.SlidingPaneUiController;
+import com.amlcurran.messages.ui.UiController;
 
+import java.util.ArrayList;
 import java.util.concurrent.Executors;
 
 
 public class MessagesActivity extends Activity implements MessagesLoaderProvider,
         ConversationListFragment.Listener, ThreadFragment.Listener {
+
+    private static final int CODE_SENT_MESSAGE = 3030;
 
     private final MessagesLoader messagesLoader = new MessagesLoader(this, Executors.newCachedThreadPool());
     private UiController uiController;
@@ -57,6 +63,12 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
     }
 
     @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        Log.d("MessagesActivity", String.format("%1$s, %2$s, %3$s", requestCode, resultCode, data.toString()));
+        super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    @Override
     public MessagesLoader getMessagesLoader() {
         return messagesLoader;
     }
@@ -75,8 +87,12 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
     }
 
     @Override
-    public void onSendMessage(String address, CharSequence message) {
-        smsManager.sendTextMessage(address, null, message.toString(), null, null);
+    public void onSendMessage(String address, String message) {
+        Intent intent = new Intent(this, MessagesActivity.class);
+        PendingIntent sentIntent = PendingIntent.getActivity(this, CODE_SENT_MESSAGE, intent, 0);
+        ArrayList<PendingIntent> sendIntents = new ArrayList<PendingIntent>();
+        sendIntents.add(sentIntent);
+        smsManager.sendMultipartTextMessage(address, null, smsManager.divideMessage(message), sendIntents, null);
     }
 
     public static class EmptyFragment extends Fragment {
