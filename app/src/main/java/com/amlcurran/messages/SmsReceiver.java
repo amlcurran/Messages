@@ -10,6 +10,7 @@ import android.telephony.SmsMessage;
 import android.widget.Toast;
 
 public class SmsReceiver extends BroadcastReceiver {
+
     @Override
     public void onReceive(Context context, Intent intent) {
         SmsMessage[] messages = Telephony.Sms.Intents.getMessagesFromIntent(intent);

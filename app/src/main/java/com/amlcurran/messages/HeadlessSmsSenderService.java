@@ -47,6 +47,7 @@ public class HeadlessSmsSenderService extends IntentService {
         values.put(Telephony.Sms.Sent.ADDRESS, address);
         values.put(Telephony.Sms.Sent.BODY, message);
         values.put(Telephony.Sms.Sent.TYPE, Telephony.Sms.Sent.MESSAGE_TYPE_SENT);
+        values.put(Telephony.Sms.Sent.READ, "1");
 
         Uri inserted = getContentResolver().insert(Telephony.Sms.Sent.CONTENT_URI, values);
         Toast.makeText(this, String.valueOf(inserted), Toast.LENGTH_SHORT).show();
