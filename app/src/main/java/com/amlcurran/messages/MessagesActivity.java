@@ -2,11 +2,9 @@ package com.amlcurran.messages;
 
 import android.app.Activity;
 import android.app.Fragment;
-import android.app.PendingIntent;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.StrictMode;
-import android.telephony.SmsManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -21,7 +19,6 @@ import com.amlcurran.messages.threads.ThreadFragment;
 import com.amlcurran.messages.ui.SlidingPaneUiController;
 import com.amlcurran.messages.ui.UiController;
 
-import java.util.ArrayList;
 import java.util.concurrent.Executors;
 
 
@@ -32,13 +29,11 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
 
     private final MessagesLoader messagesLoader = new MessagesLoader(this, Executors.newCachedThreadPool());
     private UiController uiController;
-    private SmsManager smsManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         uiController = new SlidingPaneUiController(this);
-        smsManager = SmsManager.getDefault();
 
         if (BuildConfig.DEBUG) {
             StrictMode.setThreadPolicy(new StrictMode.ThreadPolicy.Builder()
@@ -88,11 +83,11 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
 
     @Override
     public void onSendMessage(String address, String message) {
-        Intent intent = new Intent(this, MessagesActivity.class);
-        PendingIntent sentIntent = PendingIntent.getActivity(this, CODE_SENT_MESSAGE, intent, 0);
-        ArrayList<PendingIntent> sendIntents = new ArrayList<PendingIntent>();
-        sendIntents.add(sentIntent);
-        smsManager.sendMultipartTextMessage(address, null, smsManager.divideMessage(message), sendIntents, null);
+        Intent intent = new Intent(this, HeadlessSmsSenderService.class);
+        intent.setAction(HeadlessSmsSenderService.ACTION_SEND_REQUEST);
+        intent.putExtra(HeadlessSmsSenderService.EXTRA_ADDRESS, address);
+        intent.putExtra(HeadlessSmsSenderService.EXTRA_MESSAGE, message);
+        startService(intent);
     }
 
     public static class EmptyFragment extends Fragment {
