@@ -26,12 +26,7 @@ public class MessagesLoader {
             @Override
             public void run() {
                 final Cursor cursor = getResolver().query(Telephony.Threads.CONTENT_URI, null, null, null, Telephony.Sms.DEFAULT_SORT_ORDER);
-                activity.runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        loadListener.onCursorLoaded(cursor);
-                    }
-                });
+                activity.runOnUiThread(notifyListener(loadListener, cursor));
             }
         });
     }
@@ -43,14 +38,18 @@ public class MessagesLoader {
                 String selection = Telephony.Sms.THREAD_ID + "=?";
                 String[] selectionArgs = {threadId};
                 final Cursor cursor = getResolver().query(Telephony.Sms.CONTENT_URI, null, selection, selectionArgs, Telephony.Sms.DEFAULT_SORT_ORDER.replace("DESC", "ASC"));
-                activity.runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        loadListener.onCursorLoaded(cursor);
-                    }
-                });
+                activity.runOnUiThread(notifyListener(loadListener, cursor));
             }
         });
+    }
+
+    private static Runnable notifyListener(final CursorLoadListener listener, final Cursor result) {
+        return new Runnable() {
+            @Override
+            public void run() {
+                listener.onCursorLoaded(result);
+            }
+        };
     }
 
 }
