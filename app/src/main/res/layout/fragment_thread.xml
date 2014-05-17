@@ -21,7 +21,7 @@
         <EditText
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:id="@+id/editText"
+            android:id="@+id/thread_sms_entry"
             android:layout_weight="1"
             android:layout_gravity="center_vertical"
             android:inputType="textShortMessage" />
@@ -29,7 +29,7 @@
         <ImageButton
             android:layout_width="48dp"
             android:layout_height="48dp"
-            android:id="@+id/imageButton"
+            android:id="@+id/thread_sms_send"
             android:src="@drawable/ic_action_send"
             android:background="@drawable/selectable_background_messages" />
 

@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.Fragment;
 import android.os.Bundle;
 import android.os.StrictMode;
+import android.telephony.SmsManager;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.View;
@@ -21,15 +22,17 @@ import java.util.concurrent.Executors;
 
 
 public class MessagesActivity extends Activity implements MessagesLoaderProvider,
-        ConversationListFragment.Listener {
+        ConversationListFragment.Listener, ThreadFragment.Listener {
 
     private final MessagesLoader messagesLoader = new MessagesLoader(this, Executors.newCachedThreadPool());
     private UiController uiController;
+    private SmsManager smsManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         uiController = new SlidingPaneUiController(this);
+        smsManager = SmsManager.getDefault();
 
         if (BuildConfig.DEBUG) {
             StrictMode.setThreadPolicy(new StrictMode.ThreadPolicy.Builder()
@@ -69,6 +72,11 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
     public void onConversationSelected(Conversation conversation) {
         ThreadFragment fragment = ThreadFragment.create(conversation.getThreadId(), conversation.getAddress());
         uiController.replaceFragment(fragment);
+    }
+
+    @Override
+    public void onSendMessage(String address, CharSequence message) {
+        smsManager.sendTextMessage(address, null, message.toString(), null, null);
     }
 
     public static class EmptyFragment extends Fragment {

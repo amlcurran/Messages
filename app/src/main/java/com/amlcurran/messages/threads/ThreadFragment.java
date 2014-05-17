@@ -1,14 +1,18 @@
 package com.amlcurran.messages.threads;
 
+import android.app.Activity;
 import android.content.Context;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import com.amlcurran.messages.ListeningCursorListFragment;
+import com.amlcurran.messages.ProviderHelper;
 import com.amlcurran.messages.R;
 import com.amlcurran.messages.adapters.AdaptiveCursorSource;
 import com.amlcurran.messages.loaders.MessagesLoader;
@@ -19,10 +23,14 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public class ThreadFragment extends ListeningCursorListFragment<ThreadMessage> {
+public class ThreadFragment extends ListeningCursorListFragment<ThreadMessage> implements View.OnClickListener {
 
     private static final String THREAD_ID = "threadId";
     private static final String ADDRESS = "address";
+
+    private EditText smsEntryField;
+    private Listener listener;
+    private String sendAddress;
 
     public static ThreadFragment create(String threadId, String address) {
         Bundle bundle = new Bundle();
@@ -37,12 +45,25 @@ public class ThreadFragment extends ListeningCursorListFragment<ThreadMessage> {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_thread, container, false);
+        View view = inflater.inflate(R.layout.fragment_thread, container, false);
+
+        smsEntryField = (EditText) view.findViewById(R.id.thread_sms_entry);
+
+        view.findViewById(R.id.thread_sms_send).setOnClickListener(this);
+        return view;
+    }
+
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        listener = new ProviderHelper<Listener>(Listener.class).get(activity);
     }
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+
+        sendAddress = getArguments().getString(ADDRESS);
 
         source = new ThreadMessageAdaptiveCursorSource();
         adapter = new SourceBinderAdapter<ThreadMessage>(getActivity(), source, new ThreadBinder());
@@ -54,6 +75,23 @@ public class ThreadFragment extends ListeningCursorListFragment<ThreadMessage> {
     @Override
     public void loadData(MessagesLoader loader) {
         loader.loadThread(getArguments().getString(THREAD_ID), this);
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+
+            case R.id.thread_sms_send:
+                sendMessage();
+                break;
+
+        }
+    }
+
+    private void sendMessage() {
+        if (!TextUtils.isEmpty(smsEntryField.getText())) {
+            listener.onSendMessage(sendAddress, smsEntryField.getText());
+        }
     }
 
     private class ThreadBinder extends SimpleBinder<ThreadMessage> {
@@ -106,6 +144,10 @@ public class ThreadFragment extends ListeningCursorListFragment<ThreadMessage> {
         public ThreadMessage getFromCursorRow(Cursor cursor) {
             return ThreadMessage.fromCursor(cursor);
         }
+    }
+
+    public interface Listener {
+        void onSendMessage(String address, CharSequence message);
     }
 
 }
