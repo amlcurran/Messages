@@ -18,7 +18,7 @@ import com.amlcurran.messages.loaders.CursorLoadListener;
 import com.espian.utils.SimpleBinder;
 import com.espian.utils.SourceBinderAdapter;
 
-public class ConversationListFragment extends ListeningCursorListFragment implements CursorLoadListener, AdapterView.OnItemClickListener {
+public class ConversationListFragment extends ListeningCursorListFragment<Cursor> implements CursorLoadListener, AdapterView.OnItemClickListener {
 
     private Listener listener;
 
@@ -54,7 +54,7 @@ public class ConversationListFragment extends ListeningCursorListFragment implem
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        String threadId = CursorHelper.fromColumn((Cursor) source.getAtPosition(position), Telephony.Sms.THREAD_ID);
+        String threadId = CursorHelper.fromColumn(source.getAtPosition(position), Telephony.Sms.THREAD_ID);
         listener.onConversationSelected(threadId);
     }
 

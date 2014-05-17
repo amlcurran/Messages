@@ -15,7 +15,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public class ThreadFragment extends ListeningCursorListFragment {
+public class ThreadFragment extends ListeningCursorListFragment<ThreadMessage> {
 
     private static final String THREAD_ID = "threadId";
 
@@ -71,9 +71,9 @@ public class ThreadFragment extends ListeningCursorListFragment {
         @Override
         public View createView(Context context, int itemViewType) {
             if (itemViewType == ITEM_ME) {
-                return LayoutInflater.from(context).inflate(R.layout.item_thread_item_me, null);
+                return LayoutInflater.from(context).inflate(R.layout.item_thread_item_me, getListView(), false);
             } else if (itemViewType == ITEM_THEM) {
-                return LayoutInflater.from(context).inflate(R.layout.item_thread_item_them, null);
+                return LayoutInflater.from(context).inflate(R.layout.item_thread_item_them, getListView(), false);
             }
             return null;
         }

@@ -14,9 +14,9 @@ import com.espian.utils.SourceBinderAdapter;
 /**
  * Defines a fragment that uses cursors from the Telephony API and listens to receiving of new messages
  */
-public abstract class ListeningCursorListFragment extends ListFragment implements CursorLoadListener, IncomingMessageReceiver.Listener {
-    protected SourceBinderAdapter adapter;
-    protected AdaptiveCursorSource source;
+public abstract class ListeningCursorListFragment<T> extends ListFragment implements CursorLoadListener, IncomingMessageReceiver.Listener {
+    protected SourceBinderAdapter<T> adapter;
+    protected AdaptiveCursorSource<T> source;
     protected MessagesLoader messageLoader;
     private IncomingMessageReceiver messageReceiver;
 
