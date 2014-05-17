@@ -61,7 +61,7 @@ public class ConversationListFragment extends ListeningCursorListFragment<Cursor
 
         @Override
         public View bindView(View convertView, Cursor item, int position) {
-            String person = CursorHelper.fromColumn(item, Telephony.Sms.PERSON);
+            String person = CursorHelper.fromColumn(item, Telephony.Sms.ADDRESS);
             String body = CursorHelper.fromColumn(item, Telephony.Sms.BODY);
             TextView textView1 = getTextView(convertView, android.R.id.text1);
             TextView textView2 = getTextView(convertView, android.R.id.text2);
