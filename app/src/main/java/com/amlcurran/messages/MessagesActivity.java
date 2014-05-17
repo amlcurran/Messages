@@ -9,11 +9,13 @@ import com.amlcurran.messages.loaders.MessagesLoaderProvider;
 import com.amlcurran.messages.ui.UiController;
 import com.amlcurran.messages.ui.SlidingPaneUiController;
 
+import java.util.concurrent.Executors;
+
 
 public class MessagesActivity extends Activity implements MessagesLoaderProvider,
         ConversationListFragment.Listener {
 
-    private final MessagesLoader messagesLoader = new MessagesLoader(this);
+    private final MessagesLoader messagesLoader = new MessagesLoader(this, Executors.newCachedThreadPool());
     private UiController uiController;
 
     @Override
