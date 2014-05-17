@@ -4,7 +4,9 @@ import android.app.Activity;
 import android.content.Context;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,7 +25,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public class ThreadFragment extends ListeningCursorListFragment<ThreadMessage> implements View.OnClickListener {
+public class ThreadFragment extends ListeningCursorListFragment<ThreadMessage> implements View.OnClickListener, TextWatcher {
 
     private static final String THREAD_ID = "threadId";
     private static final String ADDRESS = "address";
@@ -48,6 +50,7 @@ public class ThreadFragment extends ListeningCursorListFragment<ThreadMessage> i
         View view = inflater.inflate(R.layout.fragment_thread, container, false);
 
         smsEntryField = (EditText) view.findViewById(R.id.thread_sms_entry);
+        smsEntryField.addTextChangedListener(this);
 
         view.findViewById(R.id.thread_sms_send).setOnClickListener(this);
         return view;
@@ -62,14 +65,11 @@ public class ThreadFragment extends ListeningCursorListFragment<ThreadMessage> i
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-
         sendAddress = getArguments().getString(ADDRESS);
-
         source = new ThreadMessageAdaptiveCursorSource();
         adapter = new SourceBinderAdapter<ThreadMessage>(getActivity(), source, new ThreadBinder());
         setListAdapter(adapter);
         getListView().setStackFromBottom(true);
-
     }
 
     @Override
@@ -91,7 +91,27 @@ public class ThreadFragment extends ListeningCursorListFragment<ThreadMessage> i
     private void sendMessage() {
         if (!TextUtils.isEmpty(smsEntryField.getText())) {
             listener.onSendMessage(sendAddress, smsEntryField.getText().toString());
+            clearSmsEntryField();
         }
+    }
+
+    private void clearSmsEntryField() {
+        smsEntryField.setText("", TextView.BufferType.EDITABLE);
+    }
+
+    @Override
+    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+    }
+
+    @Override
+    public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+    }
+
+    @Override
+    public void afterTextChanged(Editable s) {
+
     }
 
     private class ThreadBinder extends SimpleBinder<ThreadMessage> {
