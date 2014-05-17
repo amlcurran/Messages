@@ -23,14 +23,4 @@
 
     </view>
 
-    <ImageButton
-        android:layout_width="48dp"
-        android:layout_height="48dp"
-        android:id="@+id/imageButton"
-        android:layout_gravity="left|bottom"
-        android:background="@drawable/new_button2_bg"
-        android:layout_marginLeft="8dp"
-        android:layout_marginBottom="8dp"
-        android:src="@drawable/ic_action_add_white" />
-
 </FrameLayout>
