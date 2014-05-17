@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.amlcurran.messages.adapters.AdaptiveCursorSource;
+import com.amlcurran.messages.loaders.MessagesLoader;
 import com.espian.utils.SimpleBinder;
 import com.espian.utils.SourceBinderAdapter;
 
@@ -37,17 +38,11 @@ public class ThreadFragment extends ListeningCursorListFragment<ThreadMessage> {
         adapter = new SourceBinderAdapter<ThreadMessage>(getActivity(), source, new ThreadBinder());
         setListAdapter(adapter);
         getListView().setStackFromBottom(true);
-
-        loadThread();
     }
 
     @Override
-    public void onMessageReceived() {
-        loadThread();
-    }
-
-    private void loadThread() {
-        messageLoader.loadThread(getArguments().getString(THREAD_ID), this);
+    public void loadData(MessagesLoader loader) {
+        loader.loadThread(getArguments().getString(THREAD_ID), this);
     }
 
     private class ThreadBinder extends SimpleBinder<ThreadMessage> {

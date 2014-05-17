@@ -17,7 +17,7 @@ import com.espian.utils.SourceBinderAdapter;
 public abstract class ListeningCursorListFragment<T> extends ListFragment implements CursorLoadListener, IncomingMessageReceiver.Listener {
     protected SourceBinderAdapter<T> adapter;
     protected AdaptiveCursorSource<T> source;
-    protected MessagesLoader messageLoader;
+    private MessagesLoader messageLoader;
     private IncomingMessageReceiver messageReceiver;
 
     @Override
@@ -35,6 +35,7 @@ public abstract class ListeningCursorListFragment<T> extends ListFragment implem
     @Override
     public void onStart() {
         super.onStart();
+        loadData(messageLoader);
         messageReceiver.startListening();
     }
 
@@ -51,5 +52,10 @@ public abstract class ListeningCursorListFragment<T> extends ListFragment implem
     }
 
     @Override
-    public abstract void onMessageReceived();
+    public void onMessageReceived() {
+        loadData(messageLoader);
+    }
+
+    public abstract void loadData(MessagesLoader loader);
+
 }

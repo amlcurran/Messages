@@ -15,6 +15,7 @@ import android.widget.TextView;
 import com.amlcurran.messages.adapters.CursorHelper;
 import com.amlcurran.messages.adapters.CursorSource;
 import com.amlcurran.messages.loaders.CursorLoadListener;
+import com.amlcurran.messages.loaders.MessagesLoader;
 import com.espian.utils.SimpleBinder;
 import com.espian.utils.SourceBinderAdapter;
 
@@ -33,8 +34,6 @@ public class ConversationListFragment extends ListeningCursorListFragment<Cursor
         setListAdapter(adapter);
         getListView().setChoiceMode(ListView.CHOICE_MODE_SINGLE);
         getListView().setOnItemClickListener(this);
-
-        loadConversations();
     }
 
     @Override
@@ -44,12 +43,8 @@ public class ConversationListFragment extends ListeningCursorListFragment<Cursor
     }
 
     @Override
-    public void onMessageReceived() {
-        loadConversations();
-    }
-
-    private void loadConversations() {
-        messageLoader.loadConversationList(this);
+    public void loadData(MessagesLoader loader) {
+        loader.loadConversationList(this);
     }
 
     @Override
