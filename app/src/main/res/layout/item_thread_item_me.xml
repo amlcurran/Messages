@@ -14,10 +14,9 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:textIsSelectable="true"
             android:id="@android:id/text1"
-            android:gravity="right" />
+            android:gravity="right"
+            style="@style/ThreadMessage" />
 
         <TextView
             android:layout_width="match_parent"
