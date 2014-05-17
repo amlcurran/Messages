@@ -2,6 +2,7 @@ package com.amlcurran.messages;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.os.StrictMode;
 
 import com.amlcurran.messages.loaders.MessagesLoader;
 import com.amlcurran.messages.loaders.MessagesLoaderProvider;
@@ -10,7 +11,7 @@ import com.amlcurran.messages.ui.SlidingPaneUiController;
 
 
 public class MessagesActivity extends Activity implements MessagesLoaderProvider,
-    MessagesListFragment.Listener {
+        ConversationListFragment.Listener {
 
     private final MessagesLoader messagesLoader = new MessagesLoader(this);
     private UiController uiController;
@@ -19,6 +20,13 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         uiController = new SlidingPaneUiController(this);
+
+        if (BuildConfig.DEBUG) {
+            StrictMode.setThreadPolicy(new StrictMode.ThreadPolicy.Builder()
+                    .detectAll()
+                    .penaltyFlashScreen()
+                    .build());
+        }
 
         setContentView(uiController.getView());
 

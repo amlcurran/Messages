@@ -4,7 +4,7 @@ import android.app.Activity;
 import android.view.LayoutInflater;
 import android.view.View;
 
-import com.amlcurran.messages.MessagesListFragment;
+import com.amlcurran.messages.ConversationListFragment;
 import com.amlcurran.messages.R;
 import com.amlcurran.messages.ThreadFragment;
 
@@ -19,7 +19,7 @@ public class SinglePaneUiController implements UiController {
     @Override
     public void loadMessagesListFragment() {
         activity.getFragmentManager().beginTransaction()
-                .add(R.id.container, new MessagesListFragment())
+                .add(R.id.container, new ConversationListFragment())
                 .commit();
     }
 

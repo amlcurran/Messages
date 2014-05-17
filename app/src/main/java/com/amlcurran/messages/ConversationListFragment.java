@@ -18,11 +18,11 @@ import com.amlcurran.messages.loaders.CursorLoadListener;
 import com.espian.utils.SimpleBinder;
 import com.espian.utils.SourceBinderAdapter;
 
-public class MessagesListFragment extends ListeningCursorListFragment implements CursorLoadListener, AdapterView.OnItemClickListener {
+public class ConversationListFragment extends ListeningCursorListFragment implements CursorLoadListener, AdapterView.OnItemClickListener {
 
     private Listener listener;
 
-    public MessagesListFragment() { }
+    public ConversationListFragment() { }
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
