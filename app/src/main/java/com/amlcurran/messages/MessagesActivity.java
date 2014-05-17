@@ -3,6 +3,7 @@ package com.amlcurran.messages;
 import android.app.Activity;
 import android.os.Bundle;
 import android.os.StrictMode;
+import android.view.Menu;
 
 import com.amlcurran.messages.loaders.MessagesLoader;
 import com.amlcurran.messages.loaders.MessagesLoaderProvider;
@@ -37,6 +38,12 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
             uiController.loadEmptyFragment();
         }
 
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.messages, menu);
+        return super.onCreateOptionsMenu(menu);
     }
 
     @Override

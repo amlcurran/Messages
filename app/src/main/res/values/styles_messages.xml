@@ -19,6 +19,11 @@
 
 <resources>
 
+    <style name="Theme.Messages.NoActionBar">
+        <item name="android:windowActionBar">false</item>
+        <item name="android:windowNoTitle">true</item>
+    </style>
+
     <style name="Theme.Messages" parent="@android:style/Theme.Holo.Light.DarkActionBar">
         <item name="android:actionBarItemBackground">@drawable/selectable_background_messages</item>
         <item name="android:popupMenuStyle">@style/PopupMenu.Messages</item>
@@ -29,7 +34,6 @@
         <item name="android:actionModeBackground">@drawable/cab_background_top_messages</item>
         <item name="android:actionModeSplitBackground">@drawable/cab_background_bottom_messages</item>
         <item name="android:actionModeCloseButtonStyle">@style/ActionButton.CloseMode.Messages</item>
-        
                 <!-- Light.DarkActionBar specific -->
         <item name="android:actionBarWidgetTheme">@style/Theme.Messages.Widget</item>
 
