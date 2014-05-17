@@ -5,21 +5,19 @@ import android.content.Context;
 import android.database.Cursor;
 import android.graphics.Typeface;
 import android.os.Bundle;
-import android.provider.Telephony;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.amlcurran.messages.adapters.CursorHelper;
-import com.amlcurran.messages.adapters.CursorSource;
+import com.amlcurran.messages.adapters.AdaptiveCursorSource;
 import com.amlcurran.messages.loaders.CursorLoadListener;
 import com.amlcurran.messages.loaders.MessagesLoader;
 import com.espian.utils.SimpleBinder;
 import com.espian.utils.SourceBinderAdapter;
 
-public class ConversationListFragment extends ListeningCursorListFragment<Cursor> implements CursorLoadListener, AdapterView.OnItemClickListener {
+public class ConversationListFragment extends ListeningCursorListFragment<Conversation> implements CursorLoadListener, AdapterView.OnItemClickListener {
 
     private Listener listener;
 
@@ -29,8 +27,8 @@ public class ConversationListFragment extends ListeningCursorListFragment<Cursor
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        source = new CursorSource();
-        adapter = new SourceBinderAdapter<Cursor>(getActivity(), source, new ConversationsBinder());
+        source = new ConversationListAdaptiveSource();
+        adapter = new SourceBinderAdapter<Conversation>(getActivity(), source, new ConversationsBinder());
         setListAdapter(adapter);
         getListView().setChoiceMode(ListView.CHOICE_MODE_SINGLE);
         getListView().setOnItemClickListener(this);
@@ -49,7 +47,7 @@ public class ConversationListFragment extends ListeningCursorListFragment<Cursor
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        String threadId = CursorHelper.fromColumn(source.getAtPosition(position), Telephony.Sms.THREAD_ID);
+        String threadId = source.getAtPosition(position).getThreadId();
         listener.onConversationSelected(threadId);
     }
 
@@ -57,22 +55,20 @@ public class ConversationListFragment extends ListeningCursorListFragment<Cursor
         void onConversationSelected(String threadId);
     }
 
-    public class ConversationsBinder extends SimpleBinder<Cursor> {
+    public class ConversationsBinder extends SimpleBinder<Conversation> {
 
         @Override
-        public View bindView(View convertView, Cursor item, int position) {
-            String person = CursorHelper.fromColumn(item, Telephony.Sms.ADDRESS);
-            String body = CursorHelper.fromColumn(item, Telephony.Sms.BODY);
+        public View bindView(View convertView, Conversation item, int position) {
             TextView textView1 = getTextView(convertView, android.R.id.text1);
             TextView textView2 = getTextView(convertView, android.R.id.text2);
 
-            textView1.setText(person);
-            textView2.setText(body);
+            textView1.setText(item.getAddress());
+            textView2.setText(item.getBody());
 
-            if (isNotRead(item)) {
-                setUnreadStyle(convertView, textView1, textView2);
-            } else {
+            if (item.isRead()) {
                 setReadStyle(convertView, textView1, textView2);
+            } else {
+                setUnreadStyle(convertView, textView1, textView2);
             }
 
             return convertView;
@@ -94,16 +90,18 @@ public class ConversationListFragment extends ListeningCursorListFragment<Cursor
             return (TextView) convertView.findViewById(text1);
         }
 
-        private boolean isNotRead(Cursor item) {
-            String s = CursorHelper.fromColumn(item, Telephony.Sms.Inbox.READ);
-            return s.toLowerCase().equals("0");
-        }
-
         @Override
         public View createView(Context context, int itemViewType) {
             return LayoutInflater.from(context).inflate(R.layout.item_message_preview, getListView(), false);
         }
     }
 
+    public static class ConversationListAdaptiveSource extends AdaptiveCursorSource<Conversation> {
+
+        @Override
+        public Conversation getFromCursorRow(Cursor cursor) {
+            return Conversation.fromCursor(cursor);
+        }
+    }
 
 }

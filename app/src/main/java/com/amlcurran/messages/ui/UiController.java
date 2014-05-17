@@ -2,7 +2,7 @@ package com.amlcurran.messages.ui;
 
 import android.view.View;
 
-import com.amlcurran.messages.ThreadFragment;
+import com.amlcurran.messages.threads.ThreadFragment;
 
 public interface UiController {
     void loadMessagesListFragment();

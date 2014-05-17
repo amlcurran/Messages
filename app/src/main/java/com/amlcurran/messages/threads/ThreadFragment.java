@@ -1,4 +1,4 @@
-package com.amlcurran.messages;
+package com.amlcurran.messages.threads;
 
 import android.content.Context;
 import android.database.Cursor;
@@ -8,6 +8,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.amlcurran.messages.ListeningCursorListFragment;
+import com.amlcurran.messages.R;
 import com.amlcurran.messages.adapters.AdaptiveCursorSource;
 import com.amlcurran.messages.loaders.MessagesLoader;
 import com.espian.utils.SimpleBinder;

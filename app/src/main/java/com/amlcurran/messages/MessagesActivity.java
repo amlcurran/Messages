@@ -7,6 +7,7 @@ import android.view.Menu;
 
 import com.amlcurran.messages.loaders.MessagesLoader;
 import com.amlcurran.messages.loaders.MessagesLoaderProvider;
+import com.amlcurran.messages.threads.ThreadFragment;
 import com.amlcurran.messages.ui.UiController;
 import com.amlcurran.messages.ui.SlidingPaneUiController;
 
