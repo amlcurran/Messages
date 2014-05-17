@@ -7,7 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TextView;
 
-import com.amlcurran.messages.adapters.CursorSource;
+import com.amlcurran.messages.adapters.AdaptiveCursorSource;
 import com.espian.utils.SimpleBinder;
 import com.espian.utils.SourceBinderAdapter;
 
@@ -33,8 +33,8 @@ public class ThreadFragment extends ListeningCursorListFragment {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        source = new CursorSource();
-        adapter = new SourceBinderAdapter<Cursor>(getActivity(), source, new ThreadBinder());
+        source = new ThreadMessageAdaptiveCursorSource();
+        adapter = new SourceBinderAdapter<ThreadMessage>(getActivity(), source, new ThreadBinder());
         setListAdapter(adapter);
         getListView().setStackFromBottom(true);
 
@@ -50,7 +50,7 @@ public class ThreadFragment extends ListeningCursorListFragment {
         messageLoader.loadThread(getArguments().getString(THREAD_ID), this);
     }
 
-    private class ThreadBinder extends SimpleBinder<Cursor> {
+    private class ThreadBinder extends SimpleBinder<ThreadMessage> {
 
         private static final int ITEM_ME = 0;
         private static final int ITEM_THEM = 1;
@@ -58,12 +58,11 @@ public class ThreadFragment extends ListeningCursorListFragment {
         private final Date date = new Date();
 
         @Override
-        public View bindView(View convertView, Cursor item, int position) {
+        public View bindView(View convertView, ThreadMessage item, int position) {
 
-            ThreadMessage message = ThreadMessage.fromCursor(item);
-            date.setTime(message.getTimestamp());
+            date.setTime(item.getTimestamp());
 
-            getTextView(convertView, android.R.id.text1).setText(message.getBody());
+            getTextView(convertView, android.R.id.text1).setText(item.getBody());
             getTextView(convertView, android.R.id.text2).setText(formatter.format(date));
 
             return convertView;
@@ -85,9 +84,8 @@ public class ThreadFragment extends ListeningCursorListFragment {
         }
 
         @Override
-        public int getItemViewType(int position, Cursor item) {
-            boolean isMe = ThreadMessage.fromCursor(item).isFromMe();
-            return isMe ? ITEM_ME : ITEM_THEM;
+        public int getItemViewType(int position, ThreadMessage item) {
+            return item.isFromMe() ? ITEM_ME : ITEM_THEM;
         }
 
         private TextView getTextView(View convertView, int text1) {
@@ -95,4 +93,13 @@ public class ThreadFragment extends ListeningCursorListFragment {
         }
 
     }
+
+    private static class ThreadMessageAdaptiveCursorSource extends AdaptiveCursorSource<ThreadMessage> {
+
+        @Override
+        public ThreadMessage getFromCursorRow(Cursor cursor) {
+            return ThreadMessage.fromCursor(cursor);
+        }
+    }
+
 }

@@ -5,7 +5,7 @@ import android.app.ListFragment;
 import android.database.Cursor;
 import android.os.Bundle;
 
-import com.amlcurran.messages.adapters.CursorSource;
+import com.amlcurran.messages.adapters.AdaptiveCursorSource;
 import com.amlcurran.messages.loaders.CursorLoadListener;
 import com.amlcurran.messages.loaders.MessagesLoader;
 import com.amlcurran.messages.loaders.MessagesLoaderProvider;
@@ -16,7 +16,7 @@ import com.espian.utils.SourceBinderAdapter;
  */
 public abstract class ListeningCursorListFragment extends ListFragment implements CursorLoadListener, IncomingMessageReceiver.Listener {
     protected SourceBinderAdapter adapter;
-    protected CursorSource source;
+    protected AdaptiveCursorSource source;
     protected MessagesLoader messageLoader;
     private IncomingMessageReceiver messageReceiver;
 

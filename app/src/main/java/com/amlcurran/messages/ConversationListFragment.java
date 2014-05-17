@@ -54,8 +54,7 @@ public class ConversationListFragment extends ListeningCursorListFragment implem
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        source.getCursor().moveToPosition(position);
-        String threadId = CursorHelper.fromColumn(source.getCursor(), Telephony.Sms.THREAD_ID);
+        String threadId = CursorHelper.fromColumn((Cursor) source.getAtPosition(position), Telephony.Sms.THREAD_ID);
         listener.onConversationSelected(threadId);
     }
 
@@ -110,4 +109,6 @@ public class ConversationListFragment extends ListeningCursorListFragment implem
             return LayoutInflater.from(context).inflate(R.layout.item_message_preview, null);
         }
     }
+
+
 }
