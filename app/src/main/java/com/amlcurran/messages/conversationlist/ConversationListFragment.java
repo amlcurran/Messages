@@ -50,12 +50,11 @@ public class ConversationListFragment extends ListeningCursorListFragment<Conver
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        String threadId = source.getAtPosition(position).getThreadId();
-        listener.onConversationSelected(threadId);
+        listener.onConversationSelected(source.getAtPosition(position));
     }
 
     public interface Listener {
-        void onConversationSelected(String threadId);
+        void onConversationSelected(Conversation conversation);
     }
 
     public class ConversationsBinder extends SimpleBinder<Conversation> {

@@ -22,10 +22,12 @@ import java.util.Date;
 public class ThreadFragment extends ListeningCursorListFragment<ThreadMessage> {
 
     private static final String THREAD_ID = "threadId";
+    private static final String ADDRESS = "address";
 
-    public static ThreadFragment create(String threadId) {
+    public static ThreadFragment create(String threadId, String address) {
         Bundle bundle = new Bundle();
-        bundle.putString(ThreadFragment.THREAD_ID, threadId);
+        bundle.putString(THREAD_ID, threadId);
+        bundle.putString(ADDRESS, address);
 
         ThreadFragment fragment = new ThreadFragment();
         fragment.setArguments(bundle);
@@ -46,6 +48,7 @@ public class ThreadFragment extends ListeningCursorListFragment<ThreadMessage> {
         adapter = new SourceBinderAdapter<ThreadMessage>(getActivity(), source, new ThreadBinder());
         setListAdapter(adapter);
         getListView().setStackFromBottom(true);
+
     }
 
     @Override

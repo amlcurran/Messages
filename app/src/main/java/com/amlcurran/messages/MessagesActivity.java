@@ -9,6 +9,7 @@ import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.amlcurran.messages.conversationlist.Conversation;
 import com.amlcurran.messages.conversationlist.ConversationListFragment;
 import com.amlcurran.messages.loaders.MessagesLoader;
 import com.amlcurran.messages.loaders.MessagesLoaderProvider;
@@ -65,8 +66,8 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
     }
 
     @Override
-    public void onConversationSelected(String threadId) {
-        ThreadFragment fragment = ThreadFragment.create(threadId);
+    public void onConversationSelected(Conversation conversation) {
+        ThreadFragment fragment = ThreadFragment.create(conversation.getThreadId(), conversation.getAddress());
         uiController.replaceFragment(fragment);
     }
 
