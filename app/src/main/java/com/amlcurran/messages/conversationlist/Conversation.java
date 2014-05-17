@@ -1,4 +1,4 @@
-package com.amlcurran.messages;
+package com.amlcurran.messages.conversationlist;
 
 import android.database.Cursor;
 import android.provider.Telephony;

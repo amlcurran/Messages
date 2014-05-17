@@ -1,4 +1,4 @@
-package com.amlcurran.messages;
+package com.amlcurran.messages.conversationlist;
 
 import android.app.Activity;
 import android.content.Context;
@@ -11,6 +11,9 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.amlcurran.messages.ListeningCursorListFragment;
+import com.amlcurran.messages.ProviderHelper;
+import com.amlcurran.messages.R;
 import com.amlcurran.messages.adapters.AdaptiveCursorSource;
 import com.amlcurran.messages.loaders.CursorLoadListener;
 import com.amlcurran.messages.loaders.MessagesLoader;

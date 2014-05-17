@@ -4,7 +4,7 @@ import android.app.Activity;
 import android.view.LayoutInflater;
 import android.view.View;
 
-import com.amlcurran.messages.ConversationListFragment;
+import com.amlcurran.messages.conversationlist.ConversationListFragment;
 import com.amlcurran.messages.R;
 import com.amlcurran.messages.threads.ThreadFragment;
 

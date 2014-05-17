@@ -5,8 +5,8 @@ import android.support.v4.widget.SlidingPaneLayout;
 import android.view.LayoutInflater;
 import android.view.View;
 
-import com.amlcurran.messages.ConversationListFragment;
-import com.amlcurran.messages.EmptyFragment;
+import com.amlcurran.messages.conversationlist.ConversationListFragment;
+import com.amlcurran.messages.MessagesActivity;
 import com.amlcurran.messages.R;
 import com.amlcurran.messages.threads.ThreadFragment;
 
@@ -56,7 +56,7 @@ public class SlidingPaneUiController implements UiController {
     @Override
     public void loadEmptyFragment() {
         activity.getFragmentManager().beginTransaction()
-                .replace(R.id.secondary, new EmptyFragment())
+                .replace(R.id.secondary, new MessagesActivity.EmptyFragment())
                 .commit();
     }
 
