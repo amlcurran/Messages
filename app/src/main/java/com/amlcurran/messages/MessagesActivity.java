@@ -22,7 +22,6 @@ import com.amlcurran.messages.ui.UiController;
 
 import java.util.concurrent.Executors;
 
-
 public class MessagesActivity extends Activity implements MessagesLoaderProvider,
         ConversationListFragment.Listener, ThreadFragment.Listener, View.OnClickListener,
         DefaultAppChecker.Callback {

@@ -2,10 +2,7 @@ package com.amlcurran.messages;
 
 import android.app.IntentService;
 import android.app.PendingIntent;
-import android.content.ContentValues;
 import android.content.Intent;
-import android.net.Uri;
-import android.provider.Telephony;
 import android.support.v4.content.LocalBroadcastManager;
 import android.telephony.SmsManager;
 import android.util.Log;
@@ -25,10 +22,12 @@ public class SmsSender extends IntentService {
     public static final String BROADCAST_MESSAGE_SENT = "broadcast_message_sent";
 
     private final SmsManager smsManager;
+    private final SmsDatabaseWriter smsDatabaseWriter;
 
     public SmsSender() {
         super(TAG);
         smsManager = SmsManager.getDefault();
+        smsDatabaseWriter = new SmsDatabaseWriter();
     }
 
     @Override
@@ -47,17 +46,8 @@ public class SmsSender extends IntentService {
         long sentDate = intent.getLongExtra(EXTRA_SENT_DATE, 0);
         Log.d(TAG, "Write sent message to provider " + message);
 
-        ContentValues values = new ContentValues();
-        values.put(Telephony.Sms.Sent.DATE, sentDate);
-        values.put(Telephony.Sms.Sent.DATE_SENT, sentDate);
-        values.put(Telephony.Sms.Sent.ADDRESS, address);
-        values.put(Telephony.Sms.Sent.BODY, message);
-        values.put(Telephony.Sms.Sent.TYPE, Telephony.Sms.Sent.MESSAGE_TYPE_SENT);
-        values.put(Telephony.Sms.Sent.READ, "1");
-
-        Uri inserted = getContentResolver().insert(Telephony.Sms.Sent.CONTENT_URI, values);
-        if (inserted != null) {
-            Log.d(TAG, "Sending broadcast for sent message");
+        boolean didWrite = smsDatabaseWriter.writeSentMessage(getContentResolver(), address, message, sentDate);
+        if (didWrite) {
             sendLocalBroadcast();
         }
     }
