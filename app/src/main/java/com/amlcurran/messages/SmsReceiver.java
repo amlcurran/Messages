@@ -1,10 +1,8 @@
 package com.amlcurran.messages;
 
 import android.content.BroadcastReceiver;
-import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
 import android.provider.Telephony;
 import android.support.v4.content.LocalBroadcastManager;
 import android.telephony.SmsMessage;
@@ -14,6 +12,12 @@ public class SmsReceiver extends BroadcastReceiver {
 
     public static final String TAG = SmsReceiver.class.getSimpleName();
     public static final String BROADCAST_MESSAGE_RECEIVED = "broadcast_message_received";
+
+    private final SmsDatabaseWriter smsDatabaseWriter;
+
+    public SmsReceiver() {
+        smsDatabaseWriter = new SmsDatabaseWriter();
+    }
 
     @Override
     public void onReceive(Context context, Intent intent) {
@@ -31,25 +35,13 @@ public class SmsReceiver extends BroadcastReceiver {
     private void writeSmsToProvider(Context context, SmsMessage message) {
         Log.d(TAG, "Writing SMS to provider: " + message.toString());
 
-        ContentValues contentValues = valuesFromMessage(message);
-
-        Uri inserted = context.getContentResolver().insert(Telephony.Sms.Inbox.CONTENT_URI, contentValues);
-        if (inserted != null) {
+        boolean inserted = smsDatabaseWriter.writeInboxSms(context.getContentResolver(), message);
+        if (inserted) {
             Log.d(TAG, "Sending broadcast of message received");
             sendLocalBroadcast(context);
+            new Notifier(context).addNewMessageNotification(message);
         }
 
-        new Notifier(context).addNewMessageNotification(message);
-    }
-
-    private static ContentValues valuesFromMessage(SmsMessage message) {
-        ContentValues contentValues = new ContentValues();
-        contentValues.put(Telephony.Sms.Inbox.BODY, message.getDisplayMessageBody());
-        contentValues.put(Telephony.Sms.Inbox.ADDRESS, message.getDisplayOriginatingAddress());
-        contentValues.put(Telephony.Sms.Inbox.DATE, message.getTimestampMillis());
-        contentValues.put(Telephony.Sms.Inbox.DATE_SENT, message.getTimestampMillis());
-        contentValues.put(Telephony.Sms.Inbox.TYPE, Telephony.Sms.Inbox.MESSAGE_TYPE_INBOX);
-        return contentValues;
     }
 
 }

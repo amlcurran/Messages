@@ -48,6 +48,7 @@ public class SmsSender extends IntentService {
 
         boolean didWrite = smsDatabaseWriter.writeSentMessage(getContentResolver(), address, message, sentDate);
         if (didWrite) {
+            Log.d(TAG, "Sending broadcast for sent message");
             sendLocalBroadcast();
         }
     }

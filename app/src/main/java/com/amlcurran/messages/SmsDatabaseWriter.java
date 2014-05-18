@@ -2,11 +2,23 @@ package com.amlcurran.messages;
 
 import android.content.ContentResolver;
 import android.content.ContentValues;
+import android.net.Uri;
 import android.provider.Telephony;
+import android.telephony.SmsMessage;
 
 public class SmsDatabaseWriter {
 
     public SmsDatabaseWriter() {
+    }
+
+    private static ContentValues valuesFromMessage(SmsMessage message) {
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(Telephony.Sms.Inbox.BODY, message.getDisplayMessageBody());
+        contentValues.put(Telephony.Sms.Inbox.ADDRESS, message.getDisplayOriginatingAddress());
+        contentValues.put(Telephony.Sms.Inbox.DATE, message.getTimestampMillis());
+        contentValues.put(Telephony.Sms.Inbox.DATE_SENT, message.getTimestampMillis());
+        contentValues.put(Telephony.Sms.Inbox.TYPE, Telephony.Sms.Inbox.MESSAGE_TYPE_INBOX);
+        return contentValues;
     }
 
     public boolean writeSentMessage(ContentResolver contentResolver, String address, String message, long sentDate) {
@@ -20,5 +32,11 @@ public class SmsDatabaseWriter {
         values.put(Telephony.Sms.Sent.READ, "1");
 
         return contentResolver.insert(Telephony.Sms.Sent.CONTENT_URI, values) != null;
+    }
+
+    public boolean writeInboxSms(ContentResolver resolver, SmsMessage message) {
+        ContentValues contentValues = valuesFromMessage(message);
+        Uri inserted = resolver.insert(Telephony.Sms.Inbox.CONTENT_URI, contentValues);
+        return inserted != null;
     }
 }
