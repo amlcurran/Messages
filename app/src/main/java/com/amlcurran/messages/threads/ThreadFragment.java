@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.text.util.Linkify;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -154,8 +155,10 @@ public class ThreadFragment extends ListeningCursorListFragment<ThreadMessage> i
 
             date.setTime(item.getTimestamp());
 
-            getTextView(convertView, android.R.id.text1).setText(item.getBody());
+            TextView bodyText = getTextView(convertView, android.R.id.text1);
+            bodyText.setText(item.getBody());
             getTextView(convertView, android.R.id.text2).setText(formatter.format(date));
+            Linkify.addLinks(bodyText, Linkify.ALL);
 
             return convertView;
         }
