@@ -21,12 +21,16 @@ public class Notifier {
     public void addNewMessageNotification(SmsMessage message) {
         Notification newMessageNotification = buildNotification(context, message.getDisplayOriginatingAddress(),
                 message.getDisplayMessageBody(), message.getTimestampMillis());
-        notificationManager.notify(ID_NEW_MESSAGE + newMessageNotification.hashCode(), newMessageNotification);
+        notificationManager.notify(ID_NEW_MESSAGE, newMessageNotification);
+    }
+
+    public void clearNewMessagesNotification() {
+        notificationManager.cancel(ID_NEW_MESSAGE);
     }
 
     private Notification buildNotification(Context context, String displayOriginatingAddress, String displayMessageBody, long timestampMillis) {
-        Notification.BigTextStyle style = new Notification.BigTextStyle();
-        style.bigText(displayMessageBody)
+        Notification.BigTextStyle style = new Notification.BigTextStyle()
+                .bigText(displayMessageBody)
                 .setBigContentTitle(displayOriginatingAddress);
         return getDefaultBuilder(context)
                 .setContentTitle(displayOriginatingAddress)
@@ -44,5 +48,4 @@ public class Notifier {
                 .setContentIntent(pendingIntent)
                 .setSmallIcon(R.drawable.ic_notify_sms);
     }
-
 }

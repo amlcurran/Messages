@@ -52,6 +52,12 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
     }
 
     @Override
+    protected void onStart() {
+        super.onStart();
+        new Notifier(this).clearNewMessagesNotification();
+    }
+
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.messages, menu);
         return super.onCreateOptionsMenu(menu);
