@@ -10,7 +10,7 @@ import android.util.Log;
 import java.util.ArrayList;
 import java.util.Calendar;
 
-public class SmsSender extends IntentService {
+public class SmsSender extends IntentService implements SmsDatabaseWriter.SentWriteListener {
 
     public static final String TAG = SmsSender.class.getSimpleName();
 
@@ -46,11 +46,7 @@ public class SmsSender extends IntentService {
         long sentDate = intent.getLongExtra(EXTRA_SENT_DATE, 0);
         Log.d(TAG, "Write sent message to provider " + message);
 
-        boolean didWrite = smsDatabaseWriter.writeSentMessage(getContentResolver(), address, message, sentDate);
-        if (didWrite) {
-            Log.d(TAG, "Sending broadcast for sent message");
-            sendLocalBroadcast();
-        }
+        smsDatabaseWriter.writeSentMessage(getContentResolver(), this, address, message, sentDate);
     }
 
     private void sendLocalBroadcast() {
@@ -86,5 +82,16 @@ public class SmsSender extends IntentService {
         ArrayList<PendingIntent> pendingIntents = new ArrayList<PendingIntent>();
         pendingIntents.add(pendingIntent);
         return pendingIntents;
+    }
+
+    @Override
+    public void onWrittenToSentBox() {
+        Log.d(TAG, "Sending broadcast for sent message");
+        sendLocalBroadcast();
+    }
+
+    @Override
+    public void onSentBoxWriteFailed() {
+        Log.e(TAG, "Failed to write a sent message to the database");
     }
 }

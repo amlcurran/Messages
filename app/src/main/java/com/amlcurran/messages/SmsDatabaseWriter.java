@@ -21,7 +21,7 @@ public class SmsDatabaseWriter {
         return contentValues;
     }
 
-    public boolean writeSentMessage(ContentResolver contentResolver, String address, String message, long sentDate) {
+    public void writeSentMessage(ContentResolver contentResolver, SentWriteListener sentWriteListener, String address, String message, long sentDate) {
 
         ContentValues values = new ContentValues();
         values.put(Telephony.Sms.Sent.DATE, sentDate);
@@ -31,12 +31,34 @@ public class SmsDatabaseWriter {
         values.put(Telephony.Sms.Sent.TYPE, Telephony.Sms.Sent.MESSAGE_TYPE_SENT);
         values.put(Telephony.Sms.Sent.READ, "1");
 
-        return contentResolver.insert(Telephony.Sms.Sent.CONTENT_URI, values) != null;
+        Uri uri = contentResolver.insert(Telephony.Sms.Sent.CONTENT_URI, values);
+        if (uri != null) {
+            sentWriteListener.onWrittenToSentBox();
+        } else {
+            sentWriteListener.onSentBoxWriteFailed();
+        }
     }
 
-    public boolean writeInboxSms(ContentResolver resolver, SmsMessage message) {
+    public void writeInboxSms(ContentResolver resolver, InboxWriteListener inboxWriteListener, SmsMessage message) {
         ContentValues contentValues = valuesFromMessage(message);
         Uri inserted = resolver.insert(Telephony.Sms.Inbox.CONTENT_URI, contentValues);
-        return inserted != null;
+        if (inserted != null) {
+            inboxWriteListener.onWrittenToInbox();
+        } else {
+            inboxWriteListener.onInboxWriteFailed();
+        }
     }
+
+    public interface InboxWriteListener {
+        void onWrittenToInbox();
+
+        void onInboxWriteFailed();
+    }
+
+    public interface SentWriteListener {
+        void onWrittenToSentBox();
+
+        void onSentBoxWriteFailed();
+    }
+
 }

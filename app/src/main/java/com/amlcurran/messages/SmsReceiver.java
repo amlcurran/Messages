@@ -8,7 +8,7 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.telephony.SmsMessage;
 import android.util.Log;
 
-public class SmsReceiver extends BroadcastReceiver {
+public class SmsReceiver extends BroadcastReceiver implements SmsDatabaseWriter.InboxWriteListener {
 
     public static final String TAG = SmsReceiver.class.getSimpleName();
     public static final String BROADCAST_MESSAGE_RECEIVED = "broadcast_message_received";
@@ -32,16 +32,31 @@ public class SmsReceiver extends BroadcastReceiver {
         LocalBroadcastManager.getInstance(context).sendBroadcast(sentIntent);
     }
 
-    private void writeSmsToProvider(Context context, SmsMessage message) {
+    private void writeSmsToProvider(final Context context, final SmsMessage message) {
         Log.d(TAG, "Writing SMS to provider: " + message.toString());
 
-        boolean inserted = smsDatabaseWriter.writeInboxSms(context.getContentResolver(), message);
-        if (inserted) {
-            Log.d(TAG, "Sending broadcast of message received");
-            sendLocalBroadcast(context);
-            new Notifier(context).addNewMessageNotification(message);
-        }
+        smsDatabaseWriter.writeInboxSms(context.getContentResolver(), new SmsDatabaseWriter.InboxWriteListener() {
+            @Override
+            public void onWrittenToInbox() {
+                Log.d(TAG, "Sending broadcast of message received");
+                sendLocalBroadcast(context);
+                new Notifier(context).addNewMessageNotification(message);
+            }
+
+            @Override
+            public void onInboxWriteFailed() {
+                Log.e(TAG, "Failed to write message to inbox database");
+            }
+        }, message);
 
     }
 
+    @Override
+    public void onWrittenToInbox() {
+    }
+
+    @Override
+    public void onInboxWriteFailed() {
+
+    }
 }

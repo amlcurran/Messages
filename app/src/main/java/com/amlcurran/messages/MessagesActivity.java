@@ -28,7 +28,7 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
 
     public static final int REQUEST_CHANGE_SMS_APP = 20;
 
-    private final MessagesLoader messagesLoader = new MessagesLoader(this, Executors.newCachedThreadPool());
+    private MessagesLoader messagesLoader;
     private UiController uiController;
     private Notifier notifier;
     private DefaultAppChecker appChecker;
@@ -40,6 +40,7 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
         setContentView(uiController.getView());
 
         notifier = new Notifier(this);
+        messagesLoader = new MessagesLoader(this, Executors.newCachedThreadPool());
         appChecker = new DefaultAppChecker(this, this);
         uiController.getDisabledBanner().setOnClickListener(this);
 
