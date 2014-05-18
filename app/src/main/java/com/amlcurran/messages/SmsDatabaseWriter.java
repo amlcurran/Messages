@@ -6,9 +6,16 @@ import android.net.Uri;
 import android.provider.Telephony;
 import android.telephony.SmsMessage;
 
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
 public class SmsDatabaseWriter {
 
+    private final ExecutorService executorService;
+
     public SmsDatabaseWriter() {
+        executorService = Executors.newSingleThreadExecutor();
     }
 
     private static ContentValues valuesFromMessage(SmsMessage message) {
@@ -21,9 +28,10 @@ public class SmsDatabaseWriter {
         return contentValues;
     }
 
-    public void writeSentMessage(ContentResolver contentResolver, SentWriteListener sentWriteListener, String address, String message, long sentDate) {
+    public void writeSentMessage(final ContentResolver contentResolver,
+                                 final SentWriteListener sentWriteListener, String address, String message, long sentDate) {
 
-        ContentValues values = new ContentValues();
+        final ContentValues values = new ContentValues();
         values.put(Telephony.Sms.Sent.DATE, sentDate);
         values.put(Telephony.Sms.Sent.DATE_SENT, sentDate);
         values.put(Telephony.Sms.Sent.ADDRESS, address);
@@ -31,6 +39,16 @@ public class SmsDatabaseWriter {
         values.put(Telephony.Sms.Sent.TYPE, Telephony.Sms.Sent.MESSAGE_TYPE_SENT);
         values.put(Telephony.Sms.Sent.READ, "1");
 
+        executorService.submit(new Callable<Object>() {
+            @Override
+            public Object call() throws Exception {
+                writeSentSmsInternal(contentResolver, sentWriteListener, values);
+                return null;
+            }
+        });
+    }
+
+    private static void writeSentSmsInternal(ContentResolver contentResolver, SentWriteListener sentWriteListener, ContentValues values) {
         Uri uri = contentResolver.insert(Telephony.Sms.Sent.CONTENT_URI, values);
         if (uri != null) {
             sentWriteListener.onWrittenToSentBox();
@@ -39,8 +57,18 @@ public class SmsDatabaseWriter {
         }
     }
 
-    public void writeInboxSms(ContentResolver resolver, InboxWriteListener inboxWriteListener, SmsMessage message) {
-        ContentValues contentValues = valuesFromMessage(message);
+    public void writeInboxSms(final ContentResolver resolver, final InboxWriteListener inboxWriteListener, SmsMessage message) {
+        final ContentValues contentValues = valuesFromMessage(message);
+        executorService.submit(new Callable<Object>() {
+            @Override
+            public Object call() throws Exception {
+                writeInboxSmsInternal(resolver, inboxWriteListener, contentValues);
+                return null;
+            }
+        });
+    }
+
+    private static void writeInboxSmsInternal(ContentResolver resolver, InboxWriteListener inboxWriteListener, ContentValues contentValues) {
         Uri inserted = resolver.insert(Telephony.Sms.Inbox.CONTENT_URI, contentValues);
         if (inserted != null) {
             inboxWriteListener.onWrittenToInbox();
