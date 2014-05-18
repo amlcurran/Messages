@@ -5,6 +5,7 @@ import android.app.Fragment;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.StrictMode;
+import android.provider.Telephony;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -23,7 +24,8 @@ import java.util.concurrent.Executors;
 
 
 public class MessagesActivity extends Activity implements MessagesLoaderProvider,
-        ConversationListFragment.Listener, ThreadFragment.Listener {
+        ConversationListFragment.Listener, ThreadFragment.Listener, View.OnClickListener,
+        DefaultAppChecker.Callback {
 
     public static final int REQUEST_CHANGE_SMS_APP = 20;
 
@@ -37,8 +39,10 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
         super.onCreate(savedInstanceState);
         uiController = new SlidingPaneUiController(this);
         setContentView(uiController.getView());
+
         notifier = new Notifier(this);
-        appChecker = new DefaultAppChecker(this, uiController);
+        appChecker = new DefaultAppChecker(this, this);
+        uiController.getDisabledBanner().setOnClickListener(this);
 
         if (BuildConfig.DEBUG) {
             StrictMode.setThreadPolicy(new StrictMode.ThreadPolicy.Builder()
@@ -99,6 +103,23 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
         intent.putExtra(SmsSender.EXTRA_ADDRESS, address);
         intent.putExtra(SmsSender.EXTRA_MESSAGE, message);
         startService(intent);
+    }
+
+    @Override
+    public void onClick(View v) {
+        Intent intent = new Intent(Telephony.Sms.Intents.ACTION_CHANGE_DEFAULT);
+        intent.putExtra(Telephony.Sms.Intents.EXTRA_PACKAGE_NAME, getPackageName());
+        startActivityForResult(intent, MessagesActivity.REQUEST_CHANGE_SMS_APP);
+    }
+
+    @Override
+    public void isDefaultSmsApp() {
+        uiController.hideDisabledBanner();
+    }
+
+    @Override
+    public void isNotDefaultSmsApp() {
+        uiController.showDisabledBanner();
     }
 
     public static class EmptyFragment extends Fragment {
