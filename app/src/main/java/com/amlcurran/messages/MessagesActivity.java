@@ -20,6 +20,7 @@ import com.amlcurran.messages.threads.ThreadFragment;
 import com.amlcurran.messages.ui.SlidingPaneUiController;
 import com.amlcurran.messages.ui.UiController;
 
+import java.util.Calendar;
 import java.util.concurrent.Executors;
 
 public class MessagesActivity extends Activity implements MessagesLoaderProvider,
@@ -97,10 +98,11 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
     }
 
     @Override
-    public void onSendMessage(String address, String message) {
+    public void onSendMessage(String address, String body) {
+        long timestamp = Calendar.getInstance().getTimeInMillis();
+        SmsMessage message = new SmsMessage(address, body, timestamp);
         Intent intent = new Intent(this, SmsSender.class);
         intent.setAction(SmsSender.ACTION_SEND_REQUEST);
-        intent.putExtra(SmsSender.EXTRA_ADDRESS, address);
         intent.putExtra(SmsSender.EXTRA_MESSAGE, message);
         startService(intent);
     }

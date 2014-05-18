@@ -28,14 +28,9 @@ public class SmsDatabaseWriter {
     }
 
     public void writeSentMessage(final ContentResolver contentResolver,
-                                 final SentWriteListener sentWriteListener, String address, String message, long sentDate) {
+                                 final SentWriteListener sentWriteListener, SmsMessage message) {
 
-        final ContentValues values = new ContentValues();
-        values.put(Telephony.Sms.Sent.DATE, sentDate);
-        values.put(Telephony.Sms.Sent.DATE_SENT, sentDate);
-        values.put(Telephony.Sms.Sent.ADDRESS, address);
-        values.put(Telephony.Sms.Sent.BODY, message);
-        values.put(Telephony.Sms.Sent.TYPE, Telephony.Sms.Sent.MESSAGE_TYPE_SENT);
+        final ContentValues values = message.toContentValues(Telephony.Sms.MESSAGE_TYPE_SENT);
         values.put(Telephony.Sms.Sent.READ, "1");
 
         executorService.submit(new Callable<Object>() {
@@ -58,6 +53,7 @@ public class SmsDatabaseWriter {
 
     public void writeInboxSms(final ContentResolver resolver, final InboxWriteListener inboxWriteListener, SmsMessage message) {
         final ContentValues contentValues = message.toContentValues(Telephony.Sms.Sent.MESSAGE_TYPE_INBOX);
+
         executorService.submit(new Callable<Object>() {
             @Override
             public Object call() throws Exception {

@@ -8,15 +8,12 @@ import android.telephony.SmsManager;
 import android.util.Log;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 
 public class SmsSender extends IntentService implements SmsDatabaseWriter.SentWriteListener {
 
     public static final String TAG = SmsSender.class.getSimpleName();
 
-    public static final String EXTRA_ADDRESS = "address";
     public static final String EXTRA_MESSAGE = "message";
-    public static final String EXTRA_SENT_DATE = "sent_date";
     public static final String ACTION_SEND_REQUEST = "send_request";
     public static final String ACTION_MESSAGE_SENT = "message_send";
     public static final String BROADCAST_MESSAGE_SENT = "broadcast_message_sent";
@@ -34,19 +31,17 @@ public class SmsSender extends IntentService implements SmsDatabaseWriter.SentWr
     protected void onHandleIntent(Intent intent) {
         Log.d(TAG, intent.toString());
         if (isSendRequest(intent)) {
-            sendMessage(intent);
+            SmsMessage message = intent.getParcelableExtra(EXTRA_MESSAGE);
+            sendMessage(message);
         } else if (isSentNotification(intent)) {
-            writeMessageToProvider(intent);
+            SmsMessage message = intent.getParcelableExtra(EXTRA_MESSAGE);
+            writeMessageToProvider(message);
         }
     }
 
-    private void writeMessageToProvider(Intent intent) {
-        String address = intent.getStringExtra(EXTRA_ADDRESS);
-        String message = intent.getStringExtra(EXTRA_MESSAGE);
-        long sentDate = intent.getLongExtra(EXTRA_SENT_DATE, 0);
-        Log.d(TAG, "Write sent message to provider " + message);
-
-        smsDatabaseWriter.writeSentMessage(getContentResolver(), this, address, message, sentDate);
+    private void writeMessageToProvider(SmsMessage message) {
+        smsDatabaseWriter.writeSentMessage(getContentResolver(), this, message);
+        Log.d(TAG, "Write sent message to provider " + message.toString());
     }
 
     private void sendLocalBroadcast() {
@@ -54,14 +49,20 @@ public class SmsSender extends IntentService implements SmsDatabaseWriter.SentWr
         LocalBroadcastManager.getInstance(this).sendBroadcast(sentIntent);
     }
 
-    private void sendMessage(Intent intent) {
-        String address = intent.getStringExtra(EXTRA_ADDRESS);
-        String message = intent.getStringExtra(EXTRA_MESSAGE);
-        long sentDate = Calendar.getInstance().getTimeInMillis();
+    private void sendMessage(SmsMessage message) {
+        Log.d(TAG, "Sending message: " + message.toString());
+        ArrayList<PendingIntent> messageSendIntents = getMessageSendIntents(message);
+        smsManager.sendMultipartTextMessage(message.getAddress(), null, smsManager.divideMessage(message.getBody()), messageSendIntents, null);
+    }
 
-        Log.d(TAG, "Sending message: " + address);
-        ArrayList<PendingIntent> messageSendIntents = getMessageSendIntents(address, message, sentDate);
-        smsManager.sendMultipartTextMessage(address, null, smsManager.divideMessage(message), messageSendIntents, null);
+    private ArrayList<PendingIntent> getMessageSendIntents(SmsMessage message) {
+        Intent intent = new Intent(ACTION_MESSAGE_SENT);
+        intent.putExtra(EXTRA_MESSAGE, message);
+        intent.setClass(this, SmsSender.class);
+        PendingIntent pendingIntent = PendingIntent.getService(this, message.hashCode(), intent, PendingIntent.FLAG_CANCEL_CURRENT);
+        ArrayList<PendingIntent> pendingIntents = new ArrayList<PendingIntent>();
+        pendingIntents.add(pendingIntent);
+        return pendingIntents;
     }
 
     private boolean isSentNotification(Intent intent) {
@@ -70,18 +71,6 @@ public class SmsSender extends IntentService implements SmsDatabaseWriter.SentWr
 
     private boolean isSendRequest(Intent intent) {
         return intent.getAction().equals(ACTION_SEND_REQUEST);
-    }
-
-    public ArrayList<PendingIntent> getMessageSendIntents(String address, String message, long sentDate) {
-        Intent intent = new Intent(ACTION_MESSAGE_SENT);
-        intent.putExtra(EXTRA_ADDRESS, address);
-        intent.putExtra(EXTRA_MESSAGE, message);
-        intent.putExtra(EXTRA_SENT_DATE, sentDate);
-        intent.setClass(this, SmsSender.class);
-        PendingIntent pendingIntent = PendingIntent.getService(this, 0, intent, 0);
-        ArrayList<PendingIntent> pendingIntents = new ArrayList<PendingIntent>();
-        pendingIntents.add(pendingIntent);
-        return pendingIntents;
     }
 
     @Override
