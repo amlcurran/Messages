@@ -14,11 +14,11 @@ import com.espian.utils.SourceBinderAdapter;
 /**
  * Defines a fragment that uses cursors from the Telephony API and listens to receiving of new messages
  */
-public abstract class ListeningCursorListFragment<T> extends ListFragment implements CursorLoadListener, IncomingMessageReceiver.Listener {
+public abstract class ListeningCursorListFragment<T> extends ListFragment implements CursorLoadListener, LocalMessageReceiver.Listener {
     protected SourceBinderAdapter<T> adapter;
     protected AdaptiveCursorSource<T> source;
     private MessagesLoader messageLoader;
-    private IncomingMessageReceiver messageReceiver;
+    private LocalMessageReceiver messageReceiver;
 
     @Override
     public void onAttach(Activity activity) {
@@ -29,7 +29,7 @@ public abstract class ListeningCursorListFragment<T> extends ListFragment implem
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        messageReceiver = new IncomingMessageReceiver(getActivity(), this);
+        messageReceiver = new LocalMessageReceiver(getActivity(), this);
     }
 
     @Override

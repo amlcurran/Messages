@@ -57,7 +57,7 @@
         </activity>
 
         <!-- Service that delivers messages from the phone "quick response" -->
-        <service android:name=".HeadlessSmsSenderService"
+        <service android:name=".SmsSender"
             android:permission="android.permission.SEND_RESPOND_VIA_MESSAGE"
             android:exported="true" >
             <intent-filter>

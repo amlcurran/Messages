@@ -4,24 +4,24 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.provider.Telephony;
+import android.support.v4.content.LocalBroadcastManager;
 
-public class IncomingMessageReceiver extends BroadcastReceiver {
+public class LocalMessageReceiver extends BroadcastReceiver {
 
     private Context context;
     private Listener listener;
 
-    public IncomingMessageReceiver(Context context, Listener listener) {
+    public LocalMessageReceiver(Context context, Listener listener) {
         this.context = context;
         this.listener = listener;
     }
 
     public void startListening() {
-        context.registerReceiver(this, buildIntentFilter());
+        LocalBroadcastManager.getInstance(context).registerReceiver(this, buildMessageFilter());
     }
 
     public void stopListening() {
-        context.unregisterReceiver(this);
+        LocalBroadcastManager.getInstance(context).unregisterReceiver(this);
     }
 
     @Override
@@ -29,9 +29,10 @@ public class IncomingMessageReceiver extends BroadcastReceiver {
         listener.onMessageReceived();
     }
 
-    private IntentFilter buildIntentFilter() {
+    private IntentFilter buildMessageFilter() {
         IntentFilter filter = new IntentFilter();
-        filter.addAction(Telephony.Sms.Intents.SMS_RECEIVED_ACTION);
+        filter.addAction(SmsSender.BROADCAST_MESSAGE_SENT);
+        filter.addAction(SmsReceiver.BROADCAST_MESSAGE_RECEIVED);
         return filter;
     }
 

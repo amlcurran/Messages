@@ -83,10 +83,10 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
 
     @Override
     public void onSendMessage(String address, String message) {
-        Intent intent = new Intent(this, HeadlessSmsSenderService.class);
-        intent.setAction(HeadlessSmsSenderService.ACTION_SEND_REQUEST);
-        intent.putExtra(HeadlessSmsSenderService.EXTRA_ADDRESS, address);
-        intent.putExtra(HeadlessSmsSenderService.EXTRA_MESSAGE, message);
+        Intent intent = new Intent(this, SmsSender.class);
+        intent.setAction(SmsSender.ACTION_SEND_REQUEST);
+        intent.putExtra(SmsSender.EXTRA_ADDRESS, address);
+        intent.putExtra(SmsSender.EXTRA_MESSAGE, message);
         startService(intent);
     }
 
