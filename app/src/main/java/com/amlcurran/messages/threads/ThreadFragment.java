@@ -11,8 +11,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
+import com.amlcurran.messages.DefaultAppChecker;
 import com.amlcurran.messages.ListeningCursorListFragment;
 import com.amlcurran.messages.ProviderHelper;
 import com.amlcurran.messages.R;
@@ -25,7 +27,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public class ThreadFragment extends ListeningCursorListFragment<ThreadMessage> implements View.OnClickListener, TextWatcher {
+public class ThreadFragment extends ListeningCursorListFragment<ThreadMessage> implements View.OnClickListener, TextWatcher, DefaultAppChecker.Callback {
 
     private static final String THREAD_ID = "threadId";
     private static final String ADDRESS = "address";
@@ -33,6 +35,8 @@ public class ThreadFragment extends ListeningCursorListFragment<ThreadMessage> i
     private EditText smsEntryField;
     private Listener listener;
     private String sendAddress;
+    private DefaultAppChecker defaultChecker;
+    private ImageButton sendButton;
 
     public static ThreadFragment create(String threadId, String address) {
         Bundle bundle = new Bundle();
@@ -51,8 +55,9 @@ public class ThreadFragment extends ListeningCursorListFragment<ThreadMessage> i
 
         smsEntryField = (EditText) view.findViewById(R.id.thread_sms_entry);
         smsEntryField.addTextChangedListener(this);
+        sendButton = (ImageButton) view.findViewById(R.id.thread_sms_send);
+        sendButton.setOnClickListener(this);
 
-        view.findViewById(R.id.thread_sms_send).setOnClickListener(this);
         return view;
     }
 
@@ -68,8 +73,15 @@ public class ThreadFragment extends ListeningCursorListFragment<ThreadMessage> i
         sendAddress = getArguments().getString(ADDRESS);
         source = new ThreadMessageAdaptiveCursorSource();
         adapter = new SourceBinderAdapter<ThreadMessage>(getActivity(), source, new ThreadBinder());
+        defaultChecker = new DefaultAppChecker(getActivity(), this);
         setListAdapter(adapter);
         getListView().setStackFromBottom(true);
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        defaultChecker.checkSmsApp();
     }
 
     @Override
@@ -112,6 +124,22 @@ public class ThreadFragment extends ListeningCursorListFragment<ThreadMessage> i
     @Override
     public void afterTextChanged(Editable s) {
 
+    }
+
+    @Override
+    public void isDefaultSmsApp() {
+        smsEntryField.setEnabled(true);
+        smsEntryField.setHint(R.string.hint_send_message);
+        sendButton.setEnabled(true);
+        sendButton.setImageResource(R.drawable.ic_action_send);
+    }
+
+    @Override
+    public void isNotDefaultSmsApp() {
+        smsEntryField.setEnabled(false);
+        smsEntryField.setHint(R.string.hint_send_message_disabled);
+        sendButton.setEnabled(false);
+        sendButton.setImageResource(R.drawable.ic_action_send_disabled);
     }
 
     private class ThreadBinder extends SimpleBinder<ThreadMessage> {
