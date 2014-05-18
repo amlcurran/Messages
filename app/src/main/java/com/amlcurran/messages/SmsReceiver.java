@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.provider.Telephony;
 import android.support.v4.content.LocalBroadcastManager;
-import android.telephony.SmsMessage;
 import android.util.Log;
 
 public class SmsReceiver extends BroadcastReceiver implements SmsDatabaseWriter.InboxWriteListener {
@@ -21,10 +20,8 @@ public class SmsReceiver extends BroadcastReceiver implements SmsDatabaseWriter.
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        SmsMessage[] messages = Telephony.Sms.Intents.getMessagesFromIntent(intent);
-        for (SmsMessage message : messages) {
-            writeSmsToProvider(context, message);
-        }
+        android.telephony.SmsMessage[] messages = Telephony.Sms.Intents.getMessagesFromIntent(intent);
+        writeSmsToProvider(context, com.amlcurran.messages.SmsMessage.fromTelephoneApi(messages));
     }
 
     private void sendLocalBroadcast(Context context) {
@@ -33,7 +30,7 @@ public class SmsReceiver extends BroadcastReceiver implements SmsDatabaseWriter.
     }
 
     private void writeSmsToProvider(final Context context, final SmsMessage message) {
-        Log.d(TAG, "Writing SMS to provider: " + message.toString());
+        Log.d(TAG, "Writing received SMS to provider: " + message.toString());
 
         smsDatabaseWriter.writeInboxSms(context.getContentResolver(), new SmsDatabaseWriter.InboxWriteListener() {
             @Override

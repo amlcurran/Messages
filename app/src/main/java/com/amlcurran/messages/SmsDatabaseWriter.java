@@ -4,7 +4,6 @@ import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.net.Uri;
 import android.provider.Telephony;
-import android.telephony.SmsMessage;
 
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
@@ -20,10 +19,10 @@ public class SmsDatabaseWriter {
 
     private static ContentValues valuesFromMessage(SmsMessage message) {
         ContentValues contentValues = new ContentValues();
-        contentValues.put(Telephony.Sms.Inbox.BODY, message.getDisplayMessageBody());
-        contentValues.put(Telephony.Sms.Inbox.ADDRESS, message.getDisplayOriginatingAddress());
-        contentValues.put(Telephony.Sms.Inbox.DATE, message.getTimestampMillis());
-        contentValues.put(Telephony.Sms.Inbox.DATE_SENT, message.getTimestampMillis());
+        contentValues.put(Telephony.Sms.Inbox.BODY, message.getBody());
+        contentValues.put(Telephony.Sms.Inbox.ADDRESS, message.getAddress());
+        contentValues.put(Telephony.Sms.Inbox.DATE, message.getTimestamp());
+        contentValues.put(Telephony.Sms.Inbox.DATE_SENT, message.getTimestamp());
         contentValues.put(Telephony.Sms.Inbox.TYPE, Telephony.Sms.Inbox.MESSAGE_TYPE_INBOX);
         return contentValues;
     }
@@ -58,7 +57,7 @@ public class SmsDatabaseWriter {
     }
 
     public void writeInboxSms(final ContentResolver resolver, final InboxWriteListener inboxWriteListener, SmsMessage message) {
-        final ContentValues contentValues = valuesFromMessage(message);
+        final ContentValues contentValues = message.toContentValues(Telephony.Sms.Sent.MESSAGE_TYPE_INBOX);
         executorService.submit(new Callable<Object>() {
             @Override
             public Object call() throws Exception {

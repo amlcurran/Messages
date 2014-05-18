@@ -5,7 +5,6 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
-import android.telephony.SmsMessage;
 
 public class Notifier {
 
@@ -19,8 +18,8 @@ public class Notifier {
     }
 
     public void addNewMessageNotification(SmsMessage message) {
-        Notification newMessageNotification = buildNotification(context, message.getDisplayOriginatingAddress(),
-                message.getDisplayMessageBody(), message.getTimestampMillis());
+        Notification newMessageNotification = buildNotification(context, message.getAddress(),
+                message.getBody(), message.getTimestamp());
         notificationManager.notify(ID_NEW_MESSAGE, newMessageNotification);
     }
 
