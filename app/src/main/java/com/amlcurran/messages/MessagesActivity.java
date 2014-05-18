@@ -25,15 +25,20 @@ import java.util.concurrent.Executors;
 public class MessagesActivity extends Activity implements MessagesLoaderProvider,
         ConversationListFragment.Listener, ThreadFragment.Listener {
 
-    private static final int CODE_SENT_MESSAGE = 3030;
+    public static final int REQUEST_CHANGE_SMS_APP = 20;
 
     private final MessagesLoader messagesLoader = new MessagesLoader(this, Executors.newCachedThreadPool());
     private UiController uiController;
+    private Notifier notifier;
+    private DefaultAppChecker appChecker;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         uiController = new SlidingPaneUiController(this);
+        setContentView(uiController.getView());
+        notifier = new Notifier(this);
+        appChecker = new DefaultAppChecker(this, uiController);
 
         if (BuildConfig.DEBUG) {
             StrictMode.setThreadPolicy(new StrictMode.ThreadPolicy.Builder()
@@ -41,8 +46,6 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
                     .penaltyFlashScreen()
                     .build());
         }
-
-        setContentView(uiController.getView());
 
         if (savedInstanceState == null) {
             uiController.loadMessagesListFragment();
@@ -54,7 +57,8 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
     @Override
     protected void onStart() {
         super.onStart();
-        new Notifier(this).clearNewMessagesNotification();
+        notifier.clearNewMessagesNotification();
+        appChecker.checkSmsApp();
     }
 
     @Override
@@ -65,7 +69,8 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        Log.d("MessagesActivity", String.format("%1$s, %2$s, %3$s", requestCode, resultCode, data.toString()));
+        appChecker.checkSmsApp();
+        Log.d("MessagesActivity", String.format("%1$s, %2$s, %3$s", requestCode, resultCode, String.valueOf(data)));
         super.onActivityResult(requestCode, resultCode, data);
     }
 

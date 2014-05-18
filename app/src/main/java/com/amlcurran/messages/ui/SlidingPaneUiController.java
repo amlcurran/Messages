@@ -14,6 +14,7 @@ public class SlidingPaneUiController implements UiController {
 
     private final Activity activity;
     private SlidingPaneLayout slider;
+    private View disabledBanner;
 
     public SlidingPaneUiController(Activity activity) {
         this.activity = activity;
@@ -38,6 +39,7 @@ public class SlidingPaneUiController implements UiController {
     @Override
     public View getView() {
         View view = LayoutInflater.from(activity).inflate(R.layout.activity_messages_sliding, null);
+        disabledBanner = view.findViewById(R.id.disabled_banner);
         slider = (SlidingPaneLayout) view.findViewById(R.id.sliding_pane);
         slider.setParallaxDistance((int) activity.getResources().getDimension(R.dimen.slider_parallax));
         slider.setShadowResource(R.drawable.slider_shadow);
@@ -58,6 +60,21 @@ public class SlidingPaneUiController implements UiController {
         activity.getFragmentManager().beginTransaction()
                 .replace(R.id.secondary, new MessagesActivity.EmptyFragment())
                 .commit();
+    }
+
+    @Override
+    public void showDisabledBanner() {
+        disabledBanner.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public View getDisabledBanner() {
+        return disabledBanner;
+    }
+
+    @Override
+    public void hideDisabledBanner() {
+        disabledBanner.setVisibility(View.GONE);
     }
 
 }

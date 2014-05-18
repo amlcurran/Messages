@@ -14,4 +14,10 @@ public interface UiController {
     boolean backPressed();
 
     void loadEmptyFragment();
+
+    void hideDisabledBanner();
+
+    void showDisabledBanner();
+
+    View getDisabledBanner();
 }

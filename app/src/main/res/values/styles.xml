@@ -17,4 +17,12 @@
         <item name="android:textIsSelectable">true</item>
     </style>
 
+    <style name="DisabledBannerText">
+        <item name="android:textColor">?android:attr/textColorPrimaryInverse</item>
+        <item name="android:background">@color/theme_colour</item>
+        <item name="android:fontFamily">sans-serif-condensed</item>
+        <item name="android:textSize">18sp</item>
+        <item name="android:padding">8dp</item>
+    </style>
+
 </resources>
