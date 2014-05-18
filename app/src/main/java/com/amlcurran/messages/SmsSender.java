@@ -33,6 +33,7 @@ public class SmsSender extends IntentService {
 
     @Override
     protected void onHandleIntent(Intent intent) {
+        Log.d(TAG, intent.toString());
         if (isSendRequest(intent)) {
             sendMessage(intent);
         } else if (isSentNotification(intent)) {
@@ -70,6 +71,8 @@ public class SmsSender extends IntentService {
         String address = intent.getStringExtra(EXTRA_ADDRESS);
         String message = intent.getStringExtra(EXTRA_MESSAGE);
         long sentDate = Calendar.getInstance().getTimeInMillis();
+
+        Log.d(TAG, "Sending message: " + address);
         ArrayList<PendingIntent> messageSendIntents = getMessageSendIntents(address, message, sentDate);
         smsManager.sendMultipartTextMessage(address, null, smsManager.divideMessage(message), messageSendIntents, null);
     }
