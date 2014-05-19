@@ -55,7 +55,7 @@ public class SmsMessage implements Parcelable {
 
     @Override
     public String toString() {
-        return String.format("SMS with address: %1$s - timestamp: %2$d - body: %3$s", address, timestamp, body);
+        return String.format("SMS with address: %1$s\ntimestamp: %2$d\nbody: %3$s", address, timestamp, body);
     }
 
     public static final Parcelable.Creator<SmsMessage> CREATOR = new Parcelable.Creator<SmsMessage>() {
