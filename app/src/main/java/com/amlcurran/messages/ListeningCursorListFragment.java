@@ -9,6 +9,7 @@ import com.amlcurran.messages.adapters.AdaptiveCursorSource;
 import com.amlcurran.messages.loaders.CursorLoadListener;
 import com.amlcurran.messages.loaders.MessagesLoader;
 import com.amlcurran.messages.loaders.MessagesLoaderProvider;
+import com.espian.utils.ProviderHelper;
 import com.espian.utils.SourceBinderAdapter;
 
 /**

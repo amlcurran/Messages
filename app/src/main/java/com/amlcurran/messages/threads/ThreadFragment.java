@@ -17,7 +17,7 @@ import android.widget.TextView;
 
 import com.amlcurran.messages.DefaultAppChecker;
 import com.amlcurran.messages.ListeningCursorListFragment;
-import com.amlcurran.messages.ProviderHelper;
+import com.espian.utils.ProviderHelper;
 import com.amlcurran.messages.R;
 import com.amlcurran.messages.adapters.AdaptiveCursorSource;
 import com.amlcurran.messages.loaders.MessagesLoader;

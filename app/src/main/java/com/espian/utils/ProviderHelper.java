@@ -1,4 +1,4 @@
-package com.amlcurran.messages;
+package com.espian.utils;
 
 public class ProviderHelper<T> {
 
