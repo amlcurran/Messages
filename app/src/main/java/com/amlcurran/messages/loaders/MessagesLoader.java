@@ -151,6 +151,8 @@ public class MessagesLoader {
         executor.submit(new Callable<Object>() {
             @Override
             public Object call() throws Exception {
+
+                Bitmap result = null;
                 if (contactId >= 0) {
 
                     Uri contactUri = ContentUris.withAppendedId(ContactsContract.Data.CONTENT_URI, contactId);
@@ -158,18 +160,25 @@ public class MessagesLoader {
                     if (cursor.moveToFirst()) {
                         try {
                             byte[] blob = cursor.getBlob(0);
-                            Bitmap photo = BitmapFactory.decodeByteArray(blob, 0, blob.length);
-                            photoLoadListener.onPhotoLoaded(photo);
-                            return null;
+                            result = BitmapFactory.decodeByteArray(blob, 0, blob.length);
                         } finally {
                             cursor.close();
                         }
                     }
                 }
 
-                photoLoadListener.onPhotoLoaded(null);
+                activity.runOnUiThread(notifyListener(result, photoLoadListener));
                 return null;
             }
         });
+    }
+
+    private static Runnable notifyListener(final Bitmap result, final PhotoLoadListener photoLoadListener) {
+        return new Runnable() {
+            @Override
+            public void run() {
+                photoLoadListener.onPhotoLoaded(result);
+            }
+        };
     }
 }

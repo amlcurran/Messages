@@ -1,22 +1,14 @@
 package com.amlcurran.messages.conversationlist;
 
 import android.app.Activity;
-import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.Typeface;
 import android.os.Bundle;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.TextView;
 
 import com.amlcurran.messages.ListeningCursorListFragment;
-import com.amlcurran.messages.R;
 import com.amlcurran.messages.loaders.MessagesLoader;
 import com.espian.utils.ProviderHelper;
-import com.espian.utils.SimpleBinder;
 import com.espian.utils.SourceBinderAdapter;
 
 import java.util.List;
@@ -34,7 +26,8 @@ public class ConversationListFragment extends ListeningCursorListFragment<Conver
         super.onActivityCreated(savedInstanceState);
 
         source = new ListArraySource<Conversation>();
-        adapter = new SourceBinderAdapter<Conversation>(getActivity(), source, new ConversationsBinder());
+        ConversationsBinder binder = new ConversationsBinder(getResources(), getMessageLoader());
+        adapter = new SourceBinderAdapter<Conversation>(getActivity(), source, binder);
         setListAdapter(adapter);
         getListView().setChoiceMode(ListView.CHOICE_MODE_SINGLE);
         getListView().setOnItemClickListener(this);
@@ -64,57 +57,6 @@ public class ConversationListFragment extends ListeningCursorListFragment<Conver
 
     public interface Listener {
         void onConversationSelected(Conversation conversation);
-    }
-
-    public class ConversationsBinder extends SimpleBinder<Conversation> {
-
-        @Override
-        public View bindView(View convertView, Conversation item, int position) {
-            TextView textView1 = getTextView(convertView, android.R.id.text1);
-            TextView textView2 = getTextView(convertView, android.R.id.text2);
-            final ImageView imageView = (ImageView) convertView.findViewById(R.id.image);
-
-            textView1.setText(item.getName());
-            textView2.setText(item.getBody());
-            getMessageLoader().loadPhoto(item.getPersonId(), new PhotoLoadListener() {
-
-                @Override
-                public void onPhotoLoaded(Bitmap photo) {
-                    imageView.setImageBitmap(photo);
-                }
-            });
-
-            if (item.isRead()) {
-                setReadStyle(convertView, textView1, textView2);
-            } else {
-                setUnreadStyle(convertView, textView1, textView2);
-            }
-
-            return convertView;
-        }
-
-        private void setReadStyle(View convertView, TextView textView1, TextView textView2) {
-            textView1.setTypeface(null, 0);
-            textView2.setTypeface(null, 0);
-            textView1.setTextColor(getResources().getColor(android.R.color.primary_text_light));
-            textView2.setTextColor(getResources().getColor(android.R.color.tertiary_text_light));
-        }
-
-        private void setUnreadStyle(View convertView, TextView textView1, TextView textView2) {
-            textView1.setTypeface(null, Typeface.BOLD);
-            textView2.setTypeface(null, Typeface.BOLD);
-            textView1.setTextColor(getResources().getColor(R.color.theme_colour));
-            textView2.setTextColor(getResources().getColor(android.R.color.primary_text_light));
-        }
-
-        private TextView getTextView(View convertView, int text1) {
-            return (TextView) convertView.findViewById(text1);
-        }
-
-        @Override
-        public View createView(Context context, int itemViewType) {
-            return LayoutInflater.from(context).inflate(R.layout.item_message_preview, getListView(), false);
-        }
     }
 
 }
