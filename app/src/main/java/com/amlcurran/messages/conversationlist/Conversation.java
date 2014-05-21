@@ -13,8 +13,9 @@ public class Conversation {
     private String threadId;
     private boolean isRead;
     private String name;
+    private long personId;
 
-    public static Conversation fromCursor(Cursor cursor, String personName) {
+    public static Conversation fromCursor(Cursor cursor, long personId, String personName) {
         Conversation conversation = new Conversation();
         conversation.address = CursorHelper.fromColumn(cursor, Telephony.Sms.ADDRESS);
         conversation.body = CursorHelper.fromColumn(cursor, Telephony.Sms.BODY);
@@ -26,6 +27,7 @@ public class Conversation {
         } else {
             conversation.name = personName;
         }
+        conversation.personId = personId;
         return conversation;
     }
 
@@ -47,5 +49,9 @@ public class Conversation {
 
     public String getName() {
         return name;
+    }
+
+    public long getPersonId() {
+        return personId;
     }
 }

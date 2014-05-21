@@ -18,8 +18,11 @@ package com.amlcurran.messages.loaders;
 
 import android.app.Activity;
 import android.content.ContentResolver;
+import android.content.ContentUris;
 import android.content.ContentValues;
 import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.provider.ContactsContract;
 import android.provider.Telephony;
@@ -27,6 +30,7 @@ import android.provider.Telephony;
 import com.amlcurran.messages.adapters.CursorHelper;
 import com.amlcurran.messages.conversationlist.Conversation;
 import com.amlcurran.messages.conversationlist.ConversationListListener;
+import com.amlcurran.messages.conversationlist.PhotoLoadListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -59,8 +63,9 @@ public class MessagesLoader {
                     Uri phoneLookupUri = createPhoneLookupUri(conversationsList);
                     Cursor peopleCursor = getResolver().query(phoneLookupUri, null, null, null, null);
 
-                    String peopleName = getPersonName(peopleCursor);
-                    Conversation conversation = Conversation.fromCursor(conversationsList, peopleName);
+                    String person = getPersonName(peopleCursor);
+                    long personId = getContactId(peopleCursor);
+                    Conversation conversation = Conversation.fromCursor(conversationsList, personId, person);
 
                     conversations.add(conversation);
                     peopleCursor.close();
@@ -79,6 +84,14 @@ public class MessagesLoader {
         });
     }
 
+    private static long getContactId(Cursor peopleCursor) {
+        long id = -1;
+        if (peopleCursor.moveToFirst()) {
+            id = CursorHelper.asLong(peopleCursor, ContactsContract.Contacts.PHOTO_ID);
+        }
+        return id;
+    }
+
     private static Uri createPhoneLookupUri(Cursor conversationsList) {
         String phoneRaw = CursorHelper.fromColumn(conversationsList, Telephony.Sms.ADDRESS);
         return Uri.withAppendedPath(ContactsContract.CommonDataKinds.Phone.CONTENT_FILTER_URI, Uri.encode(phoneRaw));
@@ -87,7 +100,7 @@ public class MessagesLoader {
     private static String getPersonName(Cursor peopleCursor) {
         String result = null;
         if (peopleCursor.moveToFirst()) {
-           result = CursorHelper.fromColumn(peopleCursor, ContactsContract.CommonDataKinds.Identity.DISPLAY_NAME_PRIMARY);
+            result = CursorHelper.fromColumn(peopleCursor, ContactsContract.CommonDataKinds.Identity.DISPLAY_NAME_PRIMARY);
         }
         return result;
     }
@@ -121,7 +134,7 @@ public class MessagesLoader {
             public Object call() throws Exception {
                 ContentValues contentValues = getReadContentValues();
                 String selection = String.format("%1$s=? AND %2$s=?", Telephony.Sms.THREAD_ID, Telephony.Sms.READ);
-                String[] args = new String[] { threadId, "0" };
+                String[] args = new String[]{threadId, "0"};
                 getResolver().update(Telephony.Sms.CONTENT_URI, contentValues, selection, args);
                 return null;
             }
@@ -132,5 +145,26 @@ public class MessagesLoader {
                 return values;
             }
         });
+    }
+
+    public void loadPhoto(long contactId, PhotoLoadListener photoLoadListener) {
+        if (contactId == -1) {
+            photoLoadListener.onPhotoLoaded(null);
+            return;
+        }
+
+        Uri contactUri = ContentUris.withAppendedId(ContactsContract.Data.CONTENT_URI, contactId);
+        Cursor cursor = activity.getContentResolver().query(contactUri, new String[]{ContactsContract.CommonDataKinds.Photo.PHOTO}, null, null, null);
+        if (cursor.moveToFirst()) {
+            try {
+                byte[] blob = cursor.getBlob(0);
+                Bitmap photo = BitmapFactory.decodeByteArray(blob, 0, blob.length);
+                photoLoadListener.onPhotoLoaded(photo);
+            } finally {
+                cursor.close();
+            }
+        } else {
+            photoLoadListener.onPhotoLoaded(null);
+        }
     }
 }

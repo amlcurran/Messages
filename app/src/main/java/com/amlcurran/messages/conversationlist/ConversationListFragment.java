@@ -2,11 +2,13 @@ package com.amlcurran.messages.conversationlist;
 
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -70,9 +72,17 @@ public class ConversationListFragment extends ListeningCursorListFragment<Conver
         public View bindView(View convertView, Conversation item, int position) {
             TextView textView1 = getTextView(convertView, android.R.id.text1);
             TextView textView2 = getTextView(convertView, android.R.id.text2);
+            final ImageView imageView = (ImageView) convertView.findViewById(R.id.image);
 
             textView1.setText(item.getName());
             textView2.setText(item.getBody());
+            getMessageLoader().loadPhoto(item.getPersonId(), new PhotoLoadListener() {
+
+                @Override
+                public void onPhotoLoaded(Bitmap photo) {
+                    imageView.setImageBitmap(photo);
+                }
+            });
 
             if (item.isRead()) {
                 setReadStyle(convertView, textView1, textView2);
