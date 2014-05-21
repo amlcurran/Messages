@@ -45,8 +45,7 @@
         <item name="android:backgroundSplit">@drawable/ab_bottom_solid_messages</item>
         <item name="android:progressBarStyle">@style/ProgressBar.Messages</item>
         <item name="android:titleTextStyle">@style/ActionBarText</item>
-        <item name="android:displayOptions">showHome|showTitle</item>
-        <item name="android:icon">@android:color/transparent</item>
+        <item name="android:icon">@drawable/ic_launcher_inverse</item>
     </style>
 
     <style name="ActionBar.Transparent.Messages" parent="@android:style/Widget.Holo.ActionBar">
@@ -88,7 +87,7 @@
 
     <style name="ActionBarText" parent="@android:style/TextAppearance.Inverse">
         <item name="android:textSize">24sp</item>
-        <item name="android:fontFamily">sans-serif-light</item>
+        <item name="android:fontFamily">sans-serif-condensed</item>
     </style>
 
 </resources>
