@@ -2,7 +2,6 @@ package com.amlcurran.messages.conversationlist;
 
 import android.app.Activity;
 import android.content.Context;
-import android.database.Cursor;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -12,16 +11,18 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.amlcurran.messages.ListeningCursorListFragment;
-import com.espian.utils.ProviderHelper;
 import com.amlcurran.messages.R;
-import com.amlcurran.messages.adapters.AdaptiveCursorSource;
-import com.amlcurran.messages.loaders.CursorLoadListener;
 import com.amlcurran.messages.loaders.MessagesLoader;
+import com.espian.utils.ProviderHelper;
 import com.espian.utils.SimpleBinder;
 import com.espian.utils.SourceBinderAdapter;
 
-public class ConversationListFragment extends ListeningCursorListFragment<Conversation> implements CursorLoadListener, AdapterView.OnItemClickListener {
+import java.util.List;
 
+public class ConversationListFragment extends ListeningCursorListFragment<Conversation> implements ConversationListListener, AdapterView.OnItemClickListener {
+
+    protected SourceBinderAdapter<Conversation> adapter;
+    protected ListArraySource<Conversation> source;
     private Listener listener;
 
     public ConversationListFragment() { }
@@ -30,7 +31,7 @@ public class ConversationListFragment extends ListeningCursorListFragment<Conver
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        source = new ConversationListAdaptiveSource();
+        source = new ListArraySource<Conversation>();
         adapter = new SourceBinderAdapter<Conversation>(getActivity(), source, new ConversationsBinder());
         setListAdapter(adapter);
         getListView().setChoiceMode(ListView.CHOICE_MODE_SINGLE);
@@ -54,8 +55,8 @@ public class ConversationListFragment extends ListeningCursorListFragment<Conver
     }
 
     @Override
-    public void onCursorLoaded(Cursor cursor) {
-        source.setCursor(cursor);
+    public void onConversationListLoaded(List<Conversation> conversations) {
+        source.addAll(conversations);
         adapter.notifyDataSetChanged();
     }
 
@@ -70,7 +71,7 @@ public class ConversationListFragment extends ListeningCursorListFragment<Conver
             TextView textView1 = getTextView(convertView, android.R.id.text1);
             TextView textView2 = getTextView(convertView, android.R.id.text2);
 
-            textView1.setText(item.getAddress());
+            textView1.setText(item.getName());
             textView2.setText(item.getBody());
 
             if (item.isRead()) {
@@ -101,14 +102,6 @@ public class ConversationListFragment extends ListeningCursorListFragment<Conver
         @Override
         public View createView(Context context, int itemViewType) {
             return LayoutInflater.from(context).inflate(R.layout.item_message_preview, getListView(), false);
-        }
-    }
-
-    public static class ConversationListAdaptiveSource extends AdaptiveCursorSource<Conversation> {
-
-        @Override
-        public Conversation getFromCursorRow(Cursor cursor) {
-            return Conversation.fromCursor(cursor);
         }
     }
 

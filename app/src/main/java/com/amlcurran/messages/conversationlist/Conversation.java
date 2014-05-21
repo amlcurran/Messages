@@ -2,6 +2,7 @@ package com.amlcurran.messages.conversationlist;
 
 import android.database.Cursor;
 import android.provider.Telephony;
+import android.text.TextUtils;
 
 import com.amlcurran.messages.adapters.CursorHelper;
 
@@ -11,14 +12,20 @@ public class Conversation {
     private String body;
     private String threadId;
     private boolean isRead;
+    private String name;
 
-    public static Conversation fromCursor(Cursor cursor) {
+    public static Conversation fromCursor(Cursor cursor, String personName) {
         Conversation conversation = new Conversation();
         conversation.address = CursorHelper.fromColumn(cursor, Telephony.Sms.ADDRESS);
         conversation.body = CursorHelper.fromColumn(cursor, Telephony.Sms.BODY);
         String s = CursorHelper.fromColumn(cursor, Telephony.Sms.Inbox.READ);
         conversation.isRead = s.toLowerCase().equals("1");
         conversation.threadId = CursorHelper.fromColumn(cursor, Telephony.Sms.THREAD_ID);
+        if (TextUtils.isEmpty(personName)) {
+            conversation.name = conversation.address;
+        } else {
+            conversation.name = personName;
+        }
         return conversation;
     }
 
@@ -36,5 +43,9 @@ public class Conversation {
 
     public String getThreadId() {
         return threadId;
+    }
+
+    public String getName() {
+        return name;
     }
 }

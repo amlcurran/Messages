@@ -1,17 +1,35 @@
+/*
+ * Copyright 2014 Alex Curran
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.amlcurran.messages.loaders;
 
 import android.app.Activity;
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.database.Cursor;
+import android.net.Uri;
 import android.provider.ContactsContract;
 import android.provider.Telephony;
-import android.text.TextUtils;
-import android.util.Log;
 
 import com.amlcurran.messages.adapters.CursorHelper;
+import com.amlcurran.messages.conversationlist.Conversation;
+import com.amlcurran.messages.conversationlist.ConversationListListener;
 
-import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 
@@ -29,75 +47,49 @@ public class MessagesLoader {
         return activity.getContentResolver();
     }
 
-    public void loadConversationList(final CursorLoadListener loadListener) {
+    public void loadConversationList(final ConversationListListener loadListener) {
         executor.submit(new Callable<Object>() {
 
             @Override
             public Object call() throws Exception {
+                final List<Conversation> conversations = new ArrayList<Conversation>();
                 Cursor conversationsList = getResolver().query(Telephony.Threads.CONTENT_URI, null, null, null, Telephony.Sms.DEFAULT_SORT_ORDER);
-//                Cursor peopleList = queryPeople(conversationsList);
-//                //peopleList.getExtras().putInt("key", 1);
-//
-//                while (peopleList.moveToNext()) {
-//                    Log.d("Testing", CursorHelper.fromColumn(peopleList, ContactsContract.Contacts.DISPLAY_NAME_PRIMARY));
-//                }
 
-                activity.runOnUiThread(notifyListener(loadListener, conversationsList));
-                //activity.runOnUiThread(notifyListener(loadListener, peopleList));
+                while (conversationsList.moveToNext()) {
+                    Uri phoneLookupUri = createPhoneLookupUri(conversationsList);
+                    Cursor peopleCursor = getResolver().query(phoneLookupUri, null, null, null, null);
+
+                    String peopleName = getPersonName(peopleCursor);
+                    Conversation conversation = Conversation.fromCursor(conversationsList, peopleName);
+
+                    conversations.add(conversation);
+                    peopleCursor.close();
+                }
+
+                conversationsList.close();
+
+                activity.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        loadListener.onConversationListLoaded(conversations);
+                    }
+                });
                 return null;
             }
         });
     }
 
-    private Cursor queryPeople(Cursor conversationsList) {
-        String personSelection = createPersonSelectionString(conversationsList);
-        String[] personSelectArgs = createPersonSelectArgs(conversationsList);
-        resetCursorPosition(conversationsList);
-        String[] projection = new String[] {ContactsContract.Contacts._ID, ContactsContract.Contacts.DISPLAY_NAME_PRIMARY };
-
-        return getResolver().query(ContactsContract.Data.CONTENT_URI, projection, personSelection, personSelectArgs, null);
+    private static Uri createPhoneLookupUri(Cursor conversationsList) {
+        String phoneRaw = CursorHelper.fromColumn(conversationsList, Telephony.Sms.ADDRESS);
+        return Uri.withAppendedPath(ContactsContract.CommonDataKinds.Phone.CONTENT_FILTER_URI, Uri.encode(phoneRaw));
     }
 
-    private boolean resetCursorPosition(Cursor conversationsList) {
-        return conversationsList.moveToPosition(-1);
-    }
-
-    private String[] createPersonSelectArgs(Cursor conversationsList) {
-        String[] firstPass = new String[conversationsList.getCount()];
-        int currentPosition = 0;
-        resetCursorPosition(conversationsList);
-        while (conversationsList.moveToNext()) {
-            if (isValidPersonId(conversationsList)) {
-                firstPass[currentPosition] = CursorHelper.fromColumn(conversationsList, Telephony.Sms.PERSON);
-                currentPosition++;
-            }
+    private static String getPersonName(Cursor peopleCursor) {
+        String result = null;
+        if (peopleCursor.moveToFirst()) {
+           result = CursorHelper.fromColumn(peopleCursor, ContactsContract.CommonDataKinds.Identity.DISPLAY_NAME_PRIMARY);
         }
-
-        String[] result = Arrays.copyOf(firstPass, currentPosition);
-
-        Log.d("Selection string", "" + currentPosition + " result length " + result.length );
         return result;
-    }
-
-    private String createPersonSelectionString(Cursor conversationsList) {
-        String personSelection = "";
-        int count = 0;
-        resetCursorPosition(conversationsList);
-        while (conversationsList.moveToNext()) {
-            if (isValidPersonId(conversationsList)) {
-                personSelection += ContactsContract.Contacts.LOOKUP_KEY + "=? OR ";
-                count++;
-            }
-        }
-        Log.d("Selection string", "" + count);
-        if (personSelection.length() > 0) {
-            personSelection = personSelection.substring(0, personSelection.length() - 4);
-        }
-        return personSelection;
-    }
-
-    private boolean isValidPersonId(Cursor conversationsList) {
-        return CursorHelper.asInt(conversationsList, Telephony.Sms.PERSON) != -1  && !TextUtils.isEmpty(CursorHelper.fromColumn(conversationsList, Telephony.Sms.PERSON));
     }
 
     public void loadThread(final String threadId, final CursorLoadListener loadListener) {
