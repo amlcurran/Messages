@@ -87,12 +87,14 @@ public class ConversationListFragment extends ListeningCursorListFragment<Conver
             textView1.setTypeface(null, 0);
             textView2.setTypeface(null, 0);
             textView1.setTextColor(getResources().getColor(android.R.color.primary_text_light));
+            textView2.setTextColor(getResources().getColor(android.R.color.tertiary_text_light));
         }
 
         private void setUnreadStyle(View convertView, TextView textView1, TextView textView2) {
             textView1.setTypeface(null, Typeface.BOLD);
             textView2.setTypeface(null, Typeface.BOLD);
             textView1.setTextColor(getResources().getColor(R.color.theme_colour));
+            textView2.setTextColor(getResources().getColor(android.R.color.primary_text_light));
         }
 
         private TextView getTextView(View convertView, int text1) {
