@@ -80,8 +80,8 @@ public class ThreadFragment extends ListeningCursorListFragment<ThreadMessage> i
     }
 
     @Override
-    public void onStart() {
-        super.onStart();
+    public void onResume() {
+        super.onResume();
         defaultChecker.checkSmsApp();
     }
 
