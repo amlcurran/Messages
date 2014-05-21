@@ -62,9 +62,9 @@ public class Notifier {
     }
 
     private CharSequence buildTicker(String address, String body) {
-        SpannableStringBuilder builder = new SpannableStringBuilder(address);
-        builder.setSpan(new StyleSpan(Typeface.BOLD), 0, builder.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
-        builder.append(": ").append(body);
+        SpannableStringBuilder builder = new SpannableStringBuilder(address + ": ");
+        builder.setSpan(new StyleSpan(Typeface.BOLD), 0, builder.length(), Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
+        builder.append(body);
         return builder;
     }
 
