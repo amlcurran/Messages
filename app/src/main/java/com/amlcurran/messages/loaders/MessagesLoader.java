@@ -147,24 +147,29 @@ public class MessagesLoader {
         });
     }
 
-    public void loadPhoto(long contactId, PhotoLoadListener photoLoadListener) {
-        if (contactId == -1) {
-            photoLoadListener.onPhotoLoaded(null);
-            return;
-        }
+    public void loadPhoto(final long contactId, final PhotoLoadListener photoLoadListener) {
+        executor.submit(new Callable<Object>() {
+            @Override
+            public Object call() throws Exception {
+                if (contactId >= 0) {
 
-        Uri contactUri = ContentUris.withAppendedId(ContactsContract.Data.CONTENT_URI, contactId);
-        Cursor cursor = activity.getContentResolver().query(contactUri, new String[]{ContactsContract.CommonDataKinds.Photo.PHOTO}, null, null, null);
-        if (cursor.moveToFirst()) {
-            try {
-                byte[] blob = cursor.getBlob(0);
-                Bitmap photo = BitmapFactory.decodeByteArray(blob, 0, blob.length);
-                photoLoadListener.onPhotoLoaded(photo);
-            } finally {
-                cursor.close();
+                    Uri contactUri = ContentUris.withAppendedId(ContactsContract.Data.CONTENT_URI, contactId);
+                    Cursor cursor = activity.getContentResolver().query(contactUri, new String[]{ContactsContract.CommonDataKinds.Photo.PHOTO}, null, null, null);
+                    if (cursor.moveToFirst()) {
+                        try {
+                            byte[] blob = cursor.getBlob(0);
+                            Bitmap photo = BitmapFactory.decodeByteArray(blob, 0, blob.length);
+                            photoLoadListener.onPhotoLoaded(photo);
+                            return null;
+                        } finally {
+                            cursor.close();
+                        }
+                    }
+                }
+
+                photoLoadListener.onPhotoLoaded(null);
+                return null;
             }
-        } else {
-            photoLoadListener.onPhotoLoaded(null);
-        }
+        });
     }
 }
