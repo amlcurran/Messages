@@ -1,6 +1,5 @@
 package com.amlcurran.messages;
 
-import android.app.Activity;
 import android.app.ListFragment;
 import android.database.Cursor;
 import android.os.Bundle;
@@ -22,14 +21,9 @@ public abstract class ListeningCursorListFragment<T> extends ListFragment implem
     private LocalMessageReceiver messageReceiver;
 
     @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-        messageLoader = new ProviderHelper<MessagesLoaderProvider>(MessagesLoaderProvider.class).get(activity).getMessagesLoader();
-    }
-
-    @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        messageLoader = new ProviderHelper<MessagesLoaderProvider>(MessagesLoaderProvider.class).get(getActivity()).getMessagesLoader();
         messageReceiver = new LocalMessageReceiver(getActivity(), this);
     }
 
