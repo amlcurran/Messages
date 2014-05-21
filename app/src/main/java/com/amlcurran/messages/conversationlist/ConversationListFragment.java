@@ -53,6 +53,12 @@ public class ConversationListFragment extends ListeningCursorListFragment<Conver
         listener.onConversationSelected(source.getAtPosition(position));
     }
 
+    @Override
+    public void onCursorLoaded(Cursor cursor) {
+        source.setCursor(cursor);
+        adapter.notifyDataSetChanged();
+    }
+
     public interface Listener {
         void onConversationSelected(Conversation conversation);
     }

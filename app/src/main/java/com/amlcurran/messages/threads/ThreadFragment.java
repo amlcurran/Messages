@@ -17,6 +17,7 @@ import android.widget.TextView;
 
 import com.amlcurran.messages.DefaultAppChecker;
 import com.amlcurran.messages.ListeningCursorListFragment;
+import com.amlcurran.messages.loaders.CursorLoadListener;
 import com.espian.utils.ProviderHelper;
 import com.amlcurran.messages.R;
 import com.amlcurran.messages.adapters.AdaptiveCursorSource;
@@ -28,7 +29,8 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public class ThreadFragment extends ListeningCursorListFragment<ThreadMessage> implements View.OnClickListener, TextWatcher, DefaultAppChecker.Callback {
+public class ThreadFragment extends ListeningCursorListFragment<ThreadMessage> implements View.OnClickListener, TextWatcher, DefaultAppChecker.Callback,
+        CursorLoadListener {
 
     private static final String THREAD_ID = "threadId";
     private static final String ADDRESS = "address";
@@ -96,7 +98,8 @@ public class ThreadFragment extends ListeningCursorListFragment<ThreadMessage> i
 
     @Override
     public void onCursorLoaded(Cursor cursor) {
-        super.onCursorLoaded(cursor);
+        source.setCursor(cursor);
+        adapter.notifyDataSetChanged();
         getMessageLoader().markThreadAsRead(getThreadId());
     }
 
