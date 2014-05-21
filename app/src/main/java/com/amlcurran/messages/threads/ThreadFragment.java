@@ -87,7 +87,17 @@ public class ThreadFragment extends ListeningCursorListFragment<ThreadMessage> i
 
     @Override
     public void loadData(MessagesLoader loader) {
-        loader.loadThread(getArguments().getString(THREAD_ID), this);
+        loader.loadThread(getThreadId(), this);
+    }
+
+    private String getThreadId() {
+        return getArguments().getString(THREAD_ID);
+    }
+
+    @Override
+    public void onCursorLoaded(Cursor cursor) {
+        super.onCursorLoaded(cursor);
+        getMessageLoader().markThreadAsRead(getThreadId());
     }
 
     @Override

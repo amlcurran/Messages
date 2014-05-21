@@ -2,6 +2,7 @@ package com.amlcurran.messages.loaders;
 
 import android.app.Activity;
 import android.content.ContentResolver;
+import android.content.ContentValues;
 import android.database.Cursor;
 import android.provider.ContactsContract;
 import android.provider.Telephony;
@@ -122,4 +123,22 @@ public class MessagesLoader {
         };
     }
 
+    public void markThreadAsRead(final String threadId) {
+        executor.submit(new Callable<Object>() {
+            @Override
+            public Object call() throws Exception {
+                ContentValues contentValues = getReadContentValues();
+                String selection = String.format("%1$s=? AND %2$s=?", Telephony.Sms.THREAD_ID, Telephony.Sms.READ);
+                String[] args = new String[] { threadId, "0" };
+                getResolver().update(Telephony.Sms.CONTENT_URI, contentValues, selection, args);
+                return null;
+            }
+
+            private ContentValues getReadContentValues() {
+                ContentValues values = new ContentValues();
+                values.put(Telephony.Sms.READ, "1");
+                return values;
+            }
+        });
+    }
 }

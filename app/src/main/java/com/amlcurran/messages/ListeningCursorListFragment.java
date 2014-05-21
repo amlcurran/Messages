@@ -46,6 +46,10 @@ public abstract class ListeningCursorListFragment<T> extends ListFragment implem
         adapter.notifyDataSetChanged();
     }
 
+    public MessagesLoader getMessageLoader() {
+        return messageLoader;
+    }
+
     @Override
     public void onMessageReceived() {
         loadData(messageLoader);
