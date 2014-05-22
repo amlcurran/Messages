@@ -4,24 +4,20 @@ import android.app.Activity;
 import android.content.Context;
 import android.database.Cursor;
 import android.os.Bundle;
-import android.text.Editable;
-import android.text.TextUtils;
-import android.text.TextWatcher;
 import android.text.util.Linkify;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.amlcurran.messages.DefaultAppChecker;
 import com.amlcurran.messages.ListeningCursorListFragment;
-import com.amlcurran.messages.loaders.CursorLoadListener;
-import com.espian.utils.ProviderHelper;
 import com.amlcurran.messages.R;
 import com.amlcurran.messages.adapters.AdaptiveCursorSource;
+import com.amlcurran.messages.loaders.CursorLoadListener;
 import com.amlcurran.messages.loaders.MessagesLoader;
+import com.amlcurran.messages.ui.ComposeMessageView;
+import com.espian.utils.ProviderHelper;
 import com.espian.utils.SimpleBinder;
 import com.espian.utils.SourceBinderAdapter;
 
@@ -29,17 +25,15 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public class ThreadFragment extends ListeningCursorListFragment<ThreadMessage> implements View.OnClickListener, TextWatcher, DefaultAppChecker.Callback,
-        CursorLoadListener {
+public class ThreadFragment extends ListeningCursorListFragment<ThreadMessage> implements CursorLoadListener, ComposeMessageView.OnMessageComposedListener {
 
     private static final String THREAD_ID = "threadId";
     private static final String ADDRESS = "address";
 
-    private EditText smsEntryField;
     private Listener listener;
     private String sendAddress;
     private DefaultAppChecker defaultChecker;
-    private ImageButton sendButton;
+    private ComposeMessageView composeView;
 
     public static ThreadFragment create(String threadId, String address) {
         Bundle bundle = new Bundle();
@@ -56,10 +50,8 @@ public class ThreadFragment extends ListeningCursorListFragment<ThreadMessage> i
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_thread, container, false);
 
-        smsEntryField = (EditText) view.findViewById(R.id.thread_sms_entry);
-        smsEntryField.addTextChangedListener(this);
-        sendButton = (ImageButton) view.findViewById(R.id.thread_sms_send);
-        sendButton.setOnClickListener(this);
+        composeView = ((ComposeMessageView) view.findViewById(R.id.thread_compose_view));
+        composeView.setComposeListener(this);
 
         return view;
     }
@@ -76,7 +68,7 @@ public class ThreadFragment extends ListeningCursorListFragment<ThreadMessage> i
         sendAddress = getArguments().getString(ADDRESS);
         source = new ThreadMessageAdaptiveCursorSource();
         adapter = new SourceBinderAdapter<ThreadMessage>(getActivity(), source, new ThreadBinder());
-        defaultChecker = new DefaultAppChecker(getActivity(), this);
+        defaultChecker = new DefaultAppChecker(getActivity(), composeView);
         setListAdapter(adapter);
         getListView().setStackFromBottom(true);
     }
@@ -104,56 +96,8 @@ public class ThreadFragment extends ListeningCursorListFragment<ThreadMessage> i
     }
 
     @Override
-    public void onClick(View v) {
-        switch (v.getId()) {
-
-            case R.id.thread_sms_send:
-                sendMessage();
-                break;
-
-        }
-    }
-
-    private void sendMessage() {
-        if (!TextUtils.isEmpty(smsEntryField.getText())) {
-            listener.onSendMessage(sendAddress, smsEntryField.getText().toString());
-            clearSmsEntryField();
-        }
-    }
-
-    private void clearSmsEntryField() {
-        smsEntryField.setText("", TextView.BufferType.EDITABLE);
-    }
-
-    @Override
-    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-    }
-
-    @Override
-    public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-    }
-
-    @Override
-    public void afterTextChanged(Editable s) {
-
-    }
-
-    @Override
-    public void isDefaultSmsApp() {
-        smsEntryField.setEnabled(true);
-        smsEntryField.setHint(R.string.hint_send_message);
-        sendButton.setEnabled(true);
-        sendButton.setImageResource(R.drawable.ic_action_send);
-    }
-
-    @Override
-    public void isNotDefaultSmsApp() {
-        smsEntryField.setEnabled(false);
-        smsEntryField.setHint(R.string.hint_send_message_disabled);
-        sendButton.setEnabled(false);
-        sendButton.setImageResource(R.drawable.ic_action_send_disabled);
+    public void onMessageComposed(CharSequence body) {
+        listener.onSendMessage(sendAddress, String.valueOf(body));
     }
 
     private class ThreadBinder extends SimpleBinder<ThreadMessage> {

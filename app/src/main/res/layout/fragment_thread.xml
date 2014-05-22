@@ -11,29 +11,10 @@
         android:layout_width="match_parent"
         android:layout_weight="1" />
 
-    <LinearLayout
-        android:orientation="horizontal"
+    <view
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingLeft="4dp"
-        android:paddingRight="4dp"
-        android:minHeight="48dp">
-
-        <EditText
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:id="@+id/thread_sms_entry"
-            android:layout_weight="1"
-            android:layout_gravity="center_vertical"
-            android:inputType="textShortMessage|text|textMultiLine|textCapSentences|textAutoCorrect" />
-
-        <ImageButton
-            android:layout_width="48dp"
-            android:layout_height="match_parent"
-            android:id="@+id/thread_sms_send"
-            android:src="@drawable/ic_action_send"
-            android:background="@drawable/selectable_background_messages" />
-
-    </LinearLayout>
+        class="com.amlcurran.messages.ui.ComposeMessageView"
+        android:id="@+id/thread_compose_view" />
 
 </LinearLayout>
