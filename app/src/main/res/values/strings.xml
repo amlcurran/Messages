@@ -7,5 +7,6 @@
     <string name="disabled_app_message">Messages is not your default SMS app. Change this in Settings.</string>
     <string name="hint_send_message">Type to send a message</string>
     <string name="hint_send_message_disabled">Sending is disabled</string>
+    <string name="cd_send_button">Send an SMS</string>
 
 </resources>
