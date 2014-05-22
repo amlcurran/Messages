@@ -23,10 +23,12 @@ import android.content.ContentValues;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.provider.ContactsContract;
 import android.provider.Telephony;
 
+import com.amlcurran.messages.R;
 import com.amlcurran.messages.adapters.CursorHelper;
 import com.amlcurran.messages.conversationlist.Conversation;
 import com.amlcurran.messages.conversationlist.ConversationListListener;
@@ -165,6 +167,10 @@ public class MessagesLoader {
                             cursor.close();
                         }
                     }
+                }
+
+                if (result == null) {
+                    result = ((BitmapDrawable) activity.getResources().getDrawable(R.drawable.ic_contact_picture_unknown)).getBitmap();
                 }
 
                 activity.runOnUiThread(notifyListener(result, photoLoadListener));
