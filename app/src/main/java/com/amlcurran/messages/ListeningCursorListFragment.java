@@ -1,11 +1,9 @@
 package com.amlcurran.messages;
 
 import android.app.ListFragment;
-import android.database.Cursor;
 import android.os.Bundle;
 
 import com.amlcurran.messages.adapters.AdaptiveCursorSource;
-import com.amlcurran.messages.loaders.CursorLoadListener;
 import com.amlcurran.messages.loaders.MessagesLoader;
 import com.amlcurran.messages.loaders.MessagesLoaderProvider;
 import com.espian.utils.ProviderHelper;
@@ -50,5 +48,9 @@ public abstract class ListeningCursorListFragment<T> extends ListFragment implem
     }
 
     public abstract void loadData(MessagesLoader loader);
+
+    protected final void onUiThread(Runnable runnable) {
+        getActivity().runOnUiThread(runnable);
+    }
 
 }

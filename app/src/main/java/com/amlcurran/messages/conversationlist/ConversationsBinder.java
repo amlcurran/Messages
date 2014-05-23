@@ -51,9 +51,14 @@ public class ConversationsBinder extends SimpleBinder<Conversation> {
         loader.loadPhoto(item.getPersonId(), new PhotoLoadListener() {
 
             @Override
-            public void onPhotoLoaded(Bitmap photo) {
-                imageView.setImageBitmap(photo);
-                imageView.animate().alpha(1f).start();
+            public void onPhotoLoaded(final Bitmap photo) {
+                imageView.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        imageView.setImageBitmap(photo);
+                        imageView.animate().alpha(1f).start();
+                    }
+                });
             }
         });
 

@@ -89,10 +89,15 @@ public class ThreadFragment extends ListeningCursorListFragment<ThreadMessage> i
     }
 
     @Override
-    public void onCursorLoaded(Cursor cursor) {
-        source.setCursor(cursor);
-        adapter.notifyDataSetChanged();
-        getMessageLoader().markThreadAsRead(getThreadId());
+    public void onCursorLoaded(final Cursor cursor) {
+        onUiThread(new Runnable() {
+            @Override
+            public void run() {
+                source.setCursor(cursor);
+                adapter.notifyDataSetChanged();
+                getMessageLoader().markThreadAsRead(getThreadId());
+            }
+        });
     }
 
     @Override

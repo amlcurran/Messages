@@ -80,10 +80,15 @@ public class ConversationListFragment extends ListeningCursorListFragment<Conver
     }
 
     @Override
-    public void onConversationListLoaded(List<Conversation> conversations) {
-        source.addAll(conversations);
-        adapter.notifyDataSetChanged();
-        hideLoadingUi();
+    public void onConversationListLoaded(final List<Conversation> conversations) {
+        onUiThread(new Runnable() {
+            @Override
+            public void run() {
+                source.addAll(conversations);
+                adapter.notifyDataSetChanged();
+                hideLoadingUi();
+            }
+        });
     }
 
     private void showLoadingUi() {

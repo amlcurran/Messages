@@ -14,6 +14,7 @@ import android.view.ViewGroup;
 
 import com.amlcurran.messages.conversationlist.Conversation;
 import com.amlcurran.messages.conversationlist.ConversationListFragment;
+import com.amlcurran.messages.loaders.ExecutorMessagesLoader;
 import com.amlcurran.messages.loaders.MessagesLoader;
 import com.amlcurran.messages.loaders.MessagesLoaderProvider;
 import com.amlcurran.messages.threads.ThreadFragment;
@@ -41,7 +42,7 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
         setContentView(uiController.getView());
 
         notifier = new Notifier(this);
-        messagesLoader = new MessagesLoader(this, Executors.newCachedThreadPool());
+        messagesLoader = new ExecutorMessagesLoader(this, Executors.newCachedThreadPool());
         appChecker = new DefaultAppChecker(this, this);
         uiController.getDisabledBanner().setOnClickListener(this);
 
