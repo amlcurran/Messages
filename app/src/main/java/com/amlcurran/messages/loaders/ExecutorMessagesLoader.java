@@ -169,7 +169,7 @@ public class ExecutorMessagesLoader implements MessagesLoader {
 
     @Override
     public void loadUnreadConversationList(ConversationListListener loadListener) {
-        executor.submit(createLoadConversationList(loadListener, Telephony.Sms.READ + "=", new String[] { "0" }));
+        executor.submit(createLoadConversationList(loadListener, Telephony.Sms.Inbox.READ + "=0", null));
     }
 
     @Override
