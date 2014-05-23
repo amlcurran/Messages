@@ -14,7 +14,6 @@ import android.view.ViewGroup;
 
 import com.amlcurran.messages.conversationlist.Conversation;
 import com.amlcurran.messages.conversationlist.ConversationListFragment;
-import com.amlcurran.messages.loaders.ExecutorMessagesLoader;
 import com.amlcurran.messages.loaders.MessagesLoader;
 import com.amlcurran.messages.loaders.MessagesLoaderProvider;
 import com.amlcurran.messages.threads.ThreadFragment;
@@ -22,7 +21,6 @@ import com.amlcurran.messages.ui.SlidingPaneUiController;
 import com.amlcurran.messages.ui.UiController;
 
 import java.util.Calendar;
-import java.util.concurrent.Executors;
 
 public class MessagesActivity extends Activity implements MessagesLoaderProvider,
         ConversationListFragment.Listener, ThreadFragment.Listener, View.OnClickListener,
@@ -30,7 +28,6 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
 
     public static final int REQUEST_CHANGE_SMS_APP = 20;
 
-    private MessagesLoader messagesLoader;
     private UiController uiController;
     private Notifier notifier;
     private DefaultAppChecker appChecker;
@@ -42,7 +39,6 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
         setContentView(uiController.getView());
 
         notifier = new Notifier(this);
-        messagesLoader = new ExecutorMessagesLoader(this, Executors.newCachedThreadPool());
         appChecker = new DefaultAppChecker(this, this);
         uiController.getDisabledBanner().setOnClickListener(this);
 
@@ -82,7 +78,7 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
 
     @Override
     public MessagesLoader getMessagesLoader() {
-        return messagesLoader;
+        return MessagesApp.getMessagesLoader(this);
     }
 
     @Override

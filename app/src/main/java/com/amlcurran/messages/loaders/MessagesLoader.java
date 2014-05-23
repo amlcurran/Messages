@@ -27,4 +27,6 @@ public interface MessagesLoader {
     void markThreadAsRead(String threadId);
 
     void loadPhoto(long contactId, PhotoLoadListener photoLoadListener);
+
+    void cancelAll();
 }

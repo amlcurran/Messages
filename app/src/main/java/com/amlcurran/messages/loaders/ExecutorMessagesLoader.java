@@ -163,6 +163,11 @@ public class ExecutorMessagesLoader implements MessagesLoader {
         });
     }
 
+    @Override
+    public void cancelAll() {
+        executor.shutdownNow();
+    }
+
     private static ContentValues createReadContentValues() {
         ContentValues values = new ContentValues();
         values.put(Telephony.Sms.READ, "1");
