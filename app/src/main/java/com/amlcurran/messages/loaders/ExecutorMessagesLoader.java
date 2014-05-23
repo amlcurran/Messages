@@ -55,12 +55,16 @@ public class ExecutorMessagesLoader implements MessagesLoader {
 
     @Override
     public void loadConversationList(final ConversationListListener loadListener) {
-        executor.submit(new Callable<Object>() {
+        executor.submit(createLoadConversationList(loadListener, null, null));
+    }
+
+    private Callable<Object> createLoadConversationList(final ConversationListListener loadListener, final String query, final String[] args) {
+        return new Callable<Object>() {
 
             @Override
             public Object call() throws Exception {
                 final List<Conversation> conversations = new ArrayList<Conversation>();
-                Cursor conversationsList = getResolver().query(Telephony.Threads.CONTENT_URI, null, null, null, Telephony.Sms.DEFAULT_SORT_ORDER);
+                Cursor conversationsList = getResolver().query(Telephony.Threads.CONTENT_URI, null, query, args, Telephony.Sms.DEFAULT_SORT_ORDER);
 
                 while (conversationsList.moveToNext()) {
                     Uri phoneLookupUri = createPhoneLookupUri(conversationsList);
@@ -79,7 +83,7 @@ public class ExecutorMessagesLoader implements MessagesLoader {
                 loadListener.onConversationListLoaded(conversations);
                 return null;
             }
-        });
+        };
     }
 
     private static long getContactId(Cursor peopleCursor) {
@@ -161,6 +165,11 @@ public class ExecutorMessagesLoader implements MessagesLoader {
                 return null;
             }
         });
+    }
+
+    @Override
+    public void loadUnreadConversationList(ConversationListListener loadListener) {
+        executor.submit(createLoadConversationList(loadListener, Telephony.Sms.READ + "=", new String[] { "0" }));
     }
 
     @Override

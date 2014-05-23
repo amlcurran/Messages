@@ -37,7 +37,7 @@ public class SmsReceiver extends BroadcastReceiver implements SmsDatabaseWriter.
             public void onWrittenToInbox() {
                 Log.d(TAG, "Sending broadcast of message received");
                 sendLocalBroadcast(context);
-                new Notifier(context).addNewMessageNotification(message);
+                new Notifier(context).updateUnreadNotification();
             }
 
             @Override

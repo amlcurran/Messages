@@ -54,4 +54,9 @@ public class Conversation {
     public long getPersonId() {
         return personId;
     }
+
+    @Override
+    public int hashCode() {
+        return threadId.hashCode();
+    }
 }

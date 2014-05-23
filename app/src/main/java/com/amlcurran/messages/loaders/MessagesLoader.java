@@ -28,5 +28,7 @@ public interface MessagesLoader {
 
     void loadPhoto(long contactId, PhotoLoadListener photoLoadListener);
 
+    void loadUnreadConversationList(ConversationListListener loadListener);
+
     void cancelAll();
 }

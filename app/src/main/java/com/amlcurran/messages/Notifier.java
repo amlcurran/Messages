@@ -26,6 +26,12 @@ import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.style.StyleSpan;
 
+import com.amlcurran.messages.conversationlist.Conversation;
+import com.amlcurran.messages.conversationlist.ConversationListListener;
+
+import java.util.Calendar;
+import java.util.List;
+
 public class Notifier {
 
     private static final int ID_NEW_MESSAGE = 22;
@@ -38,10 +44,17 @@ public class Notifier {
         this.notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
     }
 
-    public void addNewMessageNotification(SmsMessage message) {
-        Notification newMessageNotification = buildNotification(context, message.getAddress(),
-                message.getBody(), message.getTimestamp());
-        notificationManager.notify(ID_NEW_MESSAGE, newMessageNotification);
+    public void updateUnreadNotification() {
+        MessagesApp.getMessagesLoader(context).loadUnreadConversationList(new ConversationListListener() {
+            @Override
+            public void onConversationListLoaded(List<Conversation> conversations) {
+                for (Conversation conversation : conversations) {
+                    Notification newMessageNotification = buildNotification(context, conversation.getName(),
+                            conversation.getBody(), Calendar.getInstance().getTimeInMillis());
+                    notificationManager.notify(conversations.hashCode(), newMessageNotification);
+                }
+            }
+        });
     }
 
     public void clearNewMessagesNotification() {
