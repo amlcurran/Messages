@@ -51,9 +51,18 @@ public class NotificationBuilder {
         return getDefaultBuilder()
                 .setTicker(buildListSummary(conversations))
                 .setStyle(buildInboxStyle(conversations))
+                .setContentText(buildSenderList(conversations))
                 .setContentTitle(buildListSummary(conversations))
                 .setWhen(timestampMillis)
                 .build();
+    }
+
+    private CharSequence buildSenderList(List<Conversation> conversations) {
+        String result = "";
+        for (Conversation conversation : conversations) {
+            result += conversation.getName() + ", ";
+        }
+        return result.substring(0, result.length() - 2);
     }
 
     private CharSequence buildListSummary(List<Conversation> conversations) {
@@ -63,9 +72,18 @@ public class NotificationBuilder {
     private Notification.Style buildInboxStyle(List<Conversation> conversations) {
         Notification.InboxStyle inboxStyle = new Notification.InboxStyle();
         for (Conversation conversation : conversations) {
-            inboxStyle.addLine(conversation.getName() + "  " + conversation.getBody());
+            inboxStyle.addLine(getInboxLine(conversation));
         }
         return inboxStyle;
+    }
+
+    private CharSequence getInboxLine(Conversation conversation) {
+        SpannableStringBuilder builder = new SpannableStringBuilder();
+        builder.append(conversation.getName());
+        builder.setSpan(new StyleSpan(Typeface.BOLD), 0, builder.length(), Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
+        builder.append(" ");
+        builder.append(conversation.getBody());
+        return builder;
     }
 
     private Notification buildSingleUnreadNotification(Conversation conversation) {
