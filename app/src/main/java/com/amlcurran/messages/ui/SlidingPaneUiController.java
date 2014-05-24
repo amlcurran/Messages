@@ -29,11 +29,13 @@ import com.amlcurran.messages.ThreadFragment;
 public class SlidingPaneUiController implements UiController {
 
     private final Activity activity;
+    private final UiCallback uiCallback;
     private SlidingPaneLayout slider;
     private View disabledBanner;
 
-    public SlidingPaneUiController(Activity activity) {
+    public SlidingPaneUiController(Activity activity, UiCallback uiCallback) {
         this.activity = activity;
+        this.uiCallback = uiCallback;
     }
 
     @Override
@@ -59,6 +61,22 @@ public class SlidingPaneUiController implements UiController {
         slider = (SlidingPaneLayout) view.findViewById(R.id.sliding_pane);
         slider.setParallaxDistance((int) activity.getResources().getDimension(R.dimen.slider_parallax));
         slider.setShadowResource(R.drawable.slider_shadow);
+        slider.setPanelSlideListener(new SlidingPaneLayout.PanelSlideListener() {
+            @Override
+            public void onPanelSlide(View panel, float slideOffset) {
+
+            }
+
+            @Override
+            public void onPanelOpened(View panel) {
+                uiCallback.onSecondaryHidden();
+            }
+
+            @Override
+            public void onPanelClosed(View panel) {
+                uiCallback.onSecondaryVisible();
+            }
+        });
         return view;
     }
 
@@ -91,6 +109,11 @@ public class SlidingPaneUiController implements UiController {
     @Override
     public void hideDisabledBanner() {
         disabledBanner.setVisibility(View.GONE);
+    }
+
+    public interface UiCallback {
+        void onSecondaryVisible();
+        void onSecondaryHidden();
     }
 
 }

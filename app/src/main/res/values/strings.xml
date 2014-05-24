@@ -8,5 +8,6 @@
     <string name="hint_send_message">Type to send a message</string>
     <string name="hint_send_message_disabled">Sending is disabled</string>
     <string name="cd_send_button">Send an SMS</string>
+    <string name="call">Call</string>
 
 </resources>

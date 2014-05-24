@@ -19,38 +19,43 @@ package com.amlcurran.messages;
 import android.app.Activity;
 import android.app.Fragment;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.provider.Telephony;
+import android.telephony.PhoneNumberUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.amlcurran.messages.data.Conversation;
 import com.amlcurran.messages.conversationlist.ConversationListFragment;
+import com.amlcurran.messages.data.Conversation;
 import com.amlcurran.messages.data.SmsMessage;
 import com.amlcurran.messages.loaders.MessagesLoader;
 import com.amlcurran.messages.loaders.MessagesLoaderProvider;
 import com.amlcurran.messages.ui.SlidingPaneUiController;
 import com.amlcurran.messages.ui.UiController;
+import com.espian.utils.MenuFinder;
 
 import java.util.Calendar;
 
 public class MessagesActivity extends Activity implements MessagesLoaderProvider,
         ConversationListFragment.Listener, ThreadFragment.Listener, View.OnClickListener,
-        DefaultAppChecker.Callback {
+        DefaultAppChecker.Callback, SlidingPaneUiController.UiCallback {
 
     public static final int REQUEST_CHANGE_SMS_APP = 20;
 
     private UiController uiController;
     private DefaultAppChecker appChecker;
+    private boolean isSecondaryVisible;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        uiController = new SlidingPaneUiController(this);
+        uiController = new SlidingPaneUiController(this, this);
         setContentView(uiController.getView());
 
         appChecker = new DefaultAppChecker(this, this);
@@ -84,6 +89,16 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
     }
 
     @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        int[] menuResList = new int[] { R.id.menu_call };
+        for (int menuRes : menuResList) {
+            MenuItem item = MenuFinder.findItemById(menu, menuRes);
+            item.setVisible(isSecondaryVisible);
+        }
+        return super.onPrepareOptionsMenu(menu);
+    }
+
+    @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         Log.d("MessagesActivity", String.format("%1$s, %2$s, %3$s", requestCode, resultCode, String.valueOf(data)));
         super.onActivityResult(requestCode, resultCode, data);
@@ -108,13 +123,21 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
     }
 
     @Override
-    public void onSendMessage(String address, String body) {
+    public void sendSms(String address, String body) {
         long timestamp = Calendar.getInstance().getTimeInMillis();
         SmsMessage message = new SmsMessage(address, body, timestamp, true);
         Intent intent = new Intent(this, SmsSender.class);
         intent.setAction(SmsSender.ACTION_SEND_REQUEST);
         intent.putExtra(SmsSender.EXTRA_MESSAGE, message);
         startService(intent);
+    }
+
+    @Override
+    public void callNumber(String sendAddress) {
+        Uri telUri = Uri.parse("tel:" + PhoneNumberUtils.stripSeparators(sendAddress));
+        Intent intent = new Intent(Intent.ACTION_CALL);
+        intent.setData(telUri);
+        startActivity(intent);
     }
 
     @Override
@@ -132,6 +155,18 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
     @Override
     public void isNotDefaultSmsApp() {
         uiController.showDisabledBanner();
+    }
+
+    @Override
+    public void onSecondaryVisible() {
+        isSecondaryVisible = true;
+        invalidateOptionsMenu();
+    }
+
+    @Override
+    public void onSecondaryHidden() {
+        isSecondaryVisible = false;
+        invalidateOptionsMenu();
     }
 
     public static class EmptyFragment extends Fragment {

@@ -22,6 +22,9 @@ import android.database.Cursor;
 import android.os.Bundle;
 import android.text.util.Linkify;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -77,6 +80,7 @@ public class ThreadFragment extends ListeningCursorListFragment<SmsMessage> impl
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        setHasOptionsMenu(true);
         sendAddress = getArguments().getString(ADDRESS);
         source = new ThreadMessageAdaptiveCursorSource();
         adapter = new SourceBinderAdapter<SmsMessage>(getActivity(), source, new ThreadBinder());
@@ -94,6 +98,23 @@ public class ThreadFragment extends ListeningCursorListFragment<SmsMessage> impl
     @Override
     public void loadData(MessagesLoader loader, boolean isRefresh) {
         loader.loadThread(getThreadId(), this);
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.fragment_thread, menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+
+            case R.id.menu_call:
+                listener.callNumber(sendAddress);
+                return true;
+
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     private String getThreadId() {
@@ -114,7 +135,7 @@ public class ThreadFragment extends ListeningCursorListFragment<SmsMessage> impl
 
     @Override
     public void onMessageComposed(CharSequence body) {
-        listener.onSendMessage(sendAddress, String.valueOf(body));
+        listener.sendSms(sendAddress, String.valueOf(body));
     }
 
     private class ThreadBinder extends SimpleBinder<SmsMessage> {
@@ -172,7 +193,9 @@ public class ThreadFragment extends ListeningCursorListFragment<SmsMessage> impl
     }
 
     public interface Listener {
-        void onSendMessage(String address, String message);
+        void sendSms(String address, String message);
+
+        void callNumber(String sendAddress);
     }
 
 }
