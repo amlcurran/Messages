@@ -57,7 +57,7 @@ public class NotificationBuilder {
                 .build();
     }
 
-    private CharSequence buildSenderList(List<Conversation> conversations) {
+    private static CharSequence buildSenderList(List<Conversation> conversations) {
         String result = "";
         for (Conversation conversation : conversations) {
             result += conversation.getName() + ", ";
@@ -65,11 +65,11 @@ public class NotificationBuilder {
         return result.substring(0, result.length() - 2);
     }
 
-    private CharSequence buildListSummary(List<Conversation> conversations) {
-        return String.format("%1$d unread conversations", conversations.size());
+    private static CharSequence buildListSummary(List<Conversation> conversations) {
+        return String.format("%1$d new messages", conversations.size());
     }
 
-    private Notification.Style buildInboxStyle(List<Conversation> conversations) {
+    private static Notification.Style buildInboxStyle(List<Conversation> conversations) {
         Notification.InboxStyle inboxStyle = new Notification.InboxStyle();
         for (Conversation conversation : conversations) {
             inboxStyle.addLine(getInboxLine(conversation));
@@ -77,7 +77,7 @@ public class NotificationBuilder {
         return inboxStyle;
     }
 
-    private CharSequence getInboxLine(Conversation conversation) {
+    private static CharSequence getInboxLine(Conversation conversation) {
         SpannableStringBuilder builder = new SpannableStringBuilder();
         builder.append(conversation.getName());
         builder.setSpan(new StyleSpan(Typeface.BOLD), 0, builder.length(), Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
