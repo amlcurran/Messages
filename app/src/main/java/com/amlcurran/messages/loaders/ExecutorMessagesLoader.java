@@ -29,7 +29,7 @@ import android.provider.ContactsContract;
 import android.provider.Telephony;
 
 import com.amlcurran.messages.R;
-import com.amlcurran.messages.adapters.CursorHelper;
+import com.espian.utils.CursorHelper;
 import com.amlcurran.messages.conversationlist.Conversation;
 import com.amlcurran.messages.conversationlist.ConversationListListener;
 import com.amlcurran.messages.conversationlist.PhotoLoadListener;

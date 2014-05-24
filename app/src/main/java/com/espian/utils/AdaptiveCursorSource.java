@@ -14,11 +14,9 @@
  * limitations under the License.
  */
 
-package com.amlcurran.messages.adapters;
+package com.espian.utils;
 
 import android.database.Cursor;
-
-import com.espian.utils.Source;
 
 public abstract class AdaptiveCursorSource<T> implements Source<T> {
 

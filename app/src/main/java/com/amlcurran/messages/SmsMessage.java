@@ -22,7 +22,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.provider.Telephony;
 
-import com.amlcurran.messages.adapters.CursorHelper;
+import com.espian.utils.CursorHelper;
 
 public class SmsMessage implements Parcelable {
 

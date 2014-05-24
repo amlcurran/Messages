@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.amlcurran.messages.adapters;
+package com.espian.utils;
 
 import android.database.Cursor;
 
