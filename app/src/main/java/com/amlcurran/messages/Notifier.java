@@ -31,7 +31,7 @@ public class Notifier {
     private final Context context;
     private final NotificationBuilder notificationBuilder;
 
-    public Notifier(Context context) {
+    Notifier(Context context) {
         this.context = context;
         this.notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
         this.notificationBuilder = new NotificationBuilder(context);

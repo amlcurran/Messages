@@ -27,11 +27,13 @@ import java.util.concurrent.Executors;
 public class MessagesApp extends Application {
 
     private MessagesLoader loader;
+    private Notifier notifier;
 
     @Override
     public void onCreate() {
         super.onCreate();
         loader = new ExecutorMessagesLoader(this, Executors.newCachedThreadPool());
+        notifier = new Notifier(this);
     }
 
     @Override
@@ -42,6 +44,10 @@ public class MessagesApp extends Application {
 
     public static MessagesLoader getMessagesLoader(Context context) {
         return ((MessagesApp) context.getApplicationContext()).loader;
+    }
+
+    public static Notifier getNotifier(Context context) {
+        return ((MessagesApp) context.getApplicationContext()).notifier;
     }
 
 }

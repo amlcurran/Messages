@@ -29,7 +29,6 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
     public static final int REQUEST_CHANGE_SMS_APP = 20;
 
     private UiController uiController;
-    private Notifier notifier;
     private DefaultAppChecker appChecker;
 
     @Override
@@ -38,7 +37,6 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
         uiController = new SlidingPaneUiController(this);
         setContentView(uiController.getView());
 
-        notifier = new Notifier(this);
         appChecker = new DefaultAppChecker(this, this);
         uiController.getDisabledBanner().setOnClickListener(this);
 
@@ -57,9 +55,9 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
     }
 
     @Override
-    protected void onStart() {
-        super.onStart();
-        notifier.clearNewMessagesNotification();
+    protected void onResume() {
+        super.onResume();
+        MessagesApp.getNotifier(this).clearNewMessagesNotification();
         appChecker.checkSmsApp();
     }
 
@@ -71,7 +69,6 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        appChecker.checkSmsApp();
         Log.d("MessagesActivity", String.format("%1$s, %2$s, %3$s", requestCode, resultCode, String.valueOf(data)));
         super.onActivityResult(requestCode, resultCode, data);
     }
