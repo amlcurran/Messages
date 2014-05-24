@@ -128,7 +128,17 @@ public class ThreadFragment extends ListeningCursorListFragment<SmsMessage> impl
             public void run() {
                 source.setCursor(cursor);
                 adapter.notifyDataSetChanged();
+                scrollToBottom();
                 getMessageLoader().markThreadAsRead(getThreadId());
+            }
+        });
+    }
+
+    private void scrollToBottom() {
+        getListView().post(new Runnable() {
+            @Override
+            public void run() {
+                getListView().smoothScrollToPosition(source.getCount() -1);
             }
         });
     }
