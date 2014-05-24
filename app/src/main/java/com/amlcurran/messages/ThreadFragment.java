@@ -1,4 +1,20 @@
-package com.amlcurran.messages.threads;
+/*
+ * Copyright 2014 Alex Curran
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package com.amlcurran.messages;
 
 import android.app.Activity;
 import android.content.Context;
@@ -10,9 +26,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.amlcurran.messages.DefaultAppChecker;
-import com.amlcurran.messages.ListeningCursorListFragment;
-import com.amlcurran.messages.R;
 import com.amlcurran.messages.adapters.AdaptiveCursorSource;
 import com.amlcurran.messages.loaders.CursorLoadListener;
 import com.amlcurran.messages.loaders.MessagesLoader;
@@ -25,7 +38,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public class ThreadFragment extends ListeningCursorListFragment<ThreadMessage> implements CursorLoadListener, ComposeMessageView.OnMessageComposedListener {
+public class ThreadFragment extends ListeningCursorListFragment<SmsMessage> implements CursorLoadListener, ComposeMessageView.OnMessageComposedListener {
 
     private static final String THREAD_ID = "threadId";
     private static final String ADDRESS = "address";
@@ -49,10 +62,8 @@ public class ThreadFragment extends ListeningCursorListFragment<ThreadMessage> i
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_thread, container, false);
-
         composeView = ((ComposeMessageView) view.findViewById(R.id.thread_compose_view));
         composeView.setComposeListener(this);
-
         return view;
     }
 
@@ -67,7 +78,7 @@ public class ThreadFragment extends ListeningCursorListFragment<ThreadMessage> i
         super.onActivityCreated(savedInstanceState);
         sendAddress = getArguments().getString(ADDRESS);
         source = new ThreadMessageAdaptiveCursorSource();
-        adapter = new SourceBinderAdapter<ThreadMessage>(getActivity(), source, new ThreadBinder());
+        adapter = new SourceBinderAdapter<SmsMessage>(getActivity(), source, new ThreadBinder());
         defaultChecker = new DefaultAppChecker(getActivity(), composeView);
         setListAdapter(adapter);
         getListView().setStackFromBottom(true);
@@ -105,7 +116,7 @@ public class ThreadFragment extends ListeningCursorListFragment<ThreadMessage> i
         listener.onSendMessage(sendAddress, String.valueOf(body));
     }
 
-    private class ThreadBinder extends SimpleBinder<ThreadMessage> {
+    private class ThreadBinder extends SimpleBinder<SmsMessage> {
 
         private static final int ITEM_ME = 0;
         private static final int ITEM_THEM = 1;
@@ -113,7 +124,7 @@ public class ThreadFragment extends ListeningCursorListFragment<ThreadMessage> i
         private final Date date = new Date();
 
         @Override
-        public View bindView(View convertView, ThreadMessage item, int position) {
+        public View bindView(View convertView, SmsMessage item, int position) {
 
             date.setTime(item.getTimestamp());
 
@@ -141,7 +152,7 @@ public class ThreadFragment extends ListeningCursorListFragment<ThreadMessage> i
         }
 
         @Override
-        public int getItemViewType(int position, ThreadMessage item) {
+        public int getItemViewType(int position, SmsMessage item) {
             return item.isFromMe() ? ITEM_ME : ITEM_THEM;
         }
 
@@ -151,11 +162,11 @@ public class ThreadFragment extends ListeningCursorListFragment<ThreadMessage> i
 
     }
 
-    private static class ThreadMessageAdaptiveCursorSource extends AdaptiveCursorSource<ThreadMessage> {
+    private static class ThreadMessageAdaptiveCursorSource extends AdaptiveCursorSource<SmsMessage> {
 
         @Override
-        public ThreadMessage getFromCursorRow(Cursor cursor) {
-            return ThreadMessage.fromCursor(cursor);
+        public SmsMessage getFromCursorRow(Cursor cursor) {
+            return SmsMessage.fromCursor(cursor);
         }
     }
 

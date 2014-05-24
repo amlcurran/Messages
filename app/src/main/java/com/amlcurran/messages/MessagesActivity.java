@@ -1,3 +1,19 @@
+/*
+ * Copyright 2014 Alex Curran
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.amlcurran.messages;
 
 import android.app.Activity;
@@ -16,7 +32,6 @@ import com.amlcurran.messages.conversationlist.Conversation;
 import com.amlcurran.messages.conversationlist.ConversationListFragment;
 import com.amlcurran.messages.loaders.MessagesLoader;
 import com.amlcurran.messages.loaders.MessagesLoaderProvider;
-import com.amlcurran.messages.threads.ThreadFragment;
 import com.amlcurran.messages.ui.SlidingPaneUiController;
 import com.amlcurran.messages.ui.UiController;
 
@@ -94,7 +109,7 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
     @Override
     public void onSendMessage(String address, String body) {
         long timestamp = Calendar.getInstance().getTimeInMillis();
-        SmsMessage message = new SmsMessage(address, body, timestamp);
+        SmsMessage message = new SmsMessage(address, body, timestamp, true);
         Intent intent = new Intent(this, SmsSender.class);
         intent.setAction(SmsSender.ACTION_SEND_REQUEST);
         intent.putExtra(SmsSender.EXTRA_MESSAGE, message);

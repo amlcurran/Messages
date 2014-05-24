@@ -95,14 +95,14 @@ public class ExecutorMessagesLoader implements MessagesLoader {
     }
 
     private static Uri createPhoneLookupUri(Cursor conversationsList) {
-        String phoneRaw = CursorHelper.fromColumn(conversationsList, Telephony.Sms.ADDRESS);
+        String phoneRaw = CursorHelper.asString(conversationsList, Telephony.Sms.ADDRESS);
         return Uri.withAppendedPath(ContactsContract.CommonDataKinds.Phone.CONTENT_FILTER_URI, Uri.encode(phoneRaw));
     }
 
     private static String getPersonName(Cursor peopleCursor) {
         String result = null;
         if (peopleCursor.moveToFirst()) {
-            result = CursorHelper.fromColumn(peopleCursor, ContactsContract.CommonDataKinds.Identity.DISPLAY_NAME_PRIMARY);
+            result = CursorHelper.asString(peopleCursor, ContactsContract.CommonDataKinds.Identity.DISPLAY_NAME_PRIMARY);
         }
         return result;
     }
