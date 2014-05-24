@@ -16,6 +16,7 @@
 
 package com.amlcurran.messages;
 
+import android.app.Activity;
 import android.app.IntentService;
 import android.app.PendingIntent;
 import android.content.Intent;
@@ -47,15 +48,29 @@ public class SmsSender extends IntentService implements SmsDatabaseWriter.SentWr
     }
 
     @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        return super.onStartCommand(intent, flags, startId);
+    }
+
+    @Override
     protected void onHandleIntent(Intent intent) {
         Log.d(TAG, intent.toString());
         if (isSendRequest(intent)) {
             SmsMessage message = intent.getParcelableExtra(EXTRA_MESSAGE);
             sendMessage(message);
         } else if (isSentNotification(intent)) {
+            int result = intent.getIntExtra("result", 0);
             SmsMessage message = intent.getParcelableExtra(EXTRA_MESSAGE);
-            writeMessageToProvider(message);
+            if (result == Activity.RESULT_OK) {
+                writeMessageToProvider(message);
+            } else {
+                notifyFailureToSend(message, result);
+            }
         }
+    }
+
+    private void notifyFailureToSend(SmsMessage message, int result) {
+        MessagesApp.getNotifier(this).showSendError(message);
     }
 
     private void writeMessageToProvider(SmsMessage message) {
@@ -75,10 +90,9 @@ public class SmsSender extends IntentService implements SmsDatabaseWriter.SentWr
     }
 
     private ArrayList<PendingIntent> getMessageSendIntents(SmsMessage message) {
-        Intent intent = new Intent(ACTION_MESSAGE_SENT);
+        Intent intent = new Intent(this, SmsReceiver.class);
         intent.putExtra(EXTRA_MESSAGE, message);
-        intent.setClass(this, SmsSender.class);
-        PendingIntent pendingIntent = PendingIntent.getService(this, message.hashCode(), intent, PendingIntent.FLAG_CANCEL_CURRENT);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 2, intent, 0);
         ArrayList<PendingIntent> pendingIntents = new ArrayList<PendingIntent>();
         pendingIntents.add(pendingIntent);
         return pendingIntents;

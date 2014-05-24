@@ -21,12 +21,14 @@ import android.content.Context;
 
 import com.amlcurran.messages.data.Conversation;
 import com.amlcurran.messages.conversationlist.ConversationListListener;
+import com.amlcurran.messages.data.SmsMessage;
 
 import java.util.List;
 
 public class Notifier {
 
     private static final int NOTIFICATION_UNREAD_MESSAGES = 22;
+    private static final int NOTIFICATION_SEND_ERROR = 44;
     private final NotificationManager notificationManager;
     private final Context context;
     private final NotificationBuilder notificationBuilder;
@@ -50,4 +52,7 @@ public class Notifier {
         notificationManager.cancel(NOTIFICATION_UNREAD_MESSAGES);
     }
 
+    public void showSendError(SmsMessage message) {
+        notificationManager.notify(NOTIFICATION_SEND_ERROR, notificationBuilder.buildErrorNotification(message));
+    }
 }

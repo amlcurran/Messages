@@ -38,8 +38,19 @@ public class SmsReceiver extends BroadcastReceiver implements SmsDatabaseWriter.
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        android.telephony.SmsMessage[] messages = Telephony.Sms.Intents.getMessagesFromIntent(intent);
-        writeSmsToProvider(context, SmsMessage.fromDeliverBroadcast(messages));
+        Log.d(TAG, "onReceive: " + intent.toString());
+        if (Telephony.Sms.Intents.SMS_DELIVER_ACTION.equals(intent.getAction())) {
+            android.telephony.SmsMessage[] messages = Telephony.Sms.Intents.getMessagesFromIntent(intent);
+            writeSmsToProvider(context, SmsMessage.fromDeliverBroadcast(messages));
+        } else {
+            Log.d(TAG, "Forwarding sent result to SmsSender");
+            Intent intent2 = new Intent(context, SmsSender.class);
+            intent2.setAction(SmsSender.ACTION_MESSAGE_SENT);
+            intent2.putExtras(intent.getExtras());
+            int resultCode = getResultCode();
+            intent2.putExtra("result", resultCode);
+            context.startService(intent2);
+        }
     }
 
     private void sendLocalBroadcast(Context context) {

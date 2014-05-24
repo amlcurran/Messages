@@ -11,5 +11,7 @@
     <string name="call">Call</string>
     <string name="view_contact">View contact</string>
     <string name="delete_thread">Delete thread</string>
+    <string name="failed_to_send_message">Failed to send message</string>
+    <string name="couldnt_send_to">Couldn\'t send to %1$s</string>
 
 </resources>

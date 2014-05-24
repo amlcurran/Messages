@@ -28,6 +28,7 @@ import android.text.style.ForegroundColorSpan;
 import android.text.style.StyleSpan;
 
 import com.amlcurran.messages.data.Conversation;
+import com.amlcurran.messages.data.SmsMessage;
 
 import java.util.Calendar;
 import java.util.List;
@@ -121,5 +122,18 @@ public class NotificationBuilder {
                 .setContentIntent(pendingIntent)
                 .setVibrate(VIBRATE_PATTERN)
                 .setSmallIcon(R.drawable.ic_notify_sms);
+    }
+
+    public Notification buildErrorNotification(SmsMessage message) {
+        return getDefaultBuilder()
+                .setContentTitle(string(R.string.failed_to_send_message))
+                .setTicker(string(R.string.failed_to_send_message))
+                .setContentText(context.getString(R.string.couldnt_send_to, message.getAddress()))
+                .setSmallIcon(R.drawable.ic_notify_error)
+                .build();
+    }
+
+    private String string(int resId) {
+        return context.getString(resId);
     }
 }
