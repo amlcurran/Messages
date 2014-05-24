@@ -9,5 +9,7 @@
     <string name="hint_send_message_disabled">Sending is disabled</string>
     <string name="cd_send_button">Send an SMS</string>
     <string name="call">Call</string>
+    <string name="view_contact">View contact</string>
+    <string name="delete_thread">Delete thread</string>
 
 </resources>

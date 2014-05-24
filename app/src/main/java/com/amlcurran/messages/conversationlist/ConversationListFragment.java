@@ -35,7 +35,7 @@ import com.espian.utils.SourceBinderAdapter;
 
 import java.util.List;
 
-public class ConversationListFragment extends ListeningCursorListFragment<Conversation> implements ConversationListListener, AdapterView.OnItemClickListener {
+public class ConversationListFragment extends ListeningCursorListFragment<Conversation> implements ConversationListListener, AdapterView.OnItemClickListener, AdapterView.OnItemLongClickListener {
 
     protected SourceBinderAdapter<Conversation> adapter;
     protected ListArraySource<Conversation> source;
@@ -61,6 +61,7 @@ public class ConversationListFragment extends ListeningCursorListFragment<Conver
         setListAdapter(adapter);
         getListView().setChoiceMode(ListView.CHOICE_MODE_SINGLE);
         getListView().setOnItemClickListener(this);
+        getListView().setOnItemLongClickListener(this);
     }
 
     @Override
@@ -80,6 +81,12 @@ public class ConversationListFragment extends ListeningCursorListFragment<Conver
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         listener.onConversationSelected(source.getAtPosition(position));
+    }
+
+    @Override
+    public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+        listener.onConversationModalSelected(source.getAtPosition(position));
+        return true;
     }
 
     @Override
@@ -107,6 +114,8 @@ public class ConversationListFragment extends ListeningCursorListFragment<Conver
 
     public interface Listener {
         void onConversationSelected(Conversation conversation);
+
+        void onConversationModalSelected(Conversation conversation);
     }
 
 }

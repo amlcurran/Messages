@@ -23,6 +23,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.provider.Telephony;
+import android.support.v4.content.LocalBroadcastManager;
 import android.telephony.PhoneNumberUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -30,12 +31,14 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.amlcurran.messages.conversationlist.ConversationListFragment;
 import com.amlcurran.messages.data.Conversation;
 import com.amlcurran.messages.data.SmsMessage;
 import com.amlcurran.messages.loaders.MessagesLoader;
 import com.amlcurran.messages.loaders.MessagesLoaderProvider;
+import com.amlcurran.messages.loaders.OnThreadDeleteListener;
 import com.amlcurran.messages.ui.SlidingPaneUiController;
 import com.amlcurran.messages.ui.UiController;
 import com.espian.utils.MenuFinder;
@@ -44,7 +47,7 @@ import java.util.Calendar;
 
 public class MessagesActivity extends Activity implements MessagesLoaderProvider,
         ConversationListFragment.Listener, ThreadFragment.Listener, View.OnClickListener,
-        DefaultAppChecker.Callback, SlidingPaneUiController.UiCallback {
+        DefaultAppChecker.Callback, SlidingPaneUiController.UiCallback, ConversationModalMarshall.Callback, OnThreadDeleteListener {
 
     public static final int REQUEST_CHANGE_SMS_APP = 20;
 
@@ -123,6 +126,11 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
     }
 
     @Override
+    public void onConversationModalSelected(Conversation conversation) {
+        startActionMode(new ConversationModalMarshall(conversation, this));
+    }
+
+    @Override
     public void sendSms(String address, String body) {
         long timestamp = Calendar.getInstance().getTimeInMillis();
         SmsMessage message = new SmsMessage(address, body, timestamp, true);
@@ -167,6 +175,36 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
     public void onSecondaryHidden() {
         isSecondaryVisible = false;
         invalidateOptionsMenu();
+    }
+
+    @Override
+    public void viewContact(String address) {
+        getMessagesLoader().queryContact(address, new OnContactQueryListener() {
+
+            @Override
+            public void contactLoaded(Uri contactUri) {
+                Intent viewIntent = new Intent(Intent.ACTION_VIEW);
+                viewIntent.setData(contactUri);
+                startActivity(viewIntent);
+            }
+        });
+    }
+
+    @Override
+    public void deleteThread(Conversation conversation) {
+        getMessagesLoader().deleteThread(conversation, this);
+    }
+
+    @Override
+     public void threadDeleted(final Conversation conversation) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                String toast = String.format("Deleted thread from %1$s", conversation.getName());
+                Toast.makeText(MessagesActivity.this, toast, Toast.LENGTH_SHORT).show();
+                LocalBroadcastManager.getInstance(MessagesActivity.this).sendBroadcast(new Intent(SmsSender.BROADCAST_MESSAGE_SENT));
+            }
+        });
     }
 
     public static class EmptyFragment extends Fragment {

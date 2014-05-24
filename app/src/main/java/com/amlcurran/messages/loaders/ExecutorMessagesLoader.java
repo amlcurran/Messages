@@ -28,11 +28,12 @@ import android.net.Uri;
 import android.provider.ContactsContract;
 import android.provider.Telephony;
 
+import com.amlcurran.messages.OnContactQueryListener;
 import com.amlcurran.messages.R;
-import com.espian.utils.CursorHelper;
-import com.amlcurran.messages.data.Conversation;
 import com.amlcurran.messages.conversationlist.ConversationListListener;
 import com.amlcurran.messages.conversationlist.PhotoLoadListener;
+import com.amlcurran.messages.data.Conversation;
+import com.espian.utils.CursorHelper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -96,6 +97,10 @@ public class ExecutorMessagesLoader implements MessagesLoader {
 
     private static Uri createPhoneLookupUri(Cursor conversationsList) {
         String phoneRaw = CursorHelper.asString(conversationsList, Telephony.Sms.ADDRESS);
+        return createPhoneLookupUri(phoneRaw);
+    }
+
+    private static Uri createPhoneLookupUri(String phoneRaw) {
         return Uri.withAppendedPath(ContactsContract.CommonDataKinds.Phone.CONTENT_FILTER_URI, Uri.encode(phoneRaw));
     }
 
@@ -175,6 +180,38 @@ public class ExecutorMessagesLoader implements MessagesLoader {
     @Override
     public void cancelAll() {
         executor.shutdownNow();
+    }
+
+    @Override
+    public void queryContact(final String address, final OnContactQueryListener onContactQueryListener) {
+        executor.submit(new Callable<Object>() {
+            @Override
+            public Object call() throws Exception {
+                Cursor result = getResolver().query(createPhoneLookupUri(address), new String[] { ContactsContract.Contacts._ID, ContactsContract.Contacts.LOOKUP_KEY },
+                        null, null, null);
+                if (result.moveToFirst()) {
+                    String lookupKey = CursorHelper.asString(result, ContactsContract.Contacts.LOOKUP_KEY);
+                    long id = CursorHelper.asLong(result, ContactsContract.Contacts._ID);
+                    Uri lookupUri = ContactsContract.Contacts.getLookupUri(id, lookupKey);
+                    onContactQueryListener.contactLoaded(ContactsContract.Contacts.lookupContact(getResolver(), lookupUri));
+                }
+                return null;
+            }
+        });
+    }
+
+    @Override
+    public void deleteThread(final Conversation conversation, final OnThreadDeleteListener threadDeleteListener) {
+        executor.submit(new Callable<Object>() {
+            @Override
+            public Object call() throws Exception {
+                String where = Telephony.Sms.THREAD_ID + "=?";
+                String[] args = new String[] {conversation.getThreadId()};
+                getResolver().delete(Telephony.Sms.CONTENT_URI, where, args);
+                threadDeleteListener.threadDeleted(conversation);
+                return null;
+            }
+        });
     }
 
     private static ContentValues createReadContentValues() {

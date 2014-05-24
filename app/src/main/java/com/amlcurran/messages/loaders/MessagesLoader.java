@@ -16,8 +16,10 @@
 
 package com.amlcurran.messages.loaders;
 
+import com.amlcurran.messages.OnContactQueryListener;
 import com.amlcurran.messages.conversationlist.ConversationListListener;
 import com.amlcurran.messages.conversationlist.PhotoLoadListener;
+import com.amlcurran.messages.data.Conversation;
 
 public interface MessagesLoader {
     void loadConversationList(ConversationListListener loadListener);
@@ -31,4 +33,8 @@ public interface MessagesLoader {
     void loadUnreadConversationList(ConversationListListener loadListener);
 
     void cancelAll();
+
+    void queryContact(String address, OnContactQueryListener onContactQueryListener);
+
+    void deleteThread(Conversation conversation, OnThreadDeleteListener threadDeleteListener);
 }
