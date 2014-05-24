@@ -70,8 +70,10 @@ public class ConversationListFragment extends ListeningCursorListFragment<Conver
     }
 
     @Override
-    public void loadData(MessagesLoader loader) {
-        showLoadingUi();
+    public void loadData(MessagesLoader loader, boolean isRefresh) {
+        if (!isRefresh) {
+            showLoadingUi();
+        }
         loader.loadConversationList(this);
     }
 

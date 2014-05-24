@@ -44,7 +44,7 @@ public abstract class ListeningCursorListFragment<T> extends ListFragment implem
     @Override
     public void onStart() {
         super.onStart();
-        loadData(messageLoader);
+        loadData(messageLoader, false);
         messageReceiver.startListening();
     }
 
@@ -60,10 +60,10 @@ public abstract class ListeningCursorListFragment<T> extends ListFragment implem
 
     @Override
     public void onMessageReceived() {
-        loadData(messageLoader);
+        loadData(messageLoader, true);
     }
 
-    public abstract void loadData(MessagesLoader loader);
+    public abstract void loadData(MessagesLoader loader, boolean isRefresh);
 
     protected final void onUiThread(Runnable runnable) {
         getActivity().runOnUiThread(runnable);

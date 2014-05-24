@@ -92,7 +92,7 @@ public class ThreadFragment extends ListeningCursorListFragment<SmsMessage> impl
     }
 
     @Override
-    public void loadData(MessagesLoader loader) {
+    public void loadData(MessagesLoader loader, boolean isRefresh) {
         loader.loadThread(getThreadId(), this);
     }
 

@@ -20,9 +20,11 @@ import android.app.Notification;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.graphics.Typeface;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
+import android.text.style.ForegroundColorSpan;
 import android.text.style.StyleSpan;
 
 import com.amlcurran.messages.data.Conversation;
@@ -80,7 +82,8 @@ public class NotificationBuilder {
     private static CharSequence getInboxLine(Conversation conversation) {
         SpannableStringBuilder builder = new SpannableStringBuilder();
         builder.append(conversation.getName());
-        builder.setSpan(new StyleSpan(Typeface.BOLD), 0, builder.length(), Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
+        ForegroundColorSpan colorSpan = new ForegroundColorSpan(Color.parseColor("#cccccc"));
+        builder.setSpan(colorSpan, 0, builder.length(), Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
         builder.append(" ");
         builder.append(conversation.getBody());
         return builder;
