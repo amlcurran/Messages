@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.amlcurran.messages.conversationlist;
+package com.amlcurran.messages.data;
 
 import android.database.Cursor;
 import android.provider.Telephony;

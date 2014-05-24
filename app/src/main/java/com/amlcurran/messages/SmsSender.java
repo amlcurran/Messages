@@ -23,6 +23,8 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.telephony.SmsManager;
 import android.util.Log;
 
+import com.amlcurran.messages.data.SmsMessage;
+
 import java.util.ArrayList;
 
 public class SmsSender extends IntentService implements SmsDatabaseWriter.SentWriteListener {

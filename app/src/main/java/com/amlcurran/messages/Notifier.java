@@ -19,7 +19,7 @@ package com.amlcurran.messages;
 import android.app.NotificationManager;
 import android.content.Context;
 
-import com.amlcurran.messages.conversationlist.Conversation;
+import com.amlcurran.messages.data.Conversation;
 import com.amlcurran.messages.conversationlist.ConversationListListener;
 
 import java.util.List;

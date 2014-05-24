@@ -26,6 +26,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.amlcurran.messages.data.SmsMessage;
 import com.espian.utils.AdaptiveCursorSource;
 import com.amlcurran.messages.loaders.CursorLoadListener;
 import com.amlcurran.messages.loaders.MessagesLoader;

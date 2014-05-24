@@ -25,7 +25,7 @@ import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.style.StyleSpan;
 
-import com.amlcurran.messages.conversationlist.Conversation;
+import com.amlcurran.messages.data.Conversation;
 
 import java.util.Calendar;
 import java.util.List;

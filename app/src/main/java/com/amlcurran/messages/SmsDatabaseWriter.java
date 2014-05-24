@@ -21,6 +21,8 @@ import android.content.ContentValues;
 import android.net.Uri;
 import android.provider.Telephony;
 
+import com.amlcurran.messages.data.SmsMessage;
+
 public class SmsDatabaseWriter {
 
     public void writeSentMessage(final ContentResolver contentResolver,

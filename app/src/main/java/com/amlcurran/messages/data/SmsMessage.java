@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.amlcurran.messages;
+package com.amlcurran.messages.data;
 
 import android.content.ContentValues;
 import android.database.Cursor;

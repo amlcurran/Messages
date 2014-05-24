@@ -30,7 +30,7 @@ import android.provider.Telephony;
 
 import com.amlcurran.messages.R;
 import com.espian.utils.CursorHelper;
-import com.amlcurran.messages.conversationlist.Conversation;
+import com.amlcurran.messages.data.Conversation;
 import com.amlcurran.messages.conversationlist.ConversationListListener;
 import com.amlcurran.messages.conversationlist.PhotoLoadListener;
 

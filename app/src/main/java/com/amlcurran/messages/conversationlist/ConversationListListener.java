@@ -16,6 +16,8 @@
 
 package com.amlcurran.messages.conversationlist;
 
+import com.amlcurran.messages.data.Conversation;
+
 import java.util.List;
 
 public interface ConversationListListener {

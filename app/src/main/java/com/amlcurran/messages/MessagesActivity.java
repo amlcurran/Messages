@@ -28,8 +28,9 @@ import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.amlcurran.messages.conversationlist.Conversation;
+import com.amlcurran.messages.data.Conversation;
 import com.amlcurran.messages.conversationlist.ConversationListFragment;
+import com.amlcurran.messages.data.SmsMessage;
 import com.amlcurran.messages.loaders.MessagesLoader;
 import com.amlcurran.messages.loaders.MessagesLoaderProvider;
 import com.amlcurran.messages.ui.SlidingPaneUiController;

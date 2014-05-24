@@ -23,6 +23,8 @@ import android.provider.Telephony;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
+import com.amlcurran.messages.data.SmsMessage;
+
 public class SmsReceiver extends BroadcastReceiver implements SmsDatabaseWriter.InboxWriteListener {
 
     public static final String TAG = SmsReceiver.class.getSimpleName();
@@ -37,7 +39,7 @@ public class SmsReceiver extends BroadcastReceiver implements SmsDatabaseWriter.
     @Override
     public void onReceive(Context context, Intent intent) {
         android.telephony.SmsMessage[] messages = Telephony.Sms.Intents.getMessagesFromIntent(intent);
-        writeSmsToProvider(context, com.amlcurran.messages.SmsMessage.fromDeliverBroadcast(messages));
+        writeSmsToProvider(context, SmsMessage.fromDeliverBroadcast(messages));
     }
 
     private void sendLocalBroadcast(Context context) {
