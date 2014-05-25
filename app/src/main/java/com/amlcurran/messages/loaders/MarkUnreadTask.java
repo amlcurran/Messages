@@ -20,6 +20,7 @@ import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.provider.Telephony;
+import android.util.Log;
 
 import com.amlcurran.messages.data.Conversation;
 import com.espian.utils.data.CursorHelper;
@@ -49,9 +50,13 @@ class MarkUnreadTask implements Callable<Object> {
                         // This updates an unread message
                         String selection = String.format("%1$s=? AND %2$s=?", Telephony.Sms.THREAD_ID, Telephony.Sms._ID);
                         String[] args = new String[]{ conversation.getThreadId(), CursorHelper.asString(cursor, Telephony.Sms._ID)};
-                        contentResolver.update(Telephony.Sms.Inbox.CONTENT_URI, createUnreadContentValues(), selection, args);
+                        int updated = contentResolver.update(Telephony.Sms.Inbox.CONTENT_URI, createUnreadContentValues(), selection, args);
+                        if (updated == 0) {
+                            Log.w("MarkUnreadTask", "Couldn't mark conversation " + conversation.toString() + " as read");
+                        }
 
                     }
+                    cursor.close();
                 }
             }).call();
         }

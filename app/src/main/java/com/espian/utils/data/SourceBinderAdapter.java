@@ -55,6 +55,11 @@ public class SourceBinderAdapter<T> extends BaseAdapter {
     }
 
     @Override
+    public boolean hasStableIds() {
+        return true;
+    }
+
+    @Override
     public long getItemId(int i) {
         return 0;
     }
