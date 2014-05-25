@@ -69,8 +69,10 @@ public class SmsDatabaseWriter {
         }
     }
 
-    public void deleteOutboxMessage(ContentResolver contentResolver, Uri outboxSms) {
-        contentResolver.delete(outboxSms, null, null);
+    public void deleteOutboxMessages(ContentResolver contentResolver, String outboundAddress) {
+        String selection = String.format("%1$s=? AND %2$s=?", Telephony.Sms.ADDRESS, Telephony.Sms.TYPE);
+        String[] args = new String[] { outboundAddress, String.valueOf(Telephony.Sms.MESSAGE_TYPE_OUTBOX) };
+        contentResolver.delete(Telephony.Sms.CONTENT_URI, selection, args);
     }
 
     public interface InboxWriteListener {

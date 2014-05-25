@@ -67,7 +67,7 @@ public class SmsSender extends IntentService implements SmsDatabaseWriter.SentWr
             SmsMessage message = intent.getParcelableExtra(EXTRA_MESSAGE);
             Uri outboxSms = Uri.parse(intent.getStringExtra(EXTRA_OUTBOX_URI));
             if (result == Activity.RESULT_OK) {
-                deleteOutboxSms(outboxSms);
+                deleteOutboxMessages(message.getAddress());
                 writeMessageToProvider(message);
             } else {
                 notifyFailureToSend(message, result);
@@ -75,8 +75,8 @@ public class SmsSender extends IntentService implements SmsDatabaseWriter.SentWr
         }
     }
 
-    private void deleteOutboxSms(Uri outboxSms) {
-        smsDatabaseWriter.deleteOutboxMessage(getContentResolver(), outboxSms);
+    private void deleteOutboxMessages(String address) {
+        smsDatabaseWriter.deleteOutboxMessages(getContentResolver(), address);
     }
 
     private void notifyFailureToSend(SmsMessage message, int result) {
