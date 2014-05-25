@@ -31,13 +31,13 @@ import android.widget.TextView;
 
 import com.amlcurran.messages.data.SmsMessage;
 import com.amlcurran.messages.telephony.DefaultAppChecker;
-import com.espian.utils.AdaptiveCursorSource;
+import com.espian.utils.data.AdaptiveCursorSource;
 import com.amlcurran.messages.loaders.CursorLoadListener;
 import com.amlcurran.messages.loaders.MessagesLoader;
 import com.amlcurran.messages.ui.ComposeMessageView;
 import com.espian.utils.ProviderHelper;
-import com.espian.utils.SimpleBinder;
-import com.espian.utils.SourceBinderAdapter;
+import com.espian.utils.data.SimpleBinder;
+import com.espian.utils.data.SourceBinderAdapter;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;

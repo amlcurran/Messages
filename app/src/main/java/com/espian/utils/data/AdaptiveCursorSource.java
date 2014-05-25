@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.espian.utils;
+package com.espian.utils.data;
 
 import android.content.ContentResolver;
 import android.database.CharArrayBuffer;

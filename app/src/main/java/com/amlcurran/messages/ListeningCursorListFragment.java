@@ -20,11 +20,11 @@ import android.app.ListFragment;
 import android.os.Bundle;
 
 import com.amlcurran.messages.telephony.LocalMessageReceiver;
-import com.espian.utils.AdaptiveCursorSource;
+import com.espian.utils.data.AdaptiveCursorSource;
 import com.amlcurran.messages.loaders.MessagesLoader;
 import com.amlcurran.messages.loaders.MessagesLoaderProvider;
 import com.espian.utils.ProviderHelper;
-import com.espian.utils.SourceBinderAdapter;
+import com.espian.utils.data.SourceBinderAdapter;
 
 /**
  * Defines a fragment that uses cursors from the Telephony API and listens to receiving of new messages

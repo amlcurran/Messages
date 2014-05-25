@@ -45,7 +45,7 @@ import com.amlcurran.messages.telephony.DefaultAppChecker;
 import com.amlcurran.messages.telephony.SmsSender;
 import com.amlcurran.messages.ui.SlidingPaneUiController;
 import com.amlcurran.messages.ui.UiController;
-import com.espian.utils.MenuFinder;
+import com.espian.utils.ui.MenuFinder;
 
 import java.util.Calendar;
 import java.util.List;

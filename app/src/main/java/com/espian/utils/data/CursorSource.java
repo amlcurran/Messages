@@ -14,31 +14,14 @@
  * limitations under the License.
  */
 
-package com.espian.utils;
+package com.espian.utils.data;
 
-import android.content.Context;
-import android.view.View;
+import android.database.Cursor;
 
-public abstract class SimpleBinder<T> implements Binder<T> {
+public class CursorSource extends AdaptiveCursorSource<Cursor> {
 
     @Override
-    public int getViewTypeCount() {
-        return 1;
+    public Cursor getFromCursorRow(Cursor cursor) {
+        return cursor;
     }
-
-    @Override
-    public int getSourcePosition(int position) {
-        return position;
-    }
-
-    @Override
-    public abstract View bindView(View convertView, T item, int position);
-
-    @Override
-    public int getItemViewType(int position, T item) {
-        return 0;
-    }
-
-    @Override
-    public abstract View createView(Context context, int itemViewType);
 }

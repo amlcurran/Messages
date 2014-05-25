@@ -20,7 +20,7 @@ import android.database.Cursor;
 import android.provider.Telephony;
 import android.text.TextUtils;
 
-import com.espian.utils.CursorHelper;
+import com.espian.utils.data.CursorHelper;
 
 public class Conversation {
 

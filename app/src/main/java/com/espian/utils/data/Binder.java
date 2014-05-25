@@ -14,14 +14,19 @@
  * limitations under the License.
  */
 
-package com.espian.utils;
+package com.espian.utils.data;
 
-import android.database.Cursor;
+import android.content.Context;
+import android.view.View;
 
-public class CursorSource extends AdaptiveCursorSource<Cursor> {
+public interface Binder<T> {
+    int getViewTypeCount();
 
-    @Override
-    public Cursor getFromCursorRow(Cursor cursor) {
-        return cursor;
-    }
+    int getSourcePosition(int position);
+
+    View bindView(View convertView, T item, int position);
+
+    int getItemViewType(int position, T item);
+
+    View createView(Context context, int itemViewType);
 }

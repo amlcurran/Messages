@@ -14,19 +14,31 @@
  * limitations under the License.
  */
 
-package com.espian.utils;
+package com.espian.utils.data;
 
 import android.content.Context;
 import android.view.View;
 
-public interface Binder<T> {
-    int getViewTypeCount();
+public abstract class SimpleBinder<T> implements Binder<T> {
 
-    int getSourcePosition(int position);
+    @Override
+    public int getViewTypeCount() {
+        return 1;
+    }
 
-    View bindView(View convertView, T item, int position);
+    @Override
+    public int getSourcePosition(int position) {
+        return position;
+    }
 
-    int getItemViewType(int position, T item);
+    @Override
+    public abstract View bindView(View convertView, T item, int position);
 
-    View createView(Context context, int itemViewType);
+    @Override
+    public int getItemViewType(int position, T item) {
+        return 0;
+    }
+
+    @Override
+    public abstract View createView(Context context, int itemViewType);
 }

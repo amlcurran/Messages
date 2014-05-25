@@ -32,7 +32,7 @@ import com.amlcurran.messages.R;
 import com.amlcurran.messages.data.Conversation;
 import com.amlcurran.messages.loaders.MessagesLoader;
 import com.espian.utils.ProviderHelper;
-import com.espian.utils.SourceBinderAdapter;
+import com.espian.utils.data.SourceBinderAdapter;
 
 import java.util.List;
 

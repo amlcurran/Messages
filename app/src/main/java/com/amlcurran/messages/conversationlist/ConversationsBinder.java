@@ -28,7 +28,7 @@ import android.widget.TextView;
 import com.amlcurran.messages.R;
 import com.amlcurran.messages.data.Conversation;
 import com.amlcurran.messages.loaders.MessagesLoader;
-import com.espian.utils.SimpleBinder;
+import com.espian.utils.data.SimpleBinder;
 
 public class ConversationsBinder extends SimpleBinder<Conversation> {
 

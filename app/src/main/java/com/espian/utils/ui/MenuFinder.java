@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.espian.utils;
+package com.espian.utils.ui;
 
 import android.content.Intent;
 import android.graphics.drawable.Drawable;

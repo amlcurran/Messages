@@ -16,7 +16,7 @@
 
 package com.amlcurran.messages.conversationlist;
 
-import com.espian.utils.Source;
+import com.espian.utils.data.Source;
 
 import java.util.ArrayList;
 import java.util.Collection;

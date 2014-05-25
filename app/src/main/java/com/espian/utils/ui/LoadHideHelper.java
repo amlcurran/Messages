@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.espian.utils;
+package com.espian.utils.ui;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -88,7 +88,7 @@ public class LoadHideHelper {
     /**
      * @param target                target {@link android.view.View} to hide
      * @param indeterminateProgress should the ProgressBar be indeterminate.
-     * @throws com.espian.utils.LoadHideHelper.IllegalParentViewException If the parent of the target is not a {@link android.widget.FrameLayout}
+     * @throws LoadHideHelper.IllegalParentViewException If the parent of the target is not a {@link android.widget.FrameLayout}
      */
     public LoadHideHelper(View target, boolean indeterminateProgress) {
         // Validate and init

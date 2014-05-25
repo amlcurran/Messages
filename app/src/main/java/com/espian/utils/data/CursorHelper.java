@@ -14,10 +14,21 @@
  * limitations under the License.
  */
 
-package com.espian.utils;
+package com.espian.utils.data;
 
-public interface Source<T> {
-    T getAtPosition(int position);
+import android.database.Cursor;
 
-    int getCount();
+public class CursorHelper {
+
+    public static String asString(Cursor cursor, String columnName) {
+        return cursor.getString(cursor.getColumnIndex(columnName));
+    }
+
+    public static long asLong(Cursor cursor, String columnName) {
+        return cursor.getLong(cursor.getColumnIndex(columnName));
+    }
+
+    public static int asInt(Cursor cursor, String columnName) {
+        return cursor.getInt(cursor.getColumnIndex(columnName));
+    }
 }

@@ -22,7 +22,7 @@ import android.database.Cursor;
 import android.provider.Telephony;
 
 import com.amlcurran.messages.data.Conversation;
-import com.espian.utils.CursorHelper;
+import com.espian.utils.data.CursorHelper;
 
 import java.util.List;
 import java.util.concurrent.Callable;

@@ -24,7 +24,7 @@ import android.provider.Telephony;
 
 import com.amlcurran.messages.conversationlist.ConversationListListener;
 import com.amlcurran.messages.data.Conversation;
-import com.espian.utils.CursorHelper;
+import com.espian.utils.data.CursorHelper;
 
 import java.util.ArrayList;
 import java.util.List;
