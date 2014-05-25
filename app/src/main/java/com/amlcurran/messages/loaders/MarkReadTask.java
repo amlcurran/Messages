@@ -25,10 +25,12 @@ import java.util.concurrent.Callable;
 class MarkReadTask implements Callable<Object> {
     private final ContentResolver contentResolver;
     private final String threadId;
+    private final ConversationListChangeListener listChangeListener;
 
-    public MarkReadTask(ContentResolver contentResolver, String threadId) {
+    public MarkReadTask(ContentResolver contentResolver, String threadId, ConversationListChangeListener listChangeListener) {
         this.contentResolver = contentResolver;
         this.threadId = threadId;
+        this.listChangeListener = listChangeListener;
     }
 
     @Override
@@ -36,6 +38,7 @@ class MarkReadTask implements Callable<Object> {
         String selection = String.format("%1$s=? AND %2$s=?", Telephony.Sms.THREAD_ID, Telephony.Sms.READ);
         String[] args = new String[]{threadId, "0" };
         contentResolver.update(Telephony.Sms.CONTENT_URI, createReadContentValues(), selection, args);
+        listChangeListener.listChanged();
         return null;
     }
 

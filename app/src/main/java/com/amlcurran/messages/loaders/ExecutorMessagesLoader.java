@@ -56,8 +56,8 @@ public class ExecutorMessagesLoader implements MessagesLoader {
     }
 
     @Override
-    public void markThreadAsRead(String threadId) {
-        submit(new MarkReadTask(getResolver(), threadId));
+    public void markThreadAsRead(String threadId, ConversationListChangeListener listChangeListener) {
+        submit(new MarkReadTask(getResolver(), threadId, listChangeListener));
     }
 
     @Override

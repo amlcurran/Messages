@@ -29,7 +29,7 @@ public interface MessagesLoader {
 
     void loadThread(String threadId, CursorLoadListener loadListener);
 
-    void markThreadAsRead(String threadId);
+    void markThreadAsRead(String threadId, ConversationListChangeListener conversationListChangeListener);
 
     void loadPhoto(long contactId, PhotoLoadListener photoLoadListener);
 

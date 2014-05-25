@@ -30,6 +30,8 @@ import com.amlcurran.messages.ListeningCursorListFragment;
 import com.amlcurran.messages.R;
 import com.amlcurran.messages.data.SmsMessageCursorSource;
 import com.amlcurran.messages.data.SmsMessage;
+import com.amlcurran.messages.events.BroadcastManagerEventBus;
+import com.amlcurran.messages.loaders.ConversationListChangeListener;
 import com.amlcurran.messages.loaders.CursorLoadListener;
 import com.amlcurran.messages.loaders.MessagesLoader;
 import com.amlcurran.messages.telephony.DefaultAppChecker;
@@ -37,7 +39,7 @@ import com.amlcurran.messages.ui.ComposeMessageView;
 import com.espian.utils.ProviderHelper;
 import com.espian.utils.data.SourceBinderAdapter;
 
-public class ThreadFragment extends ListeningCursorListFragment<SmsMessage> implements CursorLoadListener, ComposeMessageView.OnMessageComposedListener {
+public class ThreadFragment extends ListeningCursorListFragment<SmsMessage> implements CursorLoadListener, ComposeMessageView.OnMessageComposedListener, ConversationListChangeListener {
 
     private static final String THREAD_ID = "threadId";
     private static final String ADDRESS = "address";
@@ -124,7 +126,7 @@ public class ThreadFragment extends ListeningCursorListFragment<SmsMessage> impl
                 source.setCursor(cursor);
                 adapter.notifyDataSetChanged();
                 scrollToBottom();
-                getMessageLoader().markThreadAsRead(getThreadId());
+                getMessageLoader().markThreadAsRead(getThreadId(), ThreadFragment.this);
             }
         });
     }
@@ -141,6 +143,11 @@ public class ThreadFragment extends ListeningCursorListFragment<SmsMessage> impl
     @Override
     public void onMessageComposed(CharSequence body) {
         listener.sendSms(sendAddress, String.valueOf(body));
+    }
+
+    @Override
+    public void listChanged() {
+        new BroadcastManagerEventBus(getActivity()).postListChanged();
     }
 
     public interface Listener {
