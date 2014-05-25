@@ -18,4 +18,8 @@ package com.amlcurran.messages.events;
 
 public interface EventBus {
     void postListChanged();
+
+    void postMessageSent();
+
+    void postMessageReceived();
 }

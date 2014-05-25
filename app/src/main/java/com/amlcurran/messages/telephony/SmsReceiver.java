@@ -20,16 +20,15 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.provider.Telephony;
-import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
 import com.amlcurran.messages.MessagesApp;
 import com.amlcurran.messages.data.SmsMessage;
+import com.amlcurran.messages.events.BroadcastManagerEventBus;
 
 public class SmsReceiver extends BroadcastReceiver implements SmsDatabaseWriter.InboxWriteListener {
 
     public static final String TAG = SmsReceiver.class.getSimpleName();
-    public static final String BROADCAST_MESSAGE_RECEIVED = "broadcast_message_received";
 
     private final SmsDatabaseWriter smsDatabaseWriter;
 
@@ -39,12 +38,10 @@ public class SmsReceiver extends BroadcastReceiver implements SmsDatabaseWriter.
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        Log.d(TAG, "onReceive: " + intent.toString());
         if (Telephony.Sms.Intents.SMS_DELIVER_ACTION.equals(intent.getAction())) {
             android.telephony.SmsMessage[] messages = Telephony.Sms.Intents.getMessagesFromIntent(intent);
             writeSmsToProvider(context, SmsMessage.fromDeliverBroadcast(messages));
         } else {
-            Log.d(TAG, "Forwarding sent result to SmsSender");
             Intent intent2 = new Intent(context, SmsSender.class);
             intent2.setAction(SmsSender.ACTION_MESSAGE_SENT);
             intent2.putExtras(intent.getExtras());
@@ -54,19 +51,11 @@ public class SmsReceiver extends BroadcastReceiver implements SmsDatabaseWriter.
         }
     }
 
-    private void sendLocalBroadcast(Context context) {
-        Intent sentIntent = new Intent(BROADCAST_MESSAGE_RECEIVED);
-        LocalBroadcastManager.getInstance(context).sendBroadcast(sentIntent);
-    }
-
     private void writeSmsToProvider(final Context context, final SmsMessage message) {
-        Log.d(TAG, "Writing received SMS to provider: " + message.toString());
-
         smsDatabaseWriter.writeInboxSms(context.getContentResolver(), new SmsDatabaseWriter.InboxWriteListener() {
             @Override
             public void onWrittenToInbox() {
-                Log.d(TAG, "Sending broadcast of message received");
-                sendLocalBroadcast(context);
+                new BroadcastManagerEventBus(context).postMessageReceived();
                 MessagesApp.getNotifier(context).updateUnreadNotification();
             }
 

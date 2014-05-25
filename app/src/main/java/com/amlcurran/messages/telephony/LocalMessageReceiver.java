@@ -22,6 +22,8 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.support.v4.content.LocalBroadcastManager;
 
+import com.amlcurran.messages.events.BroadcastManagerEventBus;
+
 public class LocalMessageReceiver extends BroadcastReceiver {
 
     private Context context;
@@ -47,8 +49,8 @@ public class LocalMessageReceiver extends BroadcastReceiver {
 
     private IntentFilter buildMessageFilter(String[] actions) {
         IntentFilter filter = new IntentFilter();
-        filter.addAction(SmsSender.BROADCAST_MESSAGE_SENT);
-        filter.addAction(SmsReceiver.BROADCAST_MESSAGE_RECEIVED);
+        filter.addAction(BroadcastManagerEventBus.BROADCAST_MESSAGE_SENT);
+        filter.addAction(BroadcastManagerEventBus.BROADCAST_MESSAGE_RECEIVED);
         for (String action : actions) {
             filter.addAction(action);
         }

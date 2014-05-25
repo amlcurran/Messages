@@ -20,10 +20,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.v4.content.LocalBroadcastManager;
 
-import com.amlcurran.messages.loaders.MessagesLoader;
-
 public class BroadcastManagerEventBus implements EventBus {
 
+    public static final String BROADCAST_MESSAGE_SENT = "broadcast_message_sent";
+    public static final String ACTION_LIST_CHANGED = "com.amlcurran.messages.ACTION_LIST_CHANGED";
+    public static final String BROADCAST_MESSAGE_RECEIVED = "broadcast_message_received";
     private final LocalBroadcastManager broadcaster;
 
     public BroadcastManagerEventBus(Context context) {
@@ -32,6 +33,16 @@ public class BroadcastManagerEventBus implements EventBus {
 
     @Override
     public void postListChanged() {
-        broadcaster.sendBroadcast(new Intent(MessagesLoader.ACTION_LIST_CHANGED));
+        broadcaster.sendBroadcast(new Intent(ACTION_LIST_CHANGED));
+    }
+
+    @Override
+    public void postMessageSent() {
+        broadcaster.sendBroadcast(new Intent(BROADCAST_MESSAGE_SENT));
+    }
+
+    @Override
+    public void postMessageReceived() {
+        broadcaster.sendBroadcast(new Intent(BROADCAST_MESSAGE_RECEIVED));
     }
 }

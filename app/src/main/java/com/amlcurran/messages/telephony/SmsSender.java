@@ -20,12 +20,12 @@ import android.app.Activity;
 import android.app.IntentService;
 import android.app.PendingIntent;
 import android.content.Intent;
-import android.support.v4.content.LocalBroadcastManager;
 import android.telephony.SmsManager;
 import android.util.Log;
 
 import com.amlcurran.messages.MessagesApp;
 import com.amlcurran.messages.data.SmsMessage;
+import com.amlcurran.messages.events.BroadcastManagerEventBus;
 
 import java.util.ArrayList;
 
@@ -36,7 +36,6 @@ public class SmsSender extends IntentService implements SmsDatabaseWriter.SentWr
     public static final String EXTRA_MESSAGE = "message";
     public static final String ACTION_SEND_REQUEST = "send_request";
     public static final String ACTION_MESSAGE_SENT = "message_send";
-    public static final String BROADCAST_MESSAGE_SENT = "broadcast_message_sent";
 
     private final SmsManager smsManager;
     private final SmsDatabaseWriter smsDatabaseWriter;
@@ -80,8 +79,7 @@ public class SmsSender extends IntentService implements SmsDatabaseWriter.SentWr
     }
 
     private void sendLocalBroadcast() {
-        Intent sentIntent = new Intent(BROADCAST_MESSAGE_SENT);
-        LocalBroadcastManager.getInstance(this).sendBroadcast(sentIntent);
+        new BroadcastManagerEventBus(this).postMessageSent();
     }
 
     private void sendMessage(SmsMessage message) {
@@ -93,7 +91,7 @@ public class SmsSender extends IntentService implements SmsDatabaseWriter.SentWr
     private ArrayList<PendingIntent> getMessageSendIntents(SmsMessage message) {
         Intent intent = new Intent(this, SmsReceiver.class);
         intent.putExtra(EXTRA_MESSAGE, message);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 2, intent, 0);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 2, intent, PendingIntent.FLAG_CANCEL_CURRENT);
         ArrayList<PendingIntent> pendingIntents = new ArrayList<PendingIntent>();
         pendingIntents.add(pendingIntent);
         return pendingIntents;
