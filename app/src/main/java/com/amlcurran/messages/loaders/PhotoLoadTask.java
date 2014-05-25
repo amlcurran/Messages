@@ -18,6 +18,7 @@ package com.amlcurran.messages.loaders;
 
 import android.content.ContentResolver;
 import android.content.ContentUris;
+import android.content.res.AssetFileDescriptor;
 import android.content.res.Resources;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -29,6 +30,7 @@ import android.provider.ContactsContract;
 import com.amlcurran.messages.R;
 import com.amlcurran.messages.conversationlist.PhotoLoadListener;
 
+import java.io.IOException;
 import java.util.concurrent.Callable;
 
 class PhotoLoadTask implements Callable<Object> {
@@ -52,15 +54,7 @@ class PhotoLoadTask implements Callable<Object> {
         if (contactId >= 0) {
 
             Uri contactUri = ContentUris.withAppendedId(ContactsContract.Data.CONTENT_URI, contactId);
-            Cursor cursor = contentResolver.query(contactUri, new String[]{ContactsContract.CommonDataKinds.Photo.PHOTO}, null, null, null);
-            if (cursor.moveToFirst()) {
-                try {
-                    byte[] blob = cursor.getBlob(0);
-                    result = BitmapFactory.decodeByteArray(blob, 0, blob.length);
-                } finally {
-                    cursor.close();
-                }
-            }
+            result = getSmallImage(contactUri);
         }
 
         if (result == null) {
@@ -69,5 +63,35 @@ class PhotoLoadTask implements Callable<Object> {
 
         photoLoadListener.onPhotoLoaded(result);
         return null;
+    }
+
+    private Bitmap getLargeImage(Uri contactUri) {
+        Cursor cursor = contentResolver.query(contactUri, new String[]{ContactsContract.CommonDataKinds.Photo.PHOTO_URI}, null, null, null);
+        if (cursor.moveToFirst()) {
+            Uri displayPhotoUri = Uri.parse(cursor.getString(0));//Uri.withAppendedPath(contactUri, ContactsContract.Contacts.Photo.DISPLAY_PHOTO);
+            cursor.close();
+            try {
+                AssetFileDescriptor fd = contentResolver.openAssetFileDescriptor(displayPhotoUri, "r");
+                return BitmapFactory.decodeFileDescriptor(fd.getFileDescriptor());
+            } catch (IOException e) {
+                return null;
+            }
+        }
+        cursor.close();
+        return null;
+    }
+
+    private Bitmap getSmallImage(Uri contactUri) {
+        Bitmap result = null;
+        Cursor cursor = contentResolver.query(contactUri, new String[]{ContactsContract.CommonDataKinds.Photo.PHOTO}, null, null, null);
+        if (cursor.moveToFirst()) {
+            try {
+                byte[] blob = cursor.getBlob(0);
+                result = BitmapFactory.decodeByteArray(blob, 0, blob.length);
+            } finally {
+                cursor.close();
+            }
+        }
+        return result;
     }
 }
