@@ -21,6 +21,8 @@ import com.amlcurran.messages.conversationlist.ConversationListListener;
 import com.amlcurran.messages.conversationlist.PhotoLoadListener;
 import com.amlcurran.messages.data.Conversation;
 
+import java.util.List;
+
 public interface MessagesLoader {
     void loadConversationList(ConversationListListener loadListener);
 
@@ -36,7 +38,7 @@ public interface MessagesLoader {
 
     void queryContact(String address, OnContactQueryListener onContactQueryListener);
 
-    void deleteThread(Conversation conversation, OnThreadDeleteListener threadDeleteListener);
+    void deleteThreads(List<Conversation> conversation, OnThreadDeleteListener threadDeleteListener);
 
-    void markThreadAsUnread(String threadId);
+    void markThreadAsUnread(List<Conversation> threadId);
 }

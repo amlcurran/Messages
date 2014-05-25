@@ -14,5 +14,7 @@
     <string name="failed_to_send_message">Failed to send message</string>
     <string name="couldnt_send_to">Couldn\'t send to %1$s</string>
     <string name="mark_as_unread">Mark as unread</string>
+    <string name="deleted_many_threads">Deleted %1$d threads</string>
+    <string name="deleted_one_thread">Deleted conversation with %1$s</string>
 
 </resources>

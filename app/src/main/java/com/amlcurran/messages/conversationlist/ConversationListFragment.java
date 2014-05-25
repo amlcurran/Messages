@@ -26,21 +26,24 @@ import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.ListView;
 
+import com.amlcurran.messages.ConversationModalMarshall;
 import com.amlcurran.messages.ListeningCursorListFragment;
 import com.amlcurran.messages.R;
 import com.amlcurran.messages.data.Conversation;
 import com.amlcurran.messages.loaders.MessagesLoader;
 import com.espian.utils.ProviderHelper;
+import com.espian.utils.Source;
 import com.espian.utils.SourceBinderAdapter;
 
 import java.util.List;
 
-public class ConversationListFragment extends ListeningCursorListFragment<Conversation> implements ConversationListListener, AdapterView.OnItemClickListener, AdapterView.OnItemLongClickListener {
+public class ConversationListFragment extends ListeningCursorListFragment<Conversation> implements ConversationListListener, AdapterView.OnItemClickListener {
 
     protected SourceBinderAdapter<Conversation> adapter;
     protected ListArraySource<Conversation> source;
     private Listener listener;
     private ImageView emptyView;
+    private ConversationModalMarshall.Callback modalCallback;
 
     public ConversationListFragment() { }
 
@@ -59,15 +62,16 @@ public class ConversationListFragment extends ListeningCursorListFragment<Conver
         ConversationsBinder binder = new ConversationsBinder(getResources(), getMessageLoader());
         adapter = new SourceBinderAdapter<Conversation>(getActivity(), source, binder);
         setListAdapter(adapter);
-        getListView().setChoiceMode(ListView.CHOICE_MODE_SINGLE);
+        getListView().setChoiceMode(ListView.CHOICE_MODE_MULTIPLE_MODAL);
         getListView().setOnItemClickListener(this);
-        getListView().setOnItemLongClickListener(this);
+        getListView().setMultiChoiceModeListener(new ConversationModalMarshall(source, modalCallback));
     }
 
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
         listener = new ProviderHelper<Listener>(Listener.class).get(activity);
+        modalCallback = new ProviderHelper<ConversationModalMarshall.Callback>(ConversationModalMarshall.Callback.class).get(activity);
     }
 
     @Override
@@ -81,12 +85,6 @@ public class ConversationListFragment extends ListeningCursorListFragment<Conver
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         listener.onConversationSelected(source.getAtPosition(position));
-    }
-
-    @Override
-    public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-        listener.onConversationModalSelected(source.getAtPosition(position));
-        return true;
     }
 
     @Override
@@ -115,7 +113,7 @@ public class ConversationListFragment extends ListeningCursorListFragment<Conver
     public interface Listener {
         void onConversationSelected(Conversation conversation);
 
-        void onConversationModalSelected(Conversation conversation);
+        void onConversationModalSelected(Source<Conversation> conversation);
     }
 
 }

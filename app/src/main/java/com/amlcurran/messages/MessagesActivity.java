@@ -42,8 +42,10 @@ import com.amlcurran.messages.loaders.OnThreadDeleteListener;
 import com.amlcurran.messages.ui.SlidingPaneUiController;
 import com.amlcurran.messages.ui.UiController;
 import com.espian.utils.MenuFinder;
+import com.espian.utils.Source;
 
 import java.util.Calendar;
+import java.util.List;
 
 public class MessagesActivity extends Activity implements MessagesLoaderProvider,
         ConversationListFragment.Listener, ThreadFragment.Listener, View.OnClickListener,
@@ -126,7 +128,7 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
     }
 
     @Override
-    public void onConversationModalSelected(Conversation conversation) {
+    public void onConversationModalSelected(Source<Conversation> conversation) {
         startActionMode(new ConversationModalMarshall(conversation, this));
     }
 
@@ -191,21 +193,26 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
     }
 
     @Override
-    public void deleteThread(Conversation conversation) {
-        getMessagesLoader().deleteThread(conversation, this);
+    public void deleteThreads(List<Conversation> conversationList) {
+        getMessagesLoader().deleteThreads(conversationList, this);
     }
 
     @Override
-    public void markAsUnread(String threadId) {
+    public void markAsUnread(List<Conversation> threadId) {
         getMessagesLoader().markThreadAsUnread(threadId);
     }
 
     @Override
-     public void threadDeleted(final Conversation conversation) {
+     public void threadDeleted(final List<Conversation> deletedConversations) {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                String toast = String.format("Deleted thread from %1$s", conversation.getName());
+                String toast;
+                if (deletedConversations.size() == 1) {
+                    toast = getString(R.string.deleted_one_thread, deletedConversations.get(0).getName());
+                } else {
+                    toast = getString(R.string.deleted_many_threads, deletedConversations.size());
+                }
                 Toast.makeText(MessagesActivity.this, toast, Toast.LENGTH_SHORT).show();
                 LocalBroadcastManager.getInstance(MessagesActivity.this).sendBroadcast(new Intent(SmsSender.BROADCAST_MESSAGE_SENT));
             }

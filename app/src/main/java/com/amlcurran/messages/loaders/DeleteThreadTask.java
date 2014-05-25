@@ -21,25 +21,28 @@ import android.provider.Telephony;
 
 import com.amlcurran.messages.data.Conversation;
 
+import java.util.List;
 import java.util.concurrent.Callable;
 
 class DeleteThreadTask implements Callable<Object> {
     private final ContentResolver contentResolver;
-    private final Conversation conversation;
+    private final List<Conversation> conversationList;
     private final OnThreadDeleteListener threadDeleteListener;
 
-    public DeleteThreadTask(ContentResolver contentResolver, Conversation conversation, OnThreadDeleteListener threadDeleteListener) {
+    public DeleteThreadTask(ContentResolver contentResolver, List<Conversation> conversationList, OnThreadDeleteListener threadDeleteListener) {
         this.contentResolver = contentResolver;
-        this.conversation = conversation;
+        this.conversationList = conversationList;
         this.threadDeleteListener = threadDeleteListener;
     }
 
     @Override
     public Object call() throws Exception {
         String where = Telephony.Sms.THREAD_ID + "=?";
-        String[] args = new String[] {conversation.getThreadId()};
-        contentResolver.delete(Telephony.Sms.CONTENT_URI, where, args);
-        threadDeleteListener.threadDeleted(conversation);
+        for (Conversation conversation : conversationList) {
+            String[] args = new String[]{conversation.getThreadId()};
+            contentResolver.delete(Telephony.Sms.CONTENT_URI, where, args);
+        }
+        threadDeleteListener.threadDeleted(conversationList);
         return null;
     }
 }

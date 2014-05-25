@@ -19,16 +19,24 @@ package com.amlcurran.messages;
 import android.view.ActionMode;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.AbsListView;
 
 import com.amlcurran.messages.data.Conversation;
+import com.espian.utils.MenuFinder;
+import com.espian.utils.Source;
 
-public class ConversationModalMarshall implements ActionMode.Callback {
+import java.util.ArrayList;
+import java.util.List;
 
-    private final Conversation conversation;
+public class ConversationModalMarshall implements AbsListView.MultiChoiceModeListener {
+
+    private final Source<Conversation> conversationSource;
     private final Callback callback;
+    private final ArrayList<Conversation> selectedConversations;
 
-    public ConversationModalMarshall(Conversation conversation, Callback callback) {
-        this.conversation = conversation;
+    public ConversationModalMarshall(Source<Conversation> conversationSource, Callback callback) {
+        this.conversationSource = conversationSource;
+        this.selectedConversations = new ArrayList<Conversation>();
         this.callback = callback;
     }
 
@@ -40,7 +48,12 @@ public class ConversationModalMarshall implements ActionMode.Callback {
 
     @Override
     public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
-        return false;
+        MenuFinder.findItemById(menu, R.id.modal_contact).setVisible(onlyOneSelected());
+        return true;
+    }
+
+    private boolean onlyOneSelected() {
+        return selectedConversations.size() == 1;
     }
 
     @Override
@@ -48,17 +61,17 @@ public class ConversationModalMarshall implements ActionMode.Callback {
         switch (item.getItemId()) {
 
             case R.id.modal_contact:
-                callback.viewContact(conversation.getAddress());
+                callback.viewContact(selectedConversations.get(0).getAddress());
                 mode.finish();
                 return true;
 
             case R.id.modal_delete_thread:
-                callback.deleteThread(conversation);
+                callback.deleteThreads(copyConversations());
                 mode.finish();
                 return true;
 
             case R.id.modal_mark_unread:
-                callback.markAsUnread(conversation.getThreadId());
+                callback.markAsUnread(copyConversations());
                 mode.finish();
                 return true;
 
@@ -66,14 +79,30 @@ public class ConversationModalMarshall implements ActionMode.Callback {
         return false;
     }
 
+    private ArrayList<Conversation> copyConversations() {
+        return new ArrayList<Conversation>(selectedConversations);
+    }
+
     @Override
     public void onDestroyActionMode(ActionMode mode) {
+        selectedConversations.clear();
+    }
+
+    @Override
+    public void onItemCheckedStateChanged(ActionMode mode, int position, long id, boolean checked) {
+        Conversation checkedConversation = conversationSource.getAtPosition(position);
+        if (checked) {
+            selectedConversations.add(checkedConversation);
+        } else {
+            selectedConversations.remove(checkedConversation);
+        }
+        mode.invalidate();
     }
 
     public interface Callback {
         void viewContact(String address);
-        void deleteThread(Conversation conversation);
-        void markAsUnread(String threadId);
+        void deleteThreads(List<Conversation> conversation);
+        void markAsUnread(List<Conversation> threadId);
     }
 
 }

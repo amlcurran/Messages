@@ -18,6 +18,8 @@ package com.amlcurran.messages.loaders;
 
 import com.amlcurran.messages.data.Conversation;
 
+import java.util.List;
+
 public interface OnThreadDeleteListener {
-    void threadDeleted(Conversation conversation);
+    void threadDeleted(List<Conversation> deletedConversations);
 }

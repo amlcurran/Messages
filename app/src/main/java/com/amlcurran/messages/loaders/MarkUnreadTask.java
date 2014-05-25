@@ -21,35 +21,39 @@ import android.content.ContentValues;
 import android.database.Cursor;
 import android.provider.Telephony;
 
+import com.amlcurran.messages.data.Conversation;
 import com.espian.utils.CursorHelper;
 
+import java.util.List;
 import java.util.concurrent.Callable;
 
-class MarkUnreadTask implements Callable<Object>, CursorLoadListener {
+class MarkUnreadTask implements Callable<Object> {
     private final ContentResolver contentResolver;
-    private final String threadId;
+    private final List<Conversation> conversationList;
 
-    public MarkUnreadTask(ContentResolver contentResolver, String threadId) {
+    public MarkUnreadTask(ContentResolver contentResolver, List<Conversation> conversationList) {
         this.contentResolver = contentResolver;
-        this.threadId = threadId;
+        this.conversationList = conversationList;
     }
 
     @Override
     public Object call() throws Exception {
-        new InboxThreadTask(contentResolver, threadId, this).call();
-        return null;
-    }
+        for (final Conversation conversation : conversationList) {
+            new InboxThreadTask(contentResolver, conversation.getThreadId(), new CursorLoadListener() {
+                @Override
+                public void onCursorLoaded(Cursor cursor) {
+                    if (cursor.moveToLast()) {
 
-    @Override
-    public void onCursorLoaded(Cursor cursor) {
-        if (cursor.moveToLast()) {
+                        // This updates an unread message
+                        String selection = String.format("%1$s=? AND %2$s=?", Telephony.Sms.THREAD_ID, Telephony.Sms._ID);
+                        String[] args = new String[]{ conversation.getThreadId(), CursorHelper.asString(cursor, Telephony.Sms._ID)};
+                        contentResolver.update(Telephony.Sms.Inbox.CONTENT_URI, createUnreadContentValues(), selection, args);
 
-            // This updates an unread message
-            String selection = String.format("%1$s=? AND %2$s=?", Telephony.Sms.THREAD_ID, Telephony.Sms._ID);
-            String[] args = new String[]{threadId, CursorHelper.asString(cursor, Telephony.Sms._ID)};
-            contentResolver.update(Telephony.Sms.Inbox.CONTENT_URI, createUnreadContentValues(), selection, args);
-
+                    }
+                }
+            }).call();
         }
+        return null;
     }
 
     private ContentValues createUnreadContentValues() {

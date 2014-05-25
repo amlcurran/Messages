@@ -24,6 +24,7 @@ import com.amlcurran.messages.conversationlist.ConversationListListener;
 import com.amlcurran.messages.conversationlist.PhotoLoadListener;
 import com.amlcurran.messages.data.Conversation;
 
+import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 
@@ -81,13 +82,13 @@ public class ExecutorMessagesLoader implements MessagesLoader {
     }
 
     @Override
-    public void deleteThread(final Conversation conversation, final OnThreadDeleteListener threadDeleteListener) {
-        submit(new DeleteThreadTask(getResolver(), conversation, threadDeleteListener));
+    public void deleteThreads(final List<Conversation> conversationList, final OnThreadDeleteListener threadDeleteListener) {
+        submit(new DeleteThreadTask(getResolver(), conversationList, threadDeleteListener));
     }
 
     @Override
-    public void markThreadAsUnread(final String threadId) {
-        submit(new MarkUnreadTask(getResolver(), threadId));
+    public void markThreadAsUnread(final List<Conversation> conversations) {
+        submit(new MarkUnreadTask(getResolver(), conversations));
     }
 
 }
