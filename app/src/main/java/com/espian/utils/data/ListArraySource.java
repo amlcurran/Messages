@@ -14,9 +14,7 @@
  * limitations under the License.
  */
 
-package com.amlcurran.messages.conversationlist;
-
-import com.espian.utils.data.Source;
+package com.espian.utils.data;
 
 import java.util.ArrayList;
 import java.util.Collection;
