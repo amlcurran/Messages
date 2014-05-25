@@ -54,6 +54,6 @@ public class Notifier {
     }
 
     public void showSendError(SmsMessage message) {
-        notificationManager.notify(NOTIFICATION_SEND_ERROR, notificationBuilder.buildErrorNotification(message));
+        notificationManager.notify(NOTIFICATION_SEND_ERROR, notificationBuilder.buildFailureToSendNotification(message));
     }
 }

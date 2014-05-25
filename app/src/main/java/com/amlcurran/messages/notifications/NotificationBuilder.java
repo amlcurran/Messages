@@ -31,6 +31,7 @@ import com.amlcurran.messages.MessagesActivity;
 import com.amlcurran.messages.R;
 import com.amlcurran.messages.data.Conversation;
 import com.amlcurran.messages.data.SmsMessage;
+import com.amlcurran.messages.telephony.SmsSender;
 
 import java.util.Calendar;
 import java.util.List;
@@ -127,11 +128,16 @@ public class NotificationBuilder {
                 .setSmallIcon(R.drawable.ic_notify_sms);
     }
 
-    public Notification buildErrorNotification(SmsMessage message) {
+    public Notification buildFailureToSendNotification(SmsMessage message) {
+        Intent intent = new Intent(context, SmsSender.class);
+        intent.setAction(SmsSender.ACTION_SEND_REQUEST);
+        intent.putExtra(SmsSender.EXTRA_MESSAGE, message);
+        PendingIntent resendPending = PendingIntent.getService(context, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT);
         return getDefaultBuilder()
                 .setContentTitle(string(R.string.failed_to_send_message))
                 .setTicker(string(R.string.failed_to_send_message))
                 .setContentText(context.getString(R.string.couldnt_send_to, message.getAddress()))
+                .addAction(R.drawable.ic_action_send_holo, string(R.string.resend), resendPending)
                 .setSmallIcon(R.drawable.ic_notify_error)
                 .build();
     }
