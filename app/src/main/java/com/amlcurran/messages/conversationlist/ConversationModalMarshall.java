@@ -14,13 +14,14 @@
  * limitations under the License.
  */
 
-package com.amlcurran.messages;
+package com.amlcurran.messages.conversationlist;
 
 import android.view.ActionMode;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.AbsListView;
 
+import com.amlcurran.messages.R;
 import com.amlcurran.messages.data.Conversation;
 import com.espian.utils.ui.MenuFinder;
 import com.espian.utils.data.Source;

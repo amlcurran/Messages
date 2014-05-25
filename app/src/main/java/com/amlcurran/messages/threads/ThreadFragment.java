@@ -14,34 +14,28 @@
  * limitations under the License.
  */
 
-package com.amlcurran.messages;
+package com.amlcurran.messages.threads;
 
 import android.app.Activity;
-import android.content.Context;
 import android.database.Cursor;
 import android.os.Bundle;
-import android.text.util.Linkify;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
+import com.amlcurran.messages.ListeningCursorListFragment;
+import com.amlcurran.messages.R;
+import com.amlcurran.messages.data.SmsCursorSource;
 import com.amlcurran.messages.data.SmsMessage;
-import com.amlcurran.messages.telephony.DefaultAppChecker;
-import com.espian.utils.data.AdaptiveCursorSource;
 import com.amlcurran.messages.loaders.CursorLoadListener;
 import com.amlcurran.messages.loaders.MessagesLoader;
+import com.amlcurran.messages.telephony.DefaultAppChecker;
 import com.amlcurran.messages.ui.ComposeMessageView;
 import com.espian.utils.ProviderHelper;
-import com.espian.utils.data.SimpleBinder;
 import com.espian.utils.data.SourceBinderAdapter;
-
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
 public class ThreadFragment extends ListeningCursorListFragment<SmsMessage> implements CursorLoadListener, ComposeMessageView.OnMessageComposedListener {
 
@@ -83,8 +77,8 @@ public class ThreadFragment extends ListeningCursorListFragment<SmsMessage> impl
         super.onActivityCreated(savedInstanceState);
         setHasOptionsMenu(true);
         sendAddress = getArguments().getString(ADDRESS);
-        source = new ThreadMessageAdaptiveCursorSource();
-        adapter = new SourceBinderAdapter<SmsMessage>(getActivity(), source, new ThreadBinder());
+        source = new SmsCursorSource();
+        adapter = new SourceBinderAdapter<SmsMessage>(getActivity(), source, new ThreadBinder(getListView()));
         defaultChecker = new DefaultAppChecker(getActivity(), composeView);
         setListAdapter(adapter);
         getListView().setStackFromBottom(true);
@@ -147,60 +141,6 @@ public class ThreadFragment extends ListeningCursorListFragment<SmsMessage> impl
     @Override
     public void onMessageComposed(CharSequence body) {
         listener.sendSms(sendAddress, String.valueOf(body));
-    }
-
-    private class ThreadBinder extends SimpleBinder<SmsMessage> {
-
-        private static final int ITEM_ME = 0;
-        private static final int ITEM_THEM = 1;
-        private final DateFormat formatter = new SimpleDateFormat("HH:mm dd-MMM-yy");
-        private final Date date = new Date();
-
-        @Override
-        public View bindView(View convertView, SmsMessage item, int position) {
-
-            date.setTime(item.getTimestamp());
-
-            TextView bodyText = getTextView(convertView, android.R.id.text1);
-            bodyText.setText(item.getBody());
-            getTextView(convertView, android.R.id.text2).setText(formatter.format(date));
-            Linkify.addLinks(bodyText, Linkify.ALL);
-
-            return convertView;
-        }
-
-        @Override
-        public View createView(Context context, int itemViewType) {
-            if (itemViewType == ITEM_ME) {
-                return LayoutInflater.from(context).inflate(R.layout.item_thread_item_me, getListView(), false);
-            } else if (itemViewType == ITEM_THEM) {
-                return LayoutInflater.from(context).inflate(R.layout.item_thread_item_them, getListView(), false);
-            }
-            return null;
-        }
-
-        @Override
-        public int getViewTypeCount() {
-            return 2;
-        }
-
-        @Override
-        public int getItemViewType(int position, SmsMessage item) {
-            return item.isFromMe() ? ITEM_ME : ITEM_THEM;
-        }
-
-        private TextView getTextView(View convertView, int text1) {
-            return (TextView) convertView.findViewById(text1);
-        }
-
-    }
-
-    private static class ThreadMessageAdaptiveCursorSource extends AdaptiveCursorSource<SmsMessage> {
-
-        @Override
-        public SmsMessage getFromCursorRow(Cursor cursor) {
-            return SmsMessage.fromCursor(cursor);
-        }
     }
 
     public interface Listener {

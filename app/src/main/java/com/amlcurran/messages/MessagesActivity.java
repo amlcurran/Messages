@@ -33,6 +33,7 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.amlcurran.messages.conversationlist.ConversationListFragment;
+import com.amlcurran.messages.conversationlist.ConversationModalMarshall;
 import com.amlcurran.messages.data.Conversation;
 import com.amlcurran.messages.data.SmsMessage;
 import com.amlcurran.messages.events.BroadcastManagerEventBus;
@@ -43,6 +44,7 @@ import com.amlcurran.messages.loaders.OnContactQueryListener;
 import com.amlcurran.messages.loaders.OnThreadDeleteListener;
 import com.amlcurran.messages.telephony.DefaultAppChecker;
 import com.amlcurran.messages.telephony.SmsSender;
+import com.amlcurran.messages.threads.ThreadFragment;
 import com.amlcurran.messages.ui.SlidingPaneUiController;
 import com.amlcurran.messages.ui.UiController;
 import com.espian.utils.ui.MenuFinder;

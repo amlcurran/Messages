@@ -24,7 +24,7 @@ import android.view.View;
 import com.amlcurran.messages.conversationlist.ConversationListFragment;
 import com.amlcurran.messages.MessagesActivity;
 import com.amlcurran.messages.R;
-import com.amlcurran.messages.ThreadFragment;
+import com.amlcurran.messages.threads.ThreadFragment;
 
 public class SlidingPaneUiController implements UiController {
 

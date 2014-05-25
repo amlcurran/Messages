@@ -14,27 +14,15 @@
  * limitations under the License.
  */
 
-package com.amlcurran.messages.ui;
+package com.amlcurran.messages.data;
 
-import android.view.View;
+import android.database.Cursor;
 
-import com.amlcurran.messages.threads.ThreadFragment;
+import com.espian.utils.data.AdaptiveCursorSource;
 
-public interface UiController {
-    void loadMessagesListFragment();
-
-    void replaceFragment(ThreadFragment fragment);
-
-    View getView();
-
-    boolean backPressed();
-
-    void loadEmptyFragment();
-
-    void hideDisabledBanner();
-
-    void showDisabledBanner();
-
-    View getDisabledBanner();
-
+public class SmsCursorSource extends AdaptiveCursorSource<SmsMessage> {
+    @Override
+    public SmsMessage getFromCursorRow(Cursor cursor) {
+        return SmsMessage.fromCursor(cursor);
+    }
 }

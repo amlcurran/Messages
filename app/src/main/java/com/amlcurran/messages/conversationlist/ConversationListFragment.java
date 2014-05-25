@@ -26,7 +26,6 @@ import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.ListView;
 
-import com.amlcurran.messages.ConversationModalMarshall;
 import com.amlcurran.messages.ListeningCursorListFragment;
 import com.amlcurran.messages.R;
 import com.amlcurran.messages.data.Conversation;
