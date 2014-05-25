@@ -14,26 +14,16 @@
  * limitations under the License.
  */
 
-package com.amlcurran.messages.ui;
+package com.amlcurran.messages;
 
-import android.app.Fragment;
-import android.view.View;
+import android.os.Bundle;
+import android.preference.PreferenceFragment;
 
-public interface UiController {
-    void loadMessagesListFragment();
+public class PreferencesFragment extends PreferenceFragment {
 
-    void replaceFragment(Fragment fragment, boolean addToStack);
-
-    View getView();
-
-    boolean backPressed();
-
-    void loadEmptyFragment();
-
-    void hideDisabledBanner();
-
-    void showDisabledBanner();
-
-    View getDisabledBanner();
-
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        addPreferencesFromResource(R.xml.preferences);
+    }
 }

@@ -18,6 +18,7 @@ package com.amlcurran.messages;
 
 import android.app.Application;
 import android.content.Context;
+import android.preference.PreferenceManager;
 
 import com.amlcurran.messages.loaders.ExecutorMessagesLoader;
 import com.amlcurran.messages.loaders.MessagesLoader;
@@ -33,6 +34,7 @@ public class MessagesApp extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+        PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
         loader = new ExecutorMessagesLoader(this, Executors.newCachedThreadPool());
         notifier = new Notifier(this);
     }

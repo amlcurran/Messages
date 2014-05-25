@@ -17,14 +17,15 @@
 package com.amlcurran.messages.ui;
 
 import android.app.Activity;
+import android.app.Fragment;
+import android.app.FragmentTransaction;
 import android.support.v4.widget.SlidingPaneLayout;
 import android.view.LayoutInflater;
 import android.view.View;
 
-import com.amlcurran.messages.conversationlist.ConversationListFragment;
 import com.amlcurran.messages.MessagesActivity;
 import com.amlcurran.messages.R;
-import com.amlcurran.messages.threads.ThreadFragment;
+import com.amlcurran.messages.conversationlist.ConversationListFragment;
 
 public class SlidingPaneUiController implements UiController {
 
@@ -47,10 +48,13 @@ public class SlidingPaneUiController implements UiController {
     }
 
     @Override
-    public void replaceFragment(ThreadFragment fragment) {
-        activity.getFragmentManager().beginTransaction()
-                .replace(R.id.secondary, fragment)
-                .commit();
+    public void replaceFragment(Fragment fragment, boolean addToStack) {
+        FragmentTransaction transaction = activity.getFragmentManager().beginTransaction()
+                .replace(R.id.secondary, fragment);
+        if (addToStack) {
+            transaction.addToBackStack(null);
+        }
+        transaction.commit();
         slider.closePane();
     }
 

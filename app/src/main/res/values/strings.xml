@@ -16,5 +16,7 @@
     <string name="mark_as_unread">Mark as unread</string>
     <string name="deleted_many_threads">Deleted %1$d threads</string>
     <string name="deleted_one_thread">Deleted conversation with %1$s</string>
+    <string name="preference_unread_title">Prioritise unread conversations</string>
+    <string name="preference_unread_summary">Show unread conversations at the top of the list</string>
 
 </resources>

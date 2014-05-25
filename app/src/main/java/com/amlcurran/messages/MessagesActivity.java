@@ -96,7 +96,7 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.messages, menu);
+        getMenuInflater().inflate(R.menu.activity_messages, menu);
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -108,6 +108,22 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
             item.setVisible(isSecondaryVisible);
         }
         return super.onPrepareOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+
+            case R.id.action_settings:
+                showSettings();
+                return true;
+
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    private void showSettings() {
+        uiController.replaceFragment(new PreferencesFragment(), true);
     }
 
     @Override
@@ -131,7 +147,7 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
     @Override
     public void onConversationSelected(Conversation conversation) {
         ThreadFragment fragment = ThreadFragment.create(conversation.getThreadId(), conversation.getAddress());
-        uiController.replaceFragment(fragment);
+        uiController.replaceFragment(fragment, false);
     }
 
     @Override

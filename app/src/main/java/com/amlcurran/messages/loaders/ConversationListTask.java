@@ -37,7 +37,7 @@ class ConversationListTask implements Callable<Object> {
     private final String[] args;
     private final ConversationListListener loadListener;
 
-    public ConversationListTask(ContentResolver contentResolver, String query, String[] args, ConversationListListener loadListener) {
+    ConversationListTask(ContentResolver contentResolver, String query, String[] args, ConversationListListener loadListener) {
         this.contentResolver = contentResolver;
         this.query = query;
         this.args = args;
@@ -51,7 +51,8 @@ class ConversationListTask implements Callable<Object> {
     @Override
     public Object call() throws Exception {
         final List<Conversation> conversations = new ArrayList<Conversation>();
-        Cursor conversationsList = contentResolver.query(Telephony.Threads.CONTENT_URI, null, query, args, Telephony.Sms.DEFAULT_SORT_ORDER);
+        String sortOrder = Telephony.Sms.DEFAULT_SORT_ORDER;
+        Cursor conversationsList = contentResolver.query(Telephony.Threads.CONTENT_URI, null, query, args, sortOrder);
 
         while (conversationsList.moveToNext()) {
             Uri phoneLookupUri = createPhoneLookupUri(conversationsList);
