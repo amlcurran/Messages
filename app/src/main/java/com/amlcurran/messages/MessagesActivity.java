@@ -23,7 +23,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.provider.Telephony;
-import android.support.v4.content.LocalBroadcastManager;
 import android.telephony.PhoneNumberUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -56,6 +55,7 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
     private UiController uiController;
     private DefaultAppChecker appChecker;
     private boolean isSecondaryVisible;
+    private BroadcastManagerEventBus eventBus;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,6 +64,7 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
         setContentView(uiController.getView());
 
         appChecker = new DefaultAppChecker(this, this);
+        eventBus = new BroadcastManagerEventBus(this);
         uiController.getDisabledBanner().setOnClickListener(this);
 
         if (BuildConfig.DEBUG) {
@@ -209,18 +210,14 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
                     toast = getString(R.string.deleted_many_threads, deletedConversations.size());
                 }
                 Toast.makeText(MessagesActivity.this, toast, Toast.LENGTH_SHORT).show();
-                sendConversationListChangeNotification();
+                eventBus.postListChanged();
             }
         });
     }
 
     @Override
     public void listChanged() {
-        sendConversationListChangeNotification();
-    }
-
-    private boolean sendConversationListChangeNotification() {
-        return LocalBroadcastManager.getInstance(this).sendBroadcast(new Intent(MessagesLoader.ACTION_LIST_CHANGED));
+        eventBus.postListChanged();
     }
 
     public static class EmptyFragment extends Fragment {
