@@ -136,6 +136,6 @@ public class SmsMessage implements Parcelable {
     }
 
     public boolean isSending() {
-        return false;
+        return isSending;
     }
 }
