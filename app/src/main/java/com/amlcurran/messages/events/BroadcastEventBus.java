@@ -22,9 +22,10 @@ import android.support.v4.content.LocalBroadcastManager;
 
 public class BroadcastEventBus implements EventBus {
 
-    public static final String BROADCAST_MESSAGE_SENT = "broadcast_message_sent";
-    public static final String ACTION_LIST_CHANGED = "com.amlcurran.messages.ACTION_LIST_CHANGED";
-    public static final String BROADCAST_MESSAGE_RECEIVED = "broadcast_message_received";
+    private static final String BASE_BROADCAST = "com.amlcurran.messages";
+    public static final String BROADCAST_MESSAGE_SENT = BASE_BROADCAST + ".broadcast_message_sent";
+    public static final String ACTION_LIST_CHANGED = BASE_BROADCAST + ".ACTION_LIST_CHANGED";
+    public static final String BROADCAST_MESSAGE_RECEIVED = BASE_BROADCAST + ".broadcast_message_received";
     private final LocalBroadcastManager broadcaster;
 
     public BroadcastEventBus(Context context) {
