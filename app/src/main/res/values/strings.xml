@@ -19,5 +19,7 @@
     <string name="preference_unread_title">Prioritise unread conversations</string>
     <string name="preference_unread_summary">Show unread conversations at the top of the list</string>
     <string name="resend">Resend</string>
+    <string name="mms_error_title">Failed to receive MMS</string>
+    <string name="mms_error_text">Messages app cannot receive MMS messages</string>
 
 </resources>

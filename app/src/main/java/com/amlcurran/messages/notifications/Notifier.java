@@ -30,6 +30,7 @@ public class Notifier {
 
     private static final int NOTIFICATION_UNREAD_MESSAGES = 22;
     private static final int NOTIFICATION_SEND_ERROR = 44;
+    private static final int NOTIFICATION_MMS_ERROR = 66;
     private final NotificationManager notificationManager;
     private final Context context;
     private final NotificationBuilder notificationBuilder;
@@ -55,5 +56,9 @@ public class Notifier {
 
     public void showSendError(SmsMessage message) {
         notificationManager.notify(NOTIFICATION_SEND_ERROR, notificationBuilder.buildFailureToSendNotification(message));
+    }
+
+    public void showMmsError() {
+        notificationManager.notify(NOTIFICATION_MMS_ERROR, notificationBuilder.buildMmsErrorNotification());
     }
 }

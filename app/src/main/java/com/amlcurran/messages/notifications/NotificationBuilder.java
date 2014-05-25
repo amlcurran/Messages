@@ -145,4 +145,13 @@ public class NotificationBuilder {
     private String string(int resId) {
         return context.getString(resId);
     }
+
+    public Notification buildMmsErrorNotification() {
+        return getDefaultBuilder()
+                .setContentTitle(string(R.string.mms_error_title))
+                .setTicker(string(R.string.mms_error_title))
+                .setContentText(string(R.string.mms_error_text))
+                .setSmallIcon(R.drawable.ic_notify_error)
+                .build();
+    }
 }
