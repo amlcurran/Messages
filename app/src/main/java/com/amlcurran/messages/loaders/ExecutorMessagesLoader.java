@@ -17,9 +17,7 @@
 package com.amlcurran.messages.loaders;
 
 import android.content.ContentResolver;
-import android.content.ContentValues;
 import android.content.Context;
-import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
@@ -31,7 +29,6 @@ import com.amlcurran.messages.R;
 import com.amlcurran.messages.conversationlist.ConversationListListener;
 import com.amlcurran.messages.conversationlist.PhotoLoadListener;
 import com.amlcurran.messages.data.Conversation;
-import com.espian.utils.CursorHelper;
 
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
@@ -103,32 +100,7 @@ public class ExecutorMessagesLoader implements MessagesLoader {
 
     @Override
     public void markThreadAsUnread(final String threadId) {
-        submit(new Callable<Object>() {
-            @Override
-            public Object call() throws Exception {
-                executor.submit(new InboxThreadTask(getResolver(), threadId, new CursorLoadListener() {
-                            @Override
-                            public void onCursorLoaded(Cursor cursor) {
-                                if (cursor.moveToLast()) {
-
-                                    // This updates an unread message
-                                    String selection = String.format("%1$s=? AND %2$s=?", Telephony.Sms.THREAD_ID, Telephony.Sms._ID);
-                                    String[] args = new String[]{threadId, CursorHelper.asString(cursor, Telephony.Sms._ID)};
-                                    getResolver().update(Telephony.Sms.Inbox.CONTENT_URI, createUnreadContentValues(), selection, args);
-
-                                }
-                            }
-                        }));
-                return null;
-            }
-
-        });
-    }
-
-    private ContentValues createUnreadContentValues() {
-        ContentValues values = new ContentValues();
-        values.put(Telephony.Sms.READ, "0");
-        return values;
+        submit(new MarkUnreadTask(getResolver(), threadId));
     }
 
 }
