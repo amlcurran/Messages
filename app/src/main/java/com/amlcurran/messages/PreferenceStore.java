@@ -14,17 +14,24 @@
  * limitations under the License.
  */
 
-package com.amlcurran.messages.loaders;
+package com.amlcurran.messages;
 
-import android.content.ContentResolver;
-import android.provider.Telephony;
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 
 import com.amlcurran.messages.data.Sort;
-import com.amlcurran.messages.conversationlist.ConversationListListener;
 
-class UnreadConversationListTask extends ConversationListTask {
+public class PreferenceStore {
 
-    public UnreadConversationListTask(ContentResolver contentResolver, ConversationListListener loadListener) {
-        super(contentResolver, Telephony.Sms.Inbox.READ + "=0", null, loadListener, Sort.DEFAULT);
+    private final SharedPreferences preferences;
+
+    public PreferenceStore(Context context) {
+        this.preferences = PreferenceManager.getDefaultSharedPreferences(context);
+    }
+
+    public Sort getConversationSort() {
+        boolean sort = preferences.getBoolean("unread_priority", false);
+        return sort ? Sort.UNREAD : Sort.DEFAULT;
     }
 }

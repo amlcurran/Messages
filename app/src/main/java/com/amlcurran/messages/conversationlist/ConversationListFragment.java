@@ -19,7 +19,6 @@ package com.amlcurran.messages.conversationlist;
 import android.app.Activity;
 import android.graphics.drawable.AnimationDrawable;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,7 +27,9 @@ import android.widget.ImageView;
 import android.widget.ListView;
 
 import com.amlcurran.messages.ListeningCursorListFragment;
+import com.amlcurran.messages.PreferenceStore;
 import com.amlcurran.messages.R;
+import com.amlcurran.messages.data.Sort;
 import com.amlcurran.messages.data.Conversation;
 import com.amlcurran.messages.loaders.MessagesLoader;
 import com.espian.utils.ProviderHelper;
@@ -101,9 +102,8 @@ public class ConversationListFragment extends ListeningCursorListFragment<Conver
         loader.loadConversationList(this, getSort());
     }
 
-    private int getSort() {
-        boolean priority = PreferenceManager.getDefaultSharedPreferences(getActivity()).getBoolean("unread_priority", false);
-        return priority ? 1 : 0;
+    private Sort getSort() {
+        return new PreferenceStore(getActivity()).getConversationSort();
     }
 
     @Override

@@ -16,6 +16,7 @@
 
 package com.amlcurran.messages.loaders;
 
+import com.amlcurran.messages.data.Sort;
 import com.amlcurran.messages.conversationlist.ConversationListListener;
 import com.amlcurran.messages.conversationlist.PhotoLoadListener;
 import com.amlcurran.messages.data.Conversation;
@@ -25,7 +26,7 @@ import java.util.List;
 public interface MessagesLoader {
     String ACTION_LIST_CHANGED = "com.amlcurran.messages.ACTION_LIST_CHANGED";
 
-    void loadConversationList(ConversationListListener loadListener, int sort);
+    void loadConversationList(ConversationListListener loadListener, Sort sort);
 
     void loadThread(String threadId, CursorLoadListener loadListener);
 

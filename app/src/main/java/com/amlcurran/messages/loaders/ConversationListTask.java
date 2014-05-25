@@ -22,6 +22,7 @@ import android.net.Uri;
 import android.provider.ContactsContract;
 import android.provider.Telephony;
 
+import com.amlcurran.messages.data.Sort;
 import com.amlcurran.messages.conversationlist.ConversationListListener;
 import com.amlcurran.messages.data.Conversation;
 import com.espian.utils.data.CursorHelper;
@@ -36,9 +37,9 @@ class ConversationListTask implements Callable<Object> {
     private final String query;
     private final String[] args;
     private final ConversationListListener loadListener;
-    private final int sort;
+    private final Sort sort;
 
-    ConversationListTask(ContentResolver contentResolver, String query, String[] args, ConversationListListener loadListener, int sort) {
+    ConversationListTask(ContentResolver contentResolver, String query, String[] args, ConversationListListener loadListener, Sort sort) {
         this.contentResolver = contentResolver;
         this.query = query;
         this.args = args;
@@ -46,20 +47,14 @@ class ConversationListTask implements Callable<Object> {
         this.sort = sort;
     }
 
-    public ConversationListTask(ContentResolver contentResolver, ConversationListListener loadListener, int sort) {
+    public ConversationListTask(ContentResolver contentResolver, ConversationListListener loadListener, Sort sort) {
         this(contentResolver, null, null, loadListener, sort);
     }
 
     @Override
     public Object call() throws Exception {
         final List<Conversation> conversations = new ArrayList<Conversation>();
-        String sortOrder;
-        if (sort == 1) {
-            sortOrder = Telephony.Sms.READ + " ASC, " + Telephony.Sms.DEFAULT_SORT_ORDER;
-        } else {
-            sortOrder = Telephony.Sms.DEFAULT_SORT_ORDER;
-        }
-        Cursor conversationsList = contentResolver.query(Telephony.Threads.CONTENT_URI, null, query, args, sortOrder);
+        Cursor conversationsList = contentResolver.query(Telephony.Threads.CONTENT_URI, null, query, args, getSortString());
 
         while (conversationsList.moveToNext()) {
             Uri phoneLookupUri = createPhoneLookupUri(conversationsList);
@@ -77,6 +72,16 @@ class ConversationListTask implements Callable<Object> {
 
         loadListener.onConversationListLoaded(conversations);
         return null;
+    }
+
+    private String getSortString() {
+        String sortOrder;
+        if (sort == Sort.UNREAD) {
+            sortOrder = Telephony.Sms.READ + " ASC, " + Telephony.Sms.DEFAULT_SORT_ORDER;
+        } else {
+            sortOrder = Telephony.Sms.DEFAULT_SORT_ORDER;
+        }
+        return sortOrder;
     }
 
     private static long getContactPhotoId(Cursor peopleCursor) {

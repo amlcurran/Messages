@@ -14,17 +14,8 @@
  * limitations under the License.
  */
 
-package com.amlcurran.messages.loaders;
+package com.amlcurran.messages.data;
 
-import android.content.ContentResolver;
-import android.provider.Telephony;
-
-import com.amlcurran.messages.data.Sort;
-import com.amlcurran.messages.conversationlist.ConversationListListener;
-
-class UnreadConversationListTask extends ConversationListTask {
-
-    public UnreadConversationListTask(ContentResolver contentResolver, ConversationListListener loadListener) {
-        super(contentResolver, Telephony.Sms.Inbox.READ + "=0", null, loadListener, Sort.DEFAULT);
-    }
+public enum Sort {
+    UNREAD, DEFAULT
 }
