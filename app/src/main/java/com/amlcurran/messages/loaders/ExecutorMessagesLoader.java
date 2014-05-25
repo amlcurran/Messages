@@ -19,7 +19,6 @@ package com.amlcurran.messages.loaders;
 import android.content.ContentResolver;
 import android.content.Context;
 
-import com.amlcurran.messages.OnContactQueryListener;
 import com.amlcurran.messages.conversationlist.ConversationListListener;
 import com.amlcurran.messages.conversationlist.PhotoLoadListener;
 import com.amlcurran.messages.data.Conversation;

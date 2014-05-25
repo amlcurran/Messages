@@ -30,6 +30,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.amlcurran.messages.data.SmsMessage;
+import com.amlcurran.messages.telephony.DefaultAppChecker;
 import com.espian.utils.AdaptiveCursorSource;
 import com.amlcurran.messages.loaders.CursorLoadListener;
 import com.amlcurran.messages.loaders.MessagesLoader;

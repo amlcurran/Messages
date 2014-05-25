@@ -28,7 +28,7 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.amlcurran.messages.DefaultAppChecker;
+import com.amlcurran.messages.telephony.DefaultAppChecker;
 import com.amlcurran.messages.R;
 
 

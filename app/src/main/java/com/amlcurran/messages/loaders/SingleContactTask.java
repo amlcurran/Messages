@@ -21,7 +21,6 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.provider.ContactsContract;
 
-import com.amlcurran.messages.OnContactQueryListener;
 import com.espian.utils.CursorHelper;
 
 import java.util.concurrent.Callable;
