@@ -30,7 +30,7 @@ import com.amlcurran.messages.ListeningCursorListFragment;
 import com.amlcurran.messages.R;
 import com.amlcurran.messages.data.SmsMessageCursorSource;
 import com.amlcurran.messages.data.SmsMessage;
-import com.amlcurran.messages.events.BroadcastManagerEventBus;
+import com.amlcurran.messages.events.BroadcastEventBus;
 import com.amlcurran.messages.loaders.ConversationListChangeListener;
 import com.amlcurran.messages.loaders.CursorLoadListener;
 import com.amlcurran.messages.loaders.MessagesLoader;
@@ -147,7 +147,7 @@ public class ThreadFragment extends ListeningCursorListFragment<SmsMessage> impl
 
     @Override
     public void listChanged() {
-        new BroadcastManagerEventBus(getActivity()).postListChanged();
+        new BroadcastEventBus(getActivity()).postListChanged();
     }
 
     public interface Listener {

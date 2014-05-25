@@ -36,7 +36,7 @@ import com.amlcurran.messages.conversationlist.ConversationListFragment;
 import com.amlcurran.messages.conversationlist.ConversationModalMarshall;
 import com.amlcurran.messages.data.Conversation;
 import com.amlcurran.messages.data.SmsMessage;
-import com.amlcurran.messages.events.BroadcastManagerEventBus;
+import com.amlcurran.messages.events.BroadcastEventBus;
 import com.amlcurran.messages.loaders.ConversationListChangeListener;
 import com.amlcurran.messages.loaders.MessagesLoader;
 import com.amlcurran.messages.loaders.MessagesLoaderProvider;
@@ -61,7 +61,7 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
     private UiController uiController;
     private DefaultAppChecker appChecker;
     private boolean isSecondaryVisible;
-    private BroadcastManagerEventBus eventBus;
+    private BroadcastEventBus eventBus;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,7 +70,7 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
         setContentView(uiController.getView());
 
         appChecker = new DefaultAppChecker(this, this);
-        eventBus = new BroadcastManagerEventBus(this);
+        eventBus = new BroadcastEventBus(this);
         uiController.getDisabledBanner().setOnClickListener(this);
 
         if (BuildConfig.DEBUG) {

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.amlcurran.messages.telephony;
+package com.amlcurran.messages.events;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -22,22 +22,22 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.support.v4.content.LocalBroadcastManager;
 
-import com.amlcurran.messages.events.BroadcastManagerEventBus;
-
-public class LocalMessageReceiver extends BroadcastReceiver {
+public class BroadcastEventSubscriber extends BroadcastReceiver implements EventSubscriber {
 
     private Context context;
     private Listener listener;
 
-    public LocalMessageReceiver(Context context, Listener listener) {
+    public BroadcastEventSubscriber(Context context, Listener listener) {
         this.context = context;
         this.listener = listener;
     }
 
+    @Override
     public void startListening(String[] actions) {
         LocalBroadcastManager.getInstance(context).registerReceiver(this, buildMessageFilter(actions));
     }
 
+    @Override
     public void stopListening() {
         LocalBroadcastManager.getInstance(context).unregisterReceiver(this);
     }
@@ -49,8 +49,8 @@ public class LocalMessageReceiver extends BroadcastReceiver {
 
     private IntentFilter buildMessageFilter(String[] actions) {
         IntentFilter filter = new IntentFilter();
-        filter.addAction(BroadcastManagerEventBus.BROADCAST_MESSAGE_SENT);
-        filter.addAction(BroadcastManagerEventBus.BROADCAST_MESSAGE_RECEIVED);
+        filter.addAction(BroadcastEventBus.BROADCAST_MESSAGE_SENT);
+        filter.addAction(BroadcastEventBus.BROADCAST_MESSAGE_RECEIVED);
         for (String action : actions) {
             filter.addAction(action);
         }

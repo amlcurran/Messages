@@ -20,14 +20,14 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.v4.content.LocalBroadcastManager;
 
-public class BroadcastManagerEventBus implements EventBus {
+public class BroadcastEventBus implements EventBus {
 
     public static final String BROADCAST_MESSAGE_SENT = "broadcast_message_sent";
     public static final String ACTION_LIST_CHANGED = "com.amlcurran.messages.ACTION_LIST_CHANGED";
     public static final String BROADCAST_MESSAGE_RECEIVED = "broadcast_message_received";
     private final LocalBroadcastManager broadcaster;
 
-    public BroadcastManagerEventBus(Context context) {
+    public BroadcastEventBus(Context context) {
         broadcaster = LocalBroadcastManager.getInstance(context);
     }
 

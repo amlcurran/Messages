@@ -24,7 +24,7 @@ import android.util.Log;
 
 import com.amlcurran.messages.MessagesApp;
 import com.amlcurran.messages.data.SmsMessage;
-import com.amlcurran.messages.events.BroadcastManagerEventBus;
+import com.amlcurran.messages.events.BroadcastEventBus;
 
 public class SmsReceiver extends BroadcastReceiver implements SmsDatabaseWriter.InboxWriteListener {
 
@@ -55,7 +55,7 @@ public class SmsReceiver extends BroadcastReceiver implements SmsDatabaseWriter.
         smsDatabaseWriter.writeInboxSms(context.getContentResolver(), new SmsDatabaseWriter.InboxWriteListener() {
             @Override
             public void onWrittenToInbox() {
-                new BroadcastManagerEventBus(context).postMessageReceived();
+                new BroadcastEventBus(context).postMessageReceived();
                 MessagesApp.getNotifier(context).updateUnreadNotification();
             }
 

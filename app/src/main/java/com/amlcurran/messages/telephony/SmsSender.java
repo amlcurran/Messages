@@ -25,7 +25,7 @@ import android.util.Log;
 
 import com.amlcurran.messages.MessagesApp;
 import com.amlcurran.messages.data.SmsMessage;
-import com.amlcurran.messages.events.BroadcastManagerEventBus;
+import com.amlcurran.messages.events.BroadcastEventBus;
 
 import java.util.ArrayList;
 
@@ -79,7 +79,7 @@ public class SmsSender extends IntentService implements SmsDatabaseWriter.SentWr
     }
 
     private void sendLocalBroadcast() {
-        new BroadcastManagerEventBus(this).postMessageSent();
+        new BroadcastEventBus(this).postMessageSent();
     }
 
     private void sendMessage(SmsMessage message) {

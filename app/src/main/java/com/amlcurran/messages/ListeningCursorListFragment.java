@@ -19,7 +19,8 @@ package com.amlcurran.messages;
 import android.app.ListFragment;
 import android.os.Bundle;
 
-import com.amlcurran.messages.telephony.LocalMessageReceiver;
+import com.amlcurran.messages.events.BroadcastEventSubscriber;
+import com.amlcurran.messages.events.EventSubscriber;
 import com.espian.utils.data.AdaptiveCursorSource;
 import com.amlcurran.messages.loaders.MessagesLoader;
 import com.amlcurran.messages.loaders.MessagesLoaderProvider;
@@ -29,17 +30,17 @@ import com.espian.utils.data.SourceBinderAdapter;
 /**
  * Defines a fragment that uses cursors from the Telephony API and listens to receiving of new messages
  */
-public abstract class ListeningCursorListFragment<T> extends ListFragment implements LocalMessageReceiver.Listener {
+public abstract class ListeningCursorListFragment<T> extends ListFragment implements BroadcastEventSubscriber.Listener {
     protected SourceBinderAdapter<T> adapter;
     protected AdaptiveCursorSource<T> source;
     private MessagesLoader messageLoader;
-    private LocalMessageReceiver messageReceiver;
+    private EventSubscriber messageReceiver;
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         messageLoader = new ProviderHelper<MessagesLoaderProvider>(MessagesLoaderProvider.class).get(getActivity()).getMessagesLoader();
-        messageReceiver = new LocalMessageReceiver(getActivity(), this);
+        messageReceiver = new BroadcastEventSubscriber(getActivity(), this);
     }
 
     @Override

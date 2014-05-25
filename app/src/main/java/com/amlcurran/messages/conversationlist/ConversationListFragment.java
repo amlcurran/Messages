@@ -31,7 +31,7 @@ import com.amlcurran.messages.PreferenceStore;
 import com.amlcurran.messages.R;
 import com.amlcurran.messages.data.Sort;
 import com.amlcurran.messages.data.Conversation;
-import com.amlcurran.messages.events.BroadcastManagerEventBus;
+import com.amlcurran.messages.events.BroadcastEventBus;
 import com.amlcurran.messages.loaders.MessagesLoader;
 import com.espian.utils.ProviderHelper;
 import com.espian.utils.data.ListArraySource;
@@ -92,7 +92,7 @@ public class ConversationListFragment extends ListeningCursorListFragment<Conver
 
     @Override
     public String[] getActions() {
-        return new String[] { BroadcastManagerEventBus.ACTION_LIST_CHANGED };
+        return new String[] { BroadcastEventBus.ACTION_LIST_CHANGED };
     }
 
     @Override
