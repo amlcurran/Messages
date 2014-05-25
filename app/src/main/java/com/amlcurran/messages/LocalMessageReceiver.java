@@ -32,8 +32,8 @@ public class LocalMessageReceiver extends BroadcastReceiver {
         this.listener = listener;
     }
 
-    public void startListening() {
-        LocalBroadcastManager.getInstance(context).registerReceiver(this, buildMessageFilter());
+    public void startListening(String[] actions) {
+        LocalBroadcastManager.getInstance(context).registerReceiver(this, buildMessageFilter(actions));
     }
 
     public void stopListening() {
@@ -45,10 +45,13 @@ public class LocalMessageReceiver extends BroadcastReceiver {
         listener.onMessageReceived();
     }
 
-    private IntentFilter buildMessageFilter() {
+    private IntentFilter buildMessageFilter(String[] actions) {
         IntentFilter filter = new IntentFilter();
         filter.addAction(SmsSender.BROADCAST_MESSAGE_SENT);
         filter.addAction(SmsReceiver.BROADCAST_MESSAGE_RECEIVED);
+        for (String action : actions) {
+            filter.addAction(action);
+        }
         return filter;
     }
 

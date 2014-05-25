@@ -32,7 +32,6 @@ import com.amlcurran.messages.R;
 import com.amlcurran.messages.data.Conversation;
 import com.amlcurran.messages.loaders.MessagesLoader;
 import com.espian.utils.ProviderHelper;
-import com.espian.utils.Source;
 import com.espian.utils.SourceBinderAdapter;
 
 import java.util.List;
@@ -75,6 +74,11 @@ public class ConversationListFragment extends ListeningCursorListFragment<Conver
     }
 
     @Override
+    public String[] getActions() {
+        return new String[] { MessagesLoader.ACTION_LIST_CHANGED };
+    }
+
+    @Override
     public void loadData(MessagesLoader loader, boolean isRefresh) {
         if (!isRefresh) {
             showLoadingUi();
@@ -92,7 +96,7 @@ public class ConversationListFragment extends ListeningCursorListFragment<Conver
         onUiThread(new Runnable() {
             @Override
             public void run() {
-                source.addAll(conversations);
+                source.replace(conversations);
                 adapter.notifyDataSetChanged();
                 hideLoadingUi();
             }
@@ -112,8 +116,6 @@ public class ConversationListFragment extends ListeningCursorListFragment<Conver
 
     public interface Listener {
         void onConversationSelected(Conversation conversation);
-
-        void onConversationModalSelected(Source<Conversation> conversation);
     }
 
 }

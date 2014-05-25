@@ -45,7 +45,11 @@ public abstract class ListeningCursorListFragment<T> extends ListFragment implem
     public void onStart() {
         super.onStart();
         loadData(messageLoader, false);
-        messageReceiver.startListening();
+        messageReceiver.startListening(getActions());
+    }
+
+    public String[] getActions() {
+        return new String[0];
     }
 
     @Override

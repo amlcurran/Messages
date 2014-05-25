@@ -47,22 +47,22 @@ public class ExecutorMessagesLoader implements MessagesLoader {
     }
 
     @Override
-    public void loadConversationList(final ConversationListListener loadListener) {
+    public void loadConversationList(ConversationListListener loadListener) {
         submit(new ConversationListTask(getResolver(), loadListener));
     }
 
     @Override
-    public void loadThread(final String threadId, final CursorLoadListener loadListener) {
+    public void loadThread(String threadId, CursorLoadListener loadListener) {
         submit(new ThreadTask(getResolver(), threadId, loadListener));
     }
 
     @Override
-    public void markThreadAsRead(final String threadId) {
+    public void markThreadAsRead(String threadId) {
         submit(new MarkReadTask(getResolver(), threadId));
     }
 
     @Override
-    public void loadPhoto(final long contactId, final PhotoLoadListener photoLoadListener) {
+    public void loadPhoto(long contactId, PhotoLoadListener photoLoadListener) {
         submit(new PhotoLoadTask(getResolver(), activity.getResources(), contactId, photoLoadListener));
     }
 
@@ -77,18 +77,18 @@ public class ExecutorMessagesLoader implements MessagesLoader {
     }
 
     @Override
-    public void queryContact(final String address, final OnContactQueryListener onContactQueryListener) {
+    public void queryContact(String address, OnContactQueryListener onContactQueryListener) {
         submit(new SingleContactTask(getResolver(), address, onContactQueryListener));
     }
 
     @Override
-    public void deleteThreads(final List<Conversation> conversationList, final OnThreadDeleteListener threadDeleteListener) {
+    public void deleteThreads(List<Conversation> conversationList, OnThreadDeleteListener threadDeleteListener) {
         submit(new DeleteThreadTask(getResolver(), conversationList, threadDeleteListener));
     }
 
     @Override
-    public void markThreadAsUnread(final List<Conversation> conversations) {
-        submit(new MarkUnreadTask(getResolver(), conversations));
+    public void markThreadAsUnread(List<Conversation> conversations, ConversationListChangeListener changeListener) {
+        submit(new MarkUnreadTask(getResolver(), conversations, changeListener));
     }
 
 }

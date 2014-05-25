@@ -30,10 +30,12 @@ import java.util.concurrent.Callable;
 class MarkUnreadTask implements Callable<Object> {
     private final ContentResolver contentResolver;
     private final List<Conversation> conversationList;
+    private final ConversationListChangeListener changeListener;
 
-    public MarkUnreadTask(ContentResolver contentResolver, List<Conversation> conversationList) {
+    public MarkUnreadTask(ContentResolver contentResolver, List<Conversation> conversationList, ConversationListChangeListener changeListener) {
         this.contentResolver = contentResolver;
         this.conversationList = conversationList;
+        this.changeListener = changeListener;
     }
 
     @Override
@@ -53,6 +55,7 @@ class MarkUnreadTask implements Callable<Object> {
                 }
             }).call();
         }
+        changeListener.listChanged();
         return null;
     }
 

@@ -20,6 +20,7 @@ import com.espian.utils.Source;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 public class ListArraySource<T> implements Source<T> {
 
@@ -45,5 +46,10 @@ public class ListArraySource<T> implements Source<T> {
     @Override
     public int getCount() {
         return list.size();
+    }
+
+    public void replace(List<T> conversations) {
+        list.clear();
+        list.addAll(conversations);
     }
 }

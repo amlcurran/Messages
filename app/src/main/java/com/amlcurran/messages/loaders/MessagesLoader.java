@@ -24,6 +24,8 @@ import com.amlcurran.messages.data.Conversation;
 import java.util.List;
 
 public interface MessagesLoader {
+    String ACTION_LIST_CHANGED = "com.amlcurran.messages.ACTION_LIST_CHANGED";
+
     void loadConversationList(ConversationListListener loadListener);
 
     void loadThread(String threadId, CursorLoadListener loadListener);
@@ -40,5 +42,5 @@ public interface MessagesLoader {
 
     void deleteThreads(List<Conversation> conversation, OnThreadDeleteListener threadDeleteListener);
 
-    void markThreadAsUnread(List<Conversation> threadId);
+    void markThreadAsUnread(List<Conversation> threadId, ConversationListChangeListener changeListener);
 }

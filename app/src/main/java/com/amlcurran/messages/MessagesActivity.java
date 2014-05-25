@@ -36,20 +36,20 @@ import android.widget.Toast;
 import com.amlcurran.messages.conversationlist.ConversationListFragment;
 import com.amlcurran.messages.data.Conversation;
 import com.amlcurran.messages.data.SmsMessage;
+import com.amlcurran.messages.loaders.ConversationListChangeListener;
 import com.amlcurran.messages.loaders.MessagesLoader;
 import com.amlcurran.messages.loaders.MessagesLoaderProvider;
 import com.amlcurran.messages.loaders.OnThreadDeleteListener;
 import com.amlcurran.messages.ui.SlidingPaneUiController;
 import com.amlcurran.messages.ui.UiController;
 import com.espian.utils.MenuFinder;
-import com.espian.utils.Source;
 
 import java.util.Calendar;
 import java.util.List;
 
 public class MessagesActivity extends Activity implements MessagesLoaderProvider,
         ConversationListFragment.Listener, ThreadFragment.Listener, View.OnClickListener,
-        DefaultAppChecker.Callback, SlidingPaneUiController.UiCallback, ConversationModalMarshall.Callback, OnThreadDeleteListener {
+        DefaultAppChecker.Callback, SlidingPaneUiController.UiCallback, ConversationModalMarshall.Callback, OnThreadDeleteListener, ConversationListChangeListener {
 
     public static final int REQUEST_CHANGE_SMS_APP = 20;
 
@@ -128,11 +128,6 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
     }
 
     @Override
-    public void onConversationModalSelected(Source<Conversation> conversation) {
-        startActionMode(new ConversationModalMarshall(conversation, this));
-    }
-
-    @Override
     public void sendSms(String address, String body) {
         long timestamp = Calendar.getInstance().getTimeInMillis();
         SmsMessage message = new SmsMessage(address, body, timestamp, true);
@@ -199,7 +194,7 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
 
     @Override
     public void markAsUnread(List<Conversation> threadId) {
-        getMessagesLoader().markThreadAsUnread(threadId);
+        getMessagesLoader().markThreadAsUnread(threadId, this);
     }
 
     @Override
@@ -214,9 +209,18 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
                     toast = getString(R.string.deleted_many_threads, deletedConversations.size());
                 }
                 Toast.makeText(MessagesActivity.this, toast, Toast.LENGTH_SHORT).show();
-                LocalBroadcastManager.getInstance(MessagesActivity.this).sendBroadcast(new Intent(SmsSender.BROADCAST_MESSAGE_SENT));
+                sendConversationListChangeNotification();
             }
         });
+    }
+
+    @Override
+    public void listChanged() {
+        sendConversationListChangeNotification();
+    }
+
+    private boolean sendConversationListChangeNotification() {
+        return LocalBroadcastManager.getInstance(this).sendBroadcast(new Intent(MessagesLoader.ACTION_LIST_CHANGED));
     }
 
     public static class EmptyFragment extends Fragment {
