@@ -19,6 +19,7 @@ package com.amlcurran.messages.conversationlist;
 import android.app.Activity;
 import android.graphics.drawable.AnimationDrawable;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -36,13 +37,14 @@ import com.espian.utils.data.SourceBinderAdapter;
 
 import java.util.List;
 
-public class ConversationListFragment extends ListeningCursorListFragment<Conversation> implements ConversationListListener, AdapterView.OnItemClickListener {
+public class ConversationListFragment extends ListeningCursorListFragment<Conversation> implements ConversationListListener, AdapterView.OnItemClickListener, PreferenceListener.ChangeListener {
 
     protected SourceBinderAdapter<Conversation> adapter;
     protected ListArraySource<Conversation> source;
     private Listener listener;
     private ImageView emptyView;
     private ConversationModalMarshall.Callback modalCallback;
+    private PreferenceListener preferenceListener;
 
     public ConversationListFragment() { }
 
@@ -57,6 +59,7 @@ public class ConversationListFragment extends ListeningCursorListFragment<Conver
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
+        preferenceListener = new PreferenceListener(getActivity(), this, "unread_priority");
         source = new ListArraySource<Conversation>();
         ConversationsBinder binder = new ConversationsBinder(getResources(), getMessageLoader());
         adapter = new SourceBinderAdapter<Conversation>(getActivity(), source, binder);
@@ -64,6 +67,18 @@ public class ConversationListFragment extends ListeningCursorListFragment<Conver
         getListView().setChoiceMode(ListView.CHOICE_MODE_MULTIPLE_MODAL);
         getListView().setOnItemClickListener(this);
         getListView().setMultiChoiceModeListener(new ConversationModalMarshall(source, modalCallback));
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        preferenceListener.startListening();
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        preferenceListener.stopListening();
     }
 
     @Override
@@ -83,7 +98,12 @@ public class ConversationListFragment extends ListeningCursorListFragment<Conver
         if (!isRefresh) {
             showLoadingUi();
         }
-        loader.loadConversationList(this);
+        loader.loadConversationList(this, getSort());
+    }
+
+    private int getSort() {
+        boolean priority = PreferenceManager.getDefaultSharedPreferences(getActivity()).getBoolean("unread_priority", false);
+        return priority ? 1 : 0;
     }
 
     @Override
@@ -112,6 +132,11 @@ public class ConversationListFragment extends ListeningCursorListFragment<Conver
     private void hideLoadingUi() {
         getListView().setVisibility(View.VISIBLE);
         emptyView.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void preferenceChanged(String requestKey) {
+        onMessageReceived();
     }
 
     public interface Listener {

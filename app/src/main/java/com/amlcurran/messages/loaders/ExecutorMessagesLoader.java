@@ -46,8 +46,8 @@ public class ExecutorMessagesLoader implements MessagesLoader {
     }
 
     @Override
-    public void loadConversationList(ConversationListListener loadListener) {
-        submit(new ConversationListTask(getResolver(), loadListener));
+    public void loadConversationList(ConversationListListener loadListener, int sort) {
+        submit(new ConversationListTask(getResolver(), loadListener, sort));
     }
 
     @Override

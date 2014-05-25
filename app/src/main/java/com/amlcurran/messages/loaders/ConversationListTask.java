@@ -36,22 +36,29 @@ class ConversationListTask implements Callable<Object> {
     private final String query;
     private final String[] args;
     private final ConversationListListener loadListener;
+    private final int sort;
 
-    ConversationListTask(ContentResolver contentResolver, String query, String[] args, ConversationListListener loadListener) {
+    ConversationListTask(ContentResolver contentResolver, String query, String[] args, ConversationListListener loadListener, int sort) {
         this.contentResolver = contentResolver;
         this.query = query;
         this.args = args;
         this.loadListener = loadListener;
+        this.sort = sort;
     }
 
-    public ConversationListTask(ContentResolver contentResolver, ConversationListListener loadListener) {
-        this(contentResolver, null, null, loadListener);
+    public ConversationListTask(ContentResolver contentResolver, ConversationListListener loadListener, int sort) {
+        this(contentResolver, null, null, loadListener, sort);
     }
 
     @Override
     public Object call() throws Exception {
         final List<Conversation> conversations = new ArrayList<Conversation>();
-        String sortOrder = Telephony.Sms.DEFAULT_SORT_ORDER;
+        String sortOrder;
+        if (sort == 1) {
+            sortOrder = Telephony.Sms.READ + " ASC, " + Telephony.Sms.DEFAULT_SORT_ORDER;
+        } else {
+            sortOrder = Telephony.Sms.DEFAULT_SORT_ORDER;
+        }
         Cursor conversationsList = contentResolver.query(Telephony.Threads.CONTENT_URI, null, query, args, sortOrder);
 
         while (conversationsList.moveToNext()) {

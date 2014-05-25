@@ -24,6 +24,6 @@ import com.amlcurran.messages.conversationlist.ConversationListListener;
 class UnreadConversationListTask extends ConversationListTask {
 
     public UnreadConversationListTask(ContentResolver contentResolver, ConversationListListener loadListener) {
-        super(contentResolver, Telephony.Sms.Inbox.READ + "=0", null, loadListener);
+        super(contentResolver, Telephony.Sms.Inbox.READ + "=0", null, loadListener, 0);
     }
 }
