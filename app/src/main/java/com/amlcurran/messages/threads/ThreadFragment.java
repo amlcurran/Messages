@@ -28,7 +28,7 @@ import android.view.ViewGroup;
 
 import com.amlcurran.messages.ListeningCursorListFragment;
 import com.amlcurran.messages.R;
-import com.amlcurran.messages.data.SmsCursorSource;
+import com.amlcurran.messages.data.SmsMessageCursorSource;
 import com.amlcurran.messages.data.SmsMessage;
 import com.amlcurran.messages.loaders.CursorLoadListener;
 import com.amlcurran.messages.loaders.MessagesLoader;
@@ -77,7 +77,7 @@ public class ThreadFragment extends ListeningCursorListFragment<SmsMessage> impl
         super.onActivityCreated(savedInstanceState);
         setHasOptionsMenu(true);
         sendAddress = getArguments().getString(ADDRESS);
-        source = new SmsCursorSource();
+        source = new SmsMessageCursorSource();
         adapter = new SourceBinderAdapter<SmsMessage>(getActivity(), source, new ThreadBinder(getListView()));
         defaultChecker = new DefaultAppChecker(getActivity(), composeView);
         setListAdapter(adapter);

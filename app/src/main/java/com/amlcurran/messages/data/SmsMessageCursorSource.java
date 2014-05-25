@@ -20,7 +20,7 @@ import android.database.Cursor;
 
 import com.espian.utils.data.AdaptiveCursorSource;
 
-public class SmsCursorSource extends AdaptiveCursorSource<SmsMessage> {
+public class SmsMessageCursorSource extends AdaptiveCursorSource<SmsMessage> {
     @Override
     public SmsMessage getFromCursorRow(Cursor cursor) {
         return SmsMessage.fromCursor(cursor);

@@ -24,27 +24,35 @@ import com.espian.utils.data.CursorHelper;
 
 public class Conversation {
 
-    private String address;
-    private String body;
-    private String threadId;
-    private boolean isRead;
-    private String name;
-    private long personId;
+    private final String address;
+    private final String body;
+    private final String threadId;
+    private final boolean isRead;
+    private final String name;
+    private final long personId;
+
+    private Conversation(String address, String body, String threadId, boolean isRead, String name, long personId) {
+        this.address = address;
+        this.body = body;
+        this.threadId = threadId;
+        this.isRead = isRead;
+        this.name = name;
+        this.personId = personId;
+    }
 
     public static Conversation fromCursor(Cursor cursor, long personId, String personName) {
-        Conversation conversation = new Conversation();
-        conversation.address = CursorHelper.asString(cursor, Telephony.Sms.ADDRESS);
-        conversation.body = CursorHelper.asString(cursor, Telephony.Sms.BODY);
+        String address = CursorHelper.asString(cursor, Telephony.Sms.ADDRESS);
+        String body = CursorHelper.asString(cursor, Telephony.Sms.BODY);
         String s = CursorHelper.asString(cursor, Telephony.Sms.Inbox.READ);
-        conversation.isRead = s.toLowerCase().equals("1");
-        conversation.threadId = CursorHelper.asString(cursor, Telephony.Sms.THREAD_ID);
+        boolean isRead = s.toLowerCase().equals("1");
+        String threadId = CursorHelper.asString(cursor, Telephony.Sms.THREAD_ID);
+        String name;
         if (TextUtils.isEmpty(personName)) {
-            conversation.name = conversation.address;
+            name = address;
         } else {
-            conversation.name = personName;
+            name = personName;
         }
-        conversation.personId = personId;
-        return conversation;
+        return new Conversation(address, body, threadId, isRead, name, personId);
     }
 
     public String getBody() {
