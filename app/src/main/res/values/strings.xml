@@ -13,5 +13,6 @@
     <string name="delete_thread">Delete thread</string>
     <string name="failed_to_send_message">Failed to send message</string>
     <string name="couldnt_send_to">Couldn\'t send to %1$s</string>
+    <string name="mark_as_unread">Mark as unread</string>
 
 </resources>

@@ -37,4 +37,6 @@ public interface MessagesLoader {
     void queryContact(String address, OnContactQueryListener onContactQueryListener);
 
     void deleteThread(Conversation conversation, OnThreadDeleteListener threadDeleteListener);
+
+    void markThreadAsUnread(String threadId);
 }

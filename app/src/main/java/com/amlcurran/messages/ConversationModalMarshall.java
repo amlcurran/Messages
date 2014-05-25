@@ -49,10 +49,17 @@ public class ConversationModalMarshall implements ActionMode.Callback {
 
             case R.id.modal_contact:
                 callback.viewContact(conversation.getAddress());
+                mode.finish();
                 return true;
 
             case R.id.modal_delete_thread:
                 callback.deleteThread(conversation);
+                mode.finish();
+                return true;
+
+            case R.id.modal_mark_unread:
+                callback.markAsUnread(conversation.getThreadId());
+                mode.finish();
                 return true;
 
         }
@@ -66,6 +73,7 @@ public class ConversationModalMarshall implements ActionMode.Callback {
     public interface Callback {
         void viewContact(String address);
         void deleteThread(Conversation conversation);
+        void markAsUnread(String threadId);
     }
 
 }

@@ -196,6 +196,11 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
     }
 
     @Override
+    public void markAsUnread(String threadId) {
+        getMessagesLoader().markThreadAsUnread(threadId);
+    }
+
+    @Override
      public void threadDeleted(final Conversation conversation) {
         runOnUiThread(new Runnable() {
             @Override

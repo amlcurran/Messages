@@ -114,13 +114,17 @@ public class ExecutorMessagesLoader implements MessagesLoader {
 
     @Override
     public void loadThread(final String threadId, final CursorLoadListener loadListener) {
+        loadThreadInternal(threadId, loadListener, Telephony.Sms.CONTENT_URI);
+    }
+
+    private void loadThreadInternal(final String threadId, final CursorLoadListener loadListener, final Uri contentUri) {
         executor.submit(new Callable<Object>() {
 
             @Override
             public Object call() throws Exception {
                 String selection = Telephony.Sms.THREAD_ID + "=?";
                 String[] selectionArgs = {threadId};
-                final Cursor cursor = getResolver().query(Telephony.Sms.CONTENT_URI, null, selection, selectionArgs, Telephony.Sms.DEFAULT_SORT_ORDER.replace("DESC", "ASC"));
+                final Cursor cursor = getResolver().query(contentUri, null, selection, selectionArgs, Telephony.Sms.DEFAULT_SORT_ORDER.replace("DESC", "ASC"));
                 loadListener.onCursorLoaded(cursor);
                 return null;
             }
@@ -212,6 +216,36 @@ public class ExecutorMessagesLoader implements MessagesLoader {
                 return null;
             }
         });
+    }
+
+    @Override
+    public void markThreadAsUnread(final String threadId) {
+        executor.submit(new Callable<Object>() {
+            @Override
+            public Object call() throws Exception {
+                loadThreadInternal(threadId, new CursorLoadListener() {
+                    @Override
+                    public void onCursorLoaded(Cursor cursor) {
+                        if (cursor.moveToLast()) {
+
+                            // This updates an unread message
+                            String selection = String.format("%1$s=? AND %2$s=?", Telephony.Sms.THREAD_ID, Telephony.Sms._ID);
+                            String[] args = new String[]{threadId, CursorHelper.asString(cursor, Telephony.Sms._ID)};
+                            getResolver().update(Telephony.Sms.Inbox.CONTENT_URI, createUnreadContentValues(), selection, args);
+
+                        }
+                    }
+                }, Telephony.Sms.Inbox.CONTENT_URI);
+                return null;
+            }
+
+        });
+    }
+
+    private ContentValues createUnreadContentValues() {
+        ContentValues values = new ContentValues();
+        values.put(Telephony.Sms.READ, "0");
+        return values;
     }
 
     private static ContentValues createReadContentValues() {

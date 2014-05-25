@@ -17,11 +17,18 @@
   -->
 
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:icon="@drawable/ic_action_person"
+    <item
+        android:icon="@drawable/ic_action_person"
         android:title="@string/view_contact"
         android:showAsAction="ifRoom"
         android:id="@+id/modal_contact" />
-    <item android:icon="@drawable/ic_action_discard"
+    <item
+        android:icon="@drawable/ic_action_mark_unread"
+        android:title="@string/mark_as_unread"
+        android:showAsAction="ifRoom"
+        android:id="@+id/modal_mark_unread" />
+    <item
+        android:icon="@drawable/ic_action_discard"
         android:title="@string/delete_thread"
         android:showAsAction="ifRoom"
         android:id="@+id/modal_delete_thread" />
