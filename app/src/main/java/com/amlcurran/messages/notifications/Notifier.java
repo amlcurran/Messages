@@ -14,11 +14,12 @@
  * limitations under the License.
  */
 
-package com.amlcurran.messages;
+package com.amlcurran.messages.notifications;
 
 import android.app.NotificationManager;
 import android.content.Context;
 
+import com.amlcurran.messages.MessagesApp;
 import com.amlcurran.messages.data.Conversation;
 import com.amlcurran.messages.conversationlist.ConversationListListener;
 import com.amlcurran.messages.data.SmsMessage;

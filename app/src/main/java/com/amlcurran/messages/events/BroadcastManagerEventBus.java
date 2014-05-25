@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.amlcurran.messages;
+package com.amlcurran.messages.events;
 
 import android.content.Context;
 import android.content.Intent;

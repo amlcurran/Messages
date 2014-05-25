@@ -21,6 +21,7 @@ import android.content.Context;
 
 import com.amlcurran.messages.loaders.ExecutorMessagesLoader;
 import com.amlcurran.messages.loaders.MessagesLoader;
+import com.amlcurran.messages.notifications.Notifier;
 
 import java.util.concurrent.Executors;
 

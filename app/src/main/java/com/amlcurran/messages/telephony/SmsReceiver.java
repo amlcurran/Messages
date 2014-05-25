@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.amlcurran.messages;
+package com.amlcurran.messages.telephony;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -23,6 +23,7 @@ import android.provider.Telephony;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
+import com.amlcurran.messages.MessagesApp;
 import com.amlcurran.messages.data.SmsMessage;
 
 public class SmsReceiver extends BroadcastReceiver implements SmsDatabaseWriter.InboxWriteListener {

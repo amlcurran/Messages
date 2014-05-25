@@ -19,6 +19,7 @@ package com.amlcurran.messages;
 import android.app.ListFragment;
 import android.os.Bundle;
 
+import com.amlcurran.messages.telephony.LocalMessageReceiver;
 import com.espian.utils.AdaptiveCursorSource;
 import com.amlcurran.messages.loaders.MessagesLoader;
 import com.amlcurran.messages.loaders.MessagesLoaderProvider;

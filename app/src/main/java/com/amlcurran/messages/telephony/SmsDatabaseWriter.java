@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.amlcurran.messages;
+package com.amlcurran.messages.telephony;
 
 import android.content.ContentResolver;
 import android.content.ContentValues;

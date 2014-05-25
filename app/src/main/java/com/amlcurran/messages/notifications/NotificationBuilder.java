@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.amlcurran.messages;
+package com.amlcurran.messages.notifications;
 
 import android.app.Notification;
 import android.app.PendingIntent;
@@ -27,6 +27,8 @@ import android.text.Spanned;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.StyleSpan;
 
+import com.amlcurran.messages.MessagesActivity;
+import com.amlcurran.messages.R;
 import com.amlcurran.messages.data.Conversation;
 import com.amlcurran.messages.data.SmsMessage;
 

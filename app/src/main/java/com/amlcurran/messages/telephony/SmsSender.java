@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.amlcurran.messages;
+package com.amlcurran.messages.telephony;
 
 import android.app.Activity;
 import android.app.IntentService;
@@ -24,6 +24,7 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.telephony.SmsManager;
 import android.util.Log;
 
+import com.amlcurran.messages.MessagesApp;
 import com.amlcurran.messages.data.SmsMessage;
 
 import java.util.ArrayList;

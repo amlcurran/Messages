@@ -30,7 +30,7 @@
             </intent-filter>
         </activity>
 
-        <receiver android:name=".SmsReceiver"
+        <receiver android:name=".telephony.SmsReceiver"
             android:permission="android.permission.BROADCAST_SMS">
             <intent-filter>
                 <action android:name="android.provider.Telephony.SMS_DELIVER" />
@@ -38,7 +38,7 @@
         </receiver>
 
         <!-- BroadcastReceiver that listens for incoming MMS messages -->
-        <receiver android:name=".MmsReceiver"
+        <receiver android:name=".telephony.MmsReceiver"
             android:permission="android.permission.BROADCAST_WAP_PUSH">
             <intent-filter>
                 <action android:name="android.provider.Telephony.WAP_PUSH_DELIVER" />
@@ -61,7 +61,7 @@
         </activity>
 
         <!-- Service that delivers messages from the phone "quick response" -->
-        <service android:name=".SmsSender"
+        <service android:name=".telephony.SmsSender"
             android:permission="android.permission.SEND_RESPOND_VIA_MESSAGE"
             android:exported="true" >
             <intent-filter>

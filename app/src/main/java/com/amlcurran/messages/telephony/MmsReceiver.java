@@ -14,8 +14,15 @@
  * limitations under the License.
  */
 
-package com.amlcurran.messages;
+package com.amlcurran.messages.telephony;
 
-public interface EventBus {
-    void postListChanged();
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+
+public class MmsReceiver extends BroadcastReceiver {
+    @Override
+    public void onReceive(Context context, Intent intent) {
+        throw new UnsupportedOperationException("Not yet been implemented");
+    }
 }
