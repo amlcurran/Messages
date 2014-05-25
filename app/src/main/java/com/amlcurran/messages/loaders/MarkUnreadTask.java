@@ -25,7 +25,7 @@ import com.espian.utils.CursorHelper;
 
 import java.util.concurrent.Callable;
 
-class MarkUnreadTask implements Callable<Object> {
+class MarkUnreadTask implements Callable<Object>, CursorLoadListener {
     private final ContentResolver contentResolver;
     private final String threadId;
 
@@ -36,20 +36,20 @@ class MarkUnreadTask implements Callable<Object> {
 
     @Override
     public Object call() throws Exception {
-        new InboxThreadTask(contentResolver, threadId, new CursorLoadListener() {
-                    @Override
-                    public void onCursorLoaded(Cursor cursor) {
-                        if (cursor.moveToLast()) {
-
-                            // This updates an unread message
-                            String selection = String.format("%1$s=? AND %2$s=?", Telephony.Sms.THREAD_ID, Telephony.Sms._ID);
-                            String[] args = new String[]{threadId, CursorHelper.asString(cursor, Telephony.Sms._ID)};
-                            contentResolver.update(Telephony.Sms.Inbox.CONTENT_URI, createUnreadContentValues(), selection, args);
-
-                        }
-                    }
-                }).call();
+        new InboxThreadTask(contentResolver, threadId, this).call();
         return null;
+    }
+
+    @Override
+    public void onCursorLoaded(Cursor cursor) {
+        if (cursor.moveToLast()) {
+
+            // This updates an unread message
+            String selection = String.format("%1$s=? AND %2$s=?", Telephony.Sms.THREAD_ID, Telephony.Sms._ID);
+            String[] args = new String[]{threadId, CursorHelper.asString(cursor, Telephony.Sms._ID)};
+            contentResolver.update(Telephony.Sms.Inbox.CONTENT_URI, createUnreadContentValues(), selection, args);
+
+        }
     }
 
     private ContentValues createUnreadContentValues() {
@@ -57,5 +57,4 @@ class MarkUnreadTask implements Callable<Object> {
         values.put(Telephony.Sms.READ, "0");
         return values;
     }
-
 }

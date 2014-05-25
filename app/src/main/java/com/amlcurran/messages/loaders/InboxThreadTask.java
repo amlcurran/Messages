@@ -19,7 +19,7 @@ package com.amlcurran.messages.loaders;
 import android.content.ContentResolver;
 import android.provider.Telephony;
 
-public class InboxThreadTask extends ThreadTask {
+class InboxThreadTask extends ThreadTask {
     public InboxThreadTask(ContentResolver contentResolver, String threadId, CursorLoadListener loadListener) {
         super(contentResolver, threadId, Telephony.Sms.Inbox.CONTENT_URI, loadListener);
     }
