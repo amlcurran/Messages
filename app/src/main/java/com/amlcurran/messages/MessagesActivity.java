@@ -161,7 +161,7 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
     @Override
     public void sendSms(String address, String body) {
         long timestamp = Calendar.getInstance().getTimeInMillis();
-        SmsMessage message = new SmsMessage(address, body, timestamp, true);
+        SmsMessage message = new SmsMessage(address, body, timestamp, true, false);
         Intent intent = new Intent(this, SmsSender.class);
         intent.setAction(SmsSender.ACTION_SEND_REQUEST);
         intent.putExtra(SmsSender.EXTRA_MESSAGE, message);

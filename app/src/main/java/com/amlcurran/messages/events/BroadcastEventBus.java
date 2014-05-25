@@ -20,12 +20,15 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.v4.content.LocalBroadcastManager;
 
+import com.amlcurran.messages.data.SmsMessage;
+
 public class BroadcastEventBus implements EventBus {
 
     private static final String BASE_BROADCAST = "com.amlcurran.messages";
     public static final String BROADCAST_MESSAGE_SENT = BASE_BROADCAST + ".broadcast_message_sent";
-    public static final String ACTION_LIST_CHANGED = BASE_BROADCAST + ".ACTION_LIST_CHANGED";
+    public static final String BROADCAST_LIST_CHANGED = BASE_BROADCAST + ".BROADCAST_LIST_CHANGED";
     public static final String BROADCAST_MESSAGE_RECEIVED = BASE_BROADCAST + ".broadcast_message_received";
+    public static final String BROADCAST_MESSAGE_SENDING = BASE_BROADCAST + ".broadcast_message_sending";
     private final LocalBroadcastManager broadcaster;
 
     public BroadcastEventBus(Context context) {
@@ -34,7 +37,7 @@ public class BroadcastEventBus implements EventBus {
 
     @Override
     public void postListChanged() {
-        broadcaster.sendBroadcast(new Intent(ACTION_LIST_CHANGED));
+        broadcaster.sendBroadcast(new Intent(BROADCAST_LIST_CHANGED));
     }
 
     @Override
@@ -45,5 +48,12 @@ public class BroadcastEventBus implements EventBus {
     @Override
     public void postMessageReceived() {
         broadcaster.sendBroadcast(new Intent(BROADCAST_MESSAGE_RECEIVED));
+    }
+
+    @Override
+    public void postMessageSending(SmsMessage message) {
+        Intent broadcast = new Intent(BROADCAST_MESSAGE_SENDING);
+        broadcast.putExtra("message", message);
+        broadcaster.sendBroadcast(broadcast);
     }
 }

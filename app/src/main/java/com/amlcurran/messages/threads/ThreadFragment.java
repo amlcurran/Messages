@@ -98,6 +98,11 @@ public class ThreadFragment extends ListeningCursorListFragment<SmsMessage> impl
     }
 
     @Override
+    public String[] getActions() {
+        return new String[] { BroadcastEventBus.BROADCAST_MESSAGE_SENDING };
+    }
+
+    @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.fragment_thread, menu);
     }

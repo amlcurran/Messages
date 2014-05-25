@@ -55,6 +55,24 @@ public class SmsDatabaseWriter {
         }
     }
 
+    public void writeOutboxSms(ContentResolver contentResolver, OutboxWriteListener outboxWriteListener, SmsMessage message) {
+        ContentValues contentValues = message.toContentValues(Telephony.Sms.Sent.MESSAGE_TYPE_OUTBOX);
+        writeOutboxSmsInternal(contentResolver, outboxWriteListener, contentValues);
+    }
+
+    private static void writeOutboxSmsInternal(ContentResolver resolver, OutboxWriteListener inboxWriteListener, ContentValues contentValues) {
+        Uri inserted = resolver.insert(Telephony.Sms.Inbox.CONTENT_URI, contentValues);
+        if (inserted != null) {
+            inboxWriteListener.onWrittenToOutbox(inserted);
+        } else {
+            inboxWriteListener.onOutboxWriteFailed();
+        }
+    }
+
+    public void deleteOutboxMessage(ContentResolver contentResolver, Uri outboxSms) {
+        contentResolver.delete(outboxSms, null, null);
+    }
+
     public interface InboxWriteListener {
         void onWrittenToInbox();
 
@@ -66,5 +84,12 @@ public class SmsDatabaseWriter {
 
         void onSentBoxWriteFailed();
     }
+
+    public interface OutboxWriteListener {
+        void onWrittenToOutbox(Uri inserted);
+
+        void onOutboxWriteFailed();
+    }
+
 
 }

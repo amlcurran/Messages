@@ -20,6 +20,7 @@ import android.app.Activity;
 import android.app.IntentService;
 import android.app.PendingIntent;
 import android.content.Intent;
+import android.net.Uri;
 import android.telephony.SmsManager;
 import android.util.Log;
 
@@ -36,14 +37,17 @@ public class SmsSender extends IntentService implements SmsDatabaseWriter.SentWr
     public static final String EXTRA_MESSAGE = "message";
     public static final String ACTION_SEND_REQUEST = "send_request";
     public static final String ACTION_MESSAGE_SENT = "message_send";
+    private static final String EXTRA_OUTBOX_URI = "outbox_uri";
 
     private final SmsManager smsManager;
     private final SmsDatabaseWriter smsDatabaseWriter;
+    private final BroadcastEventBus eventBus;
 
     public SmsSender() {
         super(TAG);
         smsManager = SmsManager.getDefault();
         smsDatabaseWriter = new SmsDatabaseWriter();
+        eventBus = new BroadcastEventBus(this);
         setIntentRedelivery(true);
     }
 
@@ -61,12 +65,18 @@ public class SmsSender extends IntentService implements SmsDatabaseWriter.SentWr
         } else if (isSentNotification(intent)) {
             int result = intent.getIntExtra("result", 0);
             SmsMessage message = intent.getParcelableExtra(EXTRA_MESSAGE);
+            Uri outboxSms = Uri.parse(intent.getStringExtra(EXTRA_OUTBOX_URI));
             if (result == Activity.RESULT_OK) {
+                deleteOutboxSms(outboxSms);
                 writeMessageToProvider(message);
             } else {
                 notifyFailureToSend(message, result);
             }
         }
+    }
+
+    private void deleteOutboxSms(Uri outboxSms) {
+        smsDatabaseWriter.deleteOutboxMessage(getContentResolver(), outboxSms);
     }
 
     private void notifyFailureToSend(SmsMessage message, int result) {
@@ -78,19 +88,27 @@ public class SmsSender extends IntentService implements SmsDatabaseWriter.SentWr
         Log.d(TAG, "Write sent message to provider " + message.toString());
     }
 
-    private void sendLocalBroadcast() {
-        new BroadcastEventBus(this).postMessageSent();
+    private void sendMessage(final SmsMessage message) {
+        smsDatabaseWriter.writeOutboxSms(getContentResolver(), new SmsDatabaseWriter.OutboxWriteListener() {
+            @Override
+            public void onWrittenToOutbox(Uri inserted) {
+                eventBus.postMessageSending(message);
+                Log.d(TAG, "Sending message: " + message.toString());
+                ArrayList<PendingIntent> messageSendIntents = getMessageSendIntents(message, inserted);
+                smsManager.sendMultipartTextMessage(message.getAddress(), null, smsManager.divideMessage(message.getBody()), messageSendIntents, null);
+            }
+
+            @Override
+            public void onOutboxWriteFailed() {
+
+            }
+        }, message);
     }
 
-    private void sendMessage(SmsMessage message) {
-        Log.d(TAG, "Sending message: " + message.toString());
-        ArrayList<PendingIntent> messageSendIntents = getMessageSendIntents(message);
-        smsManager.sendMultipartTextMessage(message.getAddress(), null, smsManager.divideMessage(message.getBody()), messageSendIntents, null);
-    }
-
-    private ArrayList<PendingIntent> getMessageSendIntents(SmsMessage message) {
+    private ArrayList<PendingIntent> getMessageSendIntents(SmsMessage message, Uri inserted) {
         Intent intent = new Intent(this, SmsReceiver.class);
         intent.putExtra(EXTRA_MESSAGE, message);
+        intent.putExtra(EXTRA_OUTBOX_URI, inserted.toString());
         PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 2, intent, PendingIntent.FLAG_CANCEL_CURRENT);
         ArrayList<PendingIntent> pendingIntents = new ArrayList<PendingIntent>();
         pendingIntents.add(pendingIntent);
@@ -108,7 +126,7 @@ public class SmsSender extends IntentService implements SmsDatabaseWriter.SentWr
     @Override
     public void onWrittenToSentBox() {
         Log.d(TAG, "Sending broadcast for sent message");
-        sendLocalBroadcast();
+        new BroadcastEventBus(this).postMessageSent();
     }
 
     @Override

@@ -92,7 +92,7 @@ public class ConversationListFragment extends ListeningCursorListFragment<Conver
 
     @Override
     public String[] getActions() {
-        return new String[] { BroadcastEventBus.ACTION_LIST_CHANGED };
+        return new String[] { BroadcastEventBus.BROADCAST_LIST_CHANGED };
     }
 
     @Override

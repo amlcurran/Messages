@@ -50,7 +50,11 @@ class ThreadBinder extends SimpleBinder<SmsMessage> {
 
         TextView bodyText = getTextView(convertView, android.R.id.text1);
         bodyText.setText(item.getBody());
-        getTextView(convertView, android.R.id.text2).setText(formatter.format(date));
+        if (item.isSending()) {
+            getTextView(convertView, android.R.id.text2).setText("Sending...");
+        } else {
+            getTextView(convertView, android.R.id.text2).setText(formatter.format(date));
+        }
         Linkify.addLinks(bodyText, Linkify.ALL);
 
         return convertView;

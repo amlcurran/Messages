@@ -28,16 +28,20 @@ public class SmsMessage implements Parcelable {
 
     private static final int IS_FROM_OTHER = 1;
     private static final int IS_FROM_ME = 0;
+    private static final int IS_NOT_SENDING = 2;
+    private static final int IS_SENDING = 4;
     private final String address;
     private final String body;
     private final long timestamp;
     private final boolean isFromMe;
+    private final boolean isSending;
 
-    public SmsMessage(String address, String body, long timestamp, boolean isFromMe) {
+    public SmsMessage(String address, String body, long timestamp, boolean isFromMe, boolean isSending) {
         this.address = address;
         this.body = body;
         this.timestamp = timestamp;
         this.isFromMe = isFromMe;
+        this.isSending = isSending;
     }
 
     private SmsMessage(Parcel in) {
@@ -45,6 +49,7 @@ public class SmsMessage implements Parcelable {
         this.body = in.readString();
         this.timestamp = in.readLong();
         this.isFromMe = in.readInt() == IS_FROM_ME;
+        this.isSending = in.readInt() == IS_SENDING;
     }
 
     public static SmsMessage fromDeliverBroadcast(android.telephony.SmsMessage[] messages) {
@@ -54,15 +59,16 @@ public class SmsMessage implements Parcelable {
         String address = messages[0].getDisplayOriginatingAddress();
         String body = createBody(messages);
         long timestamp = messages[0].getTimestampMillis();
-        return new SmsMessage(address, body, timestamp, false);
+        return new SmsMessage(address, body, timestamp, false, false);
     }
 
     public static SmsMessage fromCursor(Cursor cursor) {
         String body = CursorHelper.asString(cursor, Telephony.Sms.BODY);
         long timestamp = CursorHelper.asLong(cursor, Telephony.Sms.DATE);
-        boolean isFromMe = CursorHelper.asInt(cursor, Telephony.Sms.TYPE) == Telephony.Sms.MESSAGE_TYPE_SENT;
+        boolean isSending = CursorHelper.asInt(cursor, Telephony.Sms.TYPE) == Telephony.Sms.MESSAGE_TYPE_OUTBOX;
+        boolean isFromMe = CursorHelper.asInt(cursor, Telephony.Sms.TYPE) == Telephony.Sms.MESSAGE_TYPE_SENT || isSending;
         String address = CursorHelper.asString(cursor, Telephony.Sms.ADDRESS);
-        return new SmsMessage(address, body, timestamp, isFromMe);
+        return new SmsMessage(address, body, timestamp, isFromMe, isSending);
     }
 
     private static String createBody(android.telephony.SmsMessage[] messages) {
@@ -116,6 +122,7 @@ public class SmsMessage implements Parcelable {
         dest.writeString(body);
         dest.writeLong(timestamp);
         dest.writeInt(isFromMe ? IS_FROM_ME : IS_FROM_OTHER);
+        dest.writeInt(isSending ? IS_SENDING : IS_NOT_SENDING);
     }
 
     public ContentValues toContentValues(int messageTypeSent) {
@@ -126,5 +133,9 @@ public class SmsMessage implements Parcelable {
         contentValues.put(Telephony.Sms.Inbox.DATE_SENT, timestamp);
         contentValues.put(Telephony.Sms.Inbox.TYPE, messageTypeSent);
         return contentValues;
+    }
+
+    public boolean isSending() {
+        return false;
     }
 }

@@ -16,10 +16,14 @@
 
 package com.amlcurran.messages.events;
 
+import com.amlcurran.messages.data.SmsMessage;
+
 public interface EventBus {
     void postListChanged();
 
     void postMessageSent();
 
     void postMessageReceived();
+
+    void postMessageSending(SmsMessage message);
 }
