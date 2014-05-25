@@ -2,27 +2,41 @@
 
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:paddingLeft="@dimen/thread_message_offset_horizontal">
+    android:layout_height="match_parent">
 
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        android:orientation="vertical"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:padding="8dp">
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent">
 
-        <TextView
+        <ImageView
+            android:layout_width="@dimen/thread_message_offset_horizontal"
+            android:layout_height="match_parent"
+            android:id="@+id/sending_image"
+            android:src="@drawable/ic_sending"
+            android:visibility="invisible"
+            android:scaleType="center" />
+
+        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            android:orientation="vertical"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@android:id/text1"
-            android:gravity="right"
-            style="@style/ThreadMessage" />
+            android:layout_height="match_parent"
+            android:padding="8dp">
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@android:id/text2"
-            android:gravity="right"
-            style="@style/ThreadTimeStamp" />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@android:id/text1"
+                android:gravity="right"
+                style="@style/ThreadMessage" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@android:id/text2"
+                android:gravity="right"
+                style="@style/ThreadTimeStamp" />
+        </LinearLayout>
+
     </LinearLayout>
 </FrameLayout>

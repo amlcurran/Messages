@@ -52,8 +52,13 @@ class ThreadBinder extends SimpleBinder<SmsMessage> {
         bodyText.setText(item.getBody());
         if (item.isSending()) {
             getTextView(convertView, android.R.id.text2).setText("Sending...");
+            convertView.findViewById(R.id.sending_image).setVisibility(View.VISIBLE);
         } else {
             getTextView(convertView, android.R.id.text2).setText(formatter.format(date));
+            View sendingImage = convertView.findViewById(R.id.sending_image);
+            if (sendingImage != null) {
+                sendingImage.setVisibility(View.INVISIBLE);
+            }
         }
         Linkify.addLinks(bodyText, Linkify.ALL);
 
