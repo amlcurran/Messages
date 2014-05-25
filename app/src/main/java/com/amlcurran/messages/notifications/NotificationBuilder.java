@@ -36,7 +36,7 @@ import java.util.Calendar;
 import java.util.List;
 
 public class NotificationBuilder {
-    private static final long[] VIBRATE_PATTERN = new long[]{200};
+    private static final long[] VIBRATE_PATTERN = new long[]{ 0, 200 };
     private Context context;
 
     public NotificationBuilder(Context context) {
@@ -122,6 +122,7 @@ public class NotificationBuilder {
         PendingIntent pendingIntent = PendingIntent.getActivity(this.context, 0, intent, 0);
         return new Notification.Builder(this.context)
                 .setContentIntent(pendingIntent)
+                .setDefaults(Notification.DEFAULT_ALL)
                 .setVibrate(VIBRATE_PATTERN)
                 .setSmallIcon(R.drawable.ic_notify_sms);
     }
