@@ -46,39 +46,44 @@ public class ExecutorMessagesLoader implements MessagesLoader {
         this.executor = executor;
     }
 
-    private ContentResolver getResolver() {
-        return activity.getContentResolver();
-    }
-
-    @Override
-    public void loadConversationList(final ConversationListListener loadListener) {
-        executor.submit(new ConversationListTask(getResolver(), null, null, loadListener));
-    }
-
     static Uri createPhoneLookupUri(String phoneRaw) {
         return Uri.withAppendedPath(ContactsContract.CommonDataKinds.Phone.CONTENT_FILTER_URI, Uri.encode(phoneRaw));
     }
 
+    private ContentResolver getResolver() {
+        return activity.getContentResolver();
+    }
+
+    private void submit(Callable task) {
+        executor.submit(task);
+    }
+
+    @Override
+    public void loadConversationList(final ConversationListListener loadListener) {
+        Callable task = new ConversationListTask(getResolver(), null, null, loadListener);
+        submit(task);
+    }
+
     @Override
     public void loadThread(final String threadId, final CursorLoadListener loadListener) {
-        executor.submit(new ThreadTask(getResolver(), threadId, Telephony.Sms.CONTENT_URI, loadListener));
+        submit(new ThreadTask(getResolver(), threadId, loadListener));
     }
 
     @Override
     public void markThreadAsRead(final String threadId) {
-        executor.submit(new MarkReadTask(getResolver(), threadId));
+        submit(new MarkReadTask(getResolver(), threadId));
     }
 
     @Override
     public void loadPhoto(final long contactId, final PhotoLoadListener photoLoadListener) {
         Bitmap defaultImage = ((BitmapDrawable) activity.getResources().getDrawable(R.drawable.ic_contact_picture_unknown)).getBitmap();
-        executor.submit(new PhotoLoadTask(getResolver(), contactId, photoLoadListener, defaultImage));
+        submit(new PhotoLoadTask(getResolver(), contactId, photoLoadListener, defaultImage));
     }
 
     @Override
     public void loadUnreadConversationList(ConversationListListener loadListener) {
         String selection = Telephony.Mms.Inbox.READ + "=0";
-        executor.submit(new ConversationListTask(getResolver(), selection, null, loadListener));
+        submit(new ConversationListTask(getResolver(), selection, null, loadListener));
     }
 
     @Override
@@ -88,20 +93,20 @@ public class ExecutorMessagesLoader implements MessagesLoader {
 
     @Override
     public void queryContact(final String address, final OnContactQueryListener onContactQueryListener) {
-        executor.submit(new SingleContactTask(getResolver(), address, onContactQueryListener));
+        submit(new SingleContactTask(getResolver(), address, onContactQueryListener));
     }
 
     @Override
     public void deleteThread(final Conversation conversation, final OnThreadDeleteListener threadDeleteListener) {
-        executor.submit(new DeleteThreadTask(getResolver(), conversation, threadDeleteListener));
+        submit(new DeleteThreadTask(getResolver(), conversation, threadDeleteListener));
     }
 
     @Override
     public void markThreadAsUnread(final String threadId) {
-        executor.submit(new Callable<Object>() {
+        submit(new Callable<Object>() {
             @Override
             public Object call() throws Exception {
-                executor.submit(new ThreadTask(getResolver(), threadId, Telephony.Sms.Inbox.CONTENT_URI, new CursorLoadListener() {
+                executor.submit(new InboxThreadTask(getResolver(), threadId, new CursorLoadListener() {
                             @Override
                             public void onCursorLoaded(Cursor cursor) {
                                 if (cursor.moveToLast()) {

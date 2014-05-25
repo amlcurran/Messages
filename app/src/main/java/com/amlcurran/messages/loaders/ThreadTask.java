@@ -30,6 +30,10 @@ class ThreadTask implements Callable<Object> {
     private final Uri contentUri;
     private final CursorLoadListener loadListener;
 
+    public ThreadTask(ContentResolver contentResolver, String threadId, CursorLoadListener loadListener) {
+        this(contentResolver, threadId, Telephony.Sms.CONTENT_URI, loadListener);
+    }
+
     public ThreadTask(ContentResolver contentResolver, String threadId, Uri contentUri, CursorLoadListener loadListener) {
         this.contentResolver = contentResolver;
         this.threadId = threadId;
