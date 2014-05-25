@@ -74,6 +74,8 @@
             </intent-filter>
         </service>
 
+        <activity android:name=".AboutActivity" />
+
     </application>
 
 </manifest>

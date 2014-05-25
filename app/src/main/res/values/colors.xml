@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="theme_colour">#1d9900</color>
+    <color name="theme_colour_100">#1d9900</color>
     <color name="theme_colour_40">#661d9900</color>
     <color name="theme_colour_20">#331d9900</color>
     <color name="theme_colour_light">#93c388</color>

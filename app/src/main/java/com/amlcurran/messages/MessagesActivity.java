@@ -118,8 +118,16 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
                 showSettings();
                 return true;
 
+            case R.id.action_about:
+                showAbout();
+                return true;
+
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void showAbout() {
+        startActivity(new Intent(this, AboutActivity.class));
     }
 
     private void showSettings() {
