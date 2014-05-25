@@ -18,14 +18,8 @@ package com.amlcurran.messages.loaders;
 
 import android.content.ContentResolver;
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
-import android.net.Uri;
-import android.provider.ContactsContract;
-import android.provider.Telephony;
 
 import com.amlcurran.messages.OnContactQueryListener;
-import com.amlcurran.messages.R;
 import com.amlcurran.messages.conversationlist.ConversationListListener;
 import com.amlcurran.messages.conversationlist.PhotoLoadListener;
 import com.amlcurran.messages.data.Conversation;
@@ -43,10 +37,6 @@ public class ExecutorMessagesLoader implements MessagesLoader {
         this.executor = executor;
     }
 
-    static Uri createPhoneLookupUri(String phoneRaw) {
-        return Uri.withAppendedPath(ContactsContract.CommonDataKinds.Phone.CONTENT_FILTER_URI, Uri.encode(phoneRaw));
-    }
-
     private ContentResolver getResolver() {
         return activity.getContentResolver();
     }
@@ -57,8 +47,7 @@ public class ExecutorMessagesLoader implements MessagesLoader {
 
     @Override
     public void loadConversationList(final ConversationListListener loadListener) {
-        Callable task = new ConversationListTask(getResolver(), null, null, loadListener);
-        submit(task);
+        submit(new ConversationListTask(getResolver(), loadListener));
     }
 
     @Override
@@ -73,14 +62,12 @@ public class ExecutorMessagesLoader implements MessagesLoader {
 
     @Override
     public void loadPhoto(final long contactId, final PhotoLoadListener photoLoadListener) {
-        Bitmap defaultImage = ((BitmapDrawable) activity.getResources().getDrawable(R.drawable.ic_contact_picture_unknown)).getBitmap();
-        submit(new PhotoLoadTask(getResolver(), contactId, photoLoadListener, defaultImage));
+        submit(new PhotoLoadTask(getResolver(), activity.getResources(), contactId, photoLoadListener));
     }
 
     @Override
     public void loadUnreadConversationList(ConversationListListener loadListener) {
-        String selection = Telephony.Mms.Inbox.READ + "=0";
-        submit(new ConversationListTask(getResolver(), selection, null, loadListener));
+        submit(new UnreadConversationListTask(getResolver(), loadListener));
     }
 
     @Override

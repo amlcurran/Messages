@@ -37,9 +37,13 @@ class SingleContactTask implements Callable<Object> {
         this.onContactQueryListener = onContactQueryListener;
     }
 
+    static Uri createPhoneLookupUri(String phoneRaw) {
+        return Uri.withAppendedPath(ContactsContract.CommonDataKinds.Phone.CONTENT_FILTER_URI, Uri.encode(phoneRaw));
+    }
+
     @Override
     public Object call() throws Exception {
-        Cursor result = contentResolver.query(ExecutorMessagesLoader.createPhoneLookupUri(address), new String[] { ContactsContract.Contacts._ID, ContactsContract.Contacts.LOOKUP_KEY },
+        Cursor result = contentResolver.query(createPhoneLookupUri(address), new String[] { ContactsContract.Contacts._ID, ContactsContract.Contacts.LOOKUP_KEY },
                 null, null, null);
         if (result.moveToFirst()) {
             String lookupKey = CursorHelper.asString(result, ContactsContract.Contacts.LOOKUP_KEY);

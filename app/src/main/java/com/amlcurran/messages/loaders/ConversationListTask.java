@@ -44,6 +44,10 @@ class ConversationListTask implements Callable<Object> {
         this.loadListener = loadListener;
     }
 
+    public ConversationListTask(ContentResolver contentResolver, ConversationListListener loadListener) {
+        this(contentResolver, null, null, loadListener);
+    }
+
     @Override
     public Object call() throws Exception {
         final List<Conversation> conversations = new ArrayList<Conversation>();
@@ -77,7 +81,7 @@ class ConversationListTask implements Callable<Object> {
 
     private static Uri createPhoneLookupUri(Cursor conversationsList) {
         String phoneRaw = CursorHelper.asString(conversationsList, Telephony.Sms.ADDRESS);
-        return ExecutorMessagesLoader.createPhoneLookupUri(phoneRaw);
+        return SingleContactTask.createPhoneLookupUri(phoneRaw);
     }
 
     private static String getPersonName(Cursor peopleCursor) {

@@ -18,12 +18,15 @@ package com.amlcurran.messages.loaders;
 
 import android.content.ContentResolver;
 import android.content.ContentUris;
+import android.content.res.Resources;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.provider.ContactsContract;
 
+import com.amlcurran.messages.R;
 import com.amlcurran.messages.conversationlist.PhotoLoadListener;
 
 import java.util.concurrent.Callable;
@@ -35,11 +38,11 @@ class PhotoLoadTask implements Callable<Object> {
     private final PhotoLoadListener photoLoadListener;
     private final Bitmap defaultImage;
 
-    public PhotoLoadTask(ContentResolver contentResolver, long contactId, PhotoLoadListener photoLoadListener, Bitmap defaultImage) {
+    public PhotoLoadTask(ContentResolver contentResolver, Resources resources, long contactId, PhotoLoadListener photoLoadListener) {
+        this.defaultImage = ((BitmapDrawable) resources.getDrawable(R.drawable.ic_contact_picture_unknown)).getBitmap();
         this.contentResolver = contentResolver;
         this.contactId = contactId;
         this.photoLoadListener = photoLoadListener;
-        this.defaultImage = defaultImage;
     }
 
     @Override
