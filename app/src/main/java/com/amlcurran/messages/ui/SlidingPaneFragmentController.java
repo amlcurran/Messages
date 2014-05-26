@@ -28,14 +28,14 @@ import com.amlcurran.messages.PreferencesFragment;
 import com.amlcurran.messages.R;
 import com.amlcurran.messages.conversationlist.ConversationListFragment;
 
-public class SlidingPaneUiController implements UiController {
+public class SlidingPaneFragmentController implements UiController {
 
     private final Activity activity;
     private final UiCallback uiCallback;
     private SlidingPaneLayout slider;
     private View disabledBanner;
 
-    public SlidingPaneUiController(Activity activity, UiCallback uiCallback) {
+    public SlidingPaneFragmentController(Activity activity, UiCallback uiCallback) {
         this.activity = activity;
         this.uiCallback = uiCallback;
     }

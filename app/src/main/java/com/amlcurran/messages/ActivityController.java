@@ -25,11 +25,11 @@ import android.telephony.PhoneNumberUtils;
 import com.amlcurran.messages.data.SmsMessage;
 import com.amlcurran.messages.telephony.SmsSender;
 
-public class ActionController {
+public class ActivityController {
 
     private final Activity activity;
 
-    public ActionController(Activity activity) {
+    public ActivityController(Activity activity) {
         this.activity = activity;
     }
 

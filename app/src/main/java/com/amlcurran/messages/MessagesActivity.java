@@ -40,7 +40,7 @@ import com.amlcurran.messages.loaders.OnContactQueryListener;
 import com.amlcurran.messages.loaders.OnThreadDeleteListener;
 import com.amlcurran.messages.telephony.DefaultAppChecker;
 import com.amlcurran.messages.threads.ThreadFragment;
-import com.amlcurran.messages.ui.SlidingPaneUiController;
+import com.amlcurran.messages.ui.SlidingPaneFragmentController;
 import com.amlcurran.messages.ui.UiController;
 import com.espian.utils.ui.MenuFinder;
 
@@ -49,21 +49,21 @@ import java.util.List;
 
 public class MessagesActivity extends Activity implements MessagesLoaderProvider,
         ConversationListFragment.Listener, ThreadFragment.Listener, View.OnClickListener,
-        DefaultAppChecker.Callback, SlidingPaneUiController.UiCallback, ConversationModalMarshall.Callback, OnThreadDeleteListener, ConversationListChangeListener {
+        DefaultAppChecker.Callback, SlidingPaneFragmentController.UiCallback, ConversationModalMarshall.Callback, OnThreadDeleteListener, ConversationListChangeListener {
 
     public static final int REQUEST_CHANGE_SMS_APP = 20;
 
     private UiController fragmentController;
     private DefaultAppChecker appChecker;
-    private boolean isSecondaryVisible;
     private BroadcastEventBus eventBus;
-    private ActionController activityController;
+    private ActivityController activityController;
+    private boolean isSecondaryVisible;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        fragmentController = new SlidingPaneUiController(this, this);
-        activityController = new ActionController(this);
+        fragmentController = new SlidingPaneFragmentController(this, this);
+        activityController = new ActivityController(this);
         setContentView(fragmentController.getView());
 
         appChecker = new DefaultAppChecker(this, this);
