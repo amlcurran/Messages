@@ -47,9 +47,9 @@ public class ConversationsBinder extends SimpleBinder<Conversation> {
         final ImageView imageView = (ImageView) convertView.findViewById(R.id.image);
         resetContactImage(imageView);
 
-        textView1.setText(item.getName());
+        textView1.setText(item.getContact().getDisplayName());
         textView2.setText(item.getBody());
-        loader.loadPhoto(item.getPersonId(), new PhotoLoadListener() {
+        loader.loadPhoto(item.getContact().getPhotoId(), new PhotoLoadListener() {
 
             @Override
             public void onPhotoLoaded(final Bitmap photo) {

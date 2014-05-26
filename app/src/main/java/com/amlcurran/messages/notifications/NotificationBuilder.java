@@ -66,7 +66,7 @@ public class NotificationBuilder {
     private static CharSequence buildSenderList(List<Conversation> conversations) {
         String result = "";
         for (Conversation conversation : conversations) {
-            result += conversation.getName() + ", ";
+            result += conversation.getContact().getDisplayName() + ", ";
         }
         return result.substring(0, result.length() - 2);
     }
@@ -85,7 +85,7 @@ public class NotificationBuilder {
 
     private static CharSequence getInboxLine(Conversation conversation) {
         SpannableStringBuilder builder = new SpannableStringBuilder();
-        builder.append(conversation.getName());
+        builder.append(conversation.getContact().getDisplayName());
         ForegroundColorSpan colorSpan = new ForegroundColorSpan(Color.parseColor("#cccccc"));
         builder.setSpan(colorSpan, 0, builder.length(), Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
         builder.append(" ");
@@ -97,7 +97,7 @@ public class NotificationBuilder {
         long timestampMillis = Calendar.getInstance().getTimeInMillis();
         return getDefaultBuilder()
                 .setTicker(buildTicker(conversation))
-                .setContentTitle(conversation.getName())
+                .setContentTitle(conversation.getContact().getDisplayName())
                 .setContentText(conversation.getBody())
                 .setStyle(buildBigStyle(conversation))
                 .setWhen(timestampMillis)
@@ -107,11 +107,11 @@ public class NotificationBuilder {
     private static Notification.Style buildBigStyle(Conversation conversation) {
         return new Notification.BigTextStyle()
                 .bigText(conversation.getBody())
-                .setBigContentTitle(conversation.getName());
+                .setBigContentTitle(conversation.getContact().getDisplayName());
     }
 
     private static CharSequence buildTicker(Conversation conversation) {
-        SpannableStringBuilder builder = new SpannableStringBuilder(conversation.getName() + ": ");
+        SpannableStringBuilder builder = new SpannableStringBuilder(conversation.getContact().getDisplayName() + ": ");
         builder.setSpan(new StyleSpan(Typeface.BOLD), 0, builder.length(), Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
         builder.append(conversation.getBody());
         return builder;

@@ -22,9 +22,10 @@ import android.net.Uri;
 import android.provider.ContactsContract;
 import android.provider.Telephony;
 
-import com.amlcurran.messages.data.Sort;
 import com.amlcurran.messages.conversationlist.ConversationListListener;
+import com.amlcurran.messages.data.Contact;
 import com.amlcurran.messages.data.Conversation;
+import com.amlcurran.messages.data.Sort;
 import com.espian.utils.data.CursorHelper;
 
 import java.util.ArrayList;
@@ -60,9 +61,8 @@ class ConversationListTask implements Callable<Object> {
             Uri phoneLookupUri = createPhoneLookupUri(conversationsList);
             Cursor peopleCursor = contentResolver.query(phoneLookupUri, null, null, null, null);
 
-            String person = getPersonName(peopleCursor);
-            long personId = getContactPhotoId(peopleCursor);
-            Conversation conversation = Conversation.fromCursor(conversationsList, personId, person);
+            Contact contact = Contact.fromCursor(peopleCursor, CursorHelper.asString(conversationsList, Telephony.Sms.ADDRESS));
+            Conversation conversation = Conversation.fromCursor(conversationsList, contact);
 
             conversations.add(conversation);
             peopleCursor.close();

@@ -18,7 +18,6 @@ package com.amlcurran.messages.data;
 
 import android.database.Cursor;
 import android.provider.Telephony;
-import android.text.TextUtils;
 
 import com.espian.utils.data.CursorHelper;
 
@@ -28,31 +27,23 @@ public class Conversation {
     private final String body;
     private final String threadId;
     private final boolean isRead;
-    private final String name;
-    private final long personId;
+    private final Contact contact;
 
-    private Conversation(String address, String body, String threadId, boolean isRead, String name, long personId) {
+    private Conversation(String address, String body, String threadId, boolean isRead, Contact contact) {
         this.address = address;
         this.body = body;
         this.threadId = threadId;
         this.isRead = isRead;
-        this.name = name;
-        this.personId = personId;
+        this.contact = contact;
     }
 
-    public static Conversation fromCursor(Cursor cursor, long personId, String personName) {
+    public static Conversation fromCursor(Cursor cursor, Contact contact) {
         String address = CursorHelper.asString(cursor, Telephony.Sms.ADDRESS);
         String body = CursorHelper.asString(cursor, Telephony.Sms.BODY);
         String s = CursorHelper.asString(cursor, Telephony.Sms.Inbox.READ);
         boolean isRead = s.toLowerCase().equals("1");
         String threadId = CursorHelper.asString(cursor, Telephony.Sms.THREAD_ID);
-        String name;
-        if (TextUtils.isEmpty(personName)) {
-            name = address;
-        } else {
-            name = personName;
-        }
-        return new Conversation(address, body, threadId, isRead, name, personId);
+        return new Conversation(address, body, threadId, isRead, contact);
     }
 
     public String getBody() {
@@ -71,16 +62,12 @@ public class Conversation {
         return threadId;
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public long getPersonId() {
-        return personId;
-    }
-
     @Override
     public int hashCode() {
         return threadId.hashCode();
+    }
+
+    public Contact getContact() {
+        return contact;
     }
 }

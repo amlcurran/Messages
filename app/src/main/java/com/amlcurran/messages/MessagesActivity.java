@@ -235,7 +235,7 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
             public void run() {
                 String toast;
                 if (deletedConversations.size() == 1) {
-                    toast = getString(R.string.deleted_one_thread, deletedConversations.get(0).getName());
+                    toast = getString(R.string.deleted_one_thread, deletedConversations.get(0).getContact().getDisplayName());
                 } else {
                     toast = getString(R.string.deleted_many_threads, deletedConversations.size());
                 }
