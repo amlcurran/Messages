@@ -17,9 +17,11 @@
 package com.amlcurran.messages.data;
 
 import android.database.Cursor;
+import android.graphics.Bitmap;
 import android.provider.ContactsContract;
 import android.text.TextUtils;
 
+import com.amlcurran.messages.loaders.ContactImageLoader;
 import com.espian.utils.data.CursorHelper;
 
 public class Contact {
@@ -66,5 +68,13 @@ public class Contact {
             id = CursorHelper.asLong(peopleCursor, ContactsContract.Contacts.PHOTO_ID);
         }
         return id;
+    }
+
+    public Bitmap getSmallImage(ContactImageLoader contactImageLoader) {
+        return contactImageLoader.getSmallImage(getPhotoId());
+    }
+
+    private Bitmap getLargeImage(ContactImageLoader contactImageLoader) {
+        return contactImageLoader.getLargeImage(getPhotoId());
     }
 }

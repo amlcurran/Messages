@@ -19,6 +19,7 @@ package com.amlcurran.messages.loaders;
 import android.content.ContentResolver;
 import android.content.Context;
 
+import com.amlcurran.messages.data.Contact;
 import com.amlcurran.messages.data.Sort;
 import com.amlcurran.messages.conversationlist.ConversationListListener;
 import com.amlcurran.messages.conversationlist.PhotoLoadListener;
@@ -62,8 +63,8 @@ public class ExecutorMessagesLoader implements MessagesLoader {
     }
 
     @Override
-    public void loadPhoto(long contactId, PhotoLoadListener photoLoadListener) {
-        submit(new PhotoLoadTask(getResolver(), activity.getResources(), contactId, photoLoadListener));
+    public void loadPhoto(Contact contact, PhotoLoadListener photoLoadListener) {
+        submit(new PhotoLoadTask(getResolver(), activity.getResources(), contact, photoLoadListener));
     }
 
     @Override

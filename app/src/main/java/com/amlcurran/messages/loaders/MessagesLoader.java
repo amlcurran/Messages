@@ -16,6 +16,7 @@
 
 package com.amlcurran.messages.loaders;
 
+import com.amlcurran.messages.data.Contact;
 import com.amlcurran.messages.data.Sort;
 import com.amlcurran.messages.conversationlist.ConversationListListener;
 import com.amlcurran.messages.conversationlist.PhotoLoadListener;
@@ -31,7 +32,7 @@ public interface MessagesLoader {
 
     void markThreadAsRead(String threadId, ConversationListChangeListener conversationListChangeListener);
 
-    void loadPhoto(long contactId, PhotoLoadListener photoLoadListener);
+    void loadPhoto(Contact contact, PhotoLoadListener photoLoadListener);
 
     void loadUnreadConversationList(ConversationListListener loadListener);
 

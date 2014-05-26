@@ -49,7 +49,7 @@ public class ConversationsBinder extends SimpleBinder<Conversation> {
 
         textView1.setText(item.getContact().getDisplayName());
         textView2.setText(item.getBody());
-        loader.loadPhoto(item.getContact().getPhotoId(), new PhotoLoadListener() {
+        loader.loadPhoto(item.getContact(), new PhotoLoadListener() {
 
             @Override
             public void onPhotoLoaded(final Bitmap photo) {
