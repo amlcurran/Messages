@@ -24,6 +24,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 
 import com.amlcurran.messages.MessagesActivity;
+import com.amlcurran.messages.PreferencesFragment;
 import com.amlcurran.messages.R;
 import com.amlcurran.messages.conversationlist.ConversationListFragment;
 
@@ -113,6 +114,11 @@ public class SlidingPaneUiController implements UiController {
     @Override
     public void hideSecondary() {
         slider.openPane();
+    }
+
+    @Override
+    public void showSettings() {
+        replaceFragment(new PreferencesFragment(), true);
     }
 
     @Override

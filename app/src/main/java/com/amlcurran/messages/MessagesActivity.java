@@ -18,13 +18,9 @@ package com.amlcurran.messages;
 
 import android.app.Activity;
 import android.app.Fragment;
-import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.StrictMode;
-import android.provider.Telephony;
-import android.telephony.PhoneNumberUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -43,7 +39,6 @@ import com.amlcurran.messages.loaders.MessagesLoaderProvider;
 import com.amlcurran.messages.loaders.OnContactQueryListener;
 import com.amlcurran.messages.loaders.OnThreadDeleteListener;
 import com.amlcurran.messages.telephony.DefaultAppChecker;
-import com.amlcurran.messages.telephony.SmsSender;
 import com.amlcurran.messages.threads.ThreadFragment;
 import com.amlcurran.messages.ui.SlidingPaneUiController;
 import com.amlcurran.messages.ui.UiController;
@@ -58,20 +53,22 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
 
     public static final int REQUEST_CHANGE_SMS_APP = 20;
 
-    private UiController uiController;
+    private UiController fragmentController;
     private DefaultAppChecker appChecker;
     private boolean isSecondaryVisible;
     private BroadcastEventBus eventBus;
+    private ActionController activityController;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        uiController = new SlidingPaneUiController(this, this);
-        setContentView(uiController.getView());
+        fragmentController = new SlidingPaneUiController(this, this);
+        activityController = new ActionController(this);
+        setContentView(fragmentController.getView());
 
         appChecker = new DefaultAppChecker(this, this);
         eventBus = new BroadcastEventBus(this);
-        uiController.getDisabledBanner().setOnClickListener(this);
+        fragmentController.getDisabledBanner().setOnClickListener(this);
 
         if (BuildConfig.DEBUG) {
             StrictMode.setThreadPolicy(new StrictMode.ThreadPolicy.Builder()
@@ -81,8 +78,8 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
         }
 
         if (savedInstanceState == null) {
-            uiController.loadMessagesListFragment();
-            uiController.loadEmptyFragment();
+            fragmentController.loadMessagesListFragment();
+            fragmentController.loadEmptyFragment();
         }
 
     }
@@ -115,37 +112,19 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
         switch (item.getItemId()) {
 
             case R.id.action_settings:
-                showSettings();
+                fragmentController.showSettings();
                 return true;
 
             case R.id.action_about:
-                showAbout();
+                activityController.showAbout();
                 return true;
 
             case android.R.id.home:
-                hideSecondary();
+                fragmentController.hideSecondary();
                 return true;
 
         }
         return super.onOptionsItemSelected(item);
-    }
-
-    private void hideSecondary() {
-        uiController.hideSecondary();
-    }
-
-    private void showAbout() {
-        startActivity(new Intent(this, AboutActivity.class));
-    }
-
-    private void showSettings() {
-        uiController.replaceFragment(new PreferencesFragment(), true);
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        Log.d("MessagesActivity", String.format("%1$s, %2$s, %3$s", requestCode, resultCode, String.valueOf(data)));
-        super.onActivityResult(requestCode, resultCode, data);
     }
 
     @Override
@@ -155,7 +134,7 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
 
     @Override
     public void onBackPressed() {
-        if (!uiController.backPressed()) {
+        if (!fragmentController.backPressed()) {
             super.onBackPressed();
         }
     }
@@ -163,42 +142,34 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
     @Override
     public void onConversationSelected(Conversation conversation) {
         ThreadFragment fragment = ThreadFragment.create(conversation.getThreadId(), conversation.getAddress());
-        uiController.replaceFragment(fragment, false);
+        fragmentController.replaceFragment(fragment, false);
     }
 
     @Override
     public void sendSms(String address, String body) {
         long timestamp = Calendar.getInstance().getTimeInMillis();
         SmsMessage message = new SmsMessage(address, body, timestamp, true, false);
-        Intent intent = new Intent(this, SmsSender.class);
-        intent.setAction(SmsSender.ACTION_SEND_REQUEST);
-        intent.putExtra(SmsSender.EXTRA_MESSAGE, message);
-        startService(intent);
+        activityController.sendSms(message);
     }
 
     @Override
     public void callNumber(String sendAddress) {
-        Uri telUri = Uri.parse("tel:" + PhoneNumberUtils.stripSeparators(sendAddress));
-        Intent intent = new Intent(Intent.ACTION_CALL);
-        intent.setData(telUri);
-        startActivity(intent);
+        activityController.callNumber(sendAddress);
     }
 
     @Override
     public void onClick(View v) {
-        Intent intent = new Intent(Telephony.Sms.Intents.ACTION_CHANGE_DEFAULT);
-        intent.putExtra(Telephony.Sms.Intents.EXTRA_PACKAGE_NAME, getPackageName());
-        startActivityForResult(intent, MessagesActivity.REQUEST_CHANGE_SMS_APP);
+        activityController.switchSmsApp();
     }
 
     @Override
     public void isDefaultSmsApp() {
-        uiController.hideDisabledBanner();
+        fragmentController.hideDisabledBanner();
     }
 
     @Override
     public void isNotDefaultSmsApp() {
-        uiController.showDisabledBanner();
+        fragmentController.showDisabledBanner();
     }
 
     @Override
@@ -223,9 +194,7 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
 
             @Override
             public void contactLoaded(Uri contactUri) {
-                Intent viewIntent = new Intent(Intent.ACTION_VIEW);
-                viewIntent.setData(contactUri);
-                startActivity(viewIntent);
+                activityController.viewContact(contactUri);
             }
         });
     }
