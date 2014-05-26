@@ -32,12 +32,14 @@ import com.espian.utils.data.SimpleBinder;
 
 public class ConversationsBinder extends SimpleBinder<Conversation> {
 
-    private Resources resources;
-    private MessagesLoader loader;
+    private final float animationLength;
+    private final Resources resources;
+    private final MessagesLoader loader;
 
     public ConversationsBinder(Resources resources, MessagesLoader loader) {
         this.resources = resources;
         this.loader = loader;
+        this.animationLength = resources.getDimension(R.dimen.photo_animation_length);
     }
 
     @Override
@@ -57,7 +59,10 @@ public class ConversationsBinder extends SimpleBinder<Conversation> {
                     @Override
                     public void run() {
                         imageView.setImageBitmap(photo);
-                        imageView.animate().alpha(1f).start();
+                        imageView.setTranslationX(-animationLength);
+                        imageView.animate()
+                                .translationXBy(animationLength)
+                                .alpha(1f).start();
                     }
                 });
             }
