@@ -34,20 +34,18 @@ public class MessagesApp extends Application {
 
     private MessagesLoader loader;
     private Notifier notifier;
-    private ExecutorService executor;
 
     @Override
     public void onCreate() {
         super.onCreate();
         PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
-        executor = Executors.newCachedThreadPool();
+        ExecutorService executor = Executors.newCachedThreadPool();
         loader = new ExecutorMessagesLoader(this, executor);
         notifier = new Notifier(this);
         primeZygote(executor);
     }
 
     private void primeZygote(ExecutorService executor) {
-        // Prime Linkify
         executor.submit(new PrimeLinkifyTask());
     }
 
