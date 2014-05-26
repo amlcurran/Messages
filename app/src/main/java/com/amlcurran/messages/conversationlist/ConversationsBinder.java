@@ -19,7 +19,6 @@ package com.amlcurran.messages.conversationlist;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
-import android.graphics.Typeface;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
@@ -32,6 +31,8 @@ import com.espian.utils.data.SimpleBinder;
 
 public class ConversationsBinder extends SimpleBinder<Conversation> {
 
+    private static final int IS_UNREAD = 1;
+    private static final int IS_READ = 0;
     private final float animationLength;
     private final Resources resources;
     private final MessagesLoader loader;
@@ -43,14 +44,38 @@ public class ConversationsBinder extends SimpleBinder<Conversation> {
     }
 
     @Override
+    public int getViewTypeCount() {
+        return 2;
+    }
+
+    @Override
+    public int getItemViewType(int position, Conversation item) {
+        return item.isRead() ? IS_READ : IS_UNREAD;
+    }
+
+    @Override
     public View bindView(View convertView, Conversation item, int position) {
         TextView textView1 = getTextView(convertView, android.R.id.text1);
         TextView textView2 = getTextView(convertView, android.R.id.text2);
         final ImageView imageView = (ImageView) convertView.findViewById(R.id.image);
-        resetContactImage(imageView);
+
+        if (isSameItem(convertView, item)) {
+            resetContactImage(imageView);
+            loadContactPhoto(item, imageView);
+        }
 
         textView1.setText(item.getContact().getDisplayName());
         textView2.setText(item.getBody());
+
+        convertView.setTag(item);
+        return convertView;
+    }
+
+    private static boolean isSameItem(View convertView, Conversation item) {
+        return convertView.getTag() != item;
+    }
+
+    private void loadContactPhoto(Conversation item, final ImageView imageView) {
         loader.loadPhoto(item.getContact(), new PhotoLoadListener() {
 
             @Override
@@ -67,33 +92,11 @@ public class ConversationsBinder extends SimpleBinder<Conversation> {
                 });
             }
         });
-
-        if (item.isRead()) {
-            setReadStyle(convertView, textView1, textView2);
-        } else {
-            setUnreadStyle(convertView, textView1, textView2);
-        }
-
-        return convertView;
     }
 
     private void resetContactImage(ImageView imageView) {
         imageView.setImageBitmap(null);
         imageView.setAlpha(0f);
-    }
-
-    private void setReadStyle(View convertView, TextView textView1, TextView textView2) {
-        textView1.setTypeface(null, 0);
-        textView2.setTypeface(null, 0);
-        textView1.setTextColor(resources.getColor(android.R.color.primary_text_light));
-        textView2.setTextColor(resources.getColor(android.R.color.tertiary_text_light));
-    }
-
-    private void setUnreadStyle(View convertView, TextView textView1, TextView textView2) {
-        textView1.setTypeface(null, Typeface.BOLD);
-        textView2.setTypeface(null, Typeface.BOLD);
-        textView1.setTextColor(resources.getColor(R.color.theme_colour));
-        textView2.setTextColor(resources.getColor(android.R.color.primary_text_light));
     }
 
     private TextView getTextView(View convertView, int text1) {
@@ -102,6 +105,10 @@ public class ConversationsBinder extends SimpleBinder<Conversation> {
 
     @Override
     public View createView(Context context, int itemViewType) {
-        return LayoutInflater.from(context).inflate(R.layout.item_message_preview, null, false);
+        if (itemViewType == IS_READ) {
+            return LayoutInflater.from(context).inflate(R.layout.item_conversation_read, null, false);
+        } else {
+            return LayoutInflater.from(context).inflate(R.layout.item_conversation_unread, null, false);
+        }
     }
 }
