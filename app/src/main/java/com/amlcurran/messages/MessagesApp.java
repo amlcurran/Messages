@@ -19,24 +19,36 @@ package com.amlcurran.messages;
 import android.app.Application;
 import android.content.Context;
 import android.preference.PreferenceManager;
+import android.text.SpannableStringBuilder;
+import android.text.util.Linkify;
 
 import com.amlcurran.messages.loaders.ExecutorMessagesLoader;
 import com.amlcurran.messages.loaders.MessagesLoader;
 import com.amlcurran.messages.notifications.Notifier;
 
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public class MessagesApp extends Application {
 
     private MessagesLoader loader;
     private Notifier notifier;
+    private ExecutorService executor;
 
     @Override
     public void onCreate() {
         super.onCreate();
         PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
-        loader = new ExecutorMessagesLoader(this, Executors.newCachedThreadPool());
+        executor = Executors.newCachedThreadPool();
+        loader = new ExecutorMessagesLoader(this, executor);
         notifier = new Notifier(this);
+        primeZygote(executor);
+    }
+
+    private void primeZygote(ExecutorService executor) {
+        // Prime Linkify
+        executor.submit(new PrimeLinkifyTask());
     }
 
     @Override
@@ -53,4 +65,14 @@ public class MessagesApp extends Application {
         return ((MessagesApp) context.getApplicationContext()).notifier;
     }
 
+    private class PrimeLinkifyTask implements Callable<Object> {
+
+        @Override
+        public Object call() throws Exception {
+            SpannableStringBuilder builder = new SpannableStringBuilder("911");
+            Linkify.addLinks(builder, Linkify.ALL);
+            return null;
+        }
+
+    }
 }

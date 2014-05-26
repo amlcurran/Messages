@@ -51,8 +51,6 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
         ConversationListFragment.Listener, ThreadFragment.Listener, View.OnClickListener,
         DefaultAppChecker.Callback, SlidingPaneFragmentController.UiCallback, ConversationModalMarshall.Callback, OnThreadDeleteListener, ConversationListChangeListener {
 
-    public static final int REQUEST_CHANGE_SMS_APP = 20;
-
     private UiController fragmentController;
     private DefaultAppChecker appChecker;
     private BroadcastEventBus eventBus;

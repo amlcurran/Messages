@@ -43,7 +43,7 @@ public class ActivityController {
     public void switchSmsApp() {
         Intent intent = new Intent(Telephony.Sms.Intents.ACTION_CHANGE_DEFAULT);
         intent.putExtra(Telephony.Sms.Intents.EXTRA_PACKAGE_NAME, activity.getPackageName());
-        activity.startActivityForResult(intent, MessagesActivity.REQUEST_CHANGE_SMS_APP);
+        activity.startActivity(intent);
     }
 
     public void viewContact(Uri contactUri) {
