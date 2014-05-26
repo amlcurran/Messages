@@ -122,8 +122,16 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
                 showAbout();
                 return true;
 
+            case android.R.id.home:
+                hideSecondary();
+                return true;
+
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void hideSecondary() {
+        uiController.hideSecondary();
     }
 
     private void showAbout() {
@@ -196,12 +204,16 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
     @Override
     public void onSecondaryVisible() {
         isSecondaryVisible = true;
+        getActionBar().setDisplayHomeAsUpEnabled(true);
+        getActionBar().setHomeButtonEnabled(true);
         invalidateOptionsMenu();
     }
 
     @Override
     public void onSecondaryHidden() {
         isSecondaryVisible = false;
+        getActionBar().setDisplayHomeAsUpEnabled(false);
+        getActionBar().setHomeButtonEnabled(false);
         invalidateOptionsMenu();
     }
 

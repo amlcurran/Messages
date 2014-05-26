@@ -36,4 +36,5 @@ public interface UiController {
 
     View getDisabledBanner();
 
+    void hideSecondary();
 }

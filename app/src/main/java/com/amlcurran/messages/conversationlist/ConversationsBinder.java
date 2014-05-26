@@ -34,11 +34,9 @@ public class ConversationsBinder extends SimpleBinder<Conversation> {
     private static final int IS_UNREAD = 1;
     private static final int IS_READ = 0;
     private final float animationLength;
-    private final Resources resources;
     private final MessagesLoader loader;
 
     public ConversationsBinder(Resources resources, MessagesLoader loader) {
-        this.resources = resources;
         this.loader = loader;
         this.animationLength = resources.getDimension(R.dimen.photo_animation_length);
     }

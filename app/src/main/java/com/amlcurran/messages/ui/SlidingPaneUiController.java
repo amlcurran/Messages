@@ -111,6 +111,11 @@ public class SlidingPaneUiController implements UiController {
     }
 
     @Override
+    public void hideSecondary() {
+        slider.openPane();
+    }
+
+    @Override
     public void hideDisabledBanner() {
         disabledBanner.setVisibility(View.GONE);
     }
