@@ -31,16 +31,16 @@ import java.util.concurrent.ExecutorService;
 
 public class ExecutorMessagesLoader implements MessagesLoader {
 
-    private final Context activity;
+    private final Context context;
     private final ExecutorService executor;
 
     public ExecutorMessagesLoader(Context context, ExecutorService executor) {
-        this.activity = context;
+        this.context = context;
         this.executor = executor;
     }
 
     private ContentResolver getResolver() {
-        return activity.getContentResolver();
+        return context.getContentResolver();
     }
 
     private void submit(Callable task) {
@@ -64,7 +64,7 @@ public class ExecutorMessagesLoader implements MessagesLoader {
 
     @Override
     public void loadPhoto(Contact contact, PhotoLoadListener photoLoadListener) {
-        submit(new PhotoLoadTask(getResolver(), activity.getResources(), contact, photoLoadListener));
+        submit(new PhotoLoadTask(getResolver(), context.getResources(), contact, photoLoadListener));
     }
 
     @Override

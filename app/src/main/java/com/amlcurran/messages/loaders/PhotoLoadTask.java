@@ -27,7 +27,6 @@ import java.util.concurrent.Callable;
 
 class PhotoLoadTask implements Callable<Object> {
 
-    private final ContentResolver contentResolver;
     private final PhotoLoadListener photoLoadListener;
     private final Bitmap defaultImage;
     private final Contact contact;
@@ -35,9 +34,8 @@ class PhotoLoadTask implements Callable<Object> {
 
     public PhotoLoadTask(ContentResolver contentResolver, Resources resources, Contact contact, PhotoLoadListener photoLoadListener) {
         this.contact = contact;
-        this.contactImageLoader = new ContactImageLoader(contentResolver);
-        this.defaultImage = contactImageLoader.getDefaultImage(resources);
-        this.contentResolver = contentResolver;
+        this.contactImageLoader = new ContactImageLoader(contentResolver, resources);
+        this.defaultImage = contactImageLoader.getDefaultImage();
         this.photoLoadListener = photoLoadListener;
     }
 
@@ -46,7 +44,7 @@ class PhotoLoadTask implements Callable<Object> {
 
         Bitmap result = null;
         if (contact.getPhotoId() >= 0) {
-            result = contact.getSmallImage(contactImageLoader);
+            result = contactImageLoader.getLargeImage(contact.getPhotoId());
         }
         if (result == null) {
             result = defaultImage;
