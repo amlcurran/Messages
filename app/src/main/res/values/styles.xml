@@ -9,7 +9,7 @@
         <item name="android:textAppearance">?android:attr/textAppearanceSmall</item>
         <item name="android:ellipsize">end</item>
         <item name="android:singleLine">true</item>
-        <item name="android:textColor">@color/empty_hint_color</item>
+        <item name="android:textColor">@color/time_stamp_colour</item>
     </style>
 
     <style name="ThreadMessage">
