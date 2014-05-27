@@ -38,11 +38,14 @@ import com.amlcurran.messages.loaders.MessagesLoader;
 import com.amlcurran.messages.loaders.MessagesLoaderProvider;
 import com.amlcurran.messages.loaders.OnContactQueryListener;
 import com.amlcurran.messages.loaders.OnThreadDeleteListener;
+import com.amlcurran.messages.reporting.EasyTrackerStatReporter;
+import com.amlcurran.messages.reporting.StatReporter;
 import com.amlcurran.messages.telephony.DefaultAppChecker;
 import com.amlcurran.messages.threads.ThreadFragment;
 import com.amlcurran.messages.ui.SlidingPaneFragmentController;
 import com.amlcurran.messages.ui.UiController;
 import com.espian.utils.ui.MenuFinder;
+import com.google.analytics.tracking.android.EasyTracker;
 
 import java.util.Calendar;
 import java.util.List;
@@ -51,6 +54,7 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
         ConversationListFragment.Listener, ThreadFragment.Listener, View.OnClickListener,
         DefaultAppChecker.Callback, SlidingPaneFragmentController.UiCallback, ConversationModalMarshall.Callback, OnThreadDeleteListener, ConversationListChangeListener {
 
+    private StatReporter statReporter;
     private UiController fragmentController;
     private DefaultAppChecker appChecker;
     private BroadcastEventBus eventBus;
@@ -64,6 +68,7 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
         activityController = new ActivityController(this);
         setContentView(fragmentController.getView());
 
+        statReporter = new EasyTrackerStatReporter(EasyTracker.getInstance(this));
         appChecker = new DefaultAppChecker(this, this);
         eventBus = new BroadcastEventBus(this);
         fragmentController.getDisabledBanner().setOnClickListener(this);
@@ -80,6 +85,18 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
             fragmentController.loadEmptyFragment();
         }
 
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        statReporter.activityStart(this);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        statReporter.activityStop(this);
     }
 
     @Override
@@ -110,6 +127,7 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
         switch (item.getItemId()) {
 
             case R.id.action_settings:
+                statReporter.sendUiEvent("settings");
                 fragmentController.showSettings();
                 return true;
 
@@ -118,6 +136,7 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
                 return true;
 
             case android.R.id.home:
+                statReporter.sendUiEvent("home_button");
                 fragmentController.hideSecondary();
                 return true;
 
@@ -152,6 +171,7 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
 
     @Override
     public void callNumber(String sendAddress) {
+        statReporter.sendUiEvent("call_number");
         activityController.callNumber(sendAddress);
     }
 
@@ -188,6 +208,7 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
 
     @Override
     public void viewContact(String address) {
+        statReporter.sendUiEvent("view_contact");
         getMessagesLoader().queryContact(address, new OnContactQueryListener() {
 
             @Override
@@ -204,6 +225,7 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
 
     @Override
     public void markAsUnread(List<Conversation> threadId) {
+        statReporter.sendUiEvent("mark_thread_unread");
         getMessagesLoader().markThreadAsUnread(threadId, this);
     }
 
