@@ -4,3 +4,4 @@
 .DS_Store
 Messages.iml
 .idea/
+app/src/main/res/values/analytics.xml
