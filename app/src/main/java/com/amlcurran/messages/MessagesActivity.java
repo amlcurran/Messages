@@ -39,6 +39,7 @@ import com.amlcurran.messages.loaders.MessagesLoaderProvider;
 import com.amlcurran.messages.loaders.OnContactQueryListener;
 import com.amlcurran.messages.loaders.OnThreadDeleteListener;
 import com.amlcurran.messages.reporting.EasyTrackerStatReporter;
+import com.amlcurran.messages.reporting.NullStatReporter;
 import com.amlcurran.messages.reporting.StatReporter;
 import com.amlcurran.messages.telephony.DefaultAppChecker;
 import com.amlcurran.messages.threads.ThreadFragment;
@@ -78,6 +79,7 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
                     .detectAll()
                     .penaltyFlashScreen()
                     .build());
+            statReporter = new NullStatReporter();
         }
 
         if (savedInstanceState == null) {
