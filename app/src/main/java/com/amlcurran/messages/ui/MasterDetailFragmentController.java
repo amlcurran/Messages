@@ -20,7 +20,7 @@ import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
 
-import com.amlcurran.messages.MessagesActivity;
+import com.amlcurran.messages.EmptyFragment;
 import com.amlcurran.messages.PreferencesFragment;
 import com.amlcurran.messages.R;
 import com.amlcurran.messages.conversationlist.ConversationListFragment;
@@ -50,7 +50,7 @@ public class MasterDetailFragmentController implements FragmentController {
 
     @Override
     public void loadEmptyFragment() {
-        replaceFragmentInternal(new MessagesActivity.EmptyFragment(), false);
+        replaceFragmentInternal(new EmptyFragment(), false);
     }
 
     @Override
