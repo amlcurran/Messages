@@ -9,13 +9,17 @@
         android:layout_width="fill_parent"
         android:layout_height="fill_parent">
 
-        <ImageView
+        <FrameLayout
             android:layout_width="@dimen/thread_message_offset_horizontal"
-            android:layout_height="match_parent"
-            android:id="@+id/sending_image"
-            android:src="@drawable/ic_sending"
-            android:visibility="invisible"
-            android:scaleType="center" />
+            android:layout_height="fill_parent">
+
+            <view
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                class="com.amlcurran.messages.ui.LoadingView"
+                android:id="@+id/sending_image"
+                android:layout_gravity="center" />
+        </FrameLayout>
 
         <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
             android:orientation="vertical"
@@ -39,4 +43,5 @@
         </LinearLayout>
 
     </LinearLayout>
+
 </FrameLayout>

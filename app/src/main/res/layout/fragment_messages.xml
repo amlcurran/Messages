@@ -4,17 +4,16 @@
     android:layout_height="match_parent"
     tools:context="com.amlcurran.messages.conversationlist.ConversationListFragment">
 
-    <ImageView
-        android:importantForAccessibility="no"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/empty"
-        android:layout_gravity="center"
-        android:src="@drawable/ic_sending" />
-
     <ListView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:id="@android:id/list" />
+
+    <view
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        class="com.amlcurran.messages.ui.LoadingView"
+        android:id="@+id/empty"
+        android:layout_gravity="center" />
 
 </FrameLayout>
