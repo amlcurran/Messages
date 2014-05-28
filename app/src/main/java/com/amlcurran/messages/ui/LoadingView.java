@@ -33,9 +33,10 @@ public class LoadingView extends View implements TimeAnimator.TimeListener {
     public static final float ANIMATION_DURATION = 1500f;
     private final Paint linePaint;
     private final Drawable bubbleDrawable;
-    private final float padding;
-    private final TimeAnimator animator;
+    private final float fourDip;
     private float duration;
+    private int width;
+    private int height;
 
     public LoadingView(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
@@ -46,40 +47,59 @@ public class LoadingView extends View implements TimeAnimator.TimeListener {
         linePaint = new Paint();
         linePaint.setColor(Color.WHITE);
         bubbleDrawable = context.getResources().getDrawable(R.drawable.ic_sending_bg);
-        padding = context.getResources().getDisplayMetrics().density * 4;
-        animator = new TimeAnimator();
-        animator.setTimeListener(this);
+        fourDip = context.getResources().getDisplayMetrics().density * 2;
+        setUpDimenations();
+        setUpAnimator();
+    }
+
+    private void setUpDimenations() {
+        width = bubbleDrawable.getIntrinsicWidth() / 2;
+        height = bubbleDrawable.getIntrinsicHeight() / 2;
+        bubbleDrawable.setBounds(0, 0, bubbleDrawable.getIntrinsicWidth(), bubbleDrawable.getIntrinsicHeight());
+    }
+
+    private void setUpAnimator() {
+        TimeAnimator animator = new TimeAnimator();
         animator.setInterpolator(new AccelerateDecelerateInterpolator());
+        animator.setTimeListener(this);
         animator.start();
     }
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        setMeasuredDimension(bubbleDrawable.getIntrinsicWidth(), bubbleDrawable.getIntrinsicHeight());
+        setMeasuredDimension(width, height);
     }
 
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-        int width = bubbleDrawable.getIntrinsicWidth();
-        int height = bubbleDrawable.getIntrinsicHeight();
-        bubbleDrawable.setBounds(0, 0, width, height);
+        canvas.save();
+        canvas.scale(0.5f, 0.5f);
         bubbleDrawable.draw(canvas);
+        canvas.restore();
         for (int i = 0; i < 3; i++) {
-            linePaint.setAlpha(getAlphaForLine(i));
-            canvas.drawRect(2 * padding, (3 + 2 * i) * padding, 10 * padding, (4 + 2 * i) * padding, linePaint);
+            float lineLeft = 2 * fourDip;
+            float lineWidth = 8 * fourDip * getWidthFraction(i);
+            float lineTop = (3 + 2 * i) * fourDip;
+            float lineHeight = fourDip;
+            canvas.drawRect(lineLeft, lineTop, lineLeft + lineWidth, lineTop + lineHeight, linePaint);
         }
     }
 
-    private int getAlphaForLine(int line) {
-        float elapsedFraction = 2*duration / ANIMATION_DURATION;
+    private float getWidthFraction(int i) {
+        float calculated = duration / ANIMATION_DURATION;
+        float offset = 3 * (calculated - i * 0.25f);
+        return bound(offset);
+    }
 
-        return (int) (255 * elapsedFraction);
+    private static float bound(float v) {
+        float maxBound = Math.min(v, 1f);
+        return Math.max(maxBound, 0f);
     }
 
     @Override
     public void onTimeUpdate(TimeAnimator animation, long totalTime, long deltaTime) {
-        duration = Math.abs(ANIMATION_DURATION/2 - totalTime % ANIMATION_DURATION);
+        duration = Math.abs(totalTime % ANIMATION_DURATION);
         invalidate();
     }
 }
