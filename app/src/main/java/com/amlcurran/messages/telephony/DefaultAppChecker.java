@@ -42,7 +42,7 @@ public class DefaultAppChecker {
         }
     }
 
-    public boolean isDefaultSmsApp() {
+    private boolean isDefaultSmsApp() {
         return Telephony.Sms.getDefaultSmsPackage(activity).equals(activity.getPackageName());
     }
 
