@@ -49,11 +49,11 @@ public class LoadingView extends View implements TimeAnimator.TimeListener {
         linePaint.setColor(Color.WHITE);
         bubbleDrawable = context.getResources().getDrawable(R.drawable.ic_sending_bg);
         fourDip = context.getResources().getDisplayMetrics().density * 2;
-        setUpDimenations();
+        setUpDimensions();
         setUpAnimator();
     }
 
-    private void setUpDimenations() {
+    private void setUpDimensions() {
         width = bubbleDrawable.getIntrinsicWidth() / SCALE_FACTOR;
         height = bubbleDrawable.getIntrinsicHeight() / SCALE_FACTOR;
         bubbleDrawable.setBounds(0, 0, bubbleDrawable.getIntrinsicWidth(), bubbleDrawable.getIntrinsicHeight());
