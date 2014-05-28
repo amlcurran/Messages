@@ -31,6 +31,7 @@ import com.amlcurran.messages.R;
 public class LoadingView extends View implements TimeAnimator.TimeListener {
 
     public static final float ANIMATION_DURATION = 1500f;
+    private static final int SCALE_FACTOR = 2;
     private final Paint linePaint;
     private final Drawable bubbleDrawable;
     private final float fourDip;
@@ -53,8 +54,8 @@ public class LoadingView extends View implements TimeAnimator.TimeListener {
     }
 
     private void setUpDimenations() {
-        width = bubbleDrawable.getIntrinsicWidth() / 2;
-        height = bubbleDrawable.getIntrinsicHeight() / 2;
+        width = bubbleDrawable.getIntrinsicWidth() / SCALE_FACTOR;
+        height = bubbleDrawable.getIntrinsicHeight() / SCALE_FACTOR;
         bubbleDrawable.setBounds(0, 0, bubbleDrawable.getIntrinsicWidth(), bubbleDrawable.getIntrinsicHeight());
     }
 
@@ -74,10 +75,11 @@ public class LoadingView extends View implements TimeAnimator.TimeListener {
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
         canvas.save();
-        canvas.scale(0.5f, 0.5f);
+        canvas.scale(1 / 2f, 1 / 2f);
         bubbleDrawable.draw(canvas);
         canvas.restore();
         for (int i = 0; i < 3; i++) {
+            linePaint.setAlpha((int) (255 * getAlphaFraction(i)));
             float lineLeft = 2 * fourDip;
             float lineWidth = 8 * fourDip * getWidthFraction(i);
             float lineTop = (3 + 2 * i) * fourDip;
@@ -86,15 +88,20 @@ public class LoadingView extends View implements TimeAnimator.TimeListener {
         }
     }
 
+    private float getAlphaFraction(int i) {
+        float animationFraction = duration / ANIMATION_DURATION;
+        animationFraction = (animationFraction - 0.75f) * 4;
+        return bound(1 - animationFraction);
+    }
+
     private float getWidthFraction(int i) {
-        float calculated = duration / ANIMATION_DURATION;
-        float offset = 3 * (calculated - i * 0.25f);
-        return bound(offset);
+        float animationFraction = duration / ANIMATION_DURATION;
+        return bound(3 * (animationFraction - i * 0.25f));
     }
 
     private static float bound(float v) {
-        float maxBound = Math.min(v, 1f);
-        return Math.max(maxBound, 0f);
+        v = Math.min(v, 1f);
+        return Math.max(v, 0f);
     }
 
     @Override
