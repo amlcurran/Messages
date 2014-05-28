@@ -43,8 +43,10 @@ import com.amlcurran.messages.reporting.NullStatReporter;
 import com.amlcurran.messages.reporting.StatReporter;
 import com.amlcurran.messages.telephony.DefaultAppChecker;
 import com.amlcurran.messages.threads.ThreadFragment;
-import com.amlcurran.messages.ui.SlidingPaneFragmentController;
-import com.amlcurran.messages.ui.UiController;
+import com.amlcurran.messages.ui.FragmentController;
+import com.amlcurran.messages.ui.MasterDetailFragmentController;
+import com.amlcurran.messages.ui.SlidingPaneViewController;
+import com.amlcurran.messages.ui.ViewController;
 import com.espian.utils.ui.MenuFinder;
 import com.google.analytics.tracking.android.EasyTracker;
 
@@ -52,27 +54,28 @@ import java.util.Calendar;
 import java.util.List;
 
 public class MessagesActivity extends Activity implements MessagesLoaderProvider,
-        ConversationListFragment.Listener, ThreadFragment.Listener, View.OnClickListener,
-        DefaultAppChecker.Callback, SlidingPaneFragmentController.UiCallback, ConversationModalMarshall.Callback, OnThreadDeleteListener, ConversationListChangeListener {
+        ConversationListFragment.Listener, ThreadFragment.Listener,
+        DefaultAppChecker.Callback, SlidingPaneViewController.Callback, ConversationModalMarshall.Callback, OnThreadDeleteListener, ConversationListChangeListener, FragmentController.Callback {
 
     private StatReporter statReporter;
-    private UiController fragmentController;
+    private FragmentController fragmentController;
+    private ViewController viewController;
+    private ActivityController activityController;
     private DefaultAppChecker appChecker;
     private BroadcastEventBus eventBus;
-    private ActivityController activityController;
     private boolean isSecondaryVisible;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        fragmentController = new SlidingPaneFragmentController(this, this);
+        fragmentController = new MasterDetailFragmentController(this, this);
         activityController = new ActivityController(this);
-        setContentView(fragmentController.getView());
+        viewController =     new SlidingPaneViewController(this, this);
+        viewController.setContentView();
 
         statReporter = new EasyTrackerStatReporter(EasyTracker.getInstance(this));
         appChecker = new DefaultAppChecker(this, this);
         eventBus = new BroadcastEventBus(this);
-        fragmentController.getDisabledBanner().setOnClickListener(this);
 
         if (BuildConfig.DEBUG) {
             StrictMode.setThreadPolicy(new StrictMode.ThreadPolicy.Builder()
@@ -83,8 +86,8 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
         }
 
         if (savedInstanceState == null) {
-            fragmentController.loadMessagesListFragment();
             fragmentController.loadEmptyFragment();
+            fragmentController.loadMessagesListFragment();
         }
 
     }
@@ -139,7 +142,7 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
 
             case android.R.id.home:
                 statReporter.sendUiEvent("home_button");
-                fragmentController.hideSecondary();
+                viewController.hideSecondary();
                 return true;
 
         }
@@ -153,7 +156,7 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
 
     @Override
     public void onBackPressed() {
-        if (!fragmentController.backPressed()) {
+        if (!viewController.backPressed()) {
             super.onBackPressed();
         }
     }
@@ -178,22 +181,17 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
     }
 
     @Override
-    public void onClick(View v) {
-        activityController.switchSmsApp();
-    }
-
-    @Override
     public void isDefaultSmsApp() {
-        fragmentController.hideDisabledBanner();
+        viewController.hideDisabledBanner();
     }
 
     @Override
     public void isNotDefaultSmsApp() {
-        fragmentController.showDisabledBanner();
+        viewController.showDisabledBanner();
     }
 
     @Override
-    public void onSecondaryVisible() {
+    public void secondaryVisible() {
         isSecondaryVisible = true;
         getActionBar().setDisplayHomeAsUpEnabled(true);
         getActionBar().setHomeButtonEnabled(true);
@@ -201,11 +199,16 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
     }
 
     @Override
-    public void onSecondaryHidden() {
+    public void secondaryHidden() {
         isSecondaryVisible = false;
         getActionBar().setDisplayHomeAsUpEnabled(false);
         getActionBar().setHomeButtonEnabled(false);
         invalidateOptionsMenu();
+    }
+
+    @Override
+    public void defaultsBannerPressed() {
+        activityController.switchSmsApp();
     }
 
     @Override
@@ -251,6 +254,16 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
     @Override
     public void listChanged() {
         eventBus.postListChanged();
+    }
+
+    @Override
+    public void insertedDetail() {
+        viewController.showSecondary();
+    }
+
+    @Override
+    public void insertedMaster() {
+        viewController.hideSecondary();
     }
 
     public static class EmptyFragment extends Fragment {

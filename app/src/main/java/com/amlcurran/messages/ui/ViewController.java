@@ -16,27 +16,22 @@
 
 package com.amlcurran.messages.ui;
 
-import android.app.Fragment;
-import android.view.View;
-
-public interface UiController {
-    void loadMessagesListFragment();
-
-    void replaceFragment(Fragment fragment, boolean addToStack);
-
-    View getView();
-
+public interface ViewController {
     boolean backPressed();
-
-    void loadEmptyFragment();
 
     void hideDisabledBanner();
 
     void showDisabledBanner();
 
-    View getDisabledBanner();
-
     void hideSecondary();
 
-    void showSettings();
+    void showSecondary();
+
+    void setContentView();
+
+    public interface Callback {
+        void secondaryVisible();
+        void secondaryHidden();
+        void defaultsBannerPressed();
+    }
 }
