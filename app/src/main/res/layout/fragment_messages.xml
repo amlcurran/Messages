@@ -17,5 +17,4 @@
         app:lv_scale="@integer/loading_scale_large"
         android:id="@+id/empty"
         android:layout_gravity="center" />
-Lar
 </FrameLayout>
