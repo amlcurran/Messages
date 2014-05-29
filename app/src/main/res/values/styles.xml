@@ -56,4 +56,14 @@
         <item name="android:textColor">@color/theme_colour</item>
     </style>
 
+    <style name="LoadingView">
+        <item name="lv_scale">@integer/loading_scale_small</item>
+    </style>
+
+    <style name="LoadingView.Large">
+        <item name="lv_scale">@integer/loading_scale_large</item>
+    </style>
+
+    <integer name="loading_scale_small">1</integer>
+    <integer name="loading_scale_large">2</integer>
 </resources>

@@ -18,6 +18,7 @@ package com.amlcurran.messages.ui;
 
 import android.animation.TimeAnimator;
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -31,7 +32,7 @@ import com.amlcurran.messages.R;
 public class LoadingView extends View implements TimeAnimator.TimeListener {
 
     public static final float ANIMATION_DURATION = 1500f;
-    private static final int SCALE_FACTOR = 2;
+    private final int scaleFactor;
     private final Paint linePaint;
     private final Drawable bubbleDrawable;
     private final float fourDip;
@@ -40,22 +41,27 @@ public class LoadingView extends View implements TimeAnimator.TimeListener {
     private int height;
 
     public LoadingView(Context context, AttributeSet attrs) {
-        this(context, attrs, 0);
+        this(context, attrs, R.style.LoadingView);
     }
 
     public LoadingView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
+
+        TypedArray array = context.obtainStyledAttributes(attrs, R.styleable.LoadingView, defStyleAttr, R.style.LoadingView);
+        scaleFactor = array.getInteger(R.styleable.LoadingView_lv_scale, 1);
+        array.recycle();
+
         linePaint = new Paint();
         linePaint.setColor(Color.WHITE);
         bubbleDrawable = context.getResources().getDrawable(R.drawable.ic_sending_bg);
-        fourDip = context.getResources().getDisplayMetrics().density * 2;
+        fourDip = context.getResources().getDisplayMetrics().density * 4 / scaleFactor;
         setUpDimensions();
         setUpAnimator();
     }
 
     private void setUpDimensions() {
-        width = bubbleDrawable.getIntrinsicWidth() / SCALE_FACTOR;
-        height = bubbleDrawable.getIntrinsicHeight() / SCALE_FACTOR;
+        width = bubbleDrawable.getIntrinsicWidth() / scaleFactor;
+        height = bubbleDrawable.getIntrinsicHeight() / scaleFactor;
         bubbleDrawable.setBounds(0, 0, bubbleDrawable.getIntrinsicWidth(), bubbleDrawable.getIntrinsicHeight());
     }
 
@@ -75,7 +81,7 @@ public class LoadingView extends View implements TimeAnimator.TimeListener {
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
         canvas.save();
-        canvas.scale(1 / 2f, 1 / 2f);
+        canvas.scale(1 / (float) scaleFactor, 1 / (float) scaleFactor);
         bubbleDrawable.draw(canvas);
         canvas.restore();
         for (int i = 0; i < 3; i++) {
