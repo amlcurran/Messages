@@ -31,6 +31,7 @@
         <item name="android:actionBarTabStyle">@style/ActionBarTabStyle.Messages</item>
         <item name="android:actionDropDownStyle">@style/DropDownNav.Messages</item>
         <item name="android:actionBarStyle">@style/ActionBar.Solid.Messages</item>
+        <item name="android:actionModeStyle">@style/ActionMode.Solid.Messages</item>
         <item name="android:actionModeBackground">@drawable/cab_background_top_messages</item>
         <item name="android:actionModeSplitBackground">@drawable/cab_background_bottom_messages</item>
         <item name="android:actionModeCloseButtonStyle">@style/ActionButton.CloseMode.Messages</item>
@@ -46,6 +47,10 @@
         <item name="android:progressBarStyle">@style/ProgressBar.Messages</item>
         <item name="android:titleTextStyle">@style/ActionBarText</item>
         <item name="android:icon">@drawable/ic_launcher_inverse</item>
+    </style>
+
+    <style name="ActionMode.Solid.Messages" parent="@android:style/Widget.Holo.ActionMode">
+        <item name="android:titleTextStyle">@style/ActionModeText</item>
     </style>
 
     <style name="ActionBar.Transparent.Messages" parent="@android:style/Widget.Holo.ActionBar">
@@ -86,6 +91,11 @@
     </style>
 
     <style name="ActionBarText" parent="@android:style/TextAppearance.Inverse">
+        <item name="android:textSize">24sp</item>
+        <item name="android:fontFamily">sans-serif-condensed</item>
+    </style>
+
+    <style name="ActionModeText" parent="@android:style/TextAppearance.Medium.Inverse">
         <item name="android:textSize">24sp</item>
         <item name="android:fontFamily">sans-serif-condensed</item>
     </style>
