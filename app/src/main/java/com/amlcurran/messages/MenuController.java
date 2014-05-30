@@ -50,8 +50,8 @@ public class MenuController {
         return true;
     }
 
-    boolean itemSelected(MenuItem item) {
-        switch (item.getItemId()) {
+    boolean itemSelected(int item) {
+        switch (item) {
 
             case R.id.action_settings:
                 callbacks.showSettings();

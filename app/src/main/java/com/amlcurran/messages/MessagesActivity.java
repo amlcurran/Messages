@@ -56,10 +56,10 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
     private FragmentController fragmentController;
     private ViewController viewController;
     private ActivityController activityController;
+    private MenuController menuController;
     private DefaultAppChecker appChecker;
     private BroadcastEventBus eventBus;
     private boolean isSecondaryVisible;
-    private MenuController menuController;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -120,7 +120,7 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        return menuController.itemSelected(item) || super.onOptionsItemSelected(item);
+        return menuController.itemSelected(item.getItemId()) || super.onOptionsItemSelected(item);
     }
 
     @Override
