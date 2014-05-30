@@ -22,9 +22,10 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.provider.Telephony;
 
+import com.amlcurran.messages.core.data.Message;
 import com.espian.utils.data.CursorHelper;
 
-public class SmsMessage implements Parcelable {
+public class SmsMessage implements Parcelable, Message {
 
     private static final int IS_FROM_OTHER = 1;
     private static final int IS_FROM_ME = 0;
@@ -62,7 +63,7 @@ public class SmsMessage implements Parcelable {
         return new SmsMessage(address, body, timestamp, false, false);
     }
 
-    public static SmsMessage fromCursor(Cursor cursor) {
+    public static Message fromCursor(Cursor cursor) {
         String body = CursorHelper.asString(cursor, Telephony.Sms.BODY);
         long timestamp = CursorHelper.asLong(cursor, Telephony.Sms.DATE);
         boolean isSending = CursorHelper.asInt(cursor, Telephony.Sms.TYPE) == Telephony.Sms.MESSAGE_TYPE_OUTBOX;
@@ -79,18 +80,22 @@ public class SmsMessage implements Parcelable {
         return result;
     }
 
+    @Override
     public String getAddress() {
         return address;
     }
 
+    @Override
     public String getBody() {
         return body;
     }
 
+    @Override
     public long getTimestamp() {
         return timestamp;
     }
 
+    @Override
     public boolean isFromMe() {
         return isFromMe;
     }
@@ -135,6 +140,7 @@ public class SmsMessage implements Parcelable {
         return contentValues;
     }
 
+    @Override
     public boolean isSending() {
         return isSending;
     }

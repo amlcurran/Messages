@@ -24,14 +24,14 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.amlcurran.messages.R;
-import com.amlcurran.messages.data.SmsMessage;
+import com.amlcurran.messages.core.data.Message;
 import com.espian.utils.data.SimpleBinder;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-class ThreadBinder extends SimpleBinder<SmsMessage> {
+class ThreadBinder extends SimpleBinder<Message> {
 
     private static final int ITEM_ME = 0;
     private static final int ITEM_THEM = 1;
@@ -44,7 +44,7 @@ class ThreadBinder extends SimpleBinder<SmsMessage> {
     }
 
     @Override
-    public View bindView(View convertView, SmsMessage item, int position) {
+    public View bindView(View convertView, Message item, int position) {
 
         date.setTime(item.getTimestamp());
 
@@ -81,7 +81,7 @@ class ThreadBinder extends SimpleBinder<SmsMessage> {
     }
 
     @Override
-    public int getItemViewType(int position, SmsMessage item) {
+    public int getItemViewType(int position, Message item) {
         return item.isFromMe() ? ITEM_ME : ITEM_THEM;
     }
 

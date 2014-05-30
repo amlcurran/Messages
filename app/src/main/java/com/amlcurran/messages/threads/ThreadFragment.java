@@ -28,8 +28,8 @@ import android.view.ViewGroup;
 
 import com.amlcurran.messages.ListeningCursorListFragment;
 import com.amlcurran.messages.R;
+import com.amlcurran.messages.core.data.Message;
 import com.amlcurran.messages.data.SmsMessageCursorSource;
-import com.amlcurran.messages.data.SmsMessage;
 import com.amlcurran.messages.events.BroadcastEventBus;
 import com.amlcurran.messages.loaders.ConversationListChangeListener;
 import com.amlcurran.messages.loaders.CursorLoadListener;
@@ -39,7 +39,7 @@ import com.amlcurran.messages.ui.ComposeMessageView;
 import com.espian.utils.ProviderHelper;
 import com.espian.utils.data.SourceBinderAdapter;
 
-public class ThreadFragment extends ListeningCursorListFragment<SmsMessage> implements CursorLoadListener, ComposeMessageView.OnMessageComposedListener, ConversationListChangeListener {
+public class ThreadFragment extends ListeningCursorListFragment<Message> implements CursorLoadListener, ComposeMessageView.OnMessageComposedListener, ConversationListChangeListener {
 
     private static final String THREAD_ID = "threadId";
     private static final String ADDRESS = "address";
@@ -80,7 +80,7 @@ public class ThreadFragment extends ListeningCursorListFragment<SmsMessage> impl
         setHasOptionsMenu(true);
         sendAddress = getArguments().getString(ADDRESS);
         source = new SmsMessageCursorSource();
-        adapter = new SourceBinderAdapter<SmsMessage>(getActivity(), source, new ThreadBinder(getListView()));
+        adapter = new SourceBinderAdapter<Message>(getActivity(), source, new ThreadBinder(getListView()));
         defaultChecker = new DefaultAppChecker(getActivity(), composeView);
         setListAdapter(adapter);
         getListView().setStackFromBottom(true);

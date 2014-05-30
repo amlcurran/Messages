@@ -28,6 +28,7 @@ import com.amlcurran.messages.conversationlist.ConversationModalMarshall;
 import com.amlcurran.messages.data.Conversation;
 import com.amlcurran.messages.data.SmsMessage;
 import com.amlcurran.messages.events.BroadcastEventBus;
+import com.amlcurran.messages.events.EventBus;
 import com.amlcurran.messages.loaders.ConversationListChangeListener;
 import com.amlcurran.messages.loaders.MessagesLoader;
 import com.amlcurran.messages.loaders.MessagesLoaderProvider;
@@ -57,7 +58,7 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
     private ActivityController activityController;
     private MenuController menuController;
     private DefaultAppChecker appChecker;
-    private BroadcastEventBus eventBus;
+    private EventBus eventBus;
     private boolean isSecondaryVisible;
 
     @Override

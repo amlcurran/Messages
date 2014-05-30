@@ -14,16 +14,16 @@
  * limitations under the License.
  */
 
-package com.amlcurran.messages.events;
+package com.amlcurran.messages.core.data;
 
-import com.amlcurran.messages.core.data.Message;
+public interface Message {
+    String getAddress();
 
-public interface EventBus {
-    void postListChanged();
+    String getBody();
 
-    void postMessageSent();
+    long getTimestamp();
 
-    void postMessageReceived();
+    boolean isFromMe();
 
-    void postMessageSending(Message message);
+    boolean isSending();
 }

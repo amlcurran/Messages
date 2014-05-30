@@ -20,6 +20,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.v4.content.LocalBroadcastManager;
 
+import com.amlcurran.messages.core.data.Message;
 import com.amlcurran.messages.data.SmsMessage;
 
 public class BroadcastEventBus implements EventBus {
@@ -51,9 +52,9 @@ public class BroadcastEventBus implements EventBus {
     }
 
     @Override
-    public void postMessageSending(SmsMessage message) {
+    public void postMessageSending(Message message) {
         Intent broadcast = new Intent(BROADCAST_MESSAGE_SENDING);
-        broadcast.putExtra("message", message);
+        broadcast.putExtra("message", (SmsMessage) message);
         broadcaster.sendBroadcast(broadcast);
     }
 }

@@ -18,11 +18,12 @@ package com.amlcurran.messages.data;
 
 import android.database.Cursor;
 
+import com.amlcurran.messages.core.data.Message;
 import com.espian.utils.data.AdaptiveCursorSource;
 
-public class SmsMessageCursorSource extends AdaptiveCursorSource<SmsMessage> {
+public class SmsMessageCursorSource extends AdaptiveCursorSource<Message> {
     @Override
-    public SmsMessage getFromCursorRow(Cursor cursor) {
+    public Message getFromCursorRow(Cursor cursor) {
         return SmsMessage.fromCursor(cursor);
     }
 }
