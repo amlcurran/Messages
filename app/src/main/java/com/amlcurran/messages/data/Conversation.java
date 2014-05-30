@@ -16,10 +16,7 @@
 
 package com.amlcurran.messages.data;
 
-import android.database.Cursor;
-import android.provider.Telephony;
-
-import com.espian.utils.data.CursorHelper;
+import com.amlcurran.messages.core.data.Contact;
 
 public class Conversation {
 
@@ -29,21 +26,12 @@ public class Conversation {
     private final boolean isRead;
     private final Contact contact;
 
-    private Conversation(String address, String body, String threadId, boolean isRead, Contact contact) {
+    public Conversation(String address, String body, String threadId, boolean isRead, Contact contact) {
         this.address = address;
         this.body = body;
         this.threadId = threadId;
         this.isRead = isRead;
         this.contact = contact;
-    }
-
-    public static Conversation fromCursor(Cursor cursor, Contact contact) {
-        String address = CursorHelper.asString(cursor, Telephony.Sms.ADDRESS);
-        String body = CursorHelper.asString(cursor, Telephony.Sms.BODY);
-        String s = CursorHelper.asString(cursor, Telephony.Sms.Inbox.READ);
-        boolean isRead = s.toLowerCase().equals("1");
-        String threadId = CursorHelper.asString(cursor, Telephony.Sms.THREAD_ID);
-        return new Conversation(address, body, threadId, isRead, contact);
     }
 
     public String getBody() {

@@ -23,7 +23,8 @@ import android.provider.ContactsContract;
 import android.provider.Telephony;
 
 import com.amlcurran.messages.conversationlist.ConversationListListener;
-import com.amlcurran.messages.data.Contact;
+import com.amlcurran.messages.core.data.Contact;
+import com.amlcurran.messages.data.AndroidContact;
 import com.amlcurran.messages.data.Conversation;
 import com.amlcurran.messages.data.Sort;
 import com.espian.utils.data.CursorHelper;
@@ -61,8 +62,13 @@ class ConversationListTask implements Callable<Object> {
             Uri phoneLookupUri = createPhoneLookupUri(conversationsList);
             Cursor peopleCursor = contentResolver.query(phoneLookupUri, null, null, null, null);
 
-            Contact contact = Contact.fromCursor(peopleCursor, CursorHelper.asString(conversationsList, Telephony.Sms.ADDRESS));
-            Conversation conversation = Conversation.fromCursor(conversationsList, contact);
+            Contact contact = AndroidContact.fromCursor(peopleCursor, CursorHelper.asString(conversationsList, Telephony.Sms.ADDRESS));
+            String address = CursorHelper.asString(conversationsList, Telephony.Sms.ADDRESS);
+            String body = CursorHelper.asString(conversationsList, Telephony.Sms.BODY);
+            String s = CursorHelper.asString(conversationsList, Telephony.Sms.Inbox.READ);
+            boolean isRead = s.toLowerCase().equals("1");
+            String threadId = CursorHelper.asString(conversationsList, Telephony.Sms.THREAD_ID);
+            Conversation conversation = new Conversation(address, body, threadId, isRead, contact);
 
             conversations.add(conversation);
             peopleCursor.close();

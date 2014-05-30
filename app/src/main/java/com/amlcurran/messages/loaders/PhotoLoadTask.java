@@ -21,7 +21,7 @@ import android.content.res.Resources;
 import android.graphics.Bitmap;
 
 import com.amlcurran.messages.conversationlist.PhotoLoadListener;
-import com.amlcurran.messages.data.Contact;
+import com.amlcurran.messages.core.data.Contact;
 
 import java.util.concurrent.Callable;
 

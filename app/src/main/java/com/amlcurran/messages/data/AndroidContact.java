@@ -17,20 +17,19 @@
 package com.amlcurran.messages.data;
 
 import android.database.Cursor;
-import android.graphics.Bitmap;
 import android.provider.ContactsContract;
 import android.text.TextUtils;
 
-import com.amlcurran.messages.loaders.ContactImageLoader;
+import com.amlcurran.messages.core.data.Contact;
 import com.espian.utils.data.CursorHelper;
 
-public class Contact {
+public class AndroidContact implements Contact {
 
     private final String name;
     private final String address;
     private final long photoId;
 
-    public Contact(String name, String address, long photoId) {
+    public AndroidContact(String name, String address, long photoId) {
         this.name = name;
         this.address = address;
         this.photoId = photoId;
@@ -39,9 +38,10 @@ public class Contact {
     public static Contact fromCursor(Cursor peopleCursor, String address) {
         String person = getContactName(peopleCursor);
         long photoId = getContactPhotoId(peopleCursor);
-        return new Contact(person, address, photoId);
+        return new AndroidContact(person, address, photoId);
     }
 
+    @Override
     public String getDisplayName() {
         if (!TextUtils.isEmpty(name)) {
             return name;
@@ -50,6 +50,7 @@ public class Contact {
         }
     }
 
+    @Override
     public long getPhotoId() {
         return photoId;
     }
@@ -70,11 +71,4 @@ public class Contact {
         return id;
     }
 
-    public Bitmap getSmallImage(ContactImageLoader contactImageLoader) {
-        return contactImageLoader.getSmallImage(getPhotoId());
-    }
-
-    private Bitmap getLargeImage(ContactImageLoader contactImageLoader) {
-        return contactImageLoader.getLargeImage(getPhotoId());
-    }
 }
