@@ -23,16 +23,16 @@ import android.view.MenuItem;
 import com.espian.utils.ui.MenuFinder;
 
 public class MenuController {
-    private final Activity messagesActivity;
+    private final Activity activity;
     private final Callbacks callbacks;
 
     public MenuController(Activity activity, Callbacks callbacks) {
-        this.messagesActivity = activity;
+        this.activity = activity;
         this.callbacks = callbacks;
     }
 
     public boolean create(Menu menu) {
-        messagesActivity.getMenuInflater().inflate(R.menu.activity_messages, menu);
+        activity.getMenuInflater().inflate(R.menu.activity_messages, menu);
         return true;
     }
 
@@ -71,6 +71,10 @@ public class MenuController {
 
         }
         return false;
+    }
+
+    public void update() {
+        activity.invalidateOptionsMenu();
     }
 
     public static interface Callbacks {

@@ -188,17 +188,13 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
     @Override
     public void secondaryVisible() {
         isSecondaryVisible = true;
-        getActionBar().setDisplayHomeAsUpEnabled(true);
-        getActionBar().setHomeButtonEnabled(true);
-        invalidateOptionsMenu();
+        menuController.update();
     }
 
     @Override
     public void secondaryHidden() {
         isSecondaryVisible = false;
-        getActionBar().setDisplayHomeAsUpEnabled(false);
-        getActionBar().setHomeButtonEnabled(false);
-        invalidateOptionsMenu();
+        menuController.update();
     }
 
     @Override
