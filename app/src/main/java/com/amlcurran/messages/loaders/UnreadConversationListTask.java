@@ -19,8 +19,8 @@ package com.amlcurran.messages.loaders;
 import android.content.ContentResolver;
 import android.provider.Telephony;
 
-import com.amlcurran.messages.data.Sort;
-import com.amlcurran.messages.conversationlist.ConversationListListener;
+import com.amlcurran.messages.core.data.Sort;
+import com.amlcurran.messages.core.conversationlist.ConversationListListener;
 
 class UnreadConversationListTask extends ConversationListTask {
 

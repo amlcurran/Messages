@@ -14,8 +14,10 @@
  * limitations under the License.
  */
 
-package com.amlcurran.messages.loaders;
+package com.amlcurran.messages.core.conversationlist;
 
-public interface ConversationListChangeListener {
-    void listChanged();
+import java.util.List;
+
+public interface ConversationListListener {
+    void onConversationListLoaded(List<Conversation> conversations);
 }

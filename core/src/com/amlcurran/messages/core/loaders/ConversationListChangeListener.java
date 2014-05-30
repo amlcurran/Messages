@@ -14,10 +14,8 @@
  * limitations under the License.
  */
 
-package com.amlcurran.messages.loaders;
+package com.amlcurran.messages.core.loaders;
 
-import android.database.Cursor;
-
-public interface CursorLoadListener {
-    void onCursorLoaded(Cursor cursor);
+public interface ConversationListChangeListener {
+    void listChanged();
 }

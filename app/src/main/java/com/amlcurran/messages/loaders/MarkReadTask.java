@@ -20,6 +20,8 @@ import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.provider.Telephony;
 
+import com.amlcurran.messages.core.loaders.ConversationListChangeListener;
+
 import java.util.concurrent.Callable;
 
 class MarkReadTask implements Callable<Object> {

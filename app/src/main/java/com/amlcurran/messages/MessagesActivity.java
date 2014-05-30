@@ -25,11 +25,11 @@ import android.view.MenuItem;
 
 import com.amlcurran.messages.conversationlist.ConversationListFragment;
 import com.amlcurran.messages.conversationlist.ConversationModalMarshall;
-import com.amlcurran.messages.core.data.Conversation;
+import com.amlcurran.messages.core.conversationlist.Conversation;
 import com.amlcurran.messages.data.InFlightSmsMessage;
 import com.amlcurran.messages.events.BroadcastEventBus;
 import com.amlcurran.messages.events.EventBus;
-import com.amlcurran.messages.loaders.ConversationListChangeListener;
+import com.amlcurran.messages.core.loaders.ConversationListChangeListener;
 import com.amlcurran.messages.loaders.MessagesLoader;
 import com.amlcurran.messages.loaders.MessagesLoaderProvider;
 import com.amlcurran.messages.loaders.OnContactQueryListener;

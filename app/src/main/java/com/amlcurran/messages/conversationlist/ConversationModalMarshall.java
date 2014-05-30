@@ -22,7 +22,7 @@ import android.view.MenuItem;
 import android.widget.AbsListView;
 
 import com.amlcurran.messages.R;
-import com.amlcurran.messages.core.data.Conversation;
+import com.amlcurran.messages.core.conversationlist.Conversation;
 import com.espian.utils.ui.MenuFinder;
 import com.espian.utils.data.Source;
 

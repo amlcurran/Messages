@@ -20,7 +20,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
-import com.amlcurran.messages.data.Sort;
+import com.amlcurran.messages.core.data.Sort;
 
 public class PreferenceStore {
 

@@ -21,7 +21,8 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.provider.Telephony;
 
-import com.amlcurran.messages.data.MessageFactory;
+import com.amlcurran.messages.core.loaders.ThreadListener;
+import com.amlcurran.messages.data.InFlightSmsMessageFactory;
 import com.amlcurran.messages.core.data.SmsMessage;
 
 import java.util.ArrayList;
@@ -61,7 +62,7 @@ class ThreadTask implements Callable<Object> {
         List<SmsMessage> messageList = new ArrayList<SmsMessage>();
         SmsMessage tempPointer;
         while (cursor.moveToNext()) {
-            tempPointer = MessageFactory.fromCursor(cursor);
+            tempPointer = InFlightSmsMessageFactory.fromCursor(cursor);
             if (tempPointer != null) {
                 messageList.add(tempPointer);
             }

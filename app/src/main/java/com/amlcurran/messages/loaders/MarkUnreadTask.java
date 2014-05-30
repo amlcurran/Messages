@@ -21,8 +21,10 @@ import android.content.ContentValues;
 import android.provider.Telephony;
 import android.util.Log;
 
-import com.amlcurran.messages.core.data.Conversation;
+import com.amlcurran.messages.core.conversationlist.Conversation;
 import com.amlcurran.messages.core.data.SmsMessage;
+import com.amlcurran.messages.core.loaders.ConversationListChangeListener;
+import com.amlcurran.messages.core.loaders.ThreadListener;
 
 import java.util.List;
 import java.util.concurrent.Callable;

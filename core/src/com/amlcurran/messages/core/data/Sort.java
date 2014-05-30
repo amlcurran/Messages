@@ -14,12 +14,8 @@
  * limitations under the License.
  */
 
-package com.amlcurran.messages.loaders;
+package com.amlcurran.messages.core.data;
 
-import com.amlcurran.messages.core.data.SmsMessage;
-
-import java.util.List;
-
-public interface ThreadListener {
-    void onThreadLoaded(List<SmsMessage> messageList);
+public enum Sort {
+    UNREAD, DEFAULT
 }

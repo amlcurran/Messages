@@ -22,11 +22,11 @@ import android.net.Uri;
 import android.provider.ContactsContract;
 import android.provider.Telephony;
 
-import com.amlcurran.messages.conversationlist.ConversationListListener;
+import com.amlcurran.messages.core.conversationlist.ConversationListListener;
 import com.amlcurran.messages.core.data.Contact;
 import com.amlcurran.messages.data.ContactFactory;
-import com.amlcurran.messages.core.data.Conversation;
-import com.amlcurran.messages.data.Sort;
+import com.amlcurran.messages.core.conversationlist.Conversation;
+import com.amlcurran.messages.core.data.Sort;
 import com.espian.utils.data.CursorHelper;
 
 import java.util.ArrayList;

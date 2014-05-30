@@ -17,10 +17,12 @@
 package com.amlcurran.messages.loaders;
 
 import com.amlcurran.messages.core.data.Contact;
-import com.amlcurran.messages.data.Sort;
-import com.amlcurran.messages.conversationlist.ConversationListListener;
+import com.amlcurran.messages.core.data.Sort;
+import com.amlcurran.messages.core.conversationlist.ConversationListListener;
 import com.amlcurran.messages.conversationlist.PhotoLoadListener;
-import com.amlcurran.messages.core.data.Conversation;
+import com.amlcurran.messages.core.conversationlist.Conversation;
+import com.amlcurran.messages.core.loaders.ConversationListChangeListener;
+import com.amlcurran.messages.core.loaders.ThreadListener;
 
 import java.util.List;
 

@@ -14,7 +14,9 @@
  * limitations under the License.
  */
 
-package com.amlcurran.messages.core.data;
+package com.amlcurran.messages.core.conversationlist;
+
+import com.amlcurran.messages.core.data.Contact;
 
 public class Conversation {
 

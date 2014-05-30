@@ -23,7 +23,7 @@ import android.provider.Telephony;
 import com.amlcurran.messages.core.data.SmsMessage;
 import com.espian.utils.data.CursorHelper;
 
-public class MessageFactory {
+public class InFlightSmsMessageFactory {
 
     public static InFlightSmsMessage fromDeliverBroadcast(android.telephony.SmsMessage[] messages) {
         if (messages.length == 0) {

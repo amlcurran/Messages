@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-package com.amlcurran.messages.conversationlist;
+package com.amlcurran.messages.core.loaders;
 
-import com.amlcurran.messages.core.data.Conversation;
+import com.amlcurran.messages.core.data.SmsMessage;
 
 import java.util.List;
 
-public interface ConversationListListener {
-    void onConversationListLoaded(List<Conversation> conversations);
+public interface ThreadListener {
+    void onThreadLoaded(List<SmsMessage> messageList);
 }

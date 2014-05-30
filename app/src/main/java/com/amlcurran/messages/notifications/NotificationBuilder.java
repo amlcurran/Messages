@@ -29,7 +29,7 @@ import android.text.style.StyleSpan;
 
 import com.amlcurran.messages.MessagesActivity;
 import com.amlcurran.messages.R;
-import com.amlcurran.messages.core.data.Conversation;
+import com.amlcurran.messages.core.conversationlist.Conversation;
 import com.amlcurran.messages.data.InFlightSmsMessage;
 import com.amlcurran.messages.telephony.SmsSender;
 
