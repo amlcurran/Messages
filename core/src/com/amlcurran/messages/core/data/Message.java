@@ -26,4 +26,6 @@ public interface Message {
     boolean isFromMe();
 
     boolean isSending();
+
+    long getId();
 }

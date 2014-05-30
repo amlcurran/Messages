@@ -21,6 +21,11 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.provider.Telephony;
 
+import com.amlcurran.messages.core.data.Message;
+import com.amlcurran.messages.data.SmsMessage;
+
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.Callable;
 
 class ThreadTask implements Callable<Object> {
@@ -28,25 +33,40 @@ class ThreadTask implements Callable<Object> {
     private final ContentResolver contentResolver;
     private final String threadId;
     private final Uri contentUri;
-    private final CursorLoadListener loadListener;
+    private final ThreadListener threadListener;
 
-    public ThreadTask(ContentResolver contentResolver, String threadId, CursorLoadListener loadListener) {
-        this(contentResolver, threadId, Telephony.Sms.CONTENT_URI, loadListener);
+    public ThreadTask(ContentResolver contentResolver, String threadId, ThreadListener threadListener) {
+        this(contentResolver, threadId, Telephony.Sms.CONTENT_URI, threadListener);
     }
 
-    public ThreadTask(ContentResolver contentResolver, String threadId, Uri contentUri, CursorLoadListener loadListener) {
+    public ThreadTask(ContentResolver contentResolver, String threadId, Uri contentUri, ThreadListener threadListener) {
         this.contentResolver = contentResolver;
         this.threadId = threadId;
         this.contentUri = contentUri;
-        this.loadListener = loadListener;
+        this.threadListener = threadListener;
     }
 
     @Override
     public Object call() throws Exception {
         String selection = Telephony.Sms.THREAD_ID + "=?";
         String[] selectionArgs = {threadId};
-        final Cursor cursor = contentResolver.query(contentUri, null, selection, selectionArgs, Telephony.Sms.DEFAULT_SORT_ORDER.replace("DESC", "ASC"));
-        loadListener.onCursorLoaded(cursor);
+        Cursor cursor = contentResolver.query(contentUri, null, selection, selectionArgs, Telephony.Sms.DEFAULT_SORT_ORDER.replace("DESC", "ASC"));
+        List<Message> messageList = createMessageList(cursor);
+        cursor.close();
+        threadListener.onThreadLoaded(messageList);
         return null;
     }
+
+    private List<Message> createMessageList(Cursor cursor) {
+        List<Message> messageList = new ArrayList<Message>();
+        Message tempPointer;
+        while (cursor.moveToNext()) {
+            tempPointer = SmsMessage.fromCursor(cursor);
+            if (tempPointer != null) {
+                messageList.add(tempPointer);
+            }
+        }
+        return messageList;
+    }
+
 }

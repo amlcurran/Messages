@@ -18,12 +18,11 @@ package com.amlcurran.messages.loaders;
 
 import android.content.ContentResolver;
 import android.content.ContentValues;
-import android.database.Cursor;
 import android.provider.Telephony;
 import android.util.Log;
 
+import com.amlcurran.messages.core.data.Message;
 import com.amlcurran.messages.data.Conversation;
-import com.espian.utils.data.CursorHelper;
 
 import java.util.List;
 import java.util.concurrent.Callable;
@@ -42,21 +41,20 @@ class MarkUnreadTask implements Callable<Object> {
     @Override
     public Object call() throws Exception {
         for (final Conversation conversation : conversationList) {
-            new InboxThreadTask(contentResolver, conversation.getThreadId(), new CursorLoadListener() {
+            new InboxThreadTask(contentResolver, conversation.getThreadId(), new ThreadListener() {
+
                 @Override
-                public void onCursorLoaded(Cursor cursor) {
-                    if (cursor.moveToLast()) {
+                public void onThreadLoaded(List<Message> messageList) {
+                    Message lastMessage = messageList.get(messageList.size() - 1);
 
-                        // This updates an unread message
-                        String selection = String.format("%1$s=? AND %2$s=?", Telephony.Sms.THREAD_ID, Telephony.Sms._ID);
-                        String[] args = new String[]{ conversation.getThreadId(), CursorHelper.asString(cursor, Telephony.Sms._ID)};
-                        int updated = contentResolver.update(Telephony.Sms.Inbox.CONTENT_URI, createUnreadContentValues(), selection, args);
-                        if (updated == 0) {
-                            Log.w("MarkUnreadTask", "Couldn't mark conversation " + conversation.toString() + " as read");
-                        }
-
+                    // This updates an unread message
+                    String selection = String.format("%1$s=? AND %2$s=?", Telephony.Sms.THREAD_ID, Telephony.Sms._ID);
+                    String[] args = new String[]{conversation.getThreadId(), String.valueOf(lastMessage.getId()) };
+                    int updated = contentResolver.update(Telephony.Sms.Inbox.CONTENT_URI, createUnreadContentValues(), selection, args);
+                    if (updated == 0) {
+                        Log.w("MarkUnreadTask", "Couldn't mark conversation " + conversation.toString() + " as read");
                     }
-                    cursor.close();
+
                 }
             }).call();
         }

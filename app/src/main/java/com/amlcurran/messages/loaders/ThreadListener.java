@@ -16,11 +16,10 @@
 
 package com.amlcurran.messages.loaders;
 
-import android.content.ContentResolver;
-import android.provider.Telephony;
+import com.amlcurran.messages.core.data.Message;
 
-class InboxThreadTask extends ThreadTask {
-    public InboxThreadTask(ContentResolver contentResolver, String threadId, ThreadListener threadListener) {
-        super(contentResolver, threadId, Telephony.Sms.Inbox.CONTENT_URI, threadListener);
-    }
+import java.util.List;
+
+public interface ThreadListener {
+    void onThreadLoaded(List<Message> messageList);
 }

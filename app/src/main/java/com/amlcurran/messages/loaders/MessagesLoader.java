@@ -28,7 +28,7 @@ public interface MessagesLoader {
 
     void loadConversationList(ConversationListListener loadListener, Sort sort);
 
-    void loadThread(String threadId, CursorLoadListener loadListener);
+    void loadThread(String threadId, ThreadListener threadListener);
 
     void markThreadAsRead(String threadId, ConversationListChangeListener conversationListChangeListener);
 

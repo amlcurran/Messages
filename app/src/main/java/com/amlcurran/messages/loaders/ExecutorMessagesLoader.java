@@ -53,8 +53,8 @@ public class ExecutorMessagesLoader implements MessagesLoader {
     }
 
     @Override
-    public void loadThread(String threadId, CursorLoadListener loadListener) {
-        submit(new ThreadTask(getResolver(), threadId, loadListener));
+    public void loadThread(String threadId, ThreadListener threadListener) {
+        submit(new ThreadTask(getResolver(), threadId, threadListener));
     }
 
     @Override

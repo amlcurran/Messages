@@ -36,6 +36,7 @@ public class SmsMessage implements Parcelable, Message {
     private final long timestamp;
     private final boolean isFromMe;
     private final boolean isSending;
+    private long id;
 
     public SmsMessage(String address, String body, long timestamp, boolean isFromMe, boolean isSending) {
         this.address = address;
@@ -69,7 +70,9 @@ public class SmsMessage implements Parcelable, Message {
         boolean isSending = CursorHelper.asInt(cursor, Telephony.Sms.TYPE) == Telephony.Sms.MESSAGE_TYPE_OUTBOX;
         boolean isFromMe = CursorHelper.asInt(cursor, Telephony.Sms.TYPE) == Telephony.Sms.MESSAGE_TYPE_SENT || isSending;
         String address = CursorHelper.asString(cursor, Telephony.Sms.ADDRESS);
-        return new SmsMessage(address, body, timestamp, isFromMe, isSending);
+        SmsMessage smsMessage = new SmsMessage(address, body, timestamp, isFromMe, isSending);
+        smsMessage.id = CursorHelper.asLong(cursor, Telephony.Sms._ID);
+        return smsMessage;
     }
 
     private static String createBody(android.telephony.SmsMessage[] messages) {
@@ -143,5 +146,10 @@ public class SmsMessage implements Parcelable, Message {
     @Override
     public boolean isSending() {
         return isSending;
+    }
+
+    @Override
+    public long getId() {
+        return id;
     }
 }
