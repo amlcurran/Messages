@@ -24,7 +24,7 @@ import android.provider.Telephony;
 
 import com.amlcurran.messages.conversationlist.ConversationListListener;
 import com.amlcurran.messages.core.data.Contact;
-import com.amlcurran.messages.data.AndroidContact;
+import com.amlcurran.messages.data.ContactFactory;
 import com.amlcurran.messages.data.Conversation;
 import com.amlcurran.messages.data.Sort;
 import com.espian.utils.data.CursorHelper;
@@ -62,7 +62,7 @@ class ConversationListTask implements Callable<Object> {
             Uri phoneLookupUri = createPhoneLookupUri(conversationsList);
             Cursor peopleCursor = contentResolver.query(phoneLookupUri, null, null, null, null);
 
-            Contact contact = AndroidContact.fromCursor(peopleCursor, CursorHelper.asString(conversationsList, Telephony.Sms.ADDRESS));
+            Contact contact = ContactFactory.fromCursor(peopleCursor, CursorHelper.asString(conversationsList, Telephony.Sms.ADDRESS));
             String address = CursorHelper.asString(conversationsList, Telephony.Sms.ADDRESS);
             String body = CursorHelper.asString(conversationsList, Telephony.Sms.BODY);
             String s = CursorHelper.asString(conversationsList, Telephony.Sms.Inbox.READ);

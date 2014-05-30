@@ -24,6 +24,6 @@ import com.espian.utils.data.AdaptiveCursorSource;
 public class SmsMessageCursorSource extends AdaptiveCursorSource<Message> {
     @Override
     public Message getFromCursorRow(Cursor cursor) {
-        return SmsMessage.fromCursor(cursor);
+        return MessageFactory.fromCursor(cursor);
     }
 }
