@@ -19,8 +19,12 @@ package com.amlcurran.messages.ui;
 import android.app.Activity;
 import android.support.v4.widget.SlidingPaneLayout;
 import android.view.View;
+import android.widget.Toast;
 
 import com.amlcurran.messages.R;
+import com.amlcurran.messages.data.Conversation;
+
+import java.util.List;
 
 public class SlidingPaneViewController implements ViewController, View.OnClickListener {
 
@@ -96,5 +100,16 @@ public class SlidingPaneViewController implements ViewController, View.OnClickLi
     @Override
     public void onClick(View v) {
         callback.defaultsBannerPressed();
+    }
+
+    @Override
+    public void deletedConversations(List<Conversation> deletedConversations) {
+        String toast;
+        if (deletedConversations.size() == 1) {
+            toast = activity.getString(R.string.deleted_one_thread, deletedConversations.get(0).getContact().getDisplayName());
+        } else {
+            toast = activity.getString(R.string.deleted_many_threads, deletedConversations.size());
+        }
+        Toast.makeText(activity, toast, Toast.LENGTH_SHORT).show();
     }
 }

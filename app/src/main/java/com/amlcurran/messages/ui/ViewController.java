@@ -16,6 +16,13 @@
 
 package com.amlcurran.messages.ui;
 
+import android.content.Context;
+
+import com.amlcurran.messages.MessagesActivity;
+import com.amlcurran.messages.data.Conversation;
+
+import java.util.List;
+
 public interface ViewController {
     boolean backPressed();
 
@@ -28,6 +35,8 @@ public interface ViewController {
     void showSecondary();
 
     void setContentView();
+
+    void deletedConversations(List<Conversation> deletedConversations);
 
     public interface Callback {
         void secondaryVisible();

@@ -22,7 +22,6 @@ import android.os.Bundle;
 import android.os.StrictMode;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.Toast;
 
 import com.amlcurran.messages.conversationlist.ConversationListFragment;
 import com.amlcurran.messages.conversationlist.ConversationModalMarshall;
@@ -235,13 +234,7 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                String toast;
-                if (deletedConversations.size() == 1) {
-                    toast = getString(R.string.deleted_one_thread, deletedConversations.get(0).getContact().getDisplayName());
-                } else {
-                    toast = getString(R.string.deleted_many_threads, deletedConversations.size());
-                }
-                Toast.makeText(MessagesActivity.this, toast, Toast.LENGTH_SHORT).show();
+                viewController.deletedConversations(deletedConversations);
                 eventBus.postListChanged();
             }
         });
