@@ -27,7 +27,7 @@ import android.widget.ListView;
 import com.amlcurran.messages.ListeningCursorListFragment;
 import com.amlcurran.messages.PreferenceStore;
 import com.amlcurran.messages.R;
-import com.amlcurran.messages.data.Conversation;
+import com.amlcurran.messages.core.data.Conversation;
 import com.amlcurran.messages.data.Sort;
 import com.amlcurran.messages.events.BroadcastEventBus;
 import com.amlcurran.messages.loaders.MessagesLoader;

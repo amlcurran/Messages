@@ -20,7 +20,7 @@ import android.app.NotificationManager;
 import android.content.Context;
 
 import com.amlcurran.messages.MessagesApp;
-import com.amlcurran.messages.data.Conversation;
+import com.amlcurran.messages.core.data.Conversation;
 import com.amlcurran.messages.conversationlist.ConversationListListener;
 import com.amlcurran.messages.data.SmsMessage;
 

@@ -16,10 +16,7 @@
 
 package com.amlcurran.messages.ui;
 
-import android.content.Context;
-
-import com.amlcurran.messages.MessagesActivity;
-import com.amlcurran.messages.data.Conversation;
+import com.amlcurran.messages.core.data.Conversation;
 
 import java.util.List;
 

@@ -16,7 +16,7 @@
 
 package com.amlcurran.messages.loaders;
 
-import com.amlcurran.messages.data.Conversation;
+import com.amlcurran.messages.core.data.Conversation;
 
 import java.util.List;
 

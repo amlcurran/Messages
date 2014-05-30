@@ -25,7 +25,7 @@ import android.view.MenuItem;
 
 import com.amlcurran.messages.conversationlist.ConversationListFragment;
 import com.amlcurran.messages.conversationlist.ConversationModalMarshall;
-import com.amlcurran.messages.data.Conversation;
+import com.amlcurran.messages.core.data.Conversation;
 import com.amlcurran.messages.data.SmsMessage;
 import com.amlcurran.messages.events.BroadcastEventBus;
 import com.amlcurran.messages.core.events.EventBus;

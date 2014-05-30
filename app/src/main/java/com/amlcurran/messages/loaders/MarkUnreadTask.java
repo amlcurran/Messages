@@ -22,7 +22,7 @@ import android.provider.Telephony;
 import android.util.Log;
 
 import com.amlcurran.messages.core.data.Message;
-import com.amlcurran.messages.data.Conversation;
+import com.amlcurran.messages.core.data.Conversation;
 
 import java.util.List;
 import java.util.concurrent.Callable;
