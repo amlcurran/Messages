@@ -46,6 +46,7 @@ public class MessagesApp extends Application {
     }
 
     private void primeZygote(ExecutorService executor) {
+        executor.submit(new PrimePreferencesTask());
         executor.submit(new PrimeLinkifyTask());
     }
 
@@ -72,5 +73,13 @@ public class MessagesApp extends Application {
             return null;
         }
 
+    }
+
+    private class PrimePreferencesTask implements Callable<Object> {
+        @Override
+        public Object call() throws Exception {
+            PreferenceManager.getDefaultSharedPreferences(MessagesApp.this).getBoolean("test", false);
+            return null;
+        }
     }
 }
