@@ -20,7 +20,7 @@ import android.app.ListFragment;
 import android.os.Bundle;
 
 import com.amlcurran.messages.events.BroadcastEventSubscriber;
-import com.amlcurran.messages.events.EventSubscriber;
+import com.amlcurran.messages.core.events.EventSubscriber;
 import com.espian.utils.data.AdaptiveCursorSource;
 import com.amlcurran.messages.loaders.MessagesLoader;
 import com.amlcurran.messages.loaders.MessagesLoaderProvider;

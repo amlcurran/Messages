@@ -21,6 +21,7 @@ import android.content.Intent;
 import android.support.v4.content.LocalBroadcastManager;
 
 import com.amlcurran.messages.core.data.Message;
+import com.amlcurran.messages.core.events.EventBus;
 import com.amlcurran.messages.data.SmsMessage;
 
 public class BroadcastEventBus implements EventBus {

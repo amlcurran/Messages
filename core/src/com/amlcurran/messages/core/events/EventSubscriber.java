@@ -14,16 +14,10 @@
  * limitations under the License.
  */
 
-package com.amlcurran.messages.events;
+package com.amlcurran.messages.core.events;
 
-import com.amlcurran.messages.core.data.Message;
+public interface EventSubscriber {
+    void startListening(String[] actions);
 
-public interface EventBus {
-    void postListChanged();
-
-    void postMessageSent();
-
-    void postMessageReceived();
-
-    void postMessageSending(Message message);
+    void stopListening();
 }
