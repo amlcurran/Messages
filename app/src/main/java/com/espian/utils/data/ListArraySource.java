@@ -17,7 +17,6 @@
 package com.espian.utils.data;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 public class ListArraySource<T> implements Source<T> {
@@ -26,14 +25,6 @@ public class ListArraySource<T> implements Source<T> {
 
     public ListArraySource() {
         list = new ArrayList<T>();
-    }
-
-    public void addAll(Collection<T> conversations) {
-        list.addAll(conversations);
-    }
-
-    public void clear() {
-        list.clear();
     }
 
     @Override

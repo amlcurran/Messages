@@ -149,7 +149,7 @@ public class ThreadFragment extends ListeningCursorListFragment<Message> impleme
         onUiThread(new Runnable() {
             @Override
             public void run() {
-                source.addAll(messageList);
+                source.replace(messageList);
                 adapter.notifyDataSetChanged();
                 scrollToBottom();
                 getMessageLoader().markThreadAsRead(getThreadId(), ThreadFragment.this);
