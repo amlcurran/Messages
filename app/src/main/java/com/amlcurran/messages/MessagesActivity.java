@@ -43,7 +43,6 @@ import com.amlcurran.messages.ui.FragmentController;
 import com.amlcurran.messages.ui.MasterDetailFragmentController;
 import com.amlcurran.messages.ui.SlidingPaneViewController;
 import com.amlcurran.messages.ui.ViewController;
-import com.espian.utils.ui.MenuFinder;
 import com.google.analytics.tracking.android.EasyTracker;
 
 import java.util.Calendar;
@@ -51,7 +50,7 @@ import java.util.List;
 
 public class MessagesActivity extends Activity implements MessagesLoaderProvider,
         ConversationListFragment.Listener, ThreadFragment.Listener,
-        DefaultAppChecker.Callback, SlidingPaneViewController.Callback, ConversationModalMarshall.Callback, OnThreadDeleteListener, ConversationListChangeListener, FragmentController.Callback {
+        DefaultAppChecker.Callback, SlidingPaneViewController.Callback, ConversationModalMarshall.Callback, OnThreadDeleteListener, ConversationListChangeListener, FragmentController.Callback, MenuController.Callbacks {
 
     private StatReporter statReporter;
     private FragmentController fragmentController;
@@ -60,6 +59,7 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
     private DefaultAppChecker appChecker;
     private BroadcastEventBus eventBus;
     private boolean isSecondaryVisible;
+    private MenuController menuController;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,6 +67,7 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
         fragmentController = new MasterDetailFragmentController(this, this);
         activityController = new ActivityController(this);
         viewController =     new SlidingPaneViewController(this, this);
+        menuController =     new MenuController(this, this);
         viewController.setContentView();
 
         statReporter = new EasyTrackerStatReporter(EasyTracker.getInstance(this));
@@ -109,49 +110,39 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.activity_messages, menu);
-        return super.onCreateOptionsMenu(menu);
+        return menuController.create(menu);
     }
 
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
-        int[] detailRes = new int[] { R.id.menu_call };
-        int[] masterRes = new int[] { R.id.action_new_message };
-        for (int menuRes : detailRes) {
-            MenuItem item = MenuFinder.findItemById(menu, menuRes);
-            item.setVisible(isSecondaryVisible);
-        }
-        for (int menuRes : masterRes) {
-            MenuItem item = MenuFinder.findItemById(menu, menuRes);
-            item.setVisible(!isSecondaryVisible);
-        }
-        return super.onPrepareOptionsMenu(menu);
+        return menuController.prepare(menu, isSecondaryVisible);
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
+        return menuController.itemSelected(item) || super.onOptionsItemSelected(item);
+    }
 
-            case R.id.action_settings:
-                statReporter.sendUiEvent("settings");
-                fragmentController.showSettings();
-                return true;
+    @Override
+    public void showSettings() {
+        statReporter.sendUiEvent("settings");
+        fragmentController.showSettings();
+    }
 
-            case R.id.action_about:
-                activityController.showAbout();
-                return true;
+    @Override
+    public void showAbout() {
+        activityController.showAbout();
+    }
 
-            case android.R.id.home:
-                statReporter.sendUiEvent("home_button");
-                viewController.hideSecondary();
-                return true;
+    @Override
+    public void showConversationList() {
+        statReporter.sendUiEvent("home_button");
+        viewController.hideSecondary();
+    }
 
-            case R.id.action_new_message:
-                fragmentController.loadComposeNewFragment();
-                return true;
-
-        }
-        return super.onOptionsItemSelected(item);
+    @Override
+    public void composeNewMessage() {
+        fragmentController.loadComposeNewFragment();
     }
 
     @Override
