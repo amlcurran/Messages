@@ -22,6 +22,7 @@ import android.content.Context;
 import com.amlcurran.messages.MessagesApp;
 import com.amlcurran.messages.core.data.Conversation;
 import com.amlcurran.messages.conversationlist.ConversationListListener;
+import com.amlcurran.messages.data.InFlightSmsMessage;
 import com.amlcurran.messages.data.SmsMessage;
 
 import java.util.List;
@@ -54,7 +55,7 @@ public class Notifier {
         notificationManager.cancel(NOTIFICATION_UNREAD_MESSAGES);
     }
 
-    public void showSendError(SmsMessage message) {
+    public void showSendError(InFlightSmsMessage message) {
         notificationManager.notify(NOTIFICATION_SEND_ERROR, notificationBuilder.buildFailureToSendNotification(message));
     }
 

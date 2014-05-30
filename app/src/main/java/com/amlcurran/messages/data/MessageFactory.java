@@ -31,14 +31,14 @@ public class MessageFactory {
     private static final int IS_NOT_SENDING = 2;
     private static final int IS_SENDING = 4;
 
-    public static SmsMessage fromDeliverBroadcast(android.telephony.SmsMessage[] messages) {
+    public static InFlightSmsMessage fromDeliverBroadcast(android.telephony.SmsMessage[] messages) {
         if (messages.length == 0) {
             throw new NullPointerException("Creating SMS message from empty array");
         }
         String address = messages[0].getDisplayOriginatingAddress();
         String body = createBody(messages);
         long timestamp = messages[0].getTimestampMillis();
-        return new SmsMessage(address, body, timestamp, false, false);
+        return new InFlightSmsMessage(address, body, timestamp);
     }
 
     public static Message fromCursor(Cursor cursor) {
@@ -72,7 +72,7 @@ public class MessageFactory {
         dest.writeInt(smsMessage.isSending() ? IS_SENDING : IS_NOT_SENDING);
     }
 
-    public static ContentValues toContentValues(SmsMessage smsMessage, int messageTypeSent) {
+    public static ContentValues toContentValues(InFlightSmsMessage smsMessage, int messageTypeSent) {
         ContentValues contentValues = new ContentValues();
         contentValues.put(Telephony.Sms.Inbox.BODY, smsMessage.getBody());
         contentValues.put(Telephony.Sms.Inbox.ADDRESS, smsMessage.getAddress());

@@ -22,7 +22,7 @@ import android.net.Uri;
 import android.provider.Telephony;
 import android.telephony.PhoneNumberUtils;
 
-import com.amlcurran.messages.data.SmsMessage;
+import com.amlcurran.messages.data.InFlightSmsMessage;
 import com.amlcurran.messages.telephony.SmsSender;
 
 public class ActivityController {
@@ -56,7 +56,7 @@ public class ActivityController {
         activity.startActivity(new Intent(activity, AboutActivity.class));
     }
 
-    public void sendSms(SmsMessage message) {
+    public void sendSms(InFlightSmsMessage message) {
         Intent intent = new Intent(activity, SmsSender.class);
         intent.setAction(SmsSender.ACTION_SEND_REQUEST);
         intent.putExtra(SmsSender.EXTRA_MESSAGE, message);

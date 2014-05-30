@@ -25,6 +25,7 @@ import android.telephony.SmsManager;
 import android.util.Log;
 
 import com.amlcurran.messages.MessagesApp;
+import com.amlcurran.messages.data.InFlightSmsMessage;
 import com.amlcurran.messages.data.SmsMessage;
 import com.amlcurran.messages.events.BroadcastEventBus;
 
@@ -60,11 +61,11 @@ public class SmsSender extends IntentService implements SmsDatabaseWriter.SentWr
     protected void onHandleIntent(Intent intent) {
         Log.d(TAG, intent.toString());
         if (isSendRequest(intent)) {
-            SmsMessage message = intent.getParcelableExtra(EXTRA_MESSAGE);
+            InFlightSmsMessage message = intent.getParcelableExtra(EXTRA_MESSAGE);
             sendMessage(message);
         } else if (isSentNotification(intent)) {
             int result = intent.getIntExtra("result", 0);
-            SmsMessage message = intent.getParcelableExtra(EXTRA_MESSAGE);
+            InFlightSmsMessage message = intent.getParcelableExtra(EXTRA_MESSAGE);
             Uri outboxSms = Uri.parse(intent.getStringExtra(EXTRA_OUTBOX_URI));
             if (result == Activity.RESULT_OK) {
                 deleteOutboxMessages(message.getAddress());
@@ -79,16 +80,16 @@ public class SmsSender extends IntentService implements SmsDatabaseWriter.SentWr
         smsDatabaseWriter.deleteOutboxMessages(getContentResolver(), address);
     }
 
-    private void notifyFailureToSend(SmsMessage message, int result) {
+    private void notifyFailureToSend(InFlightSmsMessage message, int result) {
         MessagesApp.getNotifier(this).showSendError(message);
     }
 
-    private void writeMessageToProvider(SmsMessage message) {
+    private void writeMessageToProvider(InFlightSmsMessage message) {
         smsDatabaseWriter.writeSentMessage(getContentResolver(), this, message);
         Log.d(TAG, "Write sent message to provider " + message.toString());
     }
 
-    private void sendMessage(final SmsMessage message) {
+    private void sendMessage(final InFlightSmsMessage message) {
         smsDatabaseWriter.writeOutboxSms(getContentResolver(), new SmsDatabaseWriter.OutboxWriteListener() {
             @Override
             public void onWrittenToOutbox(Uri inserted) {
@@ -105,7 +106,7 @@ public class SmsSender extends IntentService implements SmsDatabaseWriter.SentWr
         }, message);
     }
 
-    private ArrayList<PendingIntent> getMessageSendIntents(SmsMessage message, Uri inserted) {
+    private ArrayList<PendingIntent> getMessageSendIntents(InFlightSmsMessage message, Uri inserted) {
         Intent intent = new Intent(this, SmsReceiver.class);
         intent.putExtra(EXTRA_MESSAGE, message);
         intent.putExtra(EXTRA_OUTBOX_URI, inserted.toString());

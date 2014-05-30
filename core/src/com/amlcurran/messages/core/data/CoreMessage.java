@@ -16,11 +16,10 @@
 
 package com.amlcurran.messages.core.data;
 
-public interface Message extends CoreMessage {
+public interface CoreMessage {
+    String getAddress();
 
-    boolean isFromMe();
+    String getBody();
 
-    boolean isSending();
-
-    long getId();
+    long getTimestamp();
 }

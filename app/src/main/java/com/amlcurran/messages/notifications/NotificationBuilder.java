@@ -30,7 +30,7 @@ import android.text.style.StyleSpan;
 import com.amlcurran.messages.MessagesActivity;
 import com.amlcurran.messages.R;
 import com.amlcurran.messages.core.data.Conversation;
-import com.amlcurran.messages.data.SmsMessage;
+import com.amlcurran.messages.data.InFlightSmsMessage;
 import com.amlcurran.messages.telephony.SmsSender;
 
 import java.util.Calendar;
@@ -128,7 +128,7 @@ public class NotificationBuilder {
                 .setSmallIcon(R.drawable.ic_notify_sms);
     }
 
-    public Notification buildFailureToSendNotification(SmsMessage message) {
+    public Notification buildFailureToSendNotification(InFlightSmsMessage message) {
         Intent intent = new Intent(context, SmsSender.class);
         intent.setAction(SmsSender.ACTION_SEND_REQUEST);
         intent.putExtra(SmsSender.EXTRA_MESSAGE, message);

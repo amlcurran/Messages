@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package com.amlcurran.messages.core.events;
+package com.amlcurran.messages.events;
 
-import com.amlcurran.messages.core.data.Message;
+import com.amlcurran.messages.data.InFlightSmsMessage;
 
 public interface EventBus {
     void postListChanged();
@@ -25,5 +25,5 @@ public interface EventBus {
 
     void postMessageReceived();
 
-    void postMessageSending(Message message);
+    void postMessageSending(InFlightSmsMessage message);
 }

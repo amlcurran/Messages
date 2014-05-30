@@ -23,6 +23,7 @@ import android.provider.Telephony;
 import android.util.Log;
 
 import com.amlcurran.messages.MessagesApp;
+import com.amlcurran.messages.data.InFlightSmsMessage;
 import com.amlcurran.messages.data.MessageFactory;
 import com.amlcurran.messages.data.SmsMessage;
 import com.amlcurran.messages.events.BroadcastEventBus;
@@ -52,7 +53,7 @@ public class SmsReceiver extends BroadcastReceiver implements SmsDatabaseWriter.
         }
     }
 
-    private void writeSmsToProvider(final Context context, final SmsMessage message) {
+    private void writeSmsToProvider(final Context context, final InFlightSmsMessage message) {
         smsDatabaseWriter.writeInboxSms(context.getContentResolver(), new SmsDatabaseWriter.InboxWriteListener() {
             @Override
             public void onWrittenToInbox() {
