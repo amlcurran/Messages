@@ -21,13 +21,14 @@ import android.content.ContentValues;
 import android.net.Uri;
 import android.provider.Telephony;
 
+import com.amlcurran.messages.data.MessageFactory;
 import com.amlcurran.messages.data.SmsMessage;
 
 public class SmsDatabaseWriter {
 
     public void writeSentMessage(final ContentResolver contentResolver,
                                  final SentWriteListener sentWriteListener, SmsMessage message) {
-        final ContentValues values = message.toContentValues(Telephony.Sms.MESSAGE_TYPE_SENT);
+        final ContentValues values = MessageFactory.toContentValues(message, Telephony.Sms.MESSAGE_TYPE_SENT);
         values.put(Telephony.Sms.Sent.READ, "1");
         writeSentSmsInternal(contentResolver, sentWriteListener, values);
     }
@@ -42,7 +43,7 @@ public class SmsDatabaseWriter {
     }
 
     public void writeInboxSms(final ContentResolver resolver, final InboxWriteListener inboxWriteListener, SmsMessage message) {
-        final ContentValues contentValues = message.toContentValues(Telephony.Sms.Sent.MESSAGE_TYPE_INBOX);
+        final ContentValues contentValues = MessageFactory.toContentValues(message, Telephony.Sms.Sent.MESSAGE_TYPE_INBOX);
         writeInboxSmsInternal(resolver, inboxWriteListener, contentValues);
     }
 
@@ -56,7 +57,7 @@ public class SmsDatabaseWriter {
     }
 
     public void writeOutboxSms(ContentResolver contentResolver, OutboxWriteListener outboxWriteListener, SmsMessage message) {
-        ContentValues contentValues = message.toContentValues(Telephony.Sms.Sent.MESSAGE_TYPE_OUTBOX);
+        ContentValues contentValues = MessageFactory.toContentValues(message, Telephony.Sms.Sent.MESSAGE_TYPE_OUTBOX);
         writeOutboxSmsInternal(contentResolver, outboxWriteListener, contentValues);
     }
 

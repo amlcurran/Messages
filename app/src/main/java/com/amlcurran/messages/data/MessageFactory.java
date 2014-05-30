@@ -16,13 +16,20 @@
 
 package com.amlcurran.messages.data;
 
+import android.content.ContentValues;
 import android.database.Cursor;
+import android.os.Parcel;
 import android.provider.Telephony;
 
 import com.amlcurran.messages.core.data.Message;
 import com.espian.utils.data.CursorHelper;
 
 public class MessageFactory {
+
+    private static final int IS_FROM_OTHER = 1;
+    private static final int IS_FROM_ME = 0;
+    private static final int IS_NOT_SENDING = 2;
+    private static final int IS_SENDING = 4;
 
     public static SmsMessage fromDeliverBroadcast(android.telephony.SmsMessage[] messages) {
         if (messages.length == 0) {
@@ -51,5 +58,27 @@ public class MessageFactory {
             result += message.getDisplayMessageBody();
         }
         return result;
+    }
+
+    static SmsMessage fromParcel(Parcel in) {
+        return new SmsMessage(in.readString(), in.readString(), in.readLong(), in.readInt() == IS_FROM_ME, in.readInt() == IS_SENDING);
+    }
+
+    static void toParcel(SmsMessage smsMessage, Parcel dest) {
+        dest.writeString(smsMessage.getAddress());
+        dest.writeString(smsMessage.getBody());
+        dest.writeLong(smsMessage.getTimestamp());
+        dest.writeInt(smsMessage.isFromMe() ? IS_FROM_ME : IS_FROM_OTHER);
+        dest.writeInt(smsMessage.isSending() ? IS_SENDING : IS_NOT_SENDING);
+    }
+
+    public static ContentValues toContentValues(SmsMessage smsMessage, int messageTypeSent) {
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(Telephony.Sms.Inbox.BODY, smsMessage.getBody());
+        contentValues.put(Telephony.Sms.Inbox.ADDRESS, smsMessage.getAddress());
+        contentValues.put(Telephony.Sms.Inbox.DATE, smsMessage.getTimestamp());
+        contentValues.put(Telephony.Sms.Inbox.DATE_SENT, smsMessage.getTimestamp());
+        contentValues.put(Telephony.Sms.Inbox.TYPE, messageTypeSent);
+        return contentValues;
     }
 }

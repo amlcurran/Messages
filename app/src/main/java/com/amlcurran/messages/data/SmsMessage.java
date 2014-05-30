@@ -16,19 +16,13 @@
 
 package com.amlcurran.messages.data;
 
-import android.content.ContentValues;
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.provider.Telephony;
 
 import com.amlcurran.messages.core.data.Message;
 
 public class SmsMessage implements Parcelable, Message {
 
-    private static final int IS_FROM_OTHER = 1;
-    private static final int IS_FROM_ME = 0;
-    private static final int IS_NOT_SENDING = 2;
-    private static final int IS_SENDING = 4;
     private final String address;
     private final String body;
     private final long timestamp;
@@ -42,14 +36,6 @@ public class SmsMessage implements Parcelable, Message {
         this.timestamp = timestamp;
         this.isFromMe = isFromMe;
         this.isSending = isSending;
-    }
-
-    private SmsMessage(Parcel in) {
-        this.address = in.readString();
-        this.body = in.readString();
-        this.timestamp = in.readLong();
-        this.isFromMe = in.readInt() == IS_FROM_ME;
-        this.isSending = in.readInt() == IS_SENDING;
     }
 
     @Override
@@ -80,7 +66,7 @@ public class SmsMessage implements Parcelable, Message {
     public static final Parcelable.Creator<SmsMessage> CREATOR = new Parcelable.Creator<SmsMessage>() {
 
         public SmsMessage createFromParcel(Parcel in) {
-            return new SmsMessage(in);
+            return MessageFactory.fromParcel(in);
         }
 
         public SmsMessage[] newArray(int size) {
@@ -95,21 +81,7 @@ public class SmsMessage implements Parcelable, Message {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(address);
-        dest.writeString(body);
-        dest.writeLong(timestamp);
-        dest.writeInt(isFromMe ? IS_FROM_ME : IS_FROM_OTHER);
-        dest.writeInt(isSending ? IS_SENDING : IS_NOT_SENDING);
-    }
-
-    public ContentValues toContentValues(int messageTypeSent) {
-        ContentValues contentValues = new ContentValues();
-        contentValues.put(Telephony.Sms.Inbox.BODY, body);
-        contentValues.put(Telephony.Sms.Inbox.ADDRESS, address);
-        contentValues.put(Telephony.Sms.Inbox.DATE, timestamp);
-        contentValues.put(Telephony.Sms.Inbox.DATE_SENT, timestamp);
-        contentValues.put(Telephony.Sms.Inbox.TYPE, messageTypeSent);
-        return contentValues;
+        MessageFactory.toParcel(this, dest);
     }
 
     @Override
