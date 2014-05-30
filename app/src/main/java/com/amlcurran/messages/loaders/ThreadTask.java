@@ -21,8 +21,8 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.provider.Telephony;
 
-import com.amlcurran.messages.core.data.Message;
 import com.amlcurran.messages.data.MessageFactory;
+import com.amlcurran.messages.core.data.SmsMessage;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -51,15 +51,15 @@ class ThreadTask implements Callable<Object> {
         String selection = Telephony.Sms.THREAD_ID + "=?";
         String[] selectionArgs = {threadId};
         Cursor cursor = contentResolver.query(contentUri, null, selection, selectionArgs, Telephony.Sms.DEFAULT_SORT_ORDER.replace("DESC", "ASC"));
-        List<Message> messageList = createMessageList(cursor);
+        List<SmsMessage> messageList = createMessageList(cursor);
         cursor.close();
         threadListener.onThreadLoaded(messageList);
         return null;
     }
 
-    private List<Message> createMessageList(Cursor cursor) {
-        List<Message> messageList = new ArrayList<Message>();
-        Message tempPointer;
+    private List<SmsMessage> createMessageList(Cursor cursor) {
+        List<SmsMessage> messageList = new ArrayList<SmsMessage>();
+        SmsMessage tempPointer;
         while (cursor.moveToNext()) {
             tempPointer = MessageFactory.fromCursor(cursor);
             if (tempPointer != null) {

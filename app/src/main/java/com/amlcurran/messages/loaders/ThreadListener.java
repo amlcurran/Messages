@@ -16,10 +16,10 @@
 
 package com.amlcurran.messages.loaders;
 
-import com.amlcurran.messages.core.data.Message;
+import com.amlcurran.messages.core.data.SmsMessage;
 
 import java.util.List;
 
 public interface ThreadListener {
-    void onThreadLoaded(List<Message> messageList);
+    void onThreadLoaded(List<SmsMessage> messageList);
 }

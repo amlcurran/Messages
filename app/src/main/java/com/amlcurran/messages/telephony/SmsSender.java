@@ -26,7 +26,6 @@ import android.util.Log;
 
 import com.amlcurran.messages.MessagesApp;
 import com.amlcurran.messages.data.InFlightSmsMessage;
-import com.amlcurran.messages.data.SmsMessage;
 import com.amlcurran.messages.events.BroadcastEventBus;
 
 import java.util.ArrayList;

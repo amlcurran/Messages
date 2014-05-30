@@ -14,23 +14,19 @@
  * limitations under the License.
  */
 
-package com.amlcurran.messages.data;
+package com.amlcurran.messages.core.data;
 
-import android.os.Parcel;
-import android.os.Parcelable;
-
-import com.amlcurran.messages.core.data.Message;
-
-public class SmsMessage implements Parcelable, Message {
+public class SmsMessage implements CoreMessage {
 
     private final String address;
     private final String body;
     private final long timestamp;
     private final boolean isFromMe;
     private final boolean isSending;
-    long id;
+    private final long id;
 
-    public SmsMessage(String address, String body, long timestamp, boolean isFromMe, boolean isSending) {
+    public SmsMessage(long id, String address, String body, long timestamp, boolean isFromMe, boolean isSending) {
+        this.id = id;
         this.address = address;
         this.body = body;
         this.timestamp = timestamp;
@@ -53,7 +49,6 @@ public class SmsMessage implements Parcelable, Message {
         return timestamp;
     }
 
-    @Override
     public boolean isFromMe() {
         return isFromMe;
     }
@@ -63,33 +58,10 @@ public class SmsMessage implements Parcelable, Message {
         return String.format("SMS with address: %1$s\ntimestamp: %2$d\nbody: %3$s", address, timestamp, body);
     }
 
-    public static final Parcelable.Creator<SmsMessage> CREATOR = new Parcelable.Creator<SmsMessage>() {
-
-        public SmsMessage createFromParcel(Parcel in) {
-            return MessageFactory.fromParcel(in);
-        }
-
-        public SmsMessage[] newArray(int size) {
-            return new SmsMessage[size];
-        }
-    };
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        MessageFactory.toParcel(this, dest);
-    }
-
-    @Override
     public boolean isSending() {
         return isSending;
     }
 
-    @Override
     public long getId() {
         return id;
     }

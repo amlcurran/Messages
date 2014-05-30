@@ -23,7 +23,6 @@ import com.amlcurran.messages.MessagesApp;
 import com.amlcurran.messages.core.data.Conversation;
 import com.amlcurran.messages.conversationlist.ConversationListListener;
 import com.amlcurran.messages.data.InFlightSmsMessage;
-import com.amlcurran.messages.data.SmsMessage;
 
 import java.util.List;
 

@@ -21,8 +21,8 @@ import android.content.ContentValues;
 import android.provider.Telephony;
 import android.util.Log;
 
-import com.amlcurran.messages.core.data.Message;
 import com.amlcurran.messages.core.data.Conversation;
+import com.amlcurran.messages.core.data.SmsMessage;
 
 import java.util.List;
 import java.util.concurrent.Callable;
@@ -44,8 +44,8 @@ class MarkUnreadTask implements Callable<Object> {
             new InboxThreadTask(contentResolver, conversation.getThreadId(), new ThreadListener() {
 
                 @Override
-                public void onThreadLoaded(List<Message> messageList) {
-                    Message lastMessage = messageList.get(messageList.size() - 1);
+                public void onThreadLoaded(List<SmsMessage> messageList) {
+                    SmsMessage lastMessage = messageList.get(messageList.size() - 1);
 
                     // This updates an unread message
                     String selection = String.format("%1$s=? AND %2$s=?", Telephony.Sms.THREAD_ID, Telephony.Sms._ID);

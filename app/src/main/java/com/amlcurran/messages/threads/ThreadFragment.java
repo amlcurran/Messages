@@ -27,7 +27,7 @@ import android.view.ViewGroup;
 
 import com.amlcurran.messages.ListeningCursorListFragment;
 import com.amlcurran.messages.R;
-import com.amlcurran.messages.core.data.Message;
+import com.amlcurran.messages.core.data.SmsMessage;
 import com.amlcurran.messages.events.BroadcastEventBus;
 import com.amlcurran.messages.loaders.ConversationListChangeListener;
 import com.amlcurran.messages.loaders.MessagesLoader;
@@ -40,7 +40,7 @@ import com.espian.utils.data.SourceBinderAdapter;
 
 import java.util.List;
 
-public class ThreadFragment extends ListeningCursorListFragment<Message> implements ThreadListener, ComposeMessageView.OnMessageComposedListener, ConversationListChangeListener {
+public class ThreadFragment extends ListeningCursorListFragment<SmsMessage> implements ThreadListener, ComposeMessageView.OnMessageComposedListener, ConversationListChangeListener {
 
     private static final String THREAD_ID = "threadId";
     private static final String ADDRESS = "address";
@@ -49,7 +49,7 @@ public class ThreadFragment extends ListeningCursorListFragment<Message> impleme
     private String sendAddress;
     private DefaultAppChecker defaultChecker;
     private ComposeMessageView composeView;
-    private ListArraySource<Message> source;
+    private ListArraySource<SmsMessage> source;
 
     public static ThreadFragment create(String threadId, String address) {
         Bundle bundle = new Bundle();
@@ -81,8 +81,8 @@ public class ThreadFragment extends ListeningCursorListFragment<Message> impleme
         super.onActivityCreated(savedInstanceState);
         setHasOptionsMenu(true);
         sendAddress = getArguments().getString(ADDRESS);
-        source = new ListArraySource<Message>();
-        adapter = new SourceBinderAdapter<Message>(getActivity(), source, new ThreadBinder(getListView()));
+        source = new ListArraySource<SmsMessage>();
+        adapter = new SourceBinderAdapter<SmsMessage>(getActivity(), source, new ThreadBinder(getListView()));
         defaultChecker = new DefaultAppChecker(getActivity(), composeView);
         setListAdapter(adapter);
         getListView().setStackFromBottom(true);
@@ -145,7 +145,7 @@ public class ThreadFragment extends ListeningCursorListFragment<Message> impleme
     }
 
     @Override
-    public void onThreadLoaded(final List<Message> messageList) {
+    public void onThreadLoaded(final List<SmsMessage> messageList) {
         onUiThread(new Runnable() {
             @Override
             public void run() {
