@@ -115,10 +115,15 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
 
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
-        int[] menuResList = new int[] { R.id.menu_call };
-        for (int menuRes : menuResList) {
+        int[] detailRes = new int[] { R.id.menu_call };
+        int[] masterRes = new int[] { R.id.action_new_message };
+        for (int menuRes : detailRes) {
             MenuItem item = MenuFinder.findItemById(menu, menuRes);
             item.setVisible(isSecondaryVisible);
+        }
+        for (int menuRes : masterRes) {
+            MenuItem item = MenuFinder.findItemById(menu, menuRes);
+            item.setVisible(!isSecondaryVisible);
         }
         return super.onPrepareOptionsMenu(menu);
     }
@@ -139,6 +144,10 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
             case android.R.id.home:
                 statReporter.sendUiEvent("home_button");
                 viewController.hideSecondary();
+                return true;
+
+            case R.id.action_new_message:
+                fragmentController.loadComposeNewFragment();
                 return true;
 
         }

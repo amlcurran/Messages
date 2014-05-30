@@ -14,23 +14,18 @@
  * limitations under the License.
  */
 
-package com.amlcurran.messages.ui;
+package com.amlcurran.messages;
 
 import android.app.Fragment;
+import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 
-public interface FragmentController {
-    void loadMessagesListFragment();
+public class ComposeNewFragment extends Fragment {
 
-    void replaceFragment(Fragment fragment, boolean addToStack);
-
-    void loadEmptyFragment();
-
-    void showSettings();
-
-    void loadComposeNewFragment();
-
-    public interface Callback {
-        void insertedDetail();
-        void insertedMaster();
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        return super.onCreateView(inflater, container, savedInstanceState);
     }
 }

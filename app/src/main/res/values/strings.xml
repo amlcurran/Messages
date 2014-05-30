@@ -21,5 +21,6 @@
     <string name="resend">Resend</string>
     <string name="mms_error_title">Failed to receive MMS</string>
     <string name="mms_error_text">Messages app cannot receive MMS messages</string>
+    <string name="new_message">New message</string>
 
 </resources>

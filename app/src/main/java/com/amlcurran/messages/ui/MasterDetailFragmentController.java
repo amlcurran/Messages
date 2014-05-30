@@ -20,6 +20,7 @@ import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
 
+import com.amlcurran.messages.ComposeNewFragment;
 import com.amlcurran.messages.EmptyFragment;
 import com.amlcurran.messages.PreferencesFragment;
 import com.amlcurran.messages.R;
@@ -56,6 +57,11 @@ public class MasterDetailFragmentController implements FragmentController {
     @Override
     public void showSettings() {
         replaceFragmentInternal(new PreferencesFragment(), true);
+    }
+
+    @Override
+    public void loadComposeNewFragment() {
+        replaceFragmentInternal(new ComposeNewFragment(), false);
     }
 
     private void replaceFragmentInternal(Fragment fragment, boolean addToStack) {
