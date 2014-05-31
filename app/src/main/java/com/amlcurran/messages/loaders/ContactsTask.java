@@ -39,9 +39,20 @@ public class ContactsTask implements Callable {
 
     @Override
     public Object call() throws Exception {
+        Cursor cursor = queryContacts();
+        List<Contact> contacts = listFromCursor(cursor);
+        cursor.close();
+        contactListListener.contactListLoaded(contacts);
+        return null;
+    }
+
+    private Cursor queryContacts() {
         String selection = ContactsContract.CommonDataKinds.Phone.HAS_PHONE_NUMBER + "='1'";
         String sort = ContactsContract.Data.DISPLAY_NAME_PRIMARY + " ASC";
-        Cursor cursor = resolver.query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, ContactFactory.VALID_PROJECTION, selection, null, sort);
+        return resolver.query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, ContactFactory.VALID_PROJECTION, selection, null, sort);
+    }
+
+    private List<Contact> listFromCursor(Cursor cursor) {
         List<Contact> contacts = new ArrayList<Contact>();
         Contact tempPointer;
         while (cursor.moveToNext()) {
@@ -50,8 +61,6 @@ public class ContactsTask implements Callable {
                 contacts.add(tempPointer);
             }
         }
-        cursor.close();
-        contactListListener.contactListLoaded(contacts);
-        return null;
+        return contacts;
     }
 }
