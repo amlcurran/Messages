@@ -20,11 +20,13 @@ import com.amlcurran.messages.core.TextUtils;
 
 public class Contact {
 
+    private final long contactId;
     private final String name;
     private final String address;
     private final long photoId;
 
-    public Contact(String name, String address, long photoId) {
+    public Contact(long contactId, String name, String address, long photoId) {
+        this.contactId = contactId;
         this.name = name;
         this.address = address;
         this.photoId = photoId;
@@ -42,4 +44,12 @@ public class Contact {
         return photoId;
     }
 
+    public long getContactId() {
+        return contactId;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return obj instanceof Contact && contactId == ((Contact) obj).contactId && contactId != -1;
+    }
 }

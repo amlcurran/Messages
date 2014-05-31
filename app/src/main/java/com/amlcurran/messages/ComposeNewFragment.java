@@ -21,38 +21,47 @@ import android.app.Fragment;
 import android.content.Context;
 import android.os.Bundle;
 import android.telephony.PhoneNumberUtils;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AutoCompleteTextView;
-import android.widget.Filter;
-import android.widget.Filterable;
+import android.widget.EditText;
+import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.amlcurran.messages.core.data.Contact;
+import com.amlcurran.messages.loaders.MessagesLoader;
+import com.amlcurran.messages.loaders.MessagesLoaderProvider;
 import com.amlcurran.messages.telephony.DefaultAppChecker;
 import com.amlcurran.messages.ui.ComposeMessageView;
 import com.espian.utils.ProviderHelper;
-import com.espian.utils.data.Binder;
 import com.espian.utils.data.ListArraySource;
 import com.espian.utils.data.SimpleBinder;
-import com.espian.utils.data.Source;
 import com.espian.utils.data.SourceBinderAdapter;
 
-public class ComposeNewFragment extends Fragment implements ComposeMessageView.OnMessageComposedListener {
+import java.util.List;
+
+public class ComposeNewFragment extends Fragment implements ComposeMessageView.OnMessageComposedListener, TextWatcher {
 
     private ComposeMessageView composeView;
-    private AutoCompleteTextView pickPersonView;
+    private EditText pickPersonView;
     private DefaultAppChecker defaultAppChecker;
     private SmsComposeListener listener;
     private ListArraySource<Contact> contactSource;
+    private ListView personListView;
+    private SourceBinderAdapter<Contact> adapter;
+    private MessagesLoader loader;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_compose_new, container, false);
         composeView = (ComposeMessageView) view.findViewById(R.id.new_compose_view);
         composeView.setComposeListener(this);
-        pickPersonView = ((AutoCompleteTextView) view.findViewById(R.id.new_pick_person));
+        pickPersonView = ((EditText) view.findViewById(R.id.new_pick_person));
+        pickPersonView.addTextChangedListener(this);
+        personListView = ((ListView) view.findViewById(R.id.new_person_list));
         return view;
     }
 
@@ -62,15 +71,38 @@ public class ComposeNewFragment extends Fragment implements ComposeMessageView.O
         defaultAppChecker = new DefaultAppChecker(getActivity(), composeView);
         contactSource = new ListArraySource<Contact>();
 
-        ContactAdapter adapter = new ContactAdapter(getActivity(), contactSource, new ContactBinder(getActivity()));
-        pickPersonView.setAdapter(adapter);
+        adapter = new SourceBinderAdapter<Contact>(getActivity(), contactSource, new ContactBinder());
+        personListView.setAdapter(adapter);
 
+        loadContacts();
+    }
+
+    private void loadContacts() {
+        loader.loadContacts(new ContactListListener() {
+
+            @Override
+            public void contactListLoaded(final List<Contact> contacts) {
+                onUiThread(new Runnable() {
+
+                    @Override
+                    public void run() {
+                        contactSource.replace(contacts);
+                        adapter.notifyDataSetChanged();
+                    }
+                });
+            }
+        });
+    }
+
+    private void onUiThread(Runnable runnable) {
+        getActivity().runOnUiThread(runnable);
     }
 
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
         listener = new ProviderHelper<SmsComposeListener>(SmsComposeListener.class).get(activity);
+        loader = new ProviderHelper<MessagesLoaderProvider>(MessagesLoaderProvider.class).get(activity).getMessagesLoader();
     }
 
     @Override
@@ -97,44 +129,37 @@ public class ComposeNewFragment extends Fragment implements ComposeMessageView.O
         return pickPersonView.getText();
     }
 
-    private class ContactAdapter extends SourceBinderAdapter<Contact> implements Filterable {
+    @Override
+    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
-        public ContactAdapter(Context context, Source<Contact> source, Binder<Contact> binder) {
-            super(context, source, binder);
-        }
+    }
 
-        @Override
-        public Filter getFilter() {
-            return new ContactFilter();
-        }
+    @Override
+    public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+    }
+
+    @Override
+    public void afterTextChanged(Editable s) {
+        refreshSuggestions();
+    }
+
+    private void refreshSuggestions() {
+
     }
 
     private class ContactBinder extends SimpleBinder<Contact> {
 
-        public ContactBinder(Activity activity) {
-        }
-
         @Override
         public View bindView(View convertView, Contact item, int position) {
-            return null;
+            ((TextView) convertView).setText(item.getDisplayName());
+            return convertView;
         }
 
         @Override
         public View createView(Context context, int itemViewType) {
-            return null;
+            return LayoutInflater.from(context).inflate(android.R.layout.simple_list_item_1, null);
         }
     }
 
-    private class ContactFilter extends Filter {
-
-        @Override
-        protected FilterResults performFiltering(CharSequence constraint) {
-            return null;
-        }
-
-        @Override
-        protected void publishResults(CharSequence constraint, FilterResults results) {
-
-        }
-    }
 }

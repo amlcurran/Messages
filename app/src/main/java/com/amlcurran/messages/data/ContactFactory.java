@@ -27,7 +27,11 @@ public class ContactFactory {
     public static Contact fromCursor(Cursor peopleCursor, String address) {
         String person = getContactName(peopleCursor);
         long photoId = getContactPhotoId(peopleCursor);
-        return new Contact(person, address, photoId);
+        long contactId = -1;
+        if (peopleCursor.moveToFirst()) {
+            contactId = CursorHelper.asLong(peopleCursor, ContactsContract.Contacts._ID);
+        }
+        return new Contact(contactId, person, address, photoId);
     }
 
     private static String getContactName(Cursor peopleCursor) {

@@ -16,6 +16,7 @@
 
 package com.amlcurran.messages.loaders;
 
+import com.amlcurran.messages.ContactListListener;
 import com.amlcurran.messages.core.data.Contact;
 import com.amlcurran.messages.core.data.Sort;
 import com.amlcurran.messages.core.conversationlist.ConversationListListener;
@@ -45,4 +46,6 @@ public interface MessagesLoader {
     void deleteThreads(List<Conversation> conversation, OnThreadDeleteListener threadDeleteListener);
 
     void markThreadAsUnread(List<Conversation> threadId, ConversationListChangeListener changeListener);
+
+    void loadContacts(ContactListListener contactListListener);
 }

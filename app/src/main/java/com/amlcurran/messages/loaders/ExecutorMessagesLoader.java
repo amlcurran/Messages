@@ -19,6 +19,7 @@ package com.amlcurran.messages.loaders;
 import android.content.ContentResolver;
 import android.content.Context;
 
+import com.amlcurran.messages.ContactListListener;
 import com.amlcurran.messages.core.data.Contact;
 import com.amlcurran.messages.core.data.Sort;
 import com.amlcurran.messages.core.conversationlist.ConversationListListener;
@@ -45,8 +46,18 @@ public class ExecutorMessagesLoader implements MessagesLoader {
         return context.getContentResolver();
     }
 
-    private void submit(Callable task) {
-        executor.submit(task);
+    private void submit(final Callable task) {
+        executor.execute(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    task.call();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    throw new RuntimeException(e);
+                }
+            }
+        });
     }
 
     @Override
@@ -92,6 +103,11 @@ public class ExecutorMessagesLoader implements MessagesLoader {
     @Override
     public void markThreadAsUnread(List<Conversation> conversations, ConversationListChangeListener changeListener) {
         submit(new MarkUnreadTask(getResolver(), conversations, changeListener));
+    }
+
+    @Override
+    public void loadContacts(ContactListListener contactListListener) {
+        submit(new ContactsTask(getResolver(), contactListListener));
     }
 
 }
