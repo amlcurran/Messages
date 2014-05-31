@@ -79,6 +79,10 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
                     .detectAll()
                     .penaltyFlashScreen()
                     .build());
+            StrictMode.setVmPolicy(new StrictMode.VmPolicy.Builder()
+                    .detectLeakedSqlLiteObjects()
+                    .penaltyLog()
+                    .build());
             statReporter = new NullStatReporter();
         }
 
