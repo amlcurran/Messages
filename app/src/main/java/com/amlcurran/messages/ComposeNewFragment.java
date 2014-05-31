@@ -18,31 +18,41 @@ package com.amlcurran.messages;
 
 import android.app.Activity;
 import android.app.Fragment;
+import android.content.Context;
 import android.os.Bundle;
 import android.telephony.PhoneNumberUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
+import android.widget.AutoCompleteTextView;
+import android.widget.Filter;
+import android.widget.Filterable;
 import android.widget.Toast;
 
+import com.amlcurran.messages.core.data.Contact;
 import com.amlcurran.messages.telephony.DefaultAppChecker;
 import com.amlcurran.messages.ui.ComposeMessageView;
 import com.espian.utils.ProviderHelper;
+import com.espian.utils.data.Binder;
+import com.espian.utils.data.ListArraySource;
+import com.espian.utils.data.SimpleBinder;
+import com.espian.utils.data.Source;
+import com.espian.utils.data.SourceBinderAdapter;
 
 public class ComposeNewFragment extends Fragment implements ComposeMessageView.OnMessageComposedListener {
 
     private ComposeMessageView composeView;
-    private EditText pickPersonView;
+    private AutoCompleteTextView pickPersonView;
     private DefaultAppChecker defaultAppChecker;
     private SmsComposeListener listener;
+    private ListArraySource<Contact> contactSource;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_compose_new, container, false);
         composeView = (ComposeMessageView) view.findViewById(R.id.new_compose_view);
         composeView.setComposeListener(this);
-        pickPersonView = ((EditText) view.findViewById(R.id.new_pick_person));
+        pickPersonView = ((AutoCompleteTextView) view.findViewById(R.id.new_pick_person));
         return view;
     }
 
@@ -50,6 +60,11 @@ public class ComposeNewFragment extends Fragment implements ComposeMessageView.O
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         defaultAppChecker = new DefaultAppChecker(getActivity(), composeView);
+        contactSource = new ListArraySource<Contact>();
+
+        ContactAdapter adapter = new ContactAdapter(getActivity(), contactSource, new ContactBinder(getActivity()));
+        pickPersonView.setAdapter(adapter);
+
     }
 
     @Override
@@ -74,11 +89,52 @@ public class ComposeNewFragment extends Fragment implements ComposeMessageView.O
         }
     }
 
-    private boolean isValid(CharSequence address) {
+    private static boolean isValid(CharSequence address) {
         return PhoneNumberUtils.isWellFormedSmsAddress(String.valueOf(address));
     }
 
     private CharSequence getEnteredAddress() {
         return pickPersonView.getText();
+    }
+
+    private class ContactAdapter extends SourceBinderAdapter<Contact> implements Filterable {
+
+        public ContactAdapter(Context context, Source<Contact> source, Binder<Contact> binder) {
+            super(context, source, binder);
+        }
+
+        @Override
+        public Filter getFilter() {
+            return new ContactFilter();
+        }
+    }
+
+    private class ContactBinder extends SimpleBinder<Contact> {
+
+        public ContactBinder(Activity activity) {
+        }
+
+        @Override
+        public View bindView(View convertView, Contact item, int position) {
+            return null;
+        }
+
+        @Override
+        public View createView(Context context, int itemViewType) {
+            return null;
+        }
+    }
+
+    private class ContactFilter extends Filter {
+
+        @Override
+        protected FilterResults performFiltering(CharSequence constraint) {
+            return null;
+        }
+
+        @Override
+        protected void publishResults(CharSequence constraint, FilterResults results) {
+
+        }
     }
 }
