@@ -19,6 +19,7 @@ package com.amlcurran.messages.telephony;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.provider.Telephony;
 import android.util.Log;
 
@@ -27,7 +28,7 @@ import com.amlcurran.messages.data.InFlightSmsMessageFactory;
 import com.amlcurran.messages.data.InFlightSmsMessage;
 import com.amlcurran.messages.events.BroadcastEventBus;
 
-public class SmsReceiver extends BroadcastReceiver implements SmsDatabaseWriter.InboxWriteListener {
+public class SmsReceiver extends BroadcastReceiver {
 
     public static final String TAG = SmsReceiver.class.getSimpleName();
 
@@ -53,27 +54,21 @@ public class SmsReceiver extends BroadcastReceiver implements SmsDatabaseWriter.
     }
 
     private void writeSmsToProvider(final Context context, final InFlightSmsMessage message) {
-        smsDatabaseWriter.writeInboxSms(context.getContentResolver(), new SmsDatabaseWriter.InboxWriteListener() {
+        smsDatabaseWriter.writeInboxSms(context.getContentResolver(), new SmsDatabaseWriter.WriteListener() {
+
             @Override
-            public void onWrittenToInbox() {
+            public void written(Uri inserted) {
                 new BroadcastEventBus(context).postMessageReceived();
                 MessagesApp.getNotifier(context).updateUnreadNotification();
             }
 
             @Override
-            public void onInboxWriteFailed() {
+            public void failed() {
                 Log.e(TAG, "Failed to write message to inbox database");
             }
+
         }, message);
 
     }
 
-    @Override
-    public void onWrittenToInbox() {
-    }
-
-    @Override
-    public void onInboxWriteFailed() {
-
-    }
 }

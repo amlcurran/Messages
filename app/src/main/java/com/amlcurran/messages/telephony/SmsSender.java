@@ -30,7 +30,7 @@ import com.amlcurran.messages.events.BroadcastEventBus;
 
 import java.util.ArrayList;
 
-public class SmsSender extends IntentService implements SmsDatabaseWriter.SentWriteListener {
+public class SmsSender extends IntentService {
 
     public static final String TAG = SmsSender.class.getSimpleName();
 
@@ -84,22 +84,32 @@ public class SmsSender extends IntentService implements SmsDatabaseWriter.SentWr
     }
 
     private void writeMessageToProvider(InFlightSmsMessage message) {
-        smsDatabaseWriter.writeSentMessage(getContentResolver(), this, message);
-        Log.d(TAG, "Write sent message to provider " + message.toString());
+        smsDatabaseWriter.writeSentMessage(getContentResolver(), new SmsDatabaseWriter.WriteListener() {
+
+            @Override
+            public void written(Uri inserted) {
+                new BroadcastEventBus(SmsSender.this).postMessageSent();
+            }
+
+            @Override
+            public void failed() {
+                Log.e(TAG, "Failed to write a sent message to the database");
+            }
+        }, message);
     }
 
     private void sendMessage(final InFlightSmsMessage message) {
-        smsDatabaseWriter.writeOutboxSms(getContentResolver(), new SmsDatabaseWriter.OutboxWriteListener() {
+        smsDatabaseWriter.writeOutboxSms(getContentResolver(), new SmsDatabaseWriter.WriteListener() {
+
             @Override
-            public void onWrittenToOutbox(Uri inserted) {
+            public void written(Uri inserted) {
                 eventBus.postMessageSending(message);
-                Log.d(TAG, "Sending message: " + message.toString());
                 ArrayList<PendingIntent> messageSendIntents = getMessageSendIntents(message, inserted);
                 smsManager.sendMultipartTextMessage(message.getAddress(), null, smsManager.divideMessage(message.getBody()), messageSendIntents, null);
             }
 
             @Override
-            public void onOutboxWriteFailed() {
+            public void failed() {
 
             }
         }, message);
@@ -121,16 +131,5 @@ public class SmsSender extends IntentService implements SmsDatabaseWriter.SentWr
 
     private boolean isSendRequest(Intent intent) {
         return intent.getAction().equals(ACTION_SEND_REQUEST);
-    }
-
-    @Override
-    public void onWrittenToSentBox() {
-        Log.d(TAG, "Sending broadcast for sent message");
-        new BroadcastEventBus(this).postMessageSent();
-    }
-
-    @Override
-    public void onSentBoxWriteFailed() {
-        Log.e(TAG, "Failed to write a sent message to the database");
     }
 }

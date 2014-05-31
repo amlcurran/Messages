@@ -26,47 +26,46 @@ import com.amlcurran.messages.data.InFlightSmsMessage;
 
 public class SmsDatabaseWriter {
 
-    public void writeSentMessage(final ContentResolver contentResolver,
-                                 final SentWriteListener sentWriteListener, InFlightSmsMessage message) {
+    public void writeSentMessage(ContentResolver contentResolver, WriteListener sentWriteListener, InFlightSmsMessage message) {
         final ContentValues values = InFlightSmsMessageFactory.toContentValues(message, Telephony.Sms.MESSAGE_TYPE_SENT);
         values.put(Telephony.Sms.Sent.READ, "1");
         writeSentSmsInternal(contentResolver, sentWriteListener, values);
     }
 
-    private static void writeSentSmsInternal(ContentResolver contentResolver, SentWriteListener sentWriteListener, ContentValues values) {
+    private static void writeSentSmsInternal(ContentResolver contentResolver, WriteListener sentWriteListener, ContentValues values) {
         Uri uri = contentResolver.insert(Telephony.Sms.Sent.CONTENT_URI, values);
         if (uri != null) {
-            sentWriteListener.onWrittenToSentBox();
+            sentWriteListener.written(uri);
         } else {
-            sentWriteListener.onSentBoxWriteFailed();
+            sentWriteListener.failed();
         }
     }
 
-    public void writeInboxSms(final ContentResolver resolver, final InboxWriteListener inboxWriteListener, InFlightSmsMessage message) {
+    public void writeInboxSms(ContentResolver resolver, WriteListener inboxWriteListener, InFlightSmsMessage message) {
         final ContentValues contentValues = InFlightSmsMessageFactory.toContentValues(message, Telephony.Sms.Sent.MESSAGE_TYPE_INBOX);
         writeInboxSmsInternal(resolver, inboxWriteListener, contentValues);
     }
 
-    private static void writeInboxSmsInternal(ContentResolver resolver, InboxWriteListener inboxWriteListener, ContentValues contentValues) {
+    private static void writeInboxSmsInternal(ContentResolver resolver, WriteListener inboxWriteListener, ContentValues contentValues) {
         Uri inserted = resolver.insert(Telephony.Sms.Inbox.CONTENT_URI, contentValues);
         if (inserted != null) {
-            inboxWriteListener.onWrittenToInbox();
+            inboxWriteListener.written(inserted);
         } else {
-            inboxWriteListener.onInboxWriteFailed();
+            inboxWriteListener.failed();
         }
     }
 
-    public void writeOutboxSms(ContentResolver contentResolver, OutboxWriteListener outboxWriteListener, InFlightSmsMessage message) {
+    public void writeOutboxSms(ContentResolver contentResolver, WriteListener outboxWriteListener, InFlightSmsMessage message) {
         ContentValues contentValues = InFlightSmsMessageFactory.toContentValues(message, Telephony.Sms.Sent.MESSAGE_TYPE_OUTBOX);
         writeOutboxSmsInternal(contentResolver, outboxWriteListener, contentValues);
     }
 
-    private static void writeOutboxSmsInternal(ContentResolver resolver, OutboxWriteListener inboxWriteListener, ContentValues contentValues) {
+    private static void writeOutboxSmsInternal(ContentResolver resolver, WriteListener writeListener, ContentValues contentValues) {
         Uri inserted = resolver.insert(Telephony.Sms.Inbox.CONTENT_URI, contentValues);
         if (inserted != null) {
-            inboxWriteListener.onWrittenToOutbox(inserted);
+            writeListener.written(inserted);
         } else {
-            inboxWriteListener.onOutboxWriteFailed();
+            writeListener.failed();
         }
     }
 
@@ -76,22 +75,9 @@ public class SmsDatabaseWriter {
         contentResolver.delete(Telephony.Sms.CONTENT_URI, selection, args);
     }
 
-    public interface InboxWriteListener {
-        void onWrittenToInbox();
-
-        void onInboxWriteFailed();
-    }
-
-    public interface SentWriteListener {
-        void onWrittenToSentBox();
-
-        void onSentBoxWriteFailed();
-    }
-
-    public interface OutboxWriteListener {
-        void onWrittenToOutbox(Uri inserted);
-
-        void onOutboxWriteFailed();
+    public interface WriteListener {
+        void written(Uri inserted);
+        void failed();
     }
 
 
