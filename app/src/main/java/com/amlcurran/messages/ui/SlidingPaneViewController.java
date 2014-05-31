@@ -22,7 +22,7 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.amlcurran.messages.R;
-import com.amlcurran.messages.core.conversationlist.Conversation;
+import com.amlcurran.messages.core.data.Conversation;
 
 import java.util.List;
 

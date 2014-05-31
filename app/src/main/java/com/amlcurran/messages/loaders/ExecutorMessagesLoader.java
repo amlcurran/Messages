@@ -23,7 +23,7 @@ import com.amlcurran.messages.core.data.Contact;
 import com.amlcurran.messages.core.data.Sort;
 import com.amlcurran.messages.core.conversationlist.ConversationListListener;
 import com.amlcurran.messages.conversationlist.PhotoLoadListener;
-import com.amlcurran.messages.core.conversationlist.Conversation;
+import com.amlcurran.messages.core.data.Conversation;
 import com.amlcurran.messages.core.loaders.ConversationListChangeListener;
 import com.amlcurran.messages.core.loaders.ThreadListener;
 
