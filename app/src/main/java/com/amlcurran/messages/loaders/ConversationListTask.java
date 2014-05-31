@@ -70,7 +70,9 @@ class ConversationListTask implements Callable<Object> {
             String threadId = CursorHelper.asString(conversationsList, Telephony.Sms.THREAD_ID);
             Conversation conversation = new Conversation(address, body, threadId, isRead, contact);
 
-            conversations.add(conversation);
+            if (conversation.getThreadId() != null) {
+                conversations.add(conversation);
+            }
             peopleCursor.close();
         }
 

@@ -16,6 +16,7 @@
 
 package com.amlcurran.messages.notifications;
 
+import android.app.Notification;
 import android.app.NotificationManager;
 import android.content.Context;
 
@@ -44,8 +45,9 @@ public class Notifier {
     public void updateUnreadNotification() {
         MessagesApp.getMessagesLoader(context).loadUnreadConversationList(new ConversationListListener() {
             @Override
-            public void onConversationListLoaded(List<Conversation> conversations) {
-                notificationManager.notify(NOTIFICATION_UNREAD_MESSAGES, notificationBuilder.buildUnreadNotification(conversations));
+            public void onConversationListLoaded(final List<Conversation> conversations) {
+                Notification notification = notificationBuilder.buildUnreadNotification(conversations);
+                notificationManager.notify(NOTIFICATION_UNREAD_MESSAGES, notification);
             }
         });
     }

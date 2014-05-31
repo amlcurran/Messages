@@ -26,7 +26,6 @@ import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.provider.ContactsContract;
-import android.util.Log;
 
 import com.amlcurran.messages.R;
 
@@ -95,9 +94,7 @@ public class ContactImageLoader {
             try {
                 AssetFileDescriptor fd = contentResolver.openAssetFileDescriptor(displayPhotoUri, "r");
                 querySize(fd.getFileDescriptor(), queryOptions);
-                Bitmap result = BitmapFactory.decodeFileDescriptor(fd.getFileDescriptor(), null, optionsFromQuery(queryOptions));
-                Log.d("ContactImageLoader", "Bitmap height = " + result.getHeight());
-                return result;
+                return BitmapFactory.decodeFileDescriptor(fd.getFileDescriptor(), null, optionsFromQuery(queryOptions));
             } catch (IOException e) {
                 return null;
             }
