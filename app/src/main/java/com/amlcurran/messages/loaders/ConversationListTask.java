@@ -19,14 +19,13 @@ package com.amlcurran.messages.loaders;
 import android.content.ContentResolver;
 import android.database.Cursor;
 import android.net.Uri;
-import android.provider.ContactsContract;
 import android.provider.Telephony;
 
 import com.amlcurran.messages.core.conversationlist.ConversationListListener;
 import com.amlcurran.messages.core.data.Contact;
-import com.amlcurran.messages.data.ContactFactory;
 import com.amlcurran.messages.core.data.Conversation;
 import com.amlcurran.messages.core.data.Sort;
+import com.amlcurran.messages.data.ContactFactory;
 import com.espian.utils.data.CursorHelper;
 
 import java.util.ArrayList;
@@ -59,11 +58,10 @@ class ConversationListTask implements Callable<Object> {
         Cursor conversationsList = contentResolver.query(Telephony.Threads.CONTENT_URI, null, query, args, getSortString());
 
         while (conversationsList.moveToNext()) {
-            Uri phoneLookupUri = createPhoneLookupUri(conversationsList);
-            Cursor peopleCursor = contentResolver.query(phoneLookupUri, null, null, null, null);
-
-            Contact contact = ContactFactory.fromCursor(peopleCursor, CursorHelper.asString(conversationsList, Telephony.Sms.ADDRESS));
             String address = CursorHelper.asString(conversationsList, Telephony.Sms.ADDRESS);
+
+            Contact contact = getContact(address);
+
             String body = CursorHelper.asString(conversationsList, Telephony.Sms.BODY);
             String s = CursorHelper.asString(conversationsList, Telephony.Sms.Inbox.READ);
             boolean isRead = s.toLowerCase().equals("1");
@@ -73,13 +71,26 @@ class ConversationListTask implements Callable<Object> {
             if (conversation.getThreadId() != null) {
                 conversations.add(conversation);
             }
-            peopleCursor.close();
         }
 
         conversationsList.close();
 
         loadListener.onConversationListLoaded(conversations);
         return null;
+    }
+
+    private Contact getContact(String address) {
+        Uri phoneLookupUri = createPhoneLookupUri(address);
+        Cursor peopleCursor = contentResolver.query(phoneLookupUri, ContactFactory.VALID_PROJECTION, null, null, null);
+
+        Contact contact;
+        if (peopleCursor.moveToFirst()) {
+            contact = ContactFactory.fromCursor(peopleCursor);
+        } else {
+            contact = ContactFactory.fromAddress(address);
+        }
+        peopleCursor.close();
+        return contact;
     }
 
     private String getSortString() {
@@ -92,25 +103,8 @@ class ConversationListTask implements Callable<Object> {
         return sortOrder;
     }
 
-    private static long getContactPhotoId(Cursor peopleCursor) {
-        long id = -1;
-        if (peopleCursor.moveToFirst()) {
-            id = CursorHelper.asLong(peopleCursor, ContactsContract.Contacts.PHOTO_ID);
-        }
-        return id;
-    }
-
-    private static Uri createPhoneLookupUri(Cursor conversationsList) {
-        String phoneRaw = CursorHelper.asString(conversationsList, Telephony.Sms.ADDRESS);
+    private static Uri createPhoneLookupUri(String phoneRaw) {
         return SingleContactTask.createPhoneLookupUri(phoneRaw);
-    }
-
-    private static String getPersonName(Cursor peopleCursor) {
-        String result = null;
-        if (peopleCursor.moveToFirst()) {
-            result = CursorHelper.asString(peopleCursor, ContactsContract.CommonDataKinds.Identity.DISPLAY_NAME_PRIMARY);
-        }
-        return result;
     }
 
 }

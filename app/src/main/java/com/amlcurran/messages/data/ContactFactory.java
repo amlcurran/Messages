@@ -19,34 +19,27 @@ package com.amlcurran.messages.data;
 import android.database.Cursor;
 import android.provider.ContactsContract;
 
+import com.amlcurran.messages.core.data.BasicContact;
 import com.amlcurran.messages.core.data.Contact;
+import com.amlcurran.messages.core.data.RealContact;
 import com.espian.utils.data.CursorHelper;
 
 public class ContactFactory {
 
-    public static Contact fromCursor(Cursor peopleCursor, String address) {
-        String person = getContactName(peopleCursor);
-        long photoId = getContactPhotoId(peopleCursor);
-        long contactId = -1;
-        if (peopleCursor.moveToFirst()) {
-            contactId = CursorHelper.asLong(peopleCursor, ContactsContract.Contacts._ID);
-        }
-        return new Contact(contactId, person, address, photoId);
+    public static final String[] VALID_PROJECTION = new String[] {ContactsContract.Data._ID,
+            ContactsContract.Data.DISPLAY_NAME_PRIMARY,
+            ContactsContract.Data.PHOTO_ID,
+            ContactsContract.CommonDataKinds.Phone.NUMBER };
+
+    public static Contact fromCursor(Cursor peopleCursor) {
+        String person = CursorHelper.asString(peopleCursor, ContactsContract.CommonDataKinds.Identity.DISPLAY_NAME_PRIMARY);
+        long photoId = CursorHelper.asLong(peopleCursor, ContactsContract.Contacts.PHOTO_ID);
+        long contactId = CursorHelper.asLong(peopleCursor, ContactsContract.Contacts._ID);
+        String rawAdrress = CursorHelper.asString(peopleCursor, ContactsContract.CommonDataKinds.Phone.NUMBER);
+        return new RealContact(contactId, person, rawAdrress, photoId);
     }
 
-    private static String getContactName(Cursor peopleCursor) {
-        String result = null;
-        if (peopleCursor.moveToFirst()) {
-            result = CursorHelper.asString(peopleCursor, ContactsContract.CommonDataKinds.Identity.DISPLAY_NAME_PRIMARY);
-        }
-        return result;
-    }
-
-    private static long getContactPhotoId(Cursor peopleCursor) {
-        long id = -1;
-        if (peopleCursor.moveToFirst()) {
-            id = CursorHelper.asLong(peopleCursor, ContactsContract.Contacts.PHOTO_ID);
-        }
-        return id;
+    public static Contact fromAddress(String address1) {
+        return new BasicContact(address1);
     }
 }

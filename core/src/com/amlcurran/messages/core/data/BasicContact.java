@@ -16,10 +16,26 @@
 
 package com.amlcurran.messages.core.data;
 
-public interface Contact {
-    String getDisplayName();
+public class BasicContact implements Contact {
 
-    long getPhotoId();
+    private final String address;
 
-    long getContactId();
+    public BasicContact(String address) {
+        this.address = address;
+    }
+
+    @Override
+    public String getDisplayName() {
+        return address;
+    }
+
+    @Override
+    public long getPhotoId() {
+        return 0;
+    }
+
+    @Override
+    public long getContactId() {
+        return 0;
+    }
 }
