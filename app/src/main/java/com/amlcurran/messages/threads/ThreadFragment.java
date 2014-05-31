@@ -27,6 +27,7 @@ import android.view.ViewGroup;
 
 import com.amlcurran.messages.ListeningCursorListFragment;
 import com.amlcurran.messages.R;
+import com.amlcurran.messages.SmsComposeListener;
 import com.amlcurran.messages.core.data.SmsMessage;
 import com.amlcurran.messages.events.BroadcastEventBus;
 import com.amlcurran.messages.core.loaders.ConversationListChangeListener;
@@ -45,7 +46,7 @@ public class ThreadFragment extends ListeningCursorListFragment<SmsMessage> impl
     private static final String THREAD_ID = "threadId";
     private static final String ADDRESS = "address";
 
-    private Listener listener;
+    private SmsComposeListener listener;
     private String sendAddress;
     private DefaultAppChecker defaultChecker;
     private ComposeMessageView composeView;
@@ -73,7 +74,7 @@ public class ThreadFragment extends ListeningCursorListFragment<SmsMessage> impl
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
-        listener = new ProviderHelper<Listener>(Listener.class).get(activity);
+        listener = new ProviderHelper<SmsComposeListener>(SmsComposeListener.class).get(activity);
     }
 
     @Override
@@ -155,12 +156,6 @@ public class ThreadFragment extends ListeningCursorListFragment<SmsMessage> impl
                 getMessageLoader().markThreadAsRead(getThreadId(), ThreadFragment.this);
             }
         });
-    }
-
-    public interface Listener {
-        void sendSms(String address, String message);
-
-        void callNumber(String sendAddress);
     }
 
 }

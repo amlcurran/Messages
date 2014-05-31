@@ -16,16 +16,69 @@
 
 package com.amlcurran.messages;
 
+import android.app.Activity;
 import android.app.Fragment;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
+import android.widget.Toast;
 
-public class ComposeNewFragment extends Fragment {
+import com.amlcurran.messages.telephony.DefaultAppChecker;
+import com.amlcurran.messages.ui.ComposeMessageView;
+import com.espian.utils.ProviderHelper;
+
+public class ComposeNewFragment extends Fragment implements ComposeMessageView.OnMessageComposedListener {
+
+    private ComposeMessageView composeView;
+    private EditText pickPersonView;
+    private DefaultAppChecker defaultAppChecker;
+    private SmsComposeListener listener;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return super.onCreateView(inflater, container, savedInstanceState);
+        View view = inflater.inflate(R.layout.fragment_compose_new, container, false);
+        composeView = (ComposeMessageView) view.findViewById(R.id.new_compose_view);
+        composeView.setComposeListener(this);
+        pickPersonView = ((EditText) view.findViewById(R.id.new_pick_person));
+        return view;
+    }
+
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        defaultAppChecker = new DefaultAppChecker(getActivity(), composeView);
+    }
+
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        listener = new ProviderHelper<SmsComposeListener>(SmsComposeListener.class).get(activity);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        defaultAppChecker.checkSmsApp();
+    }
+
+    @Override
+    public void onMessageComposed(CharSequence body) {
+        CharSequence address = getEnteredAddress();
+        if (isValid(address)) {
+            listener.sendSms(String.valueOf(address), String.valueOf(body));
+        } else {
+            Toast.makeText(getActivity(), "Enter a valid recipient", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private boolean isValid(CharSequence address) {
+        return !TextUtils.isEmpty(address);
+    }
+
+    private CharSequence getEnteredAddress() {
+        return pickPersonView.getText();
     }
 }

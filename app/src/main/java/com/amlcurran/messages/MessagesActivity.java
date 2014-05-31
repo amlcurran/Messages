@@ -49,7 +49,7 @@ import java.util.Calendar;
 import java.util.List;
 
 public class MessagesActivity extends Activity implements MessagesLoaderProvider,
-        ConversationListFragment.Listener, ThreadFragment.Listener,
+        ConversationListFragment.Listener, SmsComposeListener,
         DefaultAppChecker.Callback, SlidingPaneViewController.Callback, ConversationModalMarshall.Callback, OnThreadDeleteListener, ConversationListChangeListener, FragmentController.Callback, MenuController.Callbacks {
 
     private StatReporter statReporter;
