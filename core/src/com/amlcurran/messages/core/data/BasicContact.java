@@ -38,4 +38,9 @@ public class BasicContact implements Contact {
     public long getContactId() {
         return 0;
     }
+
+    @Override
+    public String getNumber() {
+        return address;
+    }
 }

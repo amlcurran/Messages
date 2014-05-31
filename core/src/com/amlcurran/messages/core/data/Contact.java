@@ -22,4 +22,6 @@ public interface Contact {
     long getPhotoId();
 
     long getContactId();
+
+    String getNumber();
 }

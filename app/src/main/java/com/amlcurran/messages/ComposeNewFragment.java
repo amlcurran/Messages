@@ -152,13 +152,14 @@ public class ComposeNewFragment extends Fragment implements ComposeMessageView.O
 
         @Override
         public View bindView(View convertView, Contact item, int position) {
-            ((TextView) convertView).setText(item.getDisplayName());
+            ((TextView) convertView.findViewById(android.R.id.text1)).setText(item.getDisplayName());
+            ((TextView) convertView.findViewById(android.R.id.text2)).setText(item.getNumber());
             return convertView;
         }
 
         @Override
         public View createView(Context context, int itemViewType) {
-            return LayoutInflater.from(context).inflate(android.R.layout.simple_list_item_1, null);
+            return LayoutInflater.from(context).inflate(android.R.layout.simple_list_item_2, null);
         }
     }
 

@@ -39,11 +39,12 @@ public class ContactsTask implements Callable {
 
     @Override
     public Object call() throws Exception {
-        Cursor cursor = resolver.query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null, null, null, null);
+        String selection = ContactsContract.CommonDataKinds.Phone.HAS_PHONE_NUMBER + "='1'";
+        String sort = ContactsContract.Data.DISPLAY_NAME_PRIMARY + " ASC";
+        Cursor cursor = resolver.query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, ContactFactory.VALID_PROJECTION, selection, null, sort);
         List<Contact> contacts = new ArrayList<Contact>();
         Contact tempPointer;
-        for (int i = 0; i < cursor.getCount(); i++) {
-            cursor.moveToPosition(i);
+        while (cursor.moveToNext()) {
             tempPointer = ContactFactory.fromCursor(cursor);
             if (!contacts.contains(tempPointer)) {
                 contacts.add(tempPointer);

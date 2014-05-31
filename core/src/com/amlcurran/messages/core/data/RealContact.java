@@ -52,6 +52,11 @@ public class RealContact implements Contact {
     }
 
     @Override
+    public String getNumber() {
+        return address;
+    }
+
+    @Override
     public boolean equals(Object obj) {
         return obj instanceof RealContact && contactId == ((RealContact) obj).contactId && contactId != -1;
     }
