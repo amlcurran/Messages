@@ -16,7 +16,7 @@
 
 package com.amlcurran.messages.core.data;
 
-public class SmsMessage implements CoreMessage {
+public class SmsMessage {
 
     private final String address;
     private final String body;
@@ -34,28 +34,20 @@ public class SmsMessage implements CoreMessage {
         this.isSending = isSending;
     }
 
-    @Override
     public String getAddress() {
         return address;
     }
 
-    @Override
     public String getBody() {
         return body;
     }
 
-    @Override
     public long getTimestamp() {
         return timestamp;
     }
 
     public boolean isFromMe() {
         return isFromMe;
-    }
-
-    @Override
-    public String toString() {
-        return String.format("SMS with address: %1$s\ntimestamp: %2$d\nbody: %3$s", address, timestamp, body);
     }
 
     public boolean isSending() {

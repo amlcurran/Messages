@@ -19,9 +19,7 @@ package com.amlcurran.messages.data;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.amlcurran.messages.core.data.CoreMessage;
-
-public class InFlightSmsMessage implements CoreMessage, Parcelable {
+public class InFlightSmsMessage implements Parcelable {
 
     private String address;
     private String body;
@@ -33,17 +31,14 @@ public class InFlightSmsMessage implements CoreMessage, Parcelable {
         this.timestamp = timestamp;
     }
 
-    @Override
     public String getAddress() {
         return address;
     }
 
-    @Override
     public String getBody() {
         return body;
     }
 
-    @Override
     public long getTimestamp() {
         return timestamp;
     }
