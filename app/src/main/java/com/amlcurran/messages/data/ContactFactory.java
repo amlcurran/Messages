@@ -27,7 +27,7 @@ public class ContactFactory {
     public static Contact fromCursor(Cursor peopleCursor, String address) {
         String person = getContactName(peopleCursor);
         long photoId = getContactPhotoId(peopleCursor);
-        return new AndroidContact(person, address, photoId);
+        return new Contact(person, address, photoId);
     }
 
     private static String getContactName(Cursor peopleCursor) {

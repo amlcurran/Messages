@@ -14,32 +14,10 @@
  * limitations under the License.
  */
 
-package com.amlcurran.messages.core.data;
+package com.amlcurran.messages.core;
 
-import com.amlcurran.messages.core.TextUtils;
-
-public class Contact {
-
-    private final String name;
-    private final String address;
-    private final long photoId;
-
-    public Contact(String name, String address, long photoId) {
-        this.name = name;
-        this.address = address;
-        this.photoId = photoId;
+public class TextUtils {
+    public static boolean isEmpty(CharSequence charSequence) {
+        return charSequence == null || charSequence.equals("");
     }
-
-    public String getDisplayName() {
-        if (!TextUtils.isEmpty(name)) {
-            return name;
-        } else {
-            return address;
-        }
-    }
-
-    public long getPhotoId() {
-        return photoId;
-    }
-
 }

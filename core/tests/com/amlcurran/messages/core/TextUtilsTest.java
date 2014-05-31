@@ -18,13 +18,24 @@ package com.amlcurran.messages.core;
 
 import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
-public class BasicTest {
+public class TextUtilsTest {
 
     @Test
-    public void simpleJunitTest() {
-        assertEquals(2, 2 + 1);
+    public void testWhenGivenAnEmptyCharSequence_IsEmptyReturnsTrue() {
+        assertTrue(TextUtils.isEmpty(""));
+    }
+
+    @Test
+    public void testWhenGivenANullCharSequence_IsEmptyReturnsTrue() {
+        assertTrue(TextUtils.isEmpty(null));
+    }
+
+    @Test
+    public void testWhenGivenANonEmptyString_IsEmptyReturnsFalse() {
+        assertFalse(TextUtils.isEmpty(" "));
     }
 
 }
