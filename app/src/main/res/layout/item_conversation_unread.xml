@@ -26,7 +26,6 @@
         android:layout_width="48dp"
         android:layout_height="76dp"
         class="com.amlcurran.messages.ui.CutImageView"
-        android:src="@drawable/ic_launch_sms"
         android:layout_marginRight="2dp"
         android:id="@+id/image"
         android:layout_marginLeft="-8dp" />

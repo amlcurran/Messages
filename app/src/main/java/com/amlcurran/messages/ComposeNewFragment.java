@@ -158,7 +158,7 @@ public class ComposeNewFragment extends Fragment implements ComposeMessageView.O
 
         @Override
         public View createView(Context context, int itemViewType, ViewGroup parent) {
-            return LayoutInflater.from(context).inflate(R.layout.item_conversation_read, parent, false);
+            return LayoutInflater.from(context).inflate(android.R.layout.simple_list_item_2, parent, false);
         }
     }
 
