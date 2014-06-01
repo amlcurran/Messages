@@ -26,7 +26,7 @@ import android.widget.TextView;
 
 import com.amlcurran.messages.R;
 import com.amlcurran.messages.core.data.SmsMessage;
-import com.espian.utils.data.SimpleBinder;
+import com.github.amlcurran.sourcebinder.SimpleBinder;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;

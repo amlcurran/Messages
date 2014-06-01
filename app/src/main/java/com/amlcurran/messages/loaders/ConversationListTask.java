@@ -26,7 +26,7 @@ import com.amlcurran.messages.core.data.Contact;
 import com.amlcurran.messages.core.data.Conversation;
 import com.amlcurran.messages.core.data.Sort;
 import com.amlcurran.messages.data.ContactFactory;
-import com.espian.utils.data.CursorHelper;
+import com.github.amlcurran.sourcebinder.CursorHelper;
 
 import java.util.ArrayList;
 import java.util.List;

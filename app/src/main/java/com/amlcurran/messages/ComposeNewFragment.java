@@ -37,9 +37,9 @@ import com.amlcurran.messages.loaders.MessagesLoaderProvider;
 import com.amlcurran.messages.telephony.DefaultAppChecker;
 import com.amlcurran.messages.ui.ComposeMessageView;
 import com.espian.utils.ProviderHelper;
-import com.espian.utils.data.ArrayListSource;
-import com.espian.utils.data.SimpleBinder;
-import com.espian.utils.data.SourceBinderAdapter;
+import com.github.amlcurran.sourcebinder.ArrayListSource;
+import com.github.amlcurran.sourcebinder.SimpleBinder;
+import com.github.amlcurran.sourcebinder.SourceBinderAdapter;
 
 import java.util.List;
 
@@ -87,7 +87,6 @@ public class ComposeNewFragment extends Fragment implements ComposeMessageView.O
                     @Override
                     public void run() {
                         contactSource.replace(contacts);
-                        adapter.notifyDataSetChanged();
                     }
                 });
             }

@@ -24,7 +24,7 @@ import android.widget.AbsListView;
 import com.amlcurran.messages.R;
 import com.amlcurran.messages.core.data.Conversation;
 import com.espian.utils.ui.MenuFinder;
-import com.espian.utils.data.Source;
+import com.github.amlcurran.sourcebinder.Source;
 
 import java.util.ArrayList;
 import java.util.List;

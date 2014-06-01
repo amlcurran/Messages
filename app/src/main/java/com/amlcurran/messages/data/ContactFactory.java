@@ -22,7 +22,7 @@ import android.provider.ContactsContract;
 import com.amlcurran.messages.core.data.BasicContact;
 import com.amlcurran.messages.core.data.Contact;
 import com.amlcurran.messages.core.data.RealContact;
-import com.espian.utils.data.CursorHelper;
+import com.github.amlcurran.sourcebinder.CursorHelper;
 
 public class ContactFactory {
 

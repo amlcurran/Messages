@@ -29,15 +29,15 @@ import com.amlcurran.messages.ListeningCursorListFragment;
 import com.amlcurran.messages.R;
 import com.amlcurran.messages.SmsComposeListener;
 import com.amlcurran.messages.core.data.SmsMessage;
-import com.amlcurran.messages.events.BroadcastEventBus;
 import com.amlcurran.messages.core.loaders.ConversationListChangeListener;
-import com.amlcurran.messages.loaders.MessagesLoader;
 import com.amlcurran.messages.core.loaders.ThreadListener;
+import com.amlcurran.messages.events.BroadcastEventBus;
+import com.amlcurran.messages.loaders.MessagesLoader;
 import com.amlcurran.messages.telephony.DefaultAppChecker;
 import com.amlcurran.messages.ui.ComposeMessageView;
 import com.espian.utils.ProviderHelper;
-import com.espian.utils.data.ArrayListSource;
-import com.espian.utils.data.SourceBinderAdapter;
+import com.github.amlcurran.sourcebinder.ArrayListSource;
+import com.github.amlcurran.sourcebinder.SourceBinderAdapter;
 
 import java.util.List;
 
@@ -151,7 +151,6 @@ public class ThreadFragment extends ListeningCursorListFragment<SmsMessage> impl
             @Override
             public void run() {
                 source.replace(messageList);
-                adapter.notifyDataSetChanged();
                 scrollToBottom();
                 getMessageLoader().markThreadAsRead(getThreadId(), ThreadFragment.this);
             }

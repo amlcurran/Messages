@@ -21,7 +21,7 @@ import android.database.Cursor;
 import android.provider.Telephony;
 
 import com.amlcurran.messages.core.data.SmsMessage;
-import com.espian.utils.data.CursorHelper;
+import com.github.amlcurran.sourcebinder.CursorHelper;
 
 public class InFlightSmsMessageFactory {
 

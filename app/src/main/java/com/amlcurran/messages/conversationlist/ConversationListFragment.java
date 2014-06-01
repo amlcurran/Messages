@@ -27,14 +27,14 @@ import android.widget.ListView;
 import com.amlcurran.messages.ListeningCursorListFragment;
 import com.amlcurran.messages.PreferenceStore;
 import com.amlcurran.messages.R;
-import com.amlcurran.messages.core.data.Conversation;
 import com.amlcurran.messages.core.conversationlist.ConversationListListener;
+import com.amlcurran.messages.core.data.Conversation;
 import com.amlcurran.messages.core.data.Sort;
 import com.amlcurran.messages.events.BroadcastEventBus;
 import com.amlcurran.messages.loaders.MessagesLoader;
 import com.espian.utils.ProviderHelper;
-import com.espian.utils.data.ArrayListSource;
-import com.espian.utils.data.SourceBinderAdapter;
+import com.github.amlcurran.sourcebinder.ArrayListSource;
+import com.github.amlcurran.sourcebinder.SourceBinderAdapter;
 
 import java.util.List;
 
@@ -117,7 +117,6 @@ public class ConversationListFragment extends ListeningCursorListFragment<Conver
             @Override
             public void run() {
                 source.replace(conversations);
-                adapter.notifyDataSetChanged();
                 hideLoadingUi();
             }
         });
