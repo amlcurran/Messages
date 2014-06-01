@@ -67,7 +67,7 @@ public class SourceBinderAdapter<T> extends BaseAdapter {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         if (convertView == null) {
-            convertView = binder.createView(context, getItemViewType(position));
+            convertView = binder.createView(context, getItemViewType(position), parent);
         }
         return binder.bindView(convertView, getItem(position), position);
     }

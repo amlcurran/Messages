@@ -18,6 +18,7 @@ package com.espian.utils.data;
 
 import android.content.Context;
 import android.view.View;
+import android.view.ViewGroup;
 
 public abstract class SimpleBinder<T> implements Binder<T> {
 
@@ -40,5 +41,5 @@ public abstract class SimpleBinder<T> implements Binder<T> {
     }
 
     @Override
-    public abstract View createView(Context context, int itemViewType);
+    public abstract View createView(Context context, int itemViewType, ViewGroup parent);
 }

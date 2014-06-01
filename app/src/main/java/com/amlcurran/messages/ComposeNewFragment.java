@@ -37,7 +37,7 @@ import com.amlcurran.messages.loaders.MessagesLoaderProvider;
 import com.amlcurran.messages.telephony.DefaultAppChecker;
 import com.amlcurran.messages.ui.ComposeMessageView;
 import com.espian.utils.ProviderHelper;
-import com.espian.utils.data.ListArraySource;
+import com.espian.utils.data.ArrayListSource;
 import com.espian.utils.data.SimpleBinder;
 import com.espian.utils.data.SourceBinderAdapter;
 
@@ -49,7 +49,7 @@ public class ComposeNewFragment extends Fragment implements ComposeMessageView.O
     private EditText pickPersonView;
     private DefaultAppChecker defaultAppChecker;
     private SmsComposeListener listener;
-    private ListArraySource<Contact> contactSource;
+    private ArrayListSource<Contact> contactSource;
     private ListView personListView;
     private SourceBinderAdapter<Contact> adapter;
     private MessagesLoader loader;
@@ -69,7 +69,7 @@ public class ComposeNewFragment extends Fragment implements ComposeMessageView.O
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         defaultAppChecker = new DefaultAppChecker(getActivity(), composeView);
-        contactSource = new ListArraySource<Contact>();
+        contactSource = new ArrayListSource<Contact>();
 
         adapter = new SourceBinderAdapter<Contact>(getActivity(), contactSource, new ContactBinder());
         personListView.setAdapter(adapter);
@@ -158,8 +158,8 @@ public class ComposeNewFragment extends Fragment implements ComposeMessageView.O
         }
 
         @Override
-        public View createView(Context context, int itemViewType) {
-            return LayoutInflater.from(context).inflate(android.R.layout.simple_list_item_2, null);
+        public View createView(Context context, int itemViewType, ViewGroup parent) {
+            return LayoutInflater.from(context).inflate(R.layout.item_conversation_read, parent, false);
         }
     }
 

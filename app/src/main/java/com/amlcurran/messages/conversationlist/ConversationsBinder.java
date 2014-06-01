@@ -21,6 +21,7 @@ import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -102,7 +103,7 @@ public class ConversationsBinder extends SimpleBinder<Conversation> {
     }
 
     @Override
-    public View createView(Context context, int itemViewType) {
+    public View createView(Context context, int itemViewType, ViewGroup parent) {
         if (itemViewType == IS_READ) {
             return LayoutInflater.from(context).inflate(R.layout.item_conversation_read, null, false);
         } else {

@@ -19,11 +19,11 @@ package com.espian.utils.data;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ListArraySource<T> implements Source<T> {
+public class ArrayListSource<T> implements Source<T> {
 
     private final ArrayList<T> list;
 
-    public ListArraySource() {
+    public ArrayListSource() {
         list = new ArrayList<T>();
     }
 

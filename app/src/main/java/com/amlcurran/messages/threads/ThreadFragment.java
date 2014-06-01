@@ -36,7 +36,7 @@ import com.amlcurran.messages.core.loaders.ThreadListener;
 import com.amlcurran.messages.telephony.DefaultAppChecker;
 import com.amlcurran.messages.ui.ComposeMessageView;
 import com.espian.utils.ProviderHelper;
-import com.espian.utils.data.ListArraySource;
+import com.espian.utils.data.ArrayListSource;
 import com.espian.utils.data.SourceBinderAdapter;
 
 import java.util.List;
@@ -50,7 +50,7 @@ public class ThreadFragment extends ListeningCursorListFragment<SmsMessage> impl
     private String sendAddress;
     private DefaultAppChecker defaultChecker;
     private ComposeMessageView composeView;
-    private ListArraySource<SmsMessage> source;
+    private ArrayListSource<SmsMessage> source;
 
     public static ThreadFragment create(String threadId, String address) {
         Bundle bundle = new Bundle();
@@ -82,7 +82,7 @@ public class ThreadFragment extends ListeningCursorListFragment<SmsMessage> impl
         super.onActivityCreated(savedInstanceState);
         setHasOptionsMenu(true);
         sendAddress = getArguments().getString(ADDRESS);
-        source = new ListArraySource<SmsMessage>();
+        source = new ArrayListSource<SmsMessage>();
         adapter = new SourceBinderAdapter<SmsMessage>(getActivity(), source, new ThreadBinder(getListView()));
         defaultChecker = new DefaultAppChecker(getActivity(), composeView);
         setListAdapter(adapter);

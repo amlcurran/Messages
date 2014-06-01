@@ -20,6 +20,7 @@ import android.content.Context;
 import android.text.util.Linkify;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -66,7 +67,7 @@ class ThreadBinder extends SimpleBinder<SmsMessage> {
     }
 
     @Override
-    public View createView(Context context, int itemViewType) {
+    public View createView(Context context, int itemViewType, ViewGroup parent) {
         if (itemViewType == ITEM_ME) {
             return LayoutInflater.from(context).inflate(R.layout.item_thread_item_me, listView, false);
         } else if (itemViewType == ITEM_THEM) {

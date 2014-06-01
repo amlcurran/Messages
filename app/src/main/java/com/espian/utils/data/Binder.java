@@ -18,6 +18,7 @@ package com.espian.utils.data;
 
 import android.content.Context;
 import android.view.View;
+import android.view.ViewGroup;
 
 public interface Binder<T> {
     int getViewTypeCount();
@@ -28,5 +29,5 @@ public interface Binder<T> {
 
     int getItemViewType(int position, T item);
 
-    View createView(Context context, int itemViewType);
+    View createView(Context context, int itemViewType, ViewGroup parent);
 }

@@ -33,7 +33,7 @@ import com.amlcurran.messages.core.data.Sort;
 import com.amlcurran.messages.events.BroadcastEventBus;
 import com.amlcurran.messages.loaders.MessagesLoader;
 import com.espian.utils.ProviderHelper;
-import com.espian.utils.data.ListArraySource;
+import com.espian.utils.data.ArrayListSource;
 import com.espian.utils.data.SourceBinderAdapter;
 
 import java.util.List;
@@ -41,7 +41,7 @@ import java.util.List;
 public class ConversationListFragment extends ListeningCursorListFragment<Conversation> implements ConversationListListener, AdapterView.OnItemClickListener, PreferenceListener.ChangeListener {
 
     protected SourceBinderAdapter<Conversation> adapter;
-    protected ListArraySource<Conversation> source;
+    protected ArrayListSource<Conversation> source;
     private Listener listener;
     private View emptyView;
     private ConversationModalMarshall.Callback modalCallback;
@@ -61,7 +61,7 @@ public class ConversationListFragment extends ListeningCursorListFragment<Conver
         super.onActivityCreated(savedInstanceState);
 
         preferenceListener = new PreferenceListener(getActivity(), this, "unread_priority");
-        source = new ListArraySource<Conversation>();
+        source = new ArrayListSource<Conversation>();
         ConversationsBinder binder = new ConversationsBinder(getResources(), getMessageLoader());
         adapter = new SourceBinderAdapter<Conversation>(getActivity(), source, binder);
         setListAdapter(adapter);
