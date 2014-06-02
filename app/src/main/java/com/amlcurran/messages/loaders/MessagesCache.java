@@ -16,15 +16,31 @@
 
 package com.amlcurran.messages.loaders;
 
-import android.content.ContentResolver;
-import android.provider.Telephony;
+import com.amlcurran.messages.core.data.Conversation;
 
-import com.amlcurran.messages.core.data.Sort;
-import com.amlcurran.messages.core.conversationlist.ConversationListListener;
+import java.util.List;
 
-class UnreadConversationListTask extends ConversationListTask {
+public interface MessagesCache {
+    List<Conversation> getConversationList();
 
-    public UnreadConversationListTask(ContentResolver contentResolver, ConversationListListener loadListener) {
-        super(contentResolver, Telephony.Sms.Inbox.READ + "=0", null, loadListener, Sort.DEFAULT, MessagesCache.NO_CACHE);
-    }
+    void storeConversationList(List<Conversation> conversations);
+
+    public static final MessagesCache NO_CACHE = new MessagesCache() {
+        @Override
+        public List<Conversation> getConversationList() {
+            return null;
+        }
+
+        @Override
+        public void storeConversationList(List<Conversation> conversations) {
+
+        }
+
+        @Override
+        public void invalidate() {
+
+        }
+    };
+
+    void invalidate();
 }

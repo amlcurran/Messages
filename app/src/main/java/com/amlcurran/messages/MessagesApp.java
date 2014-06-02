@@ -22,7 +22,11 @@ import android.preference.PreferenceManager;
 import android.text.SpannableStringBuilder;
 import android.text.util.Linkify;
 
+import com.amlcurran.messages.events.BroadcastEventBus;
+import com.amlcurran.messages.events.BroadcastEventSubscriber;
 import com.amlcurran.messages.loaders.ExecutorMessagesLoader;
+import com.amlcurran.messages.loaders.MemoryMessagesCache;
+import com.amlcurran.messages.loaders.MessagesCache;
 import com.amlcurran.messages.loaders.MessagesLoader;
 import com.amlcurran.messages.notifications.Notifier;
 
@@ -30,18 +34,23 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-public class MessagesApp extends Application {
+public class MessagesApp extends Application implements BroadcastEventSubscriber.Listener {
 
     private MessagesLoader loader;
     private Notifier notifier;
+    private BroadcastEventSubscriber subscriber;
+    private MessagesCache cache;
 
     @Override
     public void onCreate() {
         super.onCreate();
         PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
         ExecutorService executor = Executors.newCachedThreadPool();
-        loader = new ExecutorMessagesLoader(this, executor);
+        cache = new MemoryMessagesCache();
+        loader = new ExecutorMessagesLoader(this, executor, cache);
         notifier = new Notifier(this);
+        subscriber = new BroadcastEventSubscriber(this, this);
+        subscriber.startListening(new String[] { BroadcastEventBus.BROADCAST_LIST_CHANGED });
         primeZygote(executor);
     }
 
@@ -53,6 +62,7 @@ public class MessagesApp extends Application {
     @Override
     public void onTerminate() {
         super.onTerminate();
+        subscriber.stopListening();
         loader.cancelAll();
     }
 
@@ -62,6 +72,11 @@ public class MessagesApp extends Application {
 
     public static Notifier getNotifier(Context context) {
         return ((MessagesApp) context.getApplicationContext()).notifier;
+    }
+
+    @Override
+    public void onMessageReceived() {
+        cache.invalidate();
     }
 
     private class PrimeLinkifyTask implements Callable<Object> {

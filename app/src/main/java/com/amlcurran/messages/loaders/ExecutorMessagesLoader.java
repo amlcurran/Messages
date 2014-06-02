@@ -36,10 +36,12 @@ public class ExecutorMessagesLoader implements MessagesLoader {
 
     private final Context context;
     private final ExecutorService executor;
+    private final MessagesCache cache;
 
-    public ExecutorMessagesLoader(Context context, ExecutorService executor) {
+    public ExecutorMessagesLoader(Context context, ExecutorService executor, MessagesCache cache) {
         this.context = context;
         this.executor = executor;
+        this.cache = cache;
     }
 
     private ContentResolver getResolver() {
@@ -62,7 +64,11 @@ public class ExecutorMessagesLoader implements MessagesLoader {
 
     @Override
     public void loadConversationList(ConversationListListener loadListener, Sort sort) {
-        submit(new ConversationListTask(getResolver(), loadListener, sort));
+        if (cache.getConversationList() == null) {
+            submit(new ConversationListTask(getResolver(), loadListener, sort, cache));
+        } else {
+            loadListener.onConversationListLoaded(cache.getConversationList());
+        }
     }
 
     @Override

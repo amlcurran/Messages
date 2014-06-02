@@ -39,17 +39,19 @@ class ConversationListTask implements Callable<Object> {
     private final String[] args;
     private final ConversationListListener loadListener;
     private final Sort sort;
+    private final MessagesCache cache;
 
-    ConversationListTask(ContentResolver contentResolver, String query, String[] args, ConversationListListener loadListener, Sort sort) {
+    ConversationListTask(ContentResolver contentResolver, String query, String[] args, ConversationListListener loadListener, Sort sort, MessagesCache cache) {
         this.contentResolver = contentResolver;
         this.query = query;
         this.args = args;
         this.loadListener = loadListener;
         this.sort = sort;
+        this.cache = cache;
     }
 
-    public ConversationListTask(ContentResolver contentResolver, ConversationListListener loadListener, Sort sort) {
-        this(contentResolver, null, null, loadListener, sort);
+    public ConversationListTask(ContentResolver contentResolver, ConversationListListener loadListener, Sort sort, MessagesCache cache) {
+        this(contentResolver, null, null, loadListener, sort, cache);
     }
 
     @Override
@@ -75,6 +77,7 @@ class ConversationListTask implements Callable<Object> {
 
         conversationsList.close();
 
+        cache.storeConversationList(conversations);
         loadListener.onConversationListLoaded(conversations);
         return null;
     }
