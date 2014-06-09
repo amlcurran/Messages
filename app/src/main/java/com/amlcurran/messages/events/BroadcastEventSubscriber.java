@@ -35,7 +35,7 @@ public class BroadcastEventSubscriber extends BroadcastReceiver implements Event
     }
 
     @Override
-    public void startListening(String[] actions) {
+    public void startListening(String... actions) {
         LocalBroadcastManager.getInstance(context).registerReceiver(this, buildMessageFilter(actions));
     }
 

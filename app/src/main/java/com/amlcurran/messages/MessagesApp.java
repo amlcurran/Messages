@@ -24,6 +24,7 @@ import android.text.util.Linkify;
 
 import com.amlcurran.messages.events.BroadcastEventBus;
 import com.amlcurran.messages.events.BroadcastEventSubscriber;
+import com.amlcurran.messages.events.EventBus;
 import com.amlcurran.messages.loaders.ExecutorMessagesLoader;
 import com.amlcurran.messages.loaders.MemoryMessagesCache;
 import com.amlcurran.messages.loaders.MessagesCache;
@@ -40,6 +41,7 @@ public class MessagesApp extends Application implements BroadcastEventSubscriber
     private Notifier notifier;
     private BroadcastEventSubscriber subscriber;
     private MessagesCache cache;
+    private EventBus eventBus;
 
     @Override
     public void onCreate() {
@@ -49,8 +51,9 @@ public class MessagesApp extends Application implements BroadcastEventSubscriber
         cache = new MemoryMessagesCache();
         loader = new ExecutorMessagesLoader(this, executor, cache);
         notifier = new Notifier(this);
+        eventBus = new BroadcastEventBus(this);
         subscriber = new BroadcastEventSubscriber(this, this);
-        subscriber.startListening(new String[] { BroadcastEventBus.BROADCAST_LIST_CHANGED });
+        subscriber.startListening(BroadcastEventBus.BROADCAST_LIST_CHANGED);
         primeZygote(executor);
     }
 
