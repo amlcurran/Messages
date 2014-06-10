@@ -46,7 +46,7 @@ import com.github.amlcurran.sourcebinder.SourceBinderAdapter;
 import java.util.Calendar;
 import java.util.List;
 
-public class ComposeNewFragment extends Fragment implements ComposeMessageView.OnMessageComposedListener, TextWatcher {
+public class ComposeNewFragment extends Fragment implements ComposeMessageView.OnMessageComposedListener, TextWatcher, RecipientChooser.ChooserListener {
 
     private ComposeMessageView composeView;
     private EditText pickPersonView;
@@ -56,6 +56,7 @@ public class ComposeNewFragment extends Fragment implements ComposeMessageView.O
     private ListView personListView;
     private SourceBinderAdapter<Contact> adapter;
     private MessagesLoader loader;
+    private RecipientChooser recipientChooser;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -75,7 +76,11 @@ public class ComposeNewFragment extends Fragment implements ComposeMessageView.O
         contactSource = new ArrayListSource<Contact>();
 
         adapter = new SourceBinderAdapter<Contact>(getActivity(), contactSource, new ContactBinder());
+        recipientChooser = new RecipientChooser(this);
+
         personListView.setAdapter(adapter);
+        personListView.setOnItemClickListener(recipientChooser);
+        personListView.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
 
         loadContacts();
     }
@@ -90,6 +95,7 @@ public class ComposeNewFragment extends Fragment implements ComposeMessageView.O
                     @Override
                     public void run() {
                         contactSource.replace(contacts);
+                        recipientChooser.setContacts(contacts);
                     }
                 });
             }
@@ -151,6 +157,11 @@ public class ComposeNewFragment extends Fragment implements ComposeMessageView.O
 
     private void refreshSuggestions() {
 
+    }
+
+    @Override
+    public void recipientChosen(Contact contact) {
+        pickPersonView.setText(contact.getNumber());
     }
 
     private class ContactBinder extends SimpleBinder<Contact> {
