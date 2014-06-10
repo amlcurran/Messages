@@ -58,10 +58,6 @@
             </intent-filter>
         </receiver>
 
-        <!-- Activity that allows the user to send new SMS/MMS messages -->
-        <activity android:name=".ComposeSmsActivity" >
-        </activity>
-
         <!-- Service that delivers messages from the phone "quick response" -->
         <service android:name=".telephony.SmsSender"
             android:permission="android.permission.SEND_RESPOND_VIA_MESSAGE"
