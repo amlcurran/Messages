@@ -36,11 +36,11 @@ public class EasyTrackerStatReporter implements StatReporter{
 
     @Override
     public void activityStart(Activity activity) {
-
+        tracker.activityStart(activity);
     }
 
     @Override
     public void activityStop(Activity activity) {
-
+        tracker.activityStart(activity);
     }
 }
