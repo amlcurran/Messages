@@ -16,31 +16,48 @@
 
 package com.amlcurran.messages.core.data;
 
-public class BasicContact implements Contact {
+import com.amlcurran.messages.core.TextUtils;
 
+public class SavedContact implements Contact {
+
+    private final long contactId;
+    private final String name;
     private final String address;
+    private final long photoId;
 
-    public BasicContact(String address) {
+    public SavedContact(long contactId, String name, String address, long photoId) {
+        this.contactId = contactId;
+        this.name = name;
         this.address = address;
+        this.photoId = photoId;
     }
 
     @Override
     public String getDisplayName() {
-        return address;
+        if (!TextUtils.isEmpty(name)) {
+            return name;
+        } else {
+            return address;
+        }
     }
 
     @Override
     public long getPhotoId() {
-        return 0;
+        return photoId;
     }
 
     @Override
     public long getContactId() {
-        return 0;
+        return contactId;
     }
 
     @Override
     public String getNumber() {
         return address;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return obj instanceof SavedContact && contactId == ((SavedContact) obj).contactId && contactId != -1;
     }
 }

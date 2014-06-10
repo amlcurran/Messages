@@ -19,9 +19,9 @@ package com.amlcurran.messages.data;
 import android.database.Cursor;
 import android.provider.ContactsContract;
 
-import com.amlcurran.messages.core.data.BasicContact;
+import com.amlcurran.messages.core.data.RawContact;
 import com.amlcurran.messages.core.data.Contact;
-import com.amlcurran.messages.core.data.RealContact;
+import com.amlcurran.messages.core.data.SavedContact;
 import com.github.amlcurran.sourcebinder.CursorHelper;
 
 public class ContactFactory {
@@ -36,10 +36,10 @@ public class ContactFactory {
         long photoId = CursorHelper.asLong(peopleCursor, ContactsContract.Contacts.PHOTO_ID);
         long contactId = CursorHelper.asLong(peopleCursor, ContactsContract.Contacts._ID);
         String rawAddress = CursorHelper.asString(peopleCursor, ContactsContract.CommonDataKinds.Phone.NUMBER);
-        return new RealContact(contactId, person, rawAddress, photoId);
+        return new SavedContact(contactId, person, rawAddress, photoId);
     }
 
     public static Contact fromAddress(String address1) {
-        return new BasicContact(address1);
+        return new RawContact(address1);
     }
 }

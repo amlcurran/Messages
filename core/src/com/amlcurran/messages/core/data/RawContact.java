@@ -14,7 +14,33 @@
  * limitations under the License.
  */
 
-package com.amlcurran.messages.core;
+package com.amlcurran.messages.core.data;
 
-public class Basic {
+public class RawContact implements Contact {
+
+    private final String address;
+
+    public RawContact(String address) {
+        this.address = address;
+    }
+
+    @Override
+    public String getDisplayName() {
+        return address;
+    }
+
+    @Override
+    public long getPhotoId() {
+        return 0;
+    }
+
+    @Override
+    public long getContactId() {
+        return 0;
+    }
+
+    @Override
+    public String getNumber() {
+        return address;
+    }
 }
