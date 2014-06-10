@@ -20,7 +20,7 @@ import android.content.ContentResolver;
 import android.database.Cursor;
 import android.provider.ContactsContract;
 
-import com.amlcurran.messages.ContactListListener;
+import com.amlcurran.messages.core.loaders.ContactListListener;
 import com.amlcurran.messages.core.data.Contact;
 import com.amlcurran.messages.data.ContactFactory;
 

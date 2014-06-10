@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.amlcurran.messages;
+package com.amlcurran.messages.core.loaders;
 
 import com.amlcurran.messages.core.data.Contact;
 

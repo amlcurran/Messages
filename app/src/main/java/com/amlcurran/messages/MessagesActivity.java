@@ -26,10 +26,10 @@ import android.view.MenuItem;
 import com.amlcurran.messages.conversationlist.ConversationListFragment;
 import com.amlcurran.messages.conversationlist.ConversationModalMarshall;
 import com.amlcurran.messages.core.data.Conversation;
+import com.amlcurran.messages.core.loaders.ConversationListChangeListener;
 import com.amlcurran.messages.data.InFlightSmsMessage;
 import com.amlcurran.messages.events.BroadcastEventBus;
 import com.amlcurran.messages.events.EventBus;
-import com.amlcurran.messages.core.loaders.ConversationListChangeListener;
 import com.amlcurran.messages.loaders.MessagesLoader;
 import com.amlcurran.messages.loaders.MessagesLoaderProvider;
 import com.amlcurran.messages.loaders.OnContactQueryListener;
@@ -45,7 +45,6 @@ import com.amlcurran.messages.ui.SlidingPaneViewController;
 import com.amlcurran.messages.ui.ViewController;
 import com.google.analytics.tracking.android.EasyTracker;
 
-import java.util.Calendar;
 import java.util.List;
 
 public class MessagesActivity extends Activity implements MessagesLoaderProvider,
@@ -168,10 +167,8 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
     }
 
     @Override
-    public void sendSms(String address, String body) {
-        long timestamp = Calendar.getInstance().getTimeInMillis();
-        InFlightSmsMessage message = new InFlightSmsMessage(address, body, timestamp);
-        activityController.sendSms(message);
+    public void sendSms(InFlightSmsMessage smsMessage) {
+        activityController.sendSms(smsMessage);
     }
 
     @Override

@@ -16,7 +16,7 @@
 
 package com.amlcurran.messages.loaders;
 
-import com.amlcurran.messages.ContactListListener;
+import com.amlcurran.messages.core.loaders.ContactListListener;
 import com.amlcurran.messages.core.data.Contact;
 import com.amlcurran.messages.core.data.Sort;
 import com.amlcurran.messages.core.conversationlist.ConversationListListener;

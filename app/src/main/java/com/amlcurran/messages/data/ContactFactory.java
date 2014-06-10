@@ -35,8 +35,8 @@ public class ContactFactory {
         String person = CursorHelper.asString(peopleCursor, ContactsContract.CommonDataKinds.Identity.DISPLAY_NAME_PRIMARY);
         long photoId = CursorHelper.asLong(peopleCursor, ContactsContract.Contacts.PHOTO_ID);
         long contactId = CursorHelper.asLong(peopleCursor, ContactsContract.Contacts._ID);
-        String rawAdrress = CursorHelper.asString(peopleCursor, ContactsContract.CommonDataKinds.Phone.NUMBER);
-        return new RealContact(contactId, person, rawAdrress, photoId);
+        String rawAddress = CursorHelper.asString(peopleCursor, ContactsContract.CommonDataKinds.Phone.NUMBER);
+        return new RealContact(contactId, person, rawAddress, photoId);
     }
 
     public static Contact fromAddress(String address1) {

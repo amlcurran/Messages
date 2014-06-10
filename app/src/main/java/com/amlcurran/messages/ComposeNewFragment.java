@@ -32,6 +32,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.amlcurran.messages.core.data.Contact;
+import com.amlcurran.messages.core.loaders.ContactListListener;
+import com.amlcurran.messages.data.InFlightSmsMessage;
 import com.amlcurran.messages.loaders.MessagesLoader;
 import com.amlcurran.messages.loaders.MessagesLoaderProvider;
 import com.amlcurran.messages.telephony.DefaultAppChecker;
@@ -41,6 +43,7 @@ import com.github.amlcurran.sourcebinder.ArrayListSource;
 import com.github.amlcurran.sourcebinder.SimpleBinder;
 import com.github.amlcurran.sourcebinder.SourceBinderAdapter;
 
+import java.util.Calendar;
 import java.util.List;
 
 public class ComposeNewFragment extends Fragment implements ComposeMessageView.OnMessageComposedListener, TextWatcher {
@@ -112,9 +115,12 @@ public class ComposeNewFragment extends Fragment implements ComposeMessageView.O
 
     @Override
     public void onMessageComposed(CharSequence body) {
-        CharSequence address = getEnteredAddress();
-        if (isValid(address)) {
-            listener.sendSms(String.valueOf(address), String.valueOf(body));
+        if (isValid(getEnteredAddress())) {
+            String address = String.valueOf(getEnteredAddress());
+            String message = String.valueOf(body);
+            long timestamp = Calendar.getInstance().getTimeInMillis();
+            InFlightSmsMessage smsMessage = new InFlightSmsMessage(address, message, timestamp);
+            listener.sendSms(smsMessage);
         } else {
             Toast.makeText(getActivity(), "Enter a valid recipient", Toast.LENGTH_SHORT).show();
         }

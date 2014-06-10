@@ -31,6 +31,7 @@ import com.amlcurran.messages.SmsComposeListener;
 import com.amlcurran.messages.core.data.SmsMessage;
 import com.amlcurran.messages.core.loaders.ConversationListChangeListener;
 import com.amlcurran.messages.core.loaders.ThreadListener;
+import com.amlcurran.messages.data.InFlightSmsMessage;
 import com.amlcurran.messages.events.BroadcastEventBus;
 import com.amlcurran.messages.loaders.MessagesLoader;
 import com.amlcurran.messages.telephony.DefaultAppChecker;
@@ -39,6 +40,7 @@ import com.espian.utils.ProviderHelper;
 import com.github.amlcurran.sourcebinder.ArrayListSource;
 import com.github.amlcurran.sourcebinder.SourceBinderAdapter;
 
+import java.util.Calendar;
 import java.util.List;
 
 public class ThreadFragment extends ListeningCursorListFragment<SmsMessage> implements ThreadListener, ComposeMessageView.OnMessageComposedListener, ConversationListChangeListener {
@@ -137,7 +139,10 @@ public class ThreadFragment extends ListeningCursorListFragment<SmsMessage> impl
 
     @Override
     public void onMessageComposed(CharSequence body) {
-        listener.sendSms(sendAddress, String.valueOf(body));
+        String message = String.valueOf(body);
+        long timestamp = Calendar.getInstance().getTimeInMillis();
+        InFlightSmsMessage smsMessage = new InFlightSmsMessage(sendAddress, message, timestamp);
+        listener.sendSms(smsMessage);
     }
 
     @Override

@@ -16,8 +16,10 @@
 
 package com.amlcurran.messages;
 
+import com.amlcurran.messages.data.InFlightSmsMessage;
+
 public interface SmsComposeListener {
-    void sendSms(String address, String message);
+    void sendSms(InFlightSmsMessage smsMessage);
 
     void callNumber(String sendAddress);
 }
