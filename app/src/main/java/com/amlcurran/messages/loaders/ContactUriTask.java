@@ -21,16 +21,17 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.provider.ContactsContract;
 
-import com.github.amlcurran.sourcebinder.CursorHelper;
+import com.amlcurran.messages.core.data.Contact;
+import com.amlcurran.messages.data.ContactFactory;
 
 import java.util.concurrent.Callable;
 
-class SingleContactTask implements Callable<Object> {
+class ContactUriTask implements Callable<Object> {
     private final ContentResolver contentResolver;
     private final String address;
     private final OnContactQueryListener onContactQueryListener;
 
-    public SingleContactTask(ContentResolver contentResolver, String address, OnContactQueryListener onContactQueryListener) {
+    public ContactUriTask(ContentResolver contentResolver, String address, OnContactQueryListener onContactQueryListener) {
         this.contentResolver = contentResolver;
         this.address = address;
         this.onContactQueryListener = onContactQueryListener;
@@ -45,10 +46,8 @@ class SingleContactTask implements Callable<Object> {
         Cursor result = contentResolver.query(createPhoneLookupUri(address), new String[] { ContactsContract.Contacts._ID, ContactsContract.Contacts.LOOKUP_KEY },
                 null, null, null);
         if (result.moveToFirst()) {
-            String lookupKey = CursorHelper.asString(result, ContactsContract.Contacts.LOOKUP_KEY);
-            long id = CursorHelper.asLong(result, ContactsContract.Contacts._ID);
-            Uri lookupUri = ContactsContract.Contacts.getLookupUri(id, lookupKey);
-            onContactQueryListener.contactLoaded(ContactsContract.Contacts.lookupContact(contentResolver, lookupUri));
+            Contact contact = ContactFactory.fromCursor(result);
+            onContactQueryListener.contactLoaded(contact);
         }
         return null;
     }

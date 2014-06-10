@@ -106,7 +106,7 @@ public class ExecutorMessagesLoader implements MessagesLoader {
 
     @Override
     public void queryContact(String address, OnContactQueryListener onContactQueryListener) {
-        submit(new SingleContactTask(getResolver(), address, onContactQueryListener));
+        submit(new ContactUriTask(getResolver(), address, onContactQueryListener));
     }
 
     @Override

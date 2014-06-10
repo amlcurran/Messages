@@ -16,8 +16,8 @@
 
 package com.amlcurran.messages.loaders;
 
-import android.net.Uri;
+import com.amlcurran.messages.core.data.Contact;
 
 public interface OnContactQueryListener {
-    void contactLoaded(Uri contactUri);
+    void contactLoaded(Contact contact);
 }

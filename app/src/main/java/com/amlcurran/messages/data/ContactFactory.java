@@ -29,14 +29,16 @@ public class ContactFactory {
     public static final String[] VALID_PROJECTION = new String[] {ContactsContract.Data._ID,
             ContactsContract.Data.DISPLAY_NAME_PRIMARY,
             ContactsContract.Data.PHOTO_ID,
-            ContactsContract.CommonDataKinds.Phone.NUMBER };
+            ContactsContract.CommonDataKinds.Phone.NUMBER,
+            ContactsContract.Contacts.LOOKUP_KEY };
 
     public static Contact fromCursor(Cursor peopleCursor) {
         String person = CursorHelper.asString(peopleCursor, ContactsContract.CommonDataKinds.Identity.DISPLAY_NAME_PRIMARY);
         long photoId = CursorHelper.asLong(peopleCursor, ContactsContract.Contacts.PHOTO_ID);
         long contactId = CursorHelper.asLong(peopleCursor, ContactsContract.Contacts._ID);
         String rawAddress = CursorHelper.asString(peopleCursor, ContactsContract.CommonDataKinds.Phone.NUMBER);
-        return new SavedContact(contactId, person, rawAddress, photoId);
+        String lookupKey = CursorHelper.asString(peopleCursor, ContactsContract.Contacts.LOOKUP_KEY);
+        return new SavedContact(contactId, person, rawAddress, photoId, lookupKey);
     }
 
     public static Contact fromAddress(String address1) {

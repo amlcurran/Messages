@@ -40,6 +40,11 @@ public class RawContact implements Contact {
     }
 
     @Override
+    public String getLookupKey() {
+        return null;
+    }
+
+    @Override
     public String getNumber() {
         return address;
     }

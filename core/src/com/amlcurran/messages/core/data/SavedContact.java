@@ -24,12 +24,14 @@ public class SavedContact implements Contact {
     private final String name;
     private final String address;
     private final long photoId;
+    private final String lookupKey;
 
-    public SavedContact(long contactId, String name, String address, long photoId) {
+    public SavedContact(long contactId, String name, String address, long photoId, String lookupKey) {
         this.contactId = contactId;
         this.name = name;
         this.address = address;
         this.photoId = photoId;
+        this.lookupKey = lookupKey;
     }
 
     @Override
@@ -49,6 +51,11 @@ public class SavedContact implements Contact {
     @Override
     public long getContactId() {
         return contactId;
+    }
+
+    @Override
+    public String getLookupKey() {
+        return lookupKey;
     }
 
     @Override

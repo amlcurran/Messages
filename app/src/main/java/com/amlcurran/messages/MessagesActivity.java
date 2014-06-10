@@ -20,11 +20,13 @@ import android.app.Activity;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.StrictMode;
+import android.provider.ContactsContract;
 import android.view.Menu;
 import android.view.MenuItem;
 
 import com.amlcurran.messages.conversationlist.ConversationListFragment;
 import com.amlcurran.messages.conversationlist.ConversationModalMarshall;
+import com.amlcurran.messages.core.data.Contact;
 import com.amlcurran.messages.core.data.Conversation;
 import com.amlcurran.messages.core.loaders.ConversationListChangeListener;
 import com.amlcurran.messages.data.InFlightSmsMessage;
@@ -239,7 +241,9 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
         getMessagesLoader().queryContact(address, new OnContactQueryListener() {
 
             @Override
-            public void contactLoaded(Uri contactUri) {
+            public void contactLoaded(Contact contact) {
+                Uri lookupUri = ContactsContract.Contacts.getLookupUri(contact.getContactId(), contact.getLookupKey());
+                Uri contactUri = ContactsContract.Contacts.lookupContact(getContentResolver(), lookupUri);
                 activityController.viewContact(contactUri);
             }
         });

@@ -23,5 +23,7 @@ public interface Contact {
 
     long getContactId();
 
+    String getLookupKey();
+
     String getNumber();
 }
