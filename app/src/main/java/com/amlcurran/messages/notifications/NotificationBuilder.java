@@ -124,6 +124,7 @@ public class NotificationBuilder {
         return new Notification.Builder(this.context)
                 .setContentIntent(pendingIntent)
                 .setDefaults(Notification.DEFAULT_ALL)
+                .setAutoCancel(true)
                 .setVibrate(VIBRATE_PATTERN)
                 .setSmallIcon(R.drawable.ic_notify_sms);
     }
