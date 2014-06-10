@@ -40,6 +40,10 @@
         <item name="android:lines">2</item>
     </style>
 
+    <style name="ConversationText.Inverse">
+        <item name="android:textAppearance">?android:attr/textAppearanceSmallInverse</item>
+    </style>
+
     <style name="ConversationText.Unread">
         <item name="android:textStyle">bold</item>
         <item name="android:textColor">@android:color/primary_text_light</item>
@@ -49,6 +53,10 @@
         <item name="android:textAppearance">?android:attr/textAppearanceMedium</item>
         <item name="android:singleLine">true</item>
         <item name="android:ellipsize">end</item>
+    </style>
+
+    <style name="ConversationTitle.Inverse">
+        <item name="android:textAppearance">?android:attr/textAppearanceMediumInverse</item>
     </style>
 
     <style name="ConversationTitle.Unread">

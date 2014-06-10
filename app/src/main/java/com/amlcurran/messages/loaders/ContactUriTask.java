@@ -43,8 +43,7 @@ class ContactUriTask implements Callable<Object> {
 
     @Override
     public Object call() throws Exception {
-        Cursor result = contentResolver.query(createPhoneLookupUri(address), new String[] { ContactsContract.Contacts._ID, ContactsContract.Contacts.LOOKUP_KEY },
-                null, null, null);
+        Cursor result = contentResolver.query(createPhoneLookupUri(address), ContactFactory.VALID_PROJECTION, null, null, null);
         if (result.moveToFirst()) {
             Contact contact = ContactFactory.fromCursor(result);
             onContactQueryListener.contactLoaded(contact);

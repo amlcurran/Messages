@@ -5,6 +5,13 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <view
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        class="com.amlcurran.messages.ui.ContactView"
+        android:id="@+id/thread_header"
+        android:layout_gravity="center_horizontal" />
+
     <include
         layout="@android:layout/list_content"
         android:layout_height="0dp"
