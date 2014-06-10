@@ -48,6 +48,7 @@ import java.util.List;
 
 public class ComposeNewFragment extends Fragment implements ComposeMessageView.OnMessageComposedListener, TextWatcher, RecipientChooser.ChooserListener {
 
+    private static final String EXTRA_ADDRESS = "address";
     private ComposeMessageView composeView;
     private EditText pickPersonView;
     private DefaultAppChecker defaultAppChecker;
@@ -57,6 +58,18 @@ public class ComposeNewFragment extends Fragment implements ComposeMessageView.O
     private SourceBinderAdapter<Contact> adapter;
     private MessagesLoader loader;
     private RecipientChooser recipientChooser;
+
+    public static ComposeNewFragment withAddress(String sendAddress) {
+        ComposeNewFragment newFragment = new ComposeNewFragment();
+        Bundle bundle = new Bundle();
+        bundle.putString(EXTRA_ADDRESS, sendAddress);
+        newFragment.setArguments(bundle);
+        return newFragment;
+    }
+
+    public ComposeNewFragment() {
+
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -82,7 +95,15 @@ public class ComposeNewFragment extends Fragment implements ComposeMessageView.O
         personListView.setOnItemClickListener(recipientChooser);
         personListView.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
 
+        if (hasPreparedAddress()) {
+            pickPersonView.setText(getPreparedAddress());
+        }
+
         loadContacts();
+    }
+
+    private boolean hasPreparedAddress() {
+        return getArguments() != null && getArguments().containsKey(EXTRA_ADDRESS);
     }
 
     private void loadContacts() {
@@ -162,6 +183,10 @@ public class ComposeNewFragment extends Fragment implements ComposeMessageView.O
     @Override
     public void recipientChosen(Contact contact) {
         pickPersonView.setText(contact.getNumber());
+    }
+
+    public String getPreparedAddress() {
+        return getArguments().getString(EXTRA_ADDRESS);
     }
 
     private class ContactBinder extends SimpleBinder<Contact> {

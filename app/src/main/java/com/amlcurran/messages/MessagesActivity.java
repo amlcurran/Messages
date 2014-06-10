@@ -58,6 +58,7 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
     private MenuController menuController;
     private DefaultAppChecker appChecker;
     private EventBus eventBus;
+    private LaunchAssistant launchHelper = new LaunchAssistant();
     private boolean isSecondaryVisible;
 
     @Override
@@ -85,11 +86,39 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
             statReporter = new NullStatReporter();
         }
 
-        if (savedInstanceState == null) {
-            fragmentController.loadEmptyFragment();
-            fragmentController.loadMessagesListFragment();
+        Launch launch = launchHelper.getLaunchType(savedInstanceState, getIntent());
+
+        switch (launch) {
+
+            case FIRST_START:
+                firstStart();
+                break;
+
+            case ANONYMOUS_SEND:
+                anonymousSend();
+                break;
+
+            case SEND_TO:
+                Uri data = getIntent().getData();
+                String sendAddress = data.getSchemeSpecificPart();
+                sendTo(sendAddress);
+                break;
+
         }
 
+    }
+
+    private void sendTo(String sendAddress) {
+        fragmentController.replaceFragment(ComposeNewFragment.withAddress(sendAddress), false);
+    }
+
+    private void anonymousSend() {
+        fragmentController.replaceFragment(new ComposeNewFragment(), false);
+    }
+
+    private void firstStart() {
+        fragmentController.loadEmptyFragment();
+        fragmentController.loadMessagesListFragment();
     }
 
     @Override
