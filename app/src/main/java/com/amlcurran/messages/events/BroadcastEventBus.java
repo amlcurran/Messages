@@ -26,9 +26,10 @@ public class BroadcastEventBus implements EventBus {
 
     private static final String BASE_BROADCAST = "com.amlcurran.messages";
     public static final String BROADCAST_MESSAGE_SENT = BASE_BROADCAST + ".broadcast_message_sent";
-    public static final String BROADCAST_LIST_CHANGED = BASE_BROADCAST + ".BROADCAST_LIST_CHANGED";
+    public static final String BROADCAST_LIST_INVALIDATED = BASE_BROADCAST + ".BROADCAST_LIST_INVALIDATED";
     public static final String BROADCAST_MESSAGE_RECEIVED = BASE_BROADCAST + ".broadcast_message_received";
     public static final String BROADCAST_MESSAGE_SENDING = BASE_BROADCAST + ".broadcast_message_sending";
+    public static final String BROADCAST_LIST_LOADED = BASE_BROADCAST + ".LIST_LOADED";
     private final LocalBroadcastManager broadcaster;
 
     public BroadcastEventBus(Context context) {
@@ -36,8 +37,8 @@ public class BroadcastEventBus implements EventBus {
     }
 
     @Override
-    public void postListChanged() {
-        broadcaster.sendBroadcast(new Intent(BROADCAST_LIST_CHANGED));
+    public void postListInvalidated() {
+        broadcaster.sendBroadcast(new Intent(BROADCAST_LIST_INVALIDATED));
     }
 
     @Override
@@ -55,5 +56,10 @@ public class BroadcastEventBus implements EventBus {
         Intent broadcast = new Intent(BROADCAST_MESSAGE_SENDING);
         broadcast.putExtra("message", message);
         broadcaster.sendBroadcast(broadcast);
+    }
+
+    @Override
+    public void postListLoaded() {
+        broadcaster.sendBroadcast(new Intent(BROADCAST_LIST_LOADED));
     }
 }

@@ -27,6 +27,7 @@ import com.amlcurran.messages.conversationlist.PhotoLoadListener;
 import com.amlcurran.messages.core.data.Conversation;
 import com.amlcurran.messages.core.loaders.ConversationListChangeListener;
 import com.amlcurran.messages.core.loaders.ThreadListener;
+import com.amlcurran.messages.events.EventBus;
 
 import java.util.List;
 import java.util.concurrent.Callable;
@@ -37,11 +38,13 @@ public class ExecutorMessagesLoader implements MessagesLoader {
     private final Context context;
     private final ExecutorService executor;
     private final MessagesCache cache;
+    private final EventBus eventBus;
 
-    public ExecutorMessagesLoader(Context context, ExecutorService executor, MessagesCache cache) {
+    public ExecutorMessagesLoader(Context context, ExecutorService executor, MessagesCache cache, EventBus eventBus) {
         this.context = context;
         this.executor = executor;
         this.cache = cache;
+        this.eventBus = eventBus;
     }
 
     private ContentResolver getResolver() {
@@ -65,7 +68,12 @@ public class ExecutorMessagesLoader implements MessagesLoader {
     @Override
     public void loadConversationList(ConversationListListener loadListener, Sort sort) {
         if (cache.getConversationList() == null) {
-            submit(new ConversationListTask(getResolver(), loadListener, sort, cache));
+            submit(new ConversationListTask(getResolver(), new ConversationListListener() {
+                @Override
+                public void onConversationListLoaded(List<Conversation> conversations) {
+                    eventBus.postListLoaded();
+                }
+            }, sort, cache));
         } else {
             loadListener.onConversationListLoaded(cache.getConversationList());
         }

@@ -49,11 +49,11 @@ public class MessagesApp extends Application implements BroadcastEventSubscriber
         PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
         ExecutorService executor = Executors.newCachedThreadPool();
         cache = new MemoryMessagesCache();
-        loader = new ExecutorMessagesLoader(this, executor, cache);
         notifier = new Notifier(this);
         eventBus = new BroadcastEventBus(this);
+        loader = new ExecutorMessagesLoader(this, executor, cache, eventBus);
         subscriber = new BroadcastEventSubscriber(this, this);
-        subscriber.startListening(BroadcastEventBus.BROADCAST_LIST_CHANGED);
+        subscriber.startListening(BroadcastEventBus.BROADCAST_LIST_INVALIDATED);
         primeZygote(executor);
     }
 
@@ -80,6 +80,7 @@ public class MessagesApp extends Application implements BroadcastEventSubscriber
     @Override
     public void onMessageReceived() {
         cache.invalidate();
+        loader.loadConversationList(null, new PreferenceStore(this).getConversationSort());
     }
 
     private class PrimeLinkifyTask implements Callable<Object> {

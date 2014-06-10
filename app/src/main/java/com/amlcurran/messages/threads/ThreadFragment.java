@@ -147,7 +147,7 @@ public class ThreadFragment extends ListeningCursorListFragment<SmsMessage> impl
 
     @Override
     public void listChanged() {
-        new BroadcastEventBus(getActivity()).postListChanged();
+        new BroadcastEventBus(getActivity()).postListInvalidated();
     }
 
     @Override

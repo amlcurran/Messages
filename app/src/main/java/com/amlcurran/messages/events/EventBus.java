@@ -19,11 +19,13 @@ package com.amlcurran.messages.events;
 import com.amlcurran.messages.data.InFlightSmsMessage;
 
 public interface EventBus {
-    void postListChanged();
+    void postListInvalidated();
 
     void postMessageSent();
 
     void postMessageReceived();
 
     void postMessageSending(InFlightSmsMessage message);
+
+    void postListLoaded();
 }

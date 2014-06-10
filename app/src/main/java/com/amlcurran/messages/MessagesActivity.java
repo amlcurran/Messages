@@ -262,14 +262,14 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
             @Override
             public void run() {
                 viewController.deletedConversations(deletedConversations);
-                eventBus.postListChanged();
+                eventBus.postListInvalidated();
             }
         });
     }
 
     @Override
     public void listChanged() {
-        eventBus.postListChanged();
+        eventBus.postListInvalidated();
     }
 
     @Override
