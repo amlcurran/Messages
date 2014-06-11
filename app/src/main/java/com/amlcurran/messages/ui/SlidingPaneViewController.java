@@ -83,6 +83,7 @@ public class SlidingPaneViewController implements ViewController, View.OnClickLi
         slider.setPanelSlideListener(new SlidingPaneLayout.PanelSlideListener() {
             @Override
             public void onPanelSlide(View panel, float slideOffset) {
+                showPersonChip();
                 contactView.setAlpha(1 - slideOffset);
             }
 

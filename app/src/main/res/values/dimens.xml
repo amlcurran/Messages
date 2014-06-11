@@ -8,4 +8,5 @@
     <dimen name="listview_padding">16dp</dimen>
     <dimen name="photo_dimension">76dp</dimen>
     <dimen name="photo_animation_length">16dp</dimen>
+    <dimen name="cut_image_border">2dp</dimen>
 </resources>
