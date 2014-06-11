@@ -16,7 +16,9 @@
 
 package com.amlcurran.messages.data;
 
+import android.content.ContentResolver;
 import android.database.Cursor;
+import android.net.Uri;
 import android.provider.ContactsContract;
 
 import com.amlcurran.messages.core.data.RawContact;
@@ -43,5 +45,10 @@ public class ContactFactory {
 
     public static Contact fromAddress(String address1) {
         return new RawContact(address1);
+    }
+
+    public static Uri uriForContact(Contact contact, ContentResolver contentResolver) {
+        Uri lookupUri = ContactsContract.Contacts.getLookupUri(contact.getContactId(), contact.getLookupKey());
+        return ContactsContract.Contacts.lookupContact(contentResolver, lookupUri);
     }
 }
