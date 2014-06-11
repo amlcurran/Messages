@@ -21,26 +21,22 @@ import android.app.Activity;
 import android.support.v4.widget.SlidingPaneLayout;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import com.amlcurran.messages.R;
 import com.amlcurran.messages.core.data.Contact;
-import com.amlcurran.messages.core.data.Conversation;
 import com.amlcurran.messages.loaders.MessagesLoader;
-
-import java.util.List;
 
 public class SlidingPaneViewController implements ViewController, View.OnClickListener {
 
-    private final Activity activity;
     private final Callback callback;
+    private final ActionBar actionBar;
     private View disabledBanner;
     private SlidingPaneLayout slider;
     private ContactView contactView;
 
-    public SlidingPaneViewController(Activity activity, Callback callback) {
-        this.activity = activity;
+    public SlidingPaneViewController(Callback callback, ActionBar actionBar) {
         this.callback = callback;
+        this.actionBar = actionBar;
     }
 
     @Override
@@ -73,12 +69,12 @@ public class SlidingPaneViewController implements ViewController, View.OnClickLi
     }
 
     @Override
-    public void setContentView() {
+    public void setContentView(Activity activity) {
         activity.setContentView(R.layout.activity_messages_sliding);
-        initView();
+        initView(activity);
     }
 
-    private void initView() {
+    private void initView(Activity activity) {
         disabledBanner = activity.findViewById(R.id.disabled_banner);
         disabledBanner.setOnClickListener(this);
         slider = (SlidingPaneLayout) activity.findViewById(R.id.sliding_pane);
@@ -110,27 +106,12 @@ public class SlidingPaneViewController implements ViewController, View.OnClickLi
     }
 
     @Override
-    public void deletedConversations(List<Conversation> deletedConversations) {
-        String toast;
-        if (deletedConversations.size() == 1) {
-            toast = activity.getString(R.string.deleted_one_thread, deletedConversations.get(0).getContact().getDisplayName());
-        } else {
-            toast = activity.getString(R.string.deleted_many_threads, deletedConversations.size());
-        }
-        Toast.makeText(activity, toast, Toast.LENGTH_SHORT).show();
-    }
-
-    @Override
-    public void setUpActionBar(ActionBar actionBar) {
+    public void setUpActionBar() {
         ViewGroup.LayoutParams layoutParams = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.MATCH_PARENT);
-        contactView = new ContactView(getActionBar().getThemedContext(), null);
+        contactView = new ContactView(actionBar.getThemedContext(), null);
         contactView.setLayoutParams(layoutParams);
-        getActionBar().setCustomView(contactView);
-    }
-
-    private ActionBar getActionBar() {
-        return activity.getActionBar();
+        actionBar.setCustomView(contactView);
     }
 
     @Override
@@ -140,13 +121,13 @@ public class SlidingPaneViewController implements ViewController, View.OnClickLi
     }
 
     private void showPersonChip() {
-        getActionBar().setDisplayShowCustomEnabled(true);
-        getActionBar().setDisplayShowHomeEnabled(false);
+        actionBar.setDisplayShowCustomEnabled(true);
+        actionBar.setDisplayShowHomeEnabled(false);
         contactView.setAlpha(1);
     }
 
     private void hidePersonChip() {
-        getActionBar().setDisplayShowCustomEnabled(false);
-        getActionBar().setDisplayShowHomeEnabled(true);
+        actionBar.setDisplayShowCustomEnabled(false);
+        actionBar.setDisplayShowHomeEnabled(true);
     }
 }

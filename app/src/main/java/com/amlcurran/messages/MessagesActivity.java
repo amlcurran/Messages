@@ -16,7 +16,6 @@
 
 package com.amlcurran.messages;
 
-import android.app.ActionBar;
 import android.app.Activity;
 import android.net.Uri;
 import android.os.Bundle;
@@ -54,6 +53,7 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
         ConversationListFragment.Listener, SmsComposeListener,
         DefaultAppChecker.Callback, SlidingPaneViewController.Callback, ConversationModalMarshall.Callback, OnThreadDeleteListener, ConversationListChangeListener, FragmentController.Callback, MenuController.Callbacks {
 
+    private Notifier toastNotifier;
     private StatReporter statReporter;
     private FragmentController fragmentController;
     private ViewController viewController;
@@ -69,12 +69,12 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
         super.onCreate(savedInstanceState);
         fragmentController = new MasterDetailFragmentController(this, this);
         activityController = new ActivityController(this);
-        viewController = new SlidingPaneViewController(this, this);
+        viewController = new SlidingPaneViewController(this, getActionBar());
         menuController = new MenuController(this, this);
-        viewController.setContentView();
+        toastNotifier = new ToastNotifier(this);
 
-        ActionBar actionBar = getActionBar();
-        viewController.setUpActionBar(actionBar);
+        viewController.setContentView(this);
+        viewController.setUpActionBar();
 
         statReporter = new EasyTrackerStatReporter(EasyTracker.getInstance(this));
         appChecker = new DefaultAppChecker(this, this);
@@ -282,7 +282,13 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                viewController.deletedConversations(deletedConversations);
+                String toast;
+                if (deletedConversations.size() == 1) {
+                    toast = getString(R.string.deleted_one_thread, deletedConversations.get(0).getContact().getDisplayName());
+                } else {
+                    toast = getString(R.string.deleted_many_threads, deletedConversations.size());
+                }
+                toastNotifier.notify(toast);
                 eventBus.postListInvalidated();
             }
         });

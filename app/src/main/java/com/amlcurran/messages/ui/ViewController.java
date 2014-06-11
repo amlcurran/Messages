@@ -17,12 +17,10 @@
 package com.amlcurran.messages.ui;
 
 import android.app.ActionBar;
+import android.app.Activity;
 
 import com.amlcurran.messages.core.data.Contact;
-import com.amlcurran.messages.core.data.Conversation;
 import com.amlcurran.messages.loaders.MessagesLoader;
-
-import java.util.List;
 
 public interface ViewController {
     boolean backPressed();
@@ -35,11 +33,9 @@ public interface ViewController {
 
     void showSecondary();
 
-    void setContentView();
+    void setContentView(Activity activity);
 
-    void deletedConversations(List<Conversation> deletedConversations);
-
-    void setUpActionBar(ActionBar actionBar);
+    void setUpActionBar();
 
     void showSelectedContact(Contact contact, MessagesLoader messagesLoader);
 
