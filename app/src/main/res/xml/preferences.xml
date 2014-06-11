@@ -22,4 +22,10 @@
         android:title="@string/preference_unread_title"
         android:summary="@string/preference_unread_summary"
         android:defaultValue="false"/>
+    <RingtonePreference
+        android:key="ringtone"
+        android:showSilent="true"
+        android:showDefault="true"
+        android:ringtoneType="notification"
+        android:title="@string/notification_sound" />
 </PreferenceScreen>

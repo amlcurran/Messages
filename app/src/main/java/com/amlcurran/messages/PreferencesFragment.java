@@ -16,14 +16,55 @@
 
 package com.amlcurran.messages;
 
+import android.content.SharedPreferences;
+import android.media.Ringtone;
+import android.media.RingtoneManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceFragment;
 
-public class PreferencesFragment extends PreferenceFragment {
+public class PreferencesFragment extends PreferenceFragment implements SharedPreferences.OnSharedPreferenceChangeListener {
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         addPreferencesFromResource(R.xml.preferences);
+        setUpToneSummary();
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        getPreferenceManager().getSharedPreferences().registerOnSharedPreferenceChangeListener(this);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        getPreferenceManager().getSharedPreferences().unregisterOnSharedPreferenceChangeListener(this);
+    }
+
+    private void setUpToneSummary() {
+        String summary;
+        String ringtoneUriString = getPreferenceManager().getSharedPreferences().getString("ringtone", null);
+        if (ringtoneUriString != null) {
+            Uri preference = Uri.parse(ringtoneUriString);
+            Ringtone current = getCurrentRingtone(preference);
+            summary = current.getTitle(getActivity());
+        } else {
+            summary = "Default";
+        }
+        findPreference("ringtone").setSummary(summary);
+    }
+
+    private Ringtone getCurrentRingtone(Uri ringtoneUri) {
+        return RingtoneManager.getRingtone(getActivity(), ringtoneUri);
+    }
+
+    @Override
+    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+        if ("ringtone".equals(key)) {
+            setUpToneSummary();
+        }
     }
 }
