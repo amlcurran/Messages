@@ -39,5 +39,7 @@ public interface ViewController {
         void secondaryVisible();
         void secondaryHidden();
         void defaultsBannerPressed();
+
+        void secondarySliding(float slideOffset);
     }
 }

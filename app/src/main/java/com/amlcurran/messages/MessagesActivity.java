@@ -23,6 +23,7 @@ import android.os.StrictMode;
 import android.provider.ContactsContract;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.ViewGroup;
 
 import com.amlcurran.messages.conversationlist.ConversationListFragment;
 import com.amlcurran.messages.conversationlist.ConversationModalMarshall;
@@ -41,6 +42,7 @@ import com.amlcurran.messages.reporting.NullStatReporter;
 import com.amlcurran.messages.reporting.StatReporter;
 import com.amlcurran.messages.telephony.DefaultAppChecker;
 import com.amlcurran.messages.threads.ThreadFragment;
+import com.amlcurran.messages.ui.ContactView;
 import com.amlcurran.messages.ui.FragmentController;
 import com.amlcurran.messages.ui.MasterDetailFragmentController;
 import com.amlcurran.messages.ui.SlidingPaneViewController;
@@ -62,15 +64,22 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
     private EventBus eventBus;
     private LaunchAssistant launchHelper = new LaunchAssistant();
     private boolean isSecondaryVisible;
+    private ContactView contactView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         fragmentController = new MasterDetailFragmentController(this, this);
         activityController = new ActivityController(this);
-        viewController =     new SlidingPaneViewController(this, this);
-        menuController =     new MenuController(this, this);
+        viewController = new SlidingPaneViewController(this, this);
+        menuController = new MenuController(this, this);
         viewController.setContentView();
+
+        ViewGroup.LayoutParams layoutParams = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.MATCH_PARENT);
+        contactView = new ContactView(getActionBar().getThemedContext(), null);
+        contactView.setLayoutParams(layoutParams);
+        getActionBar().setCustomView(contactView);
 
         statReporter = new EasyTrackerStatReporter(EasyTracker.getInstance(this));
         appChecker = new DefaultAppChecker(this, this);
@@ -193,7 +202,21 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
 
     @Override
     public void onConversationSelected(Conversation conversation) {
-        ThreadFragment fragment = ThreadFragment.create(conversation.getThreadId(), conversation.getAddress());
+        String address = conversation.getAddress();
+        ThreadFragment fragment = ThreadFragment.create(conversation.getThreadId(), address);
+
+        getMessagesLoader().queryContact(address, new OnContactQueryListener() {
+            @Override
+            public void contactLoaded(final Contact contact) {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        contactView.setContact(contact, getMessagesLoader());
+                        showPersonChip();
+                    }
+                });
+            }
+        });
         fragmentController.replaceFragment(fragment, false);
     }
 
@@ -222,17 +245,35 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
     public void secondaryVisible() {
         isSecondaryVisible = true;
         menuController.update();
+        showPersonChip();
     }
 
     @Override
     public void secondaryHidden() {
         isSecondaryVisible = false;
         menuController.update();
+        hidePersonChip();
+    }
+
+    private void showPersonChip() {
+        getActionBar().setDisplayShowCustomEnabled(true);
+        getActionBar().setDisplayShowHomeEnabled(false);
+        contactView.setAlpha(1);
+    }
+
+    private void hidePersonChip() {
+        getActionBar().setDisplayShowCustomEnabled(false);
+        getActionBar().setDisplayShowHomeEnabled(true);
     }
 
     @Override
     public void defaultsBannerPressed() {
         activityController.switchSmsApp();
+    }
+
+    @Override
+    public void secondarySliding(float slideOffset) {
+        contactView.setAlpha(1-slideOffset);
     }
 
     @Override
@@ -261,7 +302,7 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
     }
 
     @Override
-     public void threadDeleted(final List<Conversation> deletedConversations) {
+    public void threadDeleted(final List<Conversation> deletedConversations) {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {

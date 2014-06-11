@@ -107,7 +107,7 @@ class ConversationListTask implements Callable<Object> {
     }
 
     private static Uri createPhoneLookupUri(String phoneRaw) {
-        return ContactUriTask.createPhoneLookupUri(phoneRaw);
+        return ContactTask.createPhoneLookupUri(phoneRaw);
     }
 
 }

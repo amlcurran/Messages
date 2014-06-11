@@ -22,16 +22,17 @@ import android.net.Uri;
 import android.provider.ContactsContract;
 
 import com.amlcurran.messages.core.data.Contact;
+import com.amlcurran.messages.core.data.RawContact;
 import com.amlcurran.messages.data.ContactFactory;
 
 import java.util.concurrent.Callable;
 
-class ContactUriTask implements Callable<Object> {
+class ContactTask implements Callable<Object> {
     private final ContentResolver contentResolver;
     private final String address;
     private final OnContactQueryListener onContactQueryListener;
 
-    public ContactUriTask(ContentResolver contentResolver, String address, OnContactQueryListener onContactQueryListener) {
+    public ContactTask(ContentResolver contentResolver, String address, OnContactQueryListener onContactQueryListener) {
         this.contentResolver = contentResolver;
         this.address = address;
         this.onContactQueryListener = onContactQueryListener;
@@ -47,6 +48,8 @@ class ContactUriTask implements Callable<Object> {
         if (result.moveToFirst()) {
             Contact contact = ContactFactory.fromCursor(result);
             onContactQueryListener.contactLoaded(contact);
+        } else {
+            onContactQueryListener.contactLoaded(new RawContact(address));
         }
         return null;
     }

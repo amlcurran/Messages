@@ -28,18 +28,14 @@ import android.view.ViewGroup;
 import com.amlcurran.messages.ListeningCursorListFragment;
 import com.amlcurran.messages.R;
 import com.amlcurran.messages.SmsComposeListener;
-import com.amlcurran.messages.core.data.Contact;
-import com.amlcurran.messages.core.data.RawContact;
 import com.amlcurran.messages.core.data.SmsMessage;
 import com.amlcurran.messages.core.loaders.ConversationListChangeListener;
 import com.amlcurran.messages.core.loaders.ThreadListener;
 import com.amlcurran.messages.data.InFlightSmsMessage;
 import com.amlcurran.messages.events.BroadcastEventBus;
 import com.amlcurran.messages.loaders.MessagesLoader;
-import com.amlcurran.messages.loaders.OnContactQueryListener;
 import com.amlcurran.messages.telephony.DefaultAppChecker;
 import com.amlcurran.messages.ui.ComposeMessageView;
-import com.amlcurran.messages.ui.ContactView;
 import com.espian.utils.ProviderHelper;
 import com.github.amlcurran.sourcebinder.ArrayListSource;
 import com.github.amlcurran.sourcebinder.SourceBinderAdapter;
@@ -57,7 +53,6 @@ public class ThreadFragment extends ListeningCursorListFragment<SmsMessage> impl
     private DefaultAppChecker defaultChecker;
     private ComposeMessageView composeView;
     private ArrayListSource<SmsMessage> source;
-    private ContactView contactHeader;
 
     public static ThreadFragment create(String threadId, String address) {
         Bundle bundle = new Bundle();
@@ -73,7 +68,6 @@ public class ThreadFragment extends ListeningCursorListFragment<SmsMessage> impl
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_thread, container, false);
-        contactHeader = (ContactView) view.findViewById(R.id.thread_header);
         composeView = ((ComposeMessageView) view.findViewById(R.id.thread_compose_view));
         composeView.setComposeListener(this);
         return view;
@@ -91,9 +85,6 @@ public class ThreadFragment extends ListeningCursorListFragment<SmsMessage> impl
         setHasOptionsMenu(true);
         sendAddress = getArguments().getString(ADDRESS);
 
-        // Here we use a basic contact to preload the header
-        contactHeader.setContact(new RawContact(sendAddress), getMessageLoader());
-
         source = new ArrayListSource<SmsMessage>();
         adapter = new SourceBinderAdapter<SmsMessage>(getActivity(), source, new ThreadBinder(getListView()));
         defaultChecker = new DefaultAppChecker(getActivity(), composeView);
@@ -110,12 +101,6 @@ public class ThreadFragment extends ListeningCursorListFragment<SmsMessage> impl
     @Override
     public void loadData(MessagesLoader loader, boolean isRefresh) {
         loader.loadThread(getThreadId(), this);
-        loader.queryContact(sendAddress, new OnContactQueryListener() {
-            @Override
-            public void contactLoaded(Contact contact) {
-                contactHeader.setContact(contact, getMessageLoader());
-            }
-        });
     }
 
     @Override

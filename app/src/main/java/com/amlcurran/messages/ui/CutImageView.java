@@ -32,7 +32,7 @@ import android.widget.ImageView;
 
 public class CutImageView extends ImageView {
 
-    public static final double CUT_HEIGHT_OFFSET = .8;
+    public static final double CUT_HEIGHT_OFFSET = 1.0;
     private final RectF circleRectF;
     private final Paint paint;
     private Bitmap bitmapBuffer;
