@@ -16,7 +16,11 @@
 
 package com.amlcurran.messages.ui;
 
+import android.app.ActionBar;
+
+import com.amlcurran.messages.core.data.Contact;
 import com.amlcurran.messages.core.data.Conversation;
+import com.amlcurran.messages.loaders.MessagesLoader;
 
 import java.util.List;
 
@@ -35,11 +39,16 @@ public interface ViewController {
 
     void deletedConversations(List<Conversation> deletedConversations);
 
+    void setUpActionBar(ActionBar actionBar);
+
+    void showSelectedContact(Contact contact, MessagesLoader messagesLoader);
+
     public interface Callback {
         void secondaryVisible();
+
         void secondaryHidden();
+
         void defaultsBannerPressed();
 
-        void secondarySliding(float slideOffset);
     }
 }

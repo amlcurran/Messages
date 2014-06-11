@@ -16,13 +16,17 @@
 
 package com.amlcurran.messages.ui;
 
+import android.app.ActionBar;
 import android.app.Activity;
 import android.support.v4.widget.SlidingPaneLayout;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.amlcurran.messages.R;
+import com.amlcurran.messages.core.data.Contact;
 import com.amlcurran.messages.core.data.Conversation;
+import com.amlcurran.messages.loaders.MessagesLoader;
 
 import java.util.List;
 
@@ -32,6 +36,7 @@ public class SlidingPaneViewController implements ViewController, View.OnClickLi
     private final Callback callback;
     private View disabledBanner;
     private SlidingPaneLayout slider;
+    private ContactView contactView;
 
     public SlidingPaneViewController(Activity activity, Callback callback) {
         this.activity = activity;
@@ -82,16 +87,18 @@ public class SlidingPaneViewController implements ViewController, View.OnClickLi
         slider.setPanelSlideListener(new SlidingPaneLayout.PanelSlideListener() {
             @Override
             public void onPanelSlide(View panel, float slideOffset) {
-                callback.secondarySliding(slideOffset);
+                contactView.setAlpha(1 - slideOffset);
             }
 
             @Override
             public void onPanelOpened(View panel) {
+                hidePersonChip();
                 callback.secondaryHidden();
             }
 
             @Override
             public void onPanelClosed(View panel) {
+                showPersonChip();
                 callback.secondaryVisible();
             }
         });
@@ -111,5 +118,35 @@ public class SlidingPaneViewController implements ViewController, View.OnClickLi
             toast = activity.getString(R.string.deleted_many_threads, deletedConversations.size());
         }
         Toast.makeText(activity, toast, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void setUpActionBar(ActionBar actionBar) {
+        ViewGroup.LayoutParams layoutParams = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.MATCH_PARENT);
+        contactView = new ContactView(getActionBar().getThemedContext(), null);
+        contactView.setLayoutParams(layoutParams);
+        getActionBar().setCustomView(contactView);
+    }
+
+    private ActionBar getActionBar() {
+        return activity.getActionBar();
+    }
+
+    @Override
+    public void showSelectedContact(Contact contact, MessagesLoader messagesLoader) {
+        contactView.setContact(contact, messagesLoader);
+        showPersonChip();
+    }
+
+    private void showPersonChip() {
+        getActionBar().setDisplayShowCustomEnabled(true);
+        getActionBar().setDisplayShowHomeEnabled(false);
+        contactView.setAlpha(1);
+    }
+
+    private void hidePersonChip() {
+        getActionBar().setDisplayShowCustomEnabled(false);
+        getActionBar().setDisplayShowHomeEnabled(true);
     }
 }

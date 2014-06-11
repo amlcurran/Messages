@@ -16,6 +16,7 @@
 
 package com.amlcurran.messages;
 
+import android.app.ActionBar;
 import android.app.Activity;
 import android.net.Uri;
 import android.os.Bundle;
@@ -23,7 +24,6 @@ import android.os.StrictMode;
 import android.provider.ContactsContract;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.ViewGroup;
 
 import com.amlcurran.messages.conversationlist.ConversationListFragment;
 import com.amlcurran.messages.conversationlist.ConversationModalMarshall;
@@ -42,7 +42,6 @@ import com.amlcurran.messages.reporting.NullStatReporter;
 import com.amlcurran.messages.reporting.StatReporter;
 import com.amlcurran.messages.telephony.DefaultAppChecker;
 import com.amlcurran.messages.threads.ThreadFragment;
-import com.amlcurran.messages.ui.ContactView;
 import com.amlcurran.messages.ui.FragmentController;
 import com.amlcurran.messages.ui.MasterDetailFragmentController;
 import com.amlcurran.messages.ui.SlidingPaneViewController;
@@ -64,7 +63,6 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
     private EventBus eventBus;
     private LaunchAssistant launchHelper = new LaunchAssistant();
     private boolean isSecondaryVisible;
-    private ContactView contactView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,11 +73,8 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
         menuController = new MenuController(this, this);
         viewController.setContentView();
 
-        ViewGroup.LayoutParams layoutParams = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.MATCH_PARENT);
-        contactView = new ContactView(getActionBar().getThemedContext(), null);
-        contactView.setLayoutParams(layoutParams);
-        getActionBar().setCustomView(contactView);
+        ActionBar actionBar = getActionBar();
+        viewController.setUpActionBar(actionBar);
 
         statReporter = new EasyTrackerStatReporter(EasyTracker.getInstance(this));
         appChecker = new DefaultAppChecker(this, this);
@@ -211,8 +206,7 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        contactView.setContact(contact, getMessagesLoader());
-                        showPersonChip();
+                        viewController.showSelectedContact(contact, getMessagesLoader());
                     }
                 });
             }
@@ -245,35 +239,17 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
     public void secondaryVisible() {
         isSecondaryVisible = true;
         menuController.update();
-        showPersonChip();
     }
 
     @Override
     public void secondaryHidden() {
         isSecondaryVisible = false;
         menuController.update();
-        hidePersonChip();
-    }
-
-    private void showPersonChip() {
-        getActionBar().setDisplayShowCustomEnabled(true);
-        getActionBar().setDisplayShowHomeEnabled(false);
-        contactView.setAlpha(1);
-    }
-
-    private void hidePersonChip() {
-        getActionBar().setDisplayShowCustomEnabled(false);
-        getActionBar().setDisplayShowHomeEnabled(true);
     }
 
     @Override
     public void defaultsBannerPressed() {
         activityController.switchSmsApp();
-    }
-
-    @Override
-    public void secondarySliding(float slideOffset) {
-        contactView.setAlpha(1-slideOffset);
     }
 
     @Override
