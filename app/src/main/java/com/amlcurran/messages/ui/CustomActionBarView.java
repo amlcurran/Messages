@@ -16,6 +16,7 @@
 
 package com.amlcurran.messages.ui;
 
+import android.animation.LayoutTransition;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -40,7 +41,6 @@ public class CustomActionBarView extends LinearLayout {
     private final View homeChip;
     private final ContactView contactChip;
     private OnOptionsItemSelectedListener listener = OnOptionsItemSelectedListener.NONE;
-    private Menu menu;
 
     public CustomActionBarView(Context context, AttributeSet attrs) {
         this(context, attrs, R.style.ActionBar_Solid_Messages);
@@ -52,6 +52,10 @@ public class CustomActionBarView extends LinearLayout {
         LayoutInflater.from(context).inflate(R.layout.view_action_bar, this, true);
 
         actionItemsHost = (LinearLayout) findViewById(R.id.action_bar_items);
+        actionItemsHost.getLayoutTransition().setDuration(300);
+        actionItemsHost.getLayoutTransition().setStartDelay(LayoutTransition.APPEARING, 0);
+        actionItemsHost.getLayoutTransition().setAnimator(LayoutTransition.CHANGE_APPEARING, null);
+        actionItemsHost.getLayoutTransition().setAnimator(LayoutTransition.CHANGE_DISAPPEARING, null);
         homeChip = findViewById(R.id.home_chip);
         contactChip = ((ContactView) findViewById(R.id.contact_chip));
 
@@ -137,7 +141,4 @@ public class CustomActionBarView extends LinearLayout {
         contactChip.setContact(contact, messagesLoader);
     }
 
-    public void updateSelf() {
-        setMenu(menu);
-    }
 }
