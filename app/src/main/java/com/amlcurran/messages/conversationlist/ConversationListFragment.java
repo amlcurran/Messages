@@ -66,6 +66,7 @@ public class ConversationListFragment extends ListeningCursorListFragment<Conver
         adapter = new SourceBinderAdapter<Conversation>(getActivity(), source, binder);
         setListAdapter(adapter);
         getListView().setChoiceMode(ListView.CHOICE_MODE_SINGLE);
+        getListView().setDivider(null);
         getListView().setOnItemClickListener(this);
         //getListView().setMultiChoiceModeListener(new ConversationModalMarshall(source, modalCallback));
     }
