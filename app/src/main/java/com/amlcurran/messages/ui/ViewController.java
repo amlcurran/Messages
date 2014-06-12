@@ -16,7 +16,6 @@
 
 package com.amlcurran.messages.ui;
 
-import android.app.ActionBar;
 import android.app.Activity;
 
 import com.amlcurran.messages.core.data.Contact;
@@ -46,5 +45,6 @@ public interface ViewController {
 
         void defaultsBannerPressed();
 
+        void secondarySliding(float slideOffset);
     }
 }

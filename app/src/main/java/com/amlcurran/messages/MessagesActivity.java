@@ -41,6 +41,7 @@ import com.amlcurran.messages.reporting.NullStatReporter;
 import com.amlcurran.messages.reporting.StatReporter;
 import com.amlcurran.messages.telephony.DefaultAppChecker;
 import com.amlcurran.messages.threads.ThreadFragment;
+import com.amlcurran.messages.ui.CustomActionBarView;
 import com.amlcurran.messages.ui.FragmentController;
 import com.amlcurran.messages.ui.MasterDetailFragmentController;
 import com.amlcurran.messages.ui.SlidingPaneViewController;
@@ -51,7 +52,8 @@ import java.util.List;
 
 public class MessagesActivity extends Activity implements MessagesLoaderProvider,
         ConversationListFragment.Listener, SmsComposeListener,
-        DefaultAppChecker.Callback, SlidingPaneViewController.Callback, ConversationModalMarshall.Callback, OnThreadDeleteListener, ConversationListChangeListener, FragmentController.Callback, MenuController.Callbacks {
+        DefaultAppChecker.Callback, SlidingPaneViewController.Callback, ConversationModalMarshall.Callback,
+        OnThreadDeleteListener, ConversationListChangeListener, FragmentController.Callback, MenuController.Callbacks {
 
     private Notifier toastNotifier;
     private StatReporter statReporter;
@@ -63,6 +65,7 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
     private EventBus eventBus;
     private LaunchAssistant launchHelper = new LaunchAssistant();
     private boolean isSecondaryVisible;
+    private CustomActionBarView actionBarView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,12 +73,14 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
         fragmentController = new MasterDetailFragmentController(this, this);
         activityController = new ActivityController(this);
         viewController = new SlidingPaneViewController(this, getActionBar());
-        menuController = new MenuController(this, this);
         toastNotifier = new ToastNotifier(this);
+        getActionBar().hide();
 
         viewController.setContentView(this);
         viewController.setUpActionBar();
 
+        actionBarView = (CustomActionBarView) findViewById(R.id.action_bar);
+        menuController = new MenuController(this, this, actionBarView);
         statReporter = new EasyTrackerStatReporter(EasyTracker.getInstance(this));
         appChecker = new DefaultAppChecker(this, this);
         eventBus = new BroadcastEventBus(this);
@@ -100,7 +105,7 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
                 firstStart();
                 break;
 
-            case ANONYMOUS_SEND:
+            case SEND_ANONYMOUS:
                 anonymousSend();
                 break;
 
@@ -206,6 +211,7 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
+                        actionBarView.selectedContact(contact, getMessagesLoader());
                         viewController.showSelectedContact(contact, getMessagesLoader());
                     }
                 });
@@ -250,6 +256,11 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
     @Override
     public void defaultsBannerPressed() {
         activityController.switchSmsApp();
+    }
+
+    @Override
+    public void secondarySliding(float slideOffset) {
+        actionBarView.setSecondaryVisibility(slideOffset);
     }
 
     @Override

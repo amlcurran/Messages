@@ -20,7 +20,6 @@ import android.app.ActionBar;
 import android.app.Activity;
 import android.support.v4.widget.SlidingPaneLayout;
 import android.view.View;
-import android.view.ViewGroup;
 
 import com.amlcurran.messages.R;
 import com.amlcurran.messages.core.data.Contact;
@@ -32,7 +31,6 @@ public class SlidingPaneViewController implements ViewController, View.OnClickLi
     private final ActionBar actionBar;
     private View disabledBanner;
     private SlidingPaneLayout slider;
-    private ContactView contactView;
 
     public SlidingPaneViewController(Callback callback, ActionBar actionBar) {
         this.callback = callback;
@@ -83,19 +81,20 @@ public class SlidingPaneViewController implements ViewController, View.OnClickLi
         slider.setPanelSlideListener(new SlidingPaneLayout.PanelSlideListener() {
             @Override
             public void onPanelSlide(View panel, float slideOffset) {
-                showPersonChip();
-                contactView.setAlpha(1 - slideOffset);
+                //showPersonChip();
+                //contactView.setAlpha(1 - slideOffset);
+                callback.secondarySliding(slideOffset);
             }
 
             @Override
             public void onPanelOpened(View panel) {
-                hidePersonChip();
+                //hidePersonChip();
                 callback.secondaryHidden();
             }
 
             @Override
             public void onPanelClosed(View panel) {
-                showPersonChip();
+                //showPersonChip();
                 callback.secondaryVisible();
             }
         });
@@ -108,23 +107,23 @@ public class SlidingPaneViewController implements ViewController, View.OnClickLi
 
     @Override
     public void setUpActionBar() {
-        ViewGroup.LayoutParams layoutParams = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.MATCH_PARENT);
-        contactView = new ContactView(actionBar.getThemedContext(), null);
-        contactView.setLayoutParams(layoutParams);
-        actionBar.setCustomView(contactView);
+//        ViewGroup.LayoutParams layoutParams = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+//                ViewGroup.LayoutParams.MATCH_PARENT);
+//        contactView = new ContactView(actionBar.getThemedContext(), null);
+//        contactView.setLayoutParams(layoutParams);
+//        actionBar.setCustomView(contactView);
     }
 
     @Override
     public void showSelectedContact(Contact contact, MessagesLoader messagesLoader) {
-        contactView.setContact(contact, messagesLoader);
-        showPersonChip();
+        //contactView.setContact(contact, messagesLoader);
+        //showPersonChip();
     }
 
     private void showPersonChip() {
         actionBar.setDisplayShowCustomEnabled(true);
         actionBar.setDisplayShowHomeEnabled(false);
-        contactView.setAlpha(1);
+        //contactView.setAlpha(1);
     }
 
     private void hidePersonChip() {

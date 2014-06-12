@@ -24,7 +24,7 @@ public class LaunchAssistant {
     public Launch getLaunchType(Bundle savedInstanceState, Intent intent) {
 
         if (schemeIs(intent, "sms")) {
-            return Launch.ANONYMOUS_SEND;
+            return Launch.SEND_ANONYMOUS;
         }
 
         if (schemeIs(intent, "smsto")) {

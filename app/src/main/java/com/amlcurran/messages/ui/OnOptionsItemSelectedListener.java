@@ -14,8 +14,19 @@
  * limitations under the License.
  */
 
-package com.amlcurran.messages;
+package com.amlcurran.messages.ui;
 
-public enum Launch {
-    FIRST_START, SEND_ANONYMOUS, SEND_TO, OTHER
+import android.view.MenuItem;
+
+public interface OnOptionsItemSelectedListener {
+    public static final OnOptionsItemSelectedListener NONE = new OnOptionsItemSelectedListener() {
+
+        @Override
+        public boolean onOptionsItemSelected(MenuItem menuItem) {
+            return false;
+        }
+
+    };
+
+    boolean onOptionsItemSelected(MenuItem menuItem);
 }
