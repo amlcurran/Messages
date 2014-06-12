@@ -37,13 +37,14 @@ public class MenuController implements OnOptionsItemSelectedListener {
     }
 
     public boolean create(Menu menu) {
+        activity.getMenuInflater().inflate(R.menu.activity_messages, menu);
         actionBarView.setMenu(menu);
         return true;
     }
 
     boolean prepare(Menu menu, boolean isSecondaryVisible) {
-        int[] detailRes = new int[] { R.id.menu_call };
-        int[] masterRes = new int[] { R.id.action_new_message };
+        int[] detailRes = new int[]{R.id.menu_call};
+        int[] masterRes = new int[]{R.id.action_new_message};
         for (int menuRes : detailRes) {
             MenuItem item = MenuFinder.findItemById(menu, menuRes);
             item.setVisible(isSecondaryVisible);

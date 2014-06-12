@@ -52,7 +52,6 @@
                 style="@style/ActionBarText"
                 android:gravity="center_vertical" />
 
-
             </LinearLayout>
 
         <view

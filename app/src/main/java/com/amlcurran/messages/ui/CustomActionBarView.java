@@ -18,6 +18,7 @@ package com.amlcurran.messages.ui;
 
 import android.animation.LayoutTransition;
 import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -27,11 +28,15 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.PopupMenu;
 import android.widget.Toast;
 
 import com.amlcurran.messages.R;
 import com.amlcurran.messages.core.data.Contact;
 import com.amlcurran.messages.loaders.MessagesLoader;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class CustomActionBarView extends LinearLayout {
 
@@ -40,6 +45,7 @@ public class CustomActionBarView extends LinearLayout {
     private final LinearLayout actionItemsHost;
     private final View homeChip;
     private final ContactView contactChip;
+    private final List<MenuItem> overflowItems = new ArrayList<MenuItem>();
     private OnOptionsItemSelectedListener listener = OnOptionsItemSelectedListener.NONE;
 
     public CustomActionBarView(Context context, AttributeSet attrs) {
@@ -74,15 +80,20 @@ public class CustomActionBarView extends LinearLayout {
 
     public void setMenu(Menu menu) {
         actionItemsHost.removeAllViews();
-        LayoutParams layoutParams = createItemLayoutParams();
+        overflowItems.clear();
+        boolean hasOverflowView = false;
 
         for (int i = 0; i < menu.size(); i++) {
             MenuItem item = menu.getItem(i);
             if (item.isVisible()) {
                 if (item.getOrder() != 100) {
-                    View menuView = createMenuView(item);
-                    actionItemsHost.addView(menuView, layoutParams);
+                    actionItemsHost.addView(createMenuView(item), createItemLayoutParams());
                 } else {
+                    if (!hasOverflowView) {
+                        actionItemsHost.addView(createOverflowView(), createItemLayoutParams());
+                        hasOverflowView = true;
+                    }
+                    overflowItems.add(item);
                     // Deal with items that shouldn't be shown as actions
                 }
             }
@@ -95,13 +106,26 @@ public class CustomActionBarView extends LinearLayout {
     }
 
     private View createMenuView(MenuItem item) {
-        ImageView imageView = new ImageView(getContext());
-        imageView.setImageDrawable(item.getIcon());
-        imageView.setScaleType(ImageView.ScaleType.CENTER);
-        imageView.setBackgroundResource(R.drawable.selectable_background_messages);
+        Drawable itemIcon = item.getIcon();
+        ImageView imageView = createMenuItem(itemIcon);
         imageView.setOnClickListener(mActionItemClickListener);
         imageView.setOnLongClickListener(mActionItemLongClickListener);
         imageView.setTag(item);
+        return imageView;
+    }
+
+    private View createOverflowView() {
+        Drawable drawable = getResources().getDrawable(R.drawable.ic_overflow_white_16);
+        ImageView overflowItem = createMenuItem(drawable);
+        overflowItem.setOnClickListener(mOverflowItemClickListener);
+        return overflowItem;
+    }
+
+    private ImageView createMenuItem(Drawable itemIcon) {
+        ImageView imageView = new ImageView(getContext());
+        imageView.setImageDrawable(itemIcon);
+        imageView.setScaleType(ImageView.ScaleType.CENTER);
+        imageView.setBackgroundResource(R.drawable.selectable_background_messages);
         return imageView;
     }
 
@@ -134,6 +158,25 @@ public class CustomActionBarView extends LinearLayout {
                 Log.w(TAG, "Action view long clicked without menu item tag");
             }
             return true;
+        }
+    };
+
+    private OnClickListener mOverflowItemClickListener = new OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            PopupMenu menu = new PopupMenu(getContext(), v);
+            for (MenuItem item : overflowItems) {
+                menu.getMenu().add(0, item.getItemId(), 0, item.getTitle());
+            }
+            menu.setOnMenuItemClickListener(popUpSelectionListener);
+            menu.show();
+        }
+    };
+
+    private PopupMenu.OnMenuItemClickListener popUpSelectionListener = new PopupMenu.OnMenuItemClickListener() {
+        @Override
+        public boolean onMenuItemClick(MenuItem item) {
+            return listener.onOptionsItemSelected(item);
         }
     };
 
