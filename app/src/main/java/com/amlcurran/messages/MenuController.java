@@ -43,8 +43,8 @@ public class MenuController implements OnOptionsItemSelectedListener {
     }
 
     boolean prepare(Menu menu, boolean isSecondaryVisible) {
-        int[] detailRes = new int[]{R.id.menu_call};
-        int[] masterRes = new int[]{R.id.action_new_message};
+        int[] detailRes = new int[] { R.id.menu_call };
+        int[] masterRes = new int[] { };
         for (int menuRes : detailRes) {
             MenuItem item = MenuFinder.findItemById(menu, menuRes);
             item.setVisible(isSecondaryVisible);
@@ -72,10 +72,6 @@ public class MenuController implements OnOptionsItemSelectedListener {
                 callbacks.showConversationList();
                 return true;
 
-            case R.id.action_new_message:
-                callbacks.composeNewMessage();
-                return true;
-
         }
         return false;
     }
@@ -97,6 +93,5 @@ public class MenuController implements OnOptionsItemSelectedListener {
 
         void showConversationList();
 
-        void composeNewMessage();
     }
 }

@@ -31,6 +31,7 @@ public class SlidingPaneViewController implements ViewController, View.OnClickLi
     private final ActionBar actionBar;
     private View disabledBanner;
     private SlidingPaneLayout slider;
+    private View newMessageButton;
 
     public SlidingPaneViewController(Callback callback, ActionBar actionBar) {
         this.callback = callback;
@@ -96,6 +97,13 @@ public class SlidingPaneViewController implements ViewController, View.OnClickLi
             public void onPanelClosed(View panel) {
                 //showPersonChip();
                 callback.secondaryVisible();
+            }
+        });
+        newMessageButton = activity.findViewById(R.id.button_new_message);
+        newMessageButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                callback.newMessageButtonClicked();
             }
         });
     }

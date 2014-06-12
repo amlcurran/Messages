@@ -184,11 +184,6 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
     }
 
     @Override
-    public void composeNewMessage() {
-        fragmentController.loadComposeNewFragment();
-    }
-
-    @Override
     public MessagesLoader getMessagesLoader() {
         return MessagesApp.getMessagesLoader(this);
     }
@@ -261,6 +256,11 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
     @Override
     public void secondarySliding(float slideOffset) {
         actionBarView.setSecondaryVisibility(slideOffset);
+    }
+
+    @Override
+    public void newMessageButtonClicked() {
+        fragmentController.loadComposeNewFragment();
     }
 
     @Override

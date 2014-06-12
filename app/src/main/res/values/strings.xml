@@ -23,5 +23,6 @@
     <string name="mms_error_text">Messages app cannot receive MMS messages</string>
     <string name="new_message">New message</string>
     <string name="notification_sound">Notification sound</string>
+    <string name="cd_new_message">Send new message</string>
 
 </resources>

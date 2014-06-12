@@ -46,5 +46,7 @@ public interface ViewController {
         void defaultsBannerPressed();
 
         void secondarySliding(float slideOffset);
+
+        void newMessageButtonClicked();
     }
 }
