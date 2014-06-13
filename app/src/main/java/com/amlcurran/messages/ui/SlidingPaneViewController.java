@@ -22,8 +22,6 @@ import android.support.v4.widget.SlidingPaneLayout;
 import android.view.View;
 
 import com.amlcurran.messages.R;
-import com.amlcurran.messages.core.data.Contact;
-import com.amlcurran.messages.loaders.MessagesLoader;
 
 public class SlidingPaneViewController implements ViewController, View.OnClickListener {
 
@@ -114,21 +112,6 @@ public class SlidingPaneViewController implements ViewController, View.OnClickLi
     @Override
     public void onClick(View v) {
         callback.defaultsBannerPressed();
-    }
-
-    @Override
-    public void setUpActionBar() {
-//        ViewGroup.LayoutParams layoutParams = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
-//                ViewGroup.LayoutParams.MATCH_PARENT);
-//        contactView = new ContactView(actionBar.getThemedContext(), null);
-//        contactView.setLayoutParams(layoutParams);
-//        actionBar.setCustomView(contactView);
-    }
-
-    @Override
-    public void showSelectedContact(Contact contact, MessagesLoader messagesLoader) {
-        //contactView.setContact(contact, messagesLoader);
-        //showPersonChip();
     }
 
     @Override

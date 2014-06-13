@@ -18,9 +18,6 @@ package com.amlcurran.messages.ui;
 
 import android.app.Activity;
 
-import com.amlcurran.messages.core.data.Contact;
-import com.amlcurran.messages.loaders.MessagesLoader;
-
 public interface ViewController {
     boolean backPressed();
 
@@ -33,10 +30,6 @@ public interface ViewController {
     void showSecondary();
 
     void setContentView(Activity activity);
-
-    void setUpActionBar();
-
-    void showSelectedContact(Contact contact, MessagesLoader messagesLoader);
 
     void hideNewMessageButton();
 

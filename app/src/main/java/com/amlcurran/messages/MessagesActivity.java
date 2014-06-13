@@ -79,7 +79,6 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
         getActionBar().hide();
 
         viewController.setContentView(this);
-        viewController.setUpActionBar();
 
         actionBarView = (CustomActionBarView) findViewById(R.id.action_bar);
         menuController = new MenuController(this, this, actionBarView);
@@ -209,7 +208,6 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
                     @Override
                     public void run() {
                         actionBarView.selectedContact(contact, messagesLoader);
-                        viewController.showSelectedContact(contact, messagesLoader);
                     }
                 });
             }
