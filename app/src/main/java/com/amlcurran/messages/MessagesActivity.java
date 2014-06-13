@@ -66,6 +66,7 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
     private LaunchAssistant launchHelper = new LaunchAssistant();
     private boolean isSecondaryVisible;
     private CustomActionBarView actionBarView;
+    private MessagesLoader messagesLoader;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,6 +75,7 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
         activityController = new ActivityController(this);
         viewController = new SlidingPaneViewController(this, getActionBar());
         toastNotifier = new ToastNotifier(this);
+        messagesLoader = MessagesApp.getMessagesLoader(this);
         getActionBar().hide();
 
         viewController.setContentView(this);
@@ -185,7 +187,7 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
 
     @Override
     public MessagesLoader getMessagesLoader() {
-        return MessagesApp.getMessagesLoader(this);
+        return messagesLoader;
     }
 
     @Override
@@ -200,14 +202,14 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
         String address = conversation.getAddress();
         ThreadFragment fragment = ThreadFragment.create(conversation.getThreadId(), address);
 
-        getMessagesLoader().queryContact(address, new OnContactQueryListener() {
+        messagesLoader.queryContact(address, new OnContactQueryListener() {
             @Override
             public void contactLoaded(final Contact contact) {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        actionBarView.selectedContact(contact, getMessagesLoader());
-                        viewController.showSelectedContact(contact, getMessagesLoader());
+                        actionBarView.selectedContact(contact, messagesLoader);
+                        viewController.showSelectedContact(contact, messagesLoader);
                     }
                 });
             }
@@ -240,22 +242,24 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
     public void secondaryVisible() {
         isSecondaryVisible = true;
         menuController.update();
+        viewController.showNewMessageButton();
     }
 
     @Override
     public void secondaryHidden() {
         isSecondaryVisible = false;
         menuController.update();
-    }
-
-    @Override
-    public void defaultsBannerPressed() {
-        activityController.switchSmsApp();
+        viewController.hideNewMessageButton();
     }
 
     @Override
     public void secondarySliding(float slideOffset) {
         actionBarView.setSecondaryVisibility(slideOffset);
+    }
+
+    @Override
+    public void defaultsBannerPressed() {
+        activityController.switchSmsApp();
     }
 
     @Override
@@ -266,7 +270,7 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
     @Override
     public void viewContact(String address) {
         statReporter.sendUiEvent("view_contact");
-        getMessagesLoader().queryContact(address, new OnContactQueryListener() {
+        messagesLoader.queryContact(address, new OnContactQueryListener() {
 
             @Override
             public void contactLoaded(Contact contact) {
@@ -277,13 +281,13 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
 
     @Override
     public void deleteThreads(List<Conversation> conversationList) {
-        getMessagesLoader().deleteThreads(conversationList, this);
+        messagesLoader.deleteThreads(conversationList, this);
     }
 
     @Override
     public void markAsUnread(List<Conversation> threadId) {
         statReporter.sendUiEvent("mark_thread_unread");
-        getMessagesLoader().markThreadAsUnread(threadId, this);
+        messagesLoader.markThreadAsUnread(threadId, this);
     }
 
     @Override

@@ -32,6 +32,7 @@ public class SlidingPaneViewController implements ViewController, View.OnClickLi
     private View disabledBanner;
     private SlidingPaneLayout slider;
     private View newMessageButton;
+    private boolean isSecondaryOpen = false;
 
     public SlidingPaneViewController(Callback callback, ActionBar actionBar) {
         this.callback = callback;
@@ -82,21 +83,23 @@ public class SlidingPaneViewController implements ViewController, View.OnClickLi
         slider.setPanelSlideListener(new SlidingPaneLayout.PanelSlideListener() {
             @Override
             public void onPanelSlide(View panel, float slideOffset) {
-                //showPersonChip();
-                //contactView.setAlpha(1 - slideOffset);
                 callback.secondarySliding(slideOffset);
             }
 
             @Override
             public void onPanelOpened(View panel) {
-                //hidePersonChip();
-                callback.secondaryHidden();
+                if (isSecondaryOpen) {
+                    callback.secondaryHidden();
+                    isSecondaryOpen = false;
+                }
             }
 
             @Override
             public void onPanelClosed(View panel) {
-                //showPersonChip();
-                callback.secondaryVisible();
+                if (!isSecondaryOpen) {
+                    callback.secondaryVisible();
+                    isSecondaryOpen = true;
+                }
             }
         });
         newMessageButton = activity.findViewById(R.id.button_new_message);
@@ -126,6 +129,22 @@ public class SlidingPaneViewController implements ViewController, View.OnClickLi
     public void showSelectedContact(Contact contact, MessagesLoader messagesLoader) {
         //contactView.setContact(contact, messagesLoader);
         //showPersonChip();
+    }
+
+    @Override
+    public void hideNewMessageButton() {
+        newMessageButton.animate()
+                .translationYBy(-newMessageButton.getMeasuredHeight())
+                .setDuration(150)
+                .start();
+    }
+
+    @Override
+    public void showNewMessageButton() {
+        newMessageButton.animate()
+                .translationYBy(newMessageButton.getMeasuredHeight())
+                .setDuration(150)
+                .start();
     }
 
     private void showPersonChip() {

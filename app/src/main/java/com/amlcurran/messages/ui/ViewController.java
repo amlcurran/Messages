@@ -38,6 +38,10 @@ public interface ViewController {
 
     void showSelectedContact(Contact contact, MessagesLoader messagesLoader);
 
+    void hideNewMessageButton();
+
+    void showNewMessageButton();
+
     public interface Callback {
         void secondaryVisible();
 
