@@ -62,6 +62,7 @@ public class CustomActionBarView extends LinearLayout {
         actionItemsHost.getLayoutTransition().setStartDelay(LayoutTransition.APPEARING, 0);
         actionItemsHost.getLayoutTransition().setAnimator(LayoutTransition.CHANGE_APPEARING, null);
         actionItemsHost.getLayoutTransition().setAnimator(LayoutTransition.CHANGE_DISAPPEARING, null);
+        actionItemsHost.getLayoutTransition().setAnimator(LayoutTransition.DISAPPEARING, null);
         homeChip = findViewById(R.id.home_chip);
         contactChip = ((ContactView) findViewById(R.id.contact_chip));
 
@@ -79,15 +80,14 @@ public class CustomActionBarView extends LinearLayout {
     }
 
     public void setMenu(Menu menu) {
-        actionItemsHost.removeAllViews();
-        overflowItems.clear();
-        boolean hasOverflowView = false;
+
+        boolean hasOverflowView = clearActionBar();
 
         for (int i = 0; i < menu.size(); i++) {
             MenuItem item = menu.getItem(i);
             if (item.isVisible()) {
                 if (item.getOrder() != 100) {
-                    actionItemsHost.addView(createMenuView(item), createItemLayoutParams());
+                    actionItemsHost.addView(createMenuView(item), 0, createItemLayoutParams());
                 } else {
                     if (!hasOverflowView) {
                         actionItemsHost.addView(createOverflowView(), createItemLayoutParams());
@@ -100,9 +100,28 @@ public class CustomActionBarView extends LinearLayout {
         }
     }
 
+    private boolean clearActionBar() {
+        boolean hasOverflowView = false;
+        overflowItems.clear();
+
+        List<View> viewsToRemove = new ArrayList<View>();
+        for (int i = 0; i < actionItemsHost.getChildCount(); i++) {
+            View actionItem = actionItemsHost.getChildAt(i);
+            if (actionItem.getId() != R.id.action_overflow) {
+                viewsToRemove.add(actionItem);
+            } else {
+                hasOverflowView = true;
+            }
+        }
+
+        for (View view : viewsToRemove) {
+            actionItemsHost.removeView(view);
+        }
+        return hasOverflowView;
+    }
+
     private LayoutParams createItemLayoutParams() {
-        LayoutParams params = new LayoutParams(getMeasuredHeight(), ViewGroup.LayoutParams.MATCH_PARENT);
-        return params;
+        return new LayoutParams(getMeasuredHeight(), ViewGroup.LayoutParams.MATCH_PARENT);
     }
 
     private View createMenuView(MenuItem item) {
@@ -117,6 +136,7 @@ public class CustomActionBarView extends LinearLayout {
     private View createOverflowView() {
         Drawable drawable = getResources().getDrawable(R.drawable.ic_overflow_white_16);
         ImageView overflowItem = createMenuItem(drawable);
+        overflowItem.setId(R.id.action_overflow);
         overflowItem.setOnClickListener(mOverflowItemClickListener);
         return overflowItem;
     }
