@@ -21,11 +21,23 @@
         android:key="unread_priority"
         android:title="@string/preference_unread_title"
         android:summary="@string/preference_unread_summary"
-        android:defaultValue="false"/>
-    <RingtonePreference
-        android:key="ringtone"
-        android:showSilent="true"
-        android:showDefault="true"
-        android:ringtoneType="notification"
-        android:title="@string/notification_sound" />
+        android:defaultValue="false" />
+
+    <PreferenceCategory android:title="Notifications">
+
+        <CheckBoxPreference
+            android:key="notifications"
+            android:title="@string/pref_title_notifications"
+            android:summary="@string/pref_sum_notification"
+            android:defaultValue="true" />
+        
+        <RingtonePreference
+            android:key="ringtone"
+            android:showSilent="true"
+            android:showDefault="true"
+            android:ringtoneType="notification"
+            android:title="@string/notification_sound" />
+
+    </PreferenceCategory>
+
 </PreferenceScreen>

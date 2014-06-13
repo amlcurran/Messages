@@ -44,21 +44,31 @@ public class Notifier {
     }
 
     public void updateUnreadNotification() {
-        MessagesApp.getMessagesLoader(context).loadUnreadConversationList(new ConversationListListener() {
-            @Override
-            public void onConversationListLoaded(final List<Conversation> conversations) {
-                Notification notification = notificationBuilder.buildUnreadNotification(conversations);
-                notificationManager.notify(NOTIFICATION_UNREAD_MESSAGES, notification);
-            }
-        });
+        if (showNotifications(context)) {
+            MessagesApp.getMessagesLoader(context).loadUnreadConversationList(new ConversationListListener() {
+                @Override
+                public void onConversationListLoaded(final List<Conversation> conversations) {
+                    Notification notification = notificationBuilder.buildUnreadNotification(conversations);
+                    notificationManager.notify(NOTIFICATION_UNREAD_MESSAGES, notification);
+                }
+            });
+        }
+    }
+
+    private static boolean showNotifications(Context context) {
+        return new PreferenceStore(context).showNotifications();
     }
 
     public void clearNewMessagesNotification() {
-        notificationManager.cancel(NOTIFICATION_UNREAD_MESSAGES);
+        if (showNotifications(context)) {
+            notificationManager.cancel(NOTIFICATION_UNREAD_MESSAGES);
+        }
     }
 
     public void showSendError(InFlightSmsMessage message) {
-        notificationManager.notify(NOTIFICATION_SEND_ERROR, notificationBuilder.buildFailureToSendNotification(message));
+        if (showNotifications(context)) {
+            notificationManager.notify(NOTIFICATION_SEND_ERROR, notificationBuilder.buildFailureToSendNotification(message));
+        }
     }
 
     public void showMmsError() {

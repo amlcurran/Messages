@@ -24,5 +24,7 @@
     <string name="new_message">New message</string>
     <string name="notification_sound">Notification sound</string>
     <string name="cd_new_message">Send new message</string>
+    <string name="pref_sum_notification">Display notifications for new and failed messages</string>
+    <string name="pref_title_notifications">Show notifications</string>
 
 </resources>

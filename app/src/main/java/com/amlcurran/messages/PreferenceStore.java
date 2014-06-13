@@ -20,14 +20,15 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.preference.PreferenceManager;
-import android.util.Log;
 
 import com.amlcurran.messages.core.TextUtils;
 import com.amlcurran.messages.core.data.Sort;
 
 public class PreferenceStore {
 
-    public static final String TAG = PreferenceStore.class.getSimpleName();
+    private static final String UNREAD_PRIORITY = "unread_priority";
+    private static final String RINGTONE = "ringtone";
+    private static final String NOTIFICATIONS = "notifications";
     private final SharedPreferences preferences;
 
     public PreferenceStore(Context context) {
@@ -35,13 +36,16 @@ public class PreferenceStore {
     }
 
     public Sort getConversationSort() {
-        boolean sort = preferences.getBoolean("unread_priority", false);
+        boolean sort = preferences.getBoolean(UNREAD_PRIORITY, false);
         return sort ? Sort.UNREAD : Sort.DEFAULT;
     }
 
     public Uri getRingtoneUri() {
-        String ringtone = preferences.getString("ringtone", null);
-        Log.d(TAG, "Ringtone: " + ringtone);
+        String ringtone = preferences.getString(RINGTONE, null);
         return TextUtils.isEmpty(ringtone) ? null : Uri.parse(ringtone);
+    }
+
+    public boolean showNotifications() {
+        return preferences.getBoolean(NOTIFICATIONS, true);
     }
 }
