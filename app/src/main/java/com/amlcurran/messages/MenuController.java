@@ -27,18 +27,15 @@ import com.espian.utils.ui.MenuFinder;
 public class MenuController implements OnOptionsItemSelectedListener {
     private final Activity activity;
     private final Callbacks callbacks;
-    private final CustomActionBarView actionBarView;
 
     public MenuController(Activity activity, Callbacks callbacks, CustomActionBarView actionBarView) {
         this.activity = activity;
         this.callbacks = callbacks;
-        this.actionBarView = actionBarView;
-        this.actionBarView.setOnOptionsItemSelectedListener(this);
+        actionBarView.setOnOptionsItemSelectedListener(this);
     }
 
     public boolean create(Menu menu) {
         activity.getMenuInflater().inflate(R.menu.activity_messages, menu);
-        actionBarView.setMenu(menu);
         return true;
     }
 
@@ -53,7 +50,6 @@ public class MenuController implements OnOptionsItemSelectedListener {
             MenuItem item = MenuFinder.findItemById(menu, menuRes);
             item.setVisible(!isSecondaryVisible);
         }
-        actionBarView.setMenu(menu);
         return true;
     }
 
@@ -77,7 +73,6 @@ public class MenuController implements OnOptionsItemSelectedListener {
     }
 
     public void update() {
-        //actionBarView.updateSelf();
         activity.invalidateOptionsMenu();
     }
 

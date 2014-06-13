@@ -48,7 +48,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:text="@string/app_name"
-                android:id="@+id/textView"
+                android:id="@+id/action_bar_title"
                 style="@style/ActionBarText"
                 android:gravity="center_vertical" />
 

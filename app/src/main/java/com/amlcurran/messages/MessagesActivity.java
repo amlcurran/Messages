@@ -65,8 +65,8 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
     private EventBus eventBus;
     private LaunchAssistant launchHelper = new LaunchAssistant();
     private boolean isSecondaryVisible;
-    private CustomActionBarView actionBarView;
     private MessagesLoader messagesLoader;
+    private CustomActionBarController actionBarController;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,7 +80,8 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
 
         viewController.setContentView(this);
 
-        actionBarView = (CustomActionBarView) findViewById(R.id.action_bar);
+        CustomActionBarView actionBarView = (CustomActionBarView) findViewById(R.id.action_bar);
+        actionBarController = new CustomActionBarController(actionBarView);
         menuController = new MenuController(this, this, actionBarView);
         statReporter = new EasyTrackerStatReporter(EasyTracker.getInstance(this));
         appChecker = new DefaultAppChecker(this, this);
@@ -154,12 +155,16 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        return menuController.create(menu);
+        menuController.create(menu);
+        actionBarController.menuCreated(menu);
+        return true;
     }
 
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
-        return menuController.prepare(menu, isSecondaryVisible);
+        menuController.prepare(menu, isSecondaryVisible);
+        actionBarController.prepareMenu(menu);
+        return true;
     }
 
     @Override
@@ -207,7 +212,7 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        actionBarView.selectedContact(contact, messagesLoader);
+                        actionBarController.contactSelected(contact, messagesLoader);
                     }
                 });
             }
@@ -252,7 +257,7 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
 
     @Override
     public void secondarySliding(float slideOffset) {
-        actionBarView.setSecondaryVisibility(slideOffset);
+        actionBarController.secondaryVisibility(slideOffset);
     }
 
     @Override
