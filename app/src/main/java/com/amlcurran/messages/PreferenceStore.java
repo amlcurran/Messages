@@ -18,12 +18,16 @@ package com.amlcurran.messages;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.preference.PreferenceManager;
+import android.util.Log;
 
+import com.amlcurran.messages.core.TextUtils;
 import com.amlcurran.messages.core.data.Sort;
 
 public class PreferenceStore {
 
+    public static final String TAG = PreferenceStore.class.getSimpleName();
     private final SharedPreferences preferences;
 
     public PreferenceStore(Context context) {
@@ -33,5 +37,11 @@ public class PreferenceStore {
     public Sort getConversationSort() {
         boolean sort = preferences.getBoolean("unread_priority", false);
         return sort ? Sort.UNREAD : Sort.DEFAULT;
+    }
+
+    public Uri getRingtoneUri() {
+        String ringtone = preferences.getString("ringtone", null);
+        Log.d(TAG, "Ringtone: " + ringtone);
+        return TextUtils.isEmpty(ringtone) ? null : Uri.parse(ringtone);
     }
 }

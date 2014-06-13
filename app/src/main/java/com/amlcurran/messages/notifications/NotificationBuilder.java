@@ -28,6 +28,7 @@ import android.text.style.ForegroundColorSpan;
 import android.text.style.StyleSpan;
 
 import com.amlcurran.messages.MessagesActivity;
+import com.amlcurran.messages.PreferenceStore;
 import com.amlcurran.messages.R;
 import com.amlcurran.messages.core.data.Conversation;
 import com.amlcurran.messages.data.InFlightSmsMessage;
@@ -39,9 +40,11 @@ import java.util.List;
 public class NotificationBuilder {
     private static final long[] VIBRATE_PATTERN = new long[]{ 0, 200 };
     private Context context;
+    private final PreferenceStore preferenceStore;
 
-    public NotificationBuilder(Context context) {
+    public NotificationBuilder(Context context, PreferenceStore preferenceStore) {
         this.context = context;
+        this.preferenceStore = preferenceStore;
     }
 
     public Notification buildUnreadNotification(List<Conversation> conversations) {
@@ -123,7 +126,8 @@ public class NotificationBuilder {
         PendingIntent pendingIntent = PendingIntent.getActivity(this.context, 0, intent, 0);
         return new Notification.Builder(this.context)
                 .setContentIntent(pendingIntent)
-                .setDefaults(Notification.DEFAULT_ALL)
+                .setDefaults(Notification.DEFAULT_LIGHTS | Notification.DEFAULT_VIBRATE)
+                .setSound(preferenceStore.getRingtoneUri())
                 .setAutoCancel(true)
                 .setVibrate(VIBRATE_PATTERN)
                 .setSmallIcon(R.drawable.ic_notify_sms);

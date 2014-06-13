@@ -21,6 +21,7 @@ import android.app.NotificationManager;
 import android.content.Context;
 
 import com.amlcurran.messages.MessagesApp;
+import com.amlcurran.messages.PreferenceStore;
 import com.amlcurran.messages.core.data.Conversation;
 import com.amlcurran.messages.core.conversationlist.ConversationListListener;
 import com.amlcurran.messages.data.InFlightSmsMessage;
@@ -39,7 +40,7 @@ public class Notifier {
     public Notifier(Context context) {
         this.context = context;
         this.notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-        this.notificationBuilder = new NotificationBuilder(context);
+        this.notificationBuilder = new NotificationBuilder(context, new PreferenceStore(context));
     }
 
     public void updateUnreadNotification() {
