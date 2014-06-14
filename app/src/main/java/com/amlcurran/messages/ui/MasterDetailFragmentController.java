@@ -22,7 +22,7 @@ import android.app.FragmentTransaction;
 
 import com.amlcurran.messages.ComposeNewFragment;
 import com.amlcurran.messages.EmptyFragment;
-import com.amlcurran.messages.PreferencesFragment;
+import com.amlcurran.messages.preferences.PreferencesFragment;
 import com.amlcurran.messages.R;
 import com.amlcurran.messages.conversationlist.ConversationListFragment;
 

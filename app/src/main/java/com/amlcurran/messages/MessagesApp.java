@@ -30,6 +30,7 @@ import com.amlcurran.messages.loaders.MemoryMessagesCache;
 import com.amlcurran.messages.loaders.MessagesCache;
 import com.amlcurran.messages.loaders.MessagesLoader;
 import com.amlcurran.messages.notifications.Notifier;
+import com.amlcurran.messages.preferences.PreferenceStore;
 
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;

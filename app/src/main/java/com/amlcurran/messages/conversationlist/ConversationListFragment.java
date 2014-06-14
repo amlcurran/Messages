@@ -25,7 +25,7 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 
 import com.amlcurran.messages.ListeningCursorListFragment;
-import com.amlcurran.messages.PreferenceStore;
+import com.amlcurran.messages.preferences.PreferenceStore;
 import com.amlcurran.messages.R;
 import com.amlcurran.messages.core.conversationlist.ConversationListListener;
 import com.amlcurran.messages.core.data.Conversation;

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.amlcurran.messages;
+package com.amlcurran.messages.preferences;
 
 import android.content.SharedPreferences;
 import android.media.Ringtone;
@@ -23,11 +23,16 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceFragment;
 
+import com.amlcurran.messages.R;
+
 public class PreferencesFragment extends PreferenceFragment implements SharedPreferences.OnSharedPreferenceChangeListener {
+
+    private PreferenceStore preferencesStore;
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        preferencesStore = new PreferenceStore(getActivity());
         addPreferencesFromResource(R.xml.preferences);
         setUpToneSummary();
     }
@@ -45,16 +50,17 @@ public class PreferencesFragment extends PreferenceFragment implements SharedPre
     }
 
     private void setUpToneSummary() {
+        Uri ringtoneUri = preferencesStore.getRingtoneUri();
+
         String summary;
-        String ringtoneUriString = getPreferenceManager().getSharedPreferences().getString("ringtone", null);
-        if (ringtoneUriString != null) {
-            Uri preference = Uri.parse(ringtoneUriString);
-            Ringtone current = getCurrentRingtone(preference);
+        if (ringtoneUri != null) {
+            Ringtone current = getCurrentRingtone(ringtoneUri);
             summary = current.getTitle(getActivity());
         } else {
-            summary = "Default";
+            summary = getString(R.string.default_str);
         }
-        findPreference("ringtone").setSummary(summary);
+
+        findPreference(PreferenceStore.RINGTONE).setSummary(summary);
     }
 
     private Ringtone getCurrentRingtone(Uri ringtoneUri) {
@@ -63,7 +69,7 @@ public class PreferencesFragment extends PreferenceFragment implements SharedPre
 
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-        if ("ringtone".equals(key)) {
+        if (PreferenceStore.RINGTONE.equals(key)) {
             setUpToneSummary();
         }
     }

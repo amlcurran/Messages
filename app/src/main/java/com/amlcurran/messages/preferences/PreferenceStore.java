@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.amlcurran.messages;
+package com.amlcurran.messages.preferences;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -26,9 +26,9 @@ import com.amlcurran.messages.core.data.Sort;
 
 public class PreferenceStore {
 
-    private static final String UNREAD_PRIORITY = "unread_priority";
-    private static final String RINGTONE = "ringtone";
-    private static final String NOTIFICATIONS = "notifications";
+    static final String UNREAD_PRIORITY = "unread_priority";
+    static final String RINGTONE = "ringtone";
+    static final String NOTIFICATIONS = "notifications";
     private final SharedPreferences preferences;
 
     public PreferenceStore(Context context) {

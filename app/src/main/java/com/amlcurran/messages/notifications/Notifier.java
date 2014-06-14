@@ -21,7 +21,7 @@ import android.app.NotificationManager;
 import android.content.Context;
 
 import com.amlcurran.messages.MessagesApp;
-import com.amlcurran.messages.PreferenceStore;
+import com.amlcurran.messages.preferences.PreferenceStore;
 import com.amlcurran.messages.core.data.Conversation;
 import com.amlcurran.messages.core.conversationlist.ConversationListListener;
 import com.amlcurran.messages.data.InFlightSmsMessage;
