@@ -17,6 +17,7 @@
 package com.amlcurran.messages;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.StrictMode;
@@ -117,21 +118,33 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
                 sendTo(sendAddress);
                 break;
 
+            case SHARE_TO:
+                String message = getIntent().getStringExtra(Intent.EXTRA_TEXT);
+                anonymousSendWithMessage(message);
+                break;
+
         }
 
     }
 
+    private void anonymousSendWithMessage(String message) {
+        fragmentController.loadMessagesListFragment();
+        fragmentController.replaceFragment(ComposeNewFragment.withMessage(message), false);
+    }
+
     private void sendTo(String sendAddress) {
+        fragmentController.loadMessagesListFragment();
         fragmentController.replaceFragment(ComposeNewFragment.withAddress(sendAddress), false);
     }
 
     private void anonymousSend() {
+        fragmentController.loadMessagesListFragment();
         fragmentController.replaceFragment(new ComposeNewFragment(), false);
     }
 
     private void firstStart() {
-        fragmentController.loadEmptyFragment();
         fragmentController.loadMessagesListFragment();
+        fragmentController.loadEmptyFragment();
     }
 
     @Override

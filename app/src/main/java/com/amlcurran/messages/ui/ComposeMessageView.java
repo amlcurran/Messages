@@ -109,6 +109,10 @@ public class ComposeMessageView extends LinearLayout implements View.OnClickList
         textEntryField.setHint(R.string.hint_send_message_disabled);
     }
 
+    public void setText(String message) {
+        textEntryField.setText(message);
+    }
+
     public interface OnMessageComposedListener {
         OnMessageComposedListener NONE = new OnMessageComposedListener() {
             @Override

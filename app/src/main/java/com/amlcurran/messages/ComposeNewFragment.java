@@ -49,6 +49,7 @@ import java.util.List;
 public class ComposeNewFragment extends Fragment implements ComposeMessageView.OnMessageComposedListener, TextWatcher, RecipientChooser.ChooserListener {
 
     private static final String EXTRA_ADDRESS = "address";
+    private static final String EXTRA_MESSAGE = "message";
     private ComposeMessageView composeView;
     private EditText pickPersonView;
     private DefaultAppChecker defaultAppChecker;
@@ -63,6 +64,14 @@ public class ComposeNewFragment extends Fragment implements ComposeMessageView.O
         ComposeNewFragment newFragment = new ComposeNewFragment();
         Bundle bundle = new Bundle();
         bundle.putString(EXTRA_ADDRESS, sendAddress);
+        newFragment.setArguments(bundle);
+        return newFragment;
+    }
+
+    public static ComposeNewFragment withMessage(String message) {
+        ComposeNewFragment newFragment = new ComposeNewFragment();
+        Bundle bundle = new Bundle();
+        bundle.putString(EXTRA_MESSAGE, message);
         newFragment.setArguments(bundle);
         return newFragment;
     }
@@ -98,8 +107,19 @@ public class ComposeNewFragment extends Fragment implements ComposeMessageView.O
         if (hasPreparedAddress()) {
             pickPersonView.setText(getPreparedAddress());
         }
+        if (hasPreparedMessage()) {
+            composeView.setText(getPreparedMessage());
+        }
 
         loadContacts();
+    }
+
+    private String getPreparedMessage() {
+        return getArguments().getString(EXTRA_MESSAGE);
+    }
+
+    private boolean hasPreparedMessage() {
+        return getArguments() != null && getArguments().containsKey(EXTRA_MESSAGE);
     }
 
     private boolean hasPreparedAddress() {

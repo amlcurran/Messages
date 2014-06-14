@@ -35,6 +35,10 @@ public class LaunchAssistant {
             throw new RuntimeException("MMS isn't currently supported");
         }
 
+        if (Intent.ACTION_SEND.equals(intent.getAction())) {
+            return Launch.SHARE_TO;
+        }
+
         // if the saved instance state is null, its a first start
         if (savedInstanceState == null) {
             return Launch.FIRST_START;

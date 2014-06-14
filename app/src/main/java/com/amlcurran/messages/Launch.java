@@ -17,5 +17,5 @@
 package com.amlcurran.messages;
 
 public enum Launch {
-    FIRST_START, SEND_ANONYMOUS, SEND_TO, OTHER
+    FIRST_START, SEND_ANONYMOUS, SEND_TO, SHARE_TO, OTHER
 }
