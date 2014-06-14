@@ -22,7 +22,6 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:paddingLeft="4dp"
-    android:paddingRight="4dp"
     android:minHeight="48dp">
 
     <EditText
@@ -37,7 +36,7 @@
         android:inputType="textShortMessage|text|textMultiLine|textCapSentences|textAutoCorrect" />
 
     <ImageButton
-        android:layout_width="48dp"
+        android:layout_width="@dimen/thread_message_offset_horizontal"
         android:layout_height="match_parent"
         android:contentDescription="@string/cd_send_button"
         android:id="@+id/thread_sms_send"
