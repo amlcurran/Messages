@@ -90,6 +90,7 @@ public class ThreadFragment extends ListeningCursorListFragment<SmsMessage> impl
         defaultChecker = new DefaultAppChecker(getActivity(), composeView);
         setListAdapter(adapter);
         getListView().setStackFromBottom(true);
+        getListView().setDivider(null);
     }
 
     @Override
