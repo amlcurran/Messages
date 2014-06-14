@@ -25,6 +25,8 @@
     </style>
 
     <style name="Theme.Messages" parent="@android:style/Theme.Holo.Light.DarkActionBar">
+        <item name="android:windowActionModeOverlay">true</item>
+        <item name="android:windowActionBarOverlay">true</item>
         <item name="android:actionBarItemBackground">@drawable/selectable_background_messages</item>
         <item name="android:popupMenuStyle">@style/PopupMenu.Messages</item>
         <item name="android:dropDownListViewStyle">@style/DropDownListView.Messages</item>

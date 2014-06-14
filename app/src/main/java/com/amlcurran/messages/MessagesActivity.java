@@ -143,8 +143,8 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
     }
 
     private void firstStart() {
-        fragmentController.loadMessagesListFragment();
         fragmentController.loadEmptyFragment();
+        fragmentController.loadMessagesListFragment();
     }
 
     @Override
