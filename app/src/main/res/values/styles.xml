@@ -80,7 +80,7 @@
     </style>
 
     <style name="ContactViewTitle.Light">
-        <item name="android:textAppearance">@android:style/TextAppearance.Medium.Inverse</item>
+        <item name="android:textColor">@android:color/primary_text_dark</item>
     </style>
 
     <style name="ContactViewTitle" parent="@android:style/TextAppearance.Medium">

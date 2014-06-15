@@ -35,6 +35,7 @@ public class ContactView extends LinearLayout {
     private final ImageView contactImageView;
     private final TextView nameTextField;
     private final TextView secondTextField;
+    private long contactId = -1;
 
     public ContactView(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
@@ -42,10 +43,10 @@ public class ContactView extends LinearLayout {
 
     public ContactView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
-        LayoutInflater.from(context).inflate(R.layout.view_contact, this, true);
+        inflate(LayoutInflater.from(context));
 
         TypedArray array = context.obtainStyledAttributes(attrs, R.styleable.ContactView, defStyle, R.style.ContactView);
-        int titleAppearance = array.getResourceId(R.styleable.ContactView_titleTextAppearance, R.style.ConversationTitle);
+        int titleAppearance = array.getResourceId(R.styleable.ContactView_titleTextAppearance, R.style.ContactViewTitle);
         int secondaryAppearance = array.getResourceId(R.styleable.ContactView_secondaryTextAppearance, R.style.ConversationText);
         array.recycle();
 
@@ -57,26 +58,32 @@ public class ContactView extends LinearLayout {
         secondTextField.setTextAppearance(context, secondaryAppearance);
     }
 
+    protected void inflate(LayoutInflater inflater) {
+       inflater.inflate(R.layout.view_contact, this, true);
+    }
+
     public void setContact(final Contact contact, MessagesLoader loader) {
+        contactId = contact.getContactId();
         post(new Runnable() {
             @Override
             public void run() {
                 nameTextField.setText(contact.getDisplayName());
                 secondTextField.setText(contact.getNumber());
-                contactImageView.setImageDrawable(null);
                 contactImageView.setAlpha(0f);
             }
         });
         loader.loadPhoto(contact, new PhotoLoadListener() {
             @Override
             public void onPhotoLoaded(final Bitmap photo) {
-                contactImageView.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        contactImageView.setImageBitmap(photo);
-                        contactImageView.animate().alpha(1f).start();
-                    }
-                });
+                if (contactId == contact.getContactId() || contactId == -1) {
+                    post(new Runnable() {
+                        @Override
+                        public void run() {
+                            contactImageView.setImageBitmap(photo);
+                            contactImageView.animate().alpha(1f).start();
+                        }
+                    });
+                }
             }
         });
     }

@@ -19,7 +19,6 @@ package com.amlcurran.messages;
 import android.app.Activity;
 import android.app.Fragment;
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.telephony.PhoneNumberUtils;
 import android.text.Editable;
@@ -29,12 +28,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.TextView;
 import android.widget.Toast;
 
-import com.amlcurran.messages.conversationlist.PhotoLoadListener;
 import com.amlcurran.messages.core.data.Contact;
 import com.amlcurran.messages.core.loaders.ContactListListener;
 import com.amlcurran.messages.data.InFlightSmsMessage;
@@ -42,6 +38,7 @@ import com.amlcurran.messages.loaders.MessagesLoader;
 import com.amlcurran.messages.loaders.MessagesLoaderProvider;
 import com.amlcurran.messages.telephony.DefaultAppChecker;
 import com.amlcurran.messages.ui.ComposeMessageView;
+import com.amlcurran.messages.ui.SmallContactView;
 import com.espian.utils.ProviderHelper;
 import com.github.amlcurran.sourcebinder.ArrayListSource;
 import com.github.amlcurran.sourcebinder.SimpleBinder;
@@ -217,47 +214,13 @@ public class ComposeNewFragment extends Fragment implements ComposeMessageView.O
 
         @Override
         public View bindView(View convertView, Contact item, int position) {
-            ((TextView) convertView.findViewById(android.R.id.text1)).setText(item.getDisplayName());
-            ((TextView) convertView.findViewById(android.R.id.text2)).setText(item.getNumber());
-            ImageView imageView = (ImageView) convertView.findViewById(R.id.imageView);
-
-            if (isSameItem(convertView, item)) {
-                resetContactImage(imageView);
-                loadContactPhoto(item, imageView);
-            }
-
-            convertView.setTag(item);
+            ((SmallContactView) convertView).setContact(item, loader);
             return convertView;
         }
 
         @Override
         public View createView(Context context, int itemViewType, ViewGroup parent) {
-            return LayoutInflater.from(context).inflate(R.layout.view_pick_contact, parent, false);
-        }
-
-        private boolean isSameItem(View convertView, Contact item) {
-            return convertView.getTag() != item;
-        }
-
-        private void loadContactPhoto(Contact contact, final ImageView imageView) {
-            loader.loadPhoto(contact, new PhotoLoadListener() {
-
-                @Override
-                public void onPhotoLoaded(final Bitmap photo) {
-                    imageView.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            imageView.setAlpha(1f);
-                            imageView.setImageBitmap(photo);
-                        }
-                    });
-                }
-            });
-        }
-
-        private void resetContactImage(ImageView imageView) {
-            imageView.setImageBitmap(null);
-            imageView.setAlpha(0f);
+            return new SmallContactView(context, null);
         }
 
     }
