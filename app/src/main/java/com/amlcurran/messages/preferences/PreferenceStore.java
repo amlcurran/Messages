@@ -24,12 +24,16 @@ import android.preference.PreferenceManager;
 import com.amlcurran.messages.core.TextUtils;
 import com.amlcurran.messages.core.data.Sort;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class PreferenceStore {
 
     static final String UNREAD_PRIORITY = "unread_priority";
     static final String RINGTONE = "ringtone";
     static final String NOTIFICATIONS = "notifications";
     private final SharedPreferences preferences;
+    private final List<PreferenceChangedListener> changedListenerList = new ArrayList<PreferenceChangedListener>();
 
     public PreferenceStore(Context context) {
         this.preferences = PreferenceManager.getDefaultSharedPreferences(context);
@@ -48,4 +52,45 @@ public class PreferenceStore {
     public boolean showNotifications() {
         return preferences.getBoolean(NOTIFICATIONS, true);
     }
+
+    public void stopListeningToPreferenceChanges(PreferenceChangedListener changedListener) {
+        changedListenerList.remove(changedListener);
+        if (changedListenerList.size() == 0) {
+            unregisterListener();
+        }
+    }
+
+    public void listenToPreferenceChanges(PreferenceChangedListener changedListener) {
+        changedListenerList.add(changedListener);
+        if (changedListenerList.size() == 1) {
+            registerListener();
+        }
+    }
+
+    private void registerListener() {
+        this.preferences.registerOnSharedPreferenceChangeListener(internalChangeListener);
+    }
+
+    private void unregisterListener() {
+        this.preferences.unregisterOnSharedPreferenceChangeListener(internalChangeListener);
+    }
+
+    private SharedPreferences.OnSharedPreferenceChangeListener internalChangeListener =
+            new SharedPreferences.OnSharedPreferenceChangeListener() {
+                @Override
+                public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+                    notifyListenersOfChange(key);
+                }
+            };
+
+    private void notifyListenersOfChange(String key) {
+        for (PreferenceChangedListener listener : changedListenerList) {
+            listener.preferenceChanged(key);
+        }
+    }
+
+    public interface PreferenceChangedListener {
+        void preferenceChanged(String key);
+    }
+
 }

@@ -16,39 +16,41 @@
 
 package com.amlcurran.messages.preferences;
 
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceFragment;
 
 import com.amlcurran.messages.R;
 
-public class PreferencesFragment extends PreferenceFragment implements SharedPreferences.OnSharedPreferenceChangeListener {
+public class PreferencesFragment extends PreferenceFragment implements PreferenceStore.PreferenceChangedListener {
 
     private RingtoneHelper ringtoneHelper;
+    private PreferenceStore preferencesStore;
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        PreferenceStore preferencesStore = new PreferenceStore(getActivity());
+        preferencesStore = new PreferenceStore(getActivity());
         ringtoneHelper = new RingtoneHelper(this, preferencesStore);
+
         addPreferencesFromResource(R.xml.preferences);
+
         ringtoneHelper.setUpToneSummary();
     }
 
     @Override
     public void onStart() {
         super.onStart();
-        getPreferenceManager().getSharedPreferences().registerOnSharedPreferenceChangeListener(this);
+        preferencesStore.listenToPreferenceChanges(this);
     }
 
     @Override
     public void onStop() {
         super.onStop();
-        getPreferenceManager().getSharedPreferences().unregisterOnSharedPreferenceChangeListener(this);
+        preferencesStore.stopListeningToPreferenceChanges(this);
     }
 
     @Override
-    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+    public void preferenceChanged(String key) {
         if (PreferenceStore.RINGTONE.equals(key)) {
             ringtoneHelper.setUpToneSummary();
         }
