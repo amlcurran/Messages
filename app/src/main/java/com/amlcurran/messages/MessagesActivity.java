@@ -72,7 +72,7 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
         fragmentController = new MasterDetailFragmentController(this, this);
         viewController = new SlidingPaneViewController(this, getActionBar());
         toastNotifier = new ToastNotifier(this);
-        activityController  = SingletonManager.getActivityController(this);
+        activityController = new ActivityController(this);
         messagesLoader      = SingletonManager.getMessagesLoader(this);
         statReporter        = SingletonManager.getStatsReporter(this);;
         eventBus            = SingletonManager.getEventBus(this);
