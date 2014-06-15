@@ -19,6 +19,7 @@ package com.amlcurran.messages.conversationlist;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
+import android.util.LruCache;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,6 +27,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.amlcurran.messages.R;
+import com.amlcurran.messages.core.data.Contact;
 import com.amlcurran.messages.core.data.Conversation;
 import com.amlcurran.messages.loaders.MessagesLoader;
 import com.github.amlcurran.sourcebinder.SimpleBinder;
@@ -36,10 +38,12 @@ public class ConversationsBinder extends SimpleBinder<Conversation> {
     private static final int IS_READ = 0;
     private final float animationLength;
     private final MessagesLoader loader;
+    private final LruCache<Conversation, Bitmap> lruCache;
 
     public ConversationsBinder(Resources resources, MessagesLoader loader) {
         this.loader = loader;
         this.animationLength = resources.getDimension(R.dimen.photo_animation_length);
+        this.lruCache = new LruCache<Conversation, Bitmap>(20);
     }
 
     @Override
@@ -58,7 +62,9 @@ public class ConversationsBinder extends SimpleBinder<Conversation> {
         TextView textView2 = getTextView(convertView, android.R.id.text2);
         final ImageView imageView = (ImageView) convertView.findViewById(R.id.image);
 
-        if (isSameItem(convertView, item)) {
+        if (hasCacheItem(item)) {
+           imageView.setImageBitmap(lruCache.get(item));
+        } else if (isNotSameItem(convertView, item)) {
             resetContactImage(imageView);
             loadContactPhoto(item, imageView);
         }
@@ -70,27 +76,42 @@ public class ConversationsBinder extends SimpleBinder<Conversation> {
         return convertView;
     }
 
-    private static boolean isSameItem(View convertView, Conversation item) {
+    private boolean hasCacheItem(Conversation conversation) {
+        return lruCache.get(conversation) != null;
+    }
+
+    private static boolean isNotSameItem(View convertView, Conversation item) {
         return convertView.getTag() != item;
     }
 
-    private void loadContactPhoto(Conversation item, final ImageView imageView) {
-        loader.loadPhoto(item.getContact(), new PhotoLoadListener() {
+    private void loadContactPhoto(final Conversation item, final ImageView imageView) {
 
-            @Override
-            public void onPhotoLoaded(final Bitmap photo) {
-                imageView.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        imageView.setImageBitmap(photo);
-                        imageView.setTranslationX(-animationLength);
-                        imageView.animate()
-                                .translationXBy(animationLength)
-                                .alpha(1f).start();
-                    }
-                });
-            }
-        });
+        final Contact contact = item.getContact();
+
+        if (lruCache.get(item) != null) {
+            imageView.setImageBitmap(lruCache.get(item));
+            imageView.setAlpha(1f);
+        } else {
+
+            loader.loadPhoto(contact, new PhotoLoadListener() {
+
+                @Override
+                public void onPhotoLoaded(final Bitmap photo) {
+                    imageView.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            imageView.setImageBitmap(photo);
+                            imageView.setTranslationX(-animationLength);
+                            imageView.animate()
+                                    .translationXBy(animationLength)
+                                    .alpha(1f).start();
+                            lruCache.put(item, photo);
+                        }
+                    });
+                }
+            });
+
+        }
     }
 
     private void resetContactImage(ImageView imageView) {
@@ -105,9 +126,9 @@ public class ConversationsBinder extends SimpleBinder<Conversation> {
     @Override
     public View createView(Context context, int itemViewType, ViewGroup parent) {
         if (itemViewType == IS_READ) {
-            return LayoutInflater.from(context).inflate(R.layout.item_conversation_read, null, false);
+            return LayoutInflater.from(context).inflate(R.layout.item_conversation_read, parent, false);
         } else {
-            return LayoutInflater.from(context).inflate(R.layout.item_conversation_unread, null, false);
+            return LayoutInflater.from(context).inflate(R.layout.item_conversation_unread, parent, false);
         }
     }
 }

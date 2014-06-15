@@ -53,6 +53,11 @@ public class Conversation {
         return threadId.hashCode();
     }
 
+    @Override
+    public String toString() {
+        return String.valueOf(threadId);
+    }
+
     public Contact getContact() {
         return contact;
     }
