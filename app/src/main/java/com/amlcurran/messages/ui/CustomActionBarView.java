@@ -17,6 +17,7 @@
 package com.amlcurran.messages.ui;
 
 import android.animation.LayoutTransition;
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
@@ -184,11 +185,12 @@ public class CustomActionBarView extends LinearLayout {
     private OnClickListener mOverflowItemClickListener = new OnClickListener() {
         @Override
         public void onClick(View v) {
-            PopupMenu menu = new PopupMenu(getContext(), v);
+            PopupMenu menu = new PopupMenu(getThemedContext(), v);
             for (MenuItem item : overflowItems) {
                 menu.getMenu().add(0, item.getItemId(), 0, item.getTitle());
             }
             menu.setOnMenuItemClickListener(popUpSelectionListener);
+            v.setOnTouchListener(menu.getDragToOpenListener());
             menu.show();
         }
     };
@@ -202,6 +204,14 @@ public class CustomActionBarView extends LinearLayout {
 
     public void selectedContact(Contact contact, MessagesLoader messagesLoader) {
         contactChip.setContact(contact, messagesLoader);
+    }
+
+    private Context getThemedContext() {
+        try {
+            return ((Activity) getContext()).getActionBar().getThemedContext();
+        } catch (Exception e) {
+            return getContext();
+        }
     }
 
 }
