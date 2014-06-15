@@ -23,7 +23,7 @@ import android.net.Uri;
 import android.provider.Telephony;
 import android.util.Log;
 
-import com.amlcurran.messages.MessagesApp;
+import com.amlcurran.messages.SingletonManager;
 import com.amlcurran.messages.data.InFlightSmsMessageFactory;
 import com.amlcurran.messages.data.InFlightSmsMessage;
 import com.amlcurran.messages.events.BroadcastEventBus;
@@ -59,7 +59,7 @@ public class SmsReceiver extends BroadcastReceiver {
             @Override
             public void written(Uri inserted) {
                 new BroadcastEventBus(context).postMessageReceived();
-                MessagesApp.getNotifier(context).updateUnreadNotification();
+                SingletonManager.getNotifier(context).updateUnreadNotification();
             }
 
             @Override

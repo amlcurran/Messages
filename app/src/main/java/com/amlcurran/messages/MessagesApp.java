@@ -17,7 +17,6 @@
 package com.amlcurran.messages;
 
 import android.app.Application;
-import android.content.Context;
 import android.preference.PreferenceManager;
 import android.text.SpannableStringBuilder;
 import android.text.util.Linkify;
@@ -31,6 +30,9 @@ import com.amlcurran.messages.loaders.MessagesCache;
 import com.amlcurran.messages.loaders.MessagesLoader;
 import com.amlcurran.messages.notifications.Notifier;
 import com.amlcurran.messages.preferences.PreferenceStore;
+import com.amlcurran.messages.reporting.EasyTrackerStatReporter;
+import com.amlcurran.messages.reporting.StatReporter;
+import com.google.analytics.tracking.android.EasyTracker;
 
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
@@ -38,11 +40,13 @@ import java.util.concurrent.Executors;
 
 public class MessagesApp extends Application implements BroadcastEventSubscriber.Listener {
 
-    private MessagesLoader loader;
-    private Notifier notifier;
     private BroadcastEventSubscriber subscriber;
     private MessagesCache cache;
-    private EventBus eventBus;
+    MessagesLoader loader;
+    Notifier notifier;
+    EventBus eventBus;
+    StatReporter statsReporter;
+    ActivityController activityController;
 
     @Override
     public void onCreate() {
@@ -55,6 +59,8 @@ public class MessagesApp extends Application implements BroadcastEventSubscriber
         loader = new ExecutorMessagesLoader(this, executor, cache, eventBus);
         subscriber = new BroadcastEventSubscriber(this, this);
         subscriber.startListening(BroadcastEventBus.BROADCAST_LIST_INVALIDATED);
+        statsReporter = new EasyTrackerStatReporter(EasyTracker.getInstance(this));
+        activityController = new ActivityController(this);
         primeZygote(executor);
     }
 
@@ -68,14 +74,6 @@ public class MessagesApp extends Application implements BroadcastEventSubscriber
         super.onTerminate();
         subscriber.stopListening();
         loader.cancelAll();
-    }
-
-    public static MessagesLoader getMessagesLoader(Context context) {
-        return ((MessagesApp) context.getApplicationContext()).loader;
-    }
-
-    public static Notifier getNotifier(Context context) {
-        return ((MessagesApp) context.getApplicationContext()).notifier;
     }
 
     @Override

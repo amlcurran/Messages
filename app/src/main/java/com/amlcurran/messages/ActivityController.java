@@ -16,7 +16,7 @@
 
 package com.amlcurran.messages;
 
-import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.provider.Telephony;
@@ -27,9 +27,9 @@ import com.amlcurran.messages.telephony.SmsSender;
 
 public class ActivityController {
 
-    private final Activity activity;
+    private final Context activity;
 
-    public ActivityController(Activity activity) {
+    public ActivityController(Context activity) {
         this.activity = activity;
     }
 

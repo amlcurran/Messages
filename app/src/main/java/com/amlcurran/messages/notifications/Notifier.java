@@ -20,7 +20,7 @@ import android.app.Notification;
 import android.app.NotificationManager;
 import android.content.Context;
 
-import com.amlcurran.messages.MessagesApp;
+import com.amlcurran.messages.SingletonManager;
 import com.amlcurran.messages.preferences.PreferenceStore;
 import com.amlcurran.messages.core.data.Conversation;
 import com.amlcurran.messages.core.conversationlist.ConversationListListener;
@@ -45,7 +45,7 @@ public class Notifier {
 
     public void updateUnreadNotification() {
         if (showNotifications(context)) {
-            MessagesApp.getMessagesLoader(context).loadUnreadConversationList(new ConversationListListener() {
+            SingletonManager.getMessagesLoader(context).loadUnreadConversationList(new ConversationListListener() {
                 @Override
                 public void onConversationListLoaded(final List<Conversation> conversations) {
                     Notification notification = notificationBuilder.buildUnreadNotification(conversations);

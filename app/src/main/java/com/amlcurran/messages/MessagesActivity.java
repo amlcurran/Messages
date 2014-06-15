@@ -31,13 +31,11 @@ import com.amlcurran.messages.core.data.Conversation;
 import com.amlcurran.messages.core.loaders.ConversationListChangeListener;
 import com.amlcurran.messages.data.ContactFactory;
 import com.amlcurran.messages.data.InFlightSmsMessage;
-import com.amlcurran.messages.events.BroadcastEventBus;
 import com.amlcurran.messages.events.EventBus;
 import com.amlcurran.messages.loaders.MessagesLoader;
 import com.amlcurran.messages.loaders.MessagesLoaderProvider;
 import com.amlcurran.messages.loaders.OnContactQueryListener;
 import com.amlcurran.messages.loaders.OnThreadDeleteListener;
-import com.amlcurran.messages.reporting.EasyTrackerStatReporter;
 import com.amlcurran.messages.reporting.NullStatReporter;
 import com.amlcurran.messages.reporting.StatReporter;
 import com.amlcurran.messages.telephony.DefaultAppChecker;
@@ -47,7 +45,6 @@ import com.amlcurran.messages.ui.FragmentController;
 import com.amlcurran.messages.ui.MasterDetailFragmentController;
 import com.amlcurran.messages.ui.SlidingPaneViewController;
 import com.amlcurran.messages.ui.ViewController;
-import com.google.analytics.tracking.android.EasyTracker;
 
 import java.util.List;
 
@@ -73,10 +70,12 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         fragmentController = new MasterDetailFragmentController(this, this);
-        activityController = new ActivityController(this);
         viewController = new SlidingPaneViewController(this, getActionBar());
         toastNotifier = new ToastNotifier(this);
-        messagesLoader = MessagesApp.getMessagesLoader(this);
+        activityController  = SingletonManager.getActivityController(this);
+        messagesLoader      = SingletonManager.getMessagesLoader(this);
+        statReporter        = SingletonManager.getStatsReporter(this);;
+        eventBus            = SingletonManager.getEventBus(this);
         getActionBar().hide();
 
         viewController.setContentView(this);
@@ -84,9 +83,7 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
         CustomActionBarView actionBarView = (CustomActionBarView) findViewById(R.id.action_bar);
         actionBarController = new CustomActionBarController(actionBarView);
         menuController = new MenuController(this, this, actionBarView);
-        statReporter = new EasyTrackerStatReporter(EasyTracker.getInstance(this));
         appChecker = new DefaultAppChecker(this, this);
-        eventBus = new BroadcastEventBus(this);
 
         if (BuildConfig.DEBUG) {
             StrictMode.setThreadPolicy(new StrictMode.ThreadPolicy.Builder()
@@ -162,7 +159,7 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
     @Override
     protected void onResume() {
         super.onResume();
-        MessagesApp.getNotifier(this).clearNewMessagesNotification();
+        SingletonManager.getNotifier(this).clearNewMessagesNotification();
         appChecker.checkSmsApp();
     }
 

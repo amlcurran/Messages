@@ -24,7 +24,7 @@ import android.net.Uri;
 import android.telephony.SmsManager;
 import android.util.Log;
 
-import com.amlcurran.messages.MessagesApp;
+import com.amlcurran.messages.SingletonManager;
 import com.amlcurran.messages.data.InFlightSmsMessage;
 import com.amlcurran.messages.events.BroadcastEventBus;
 
@@ -80,7 +80,7 @@ public class SmsSender extends IntentService {
     }
 
     private void notifyFailureToSend(InFlightSmsMessage message, int result) {
-        MessagesApp.getNotifier(this).showSendError(message);
+        SingletonManager.getNotifier(this).showSendError(message);
     }
 
     private void writeMessageToProvider(InFlightSmsMessage message) {
