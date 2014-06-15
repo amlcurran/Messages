@@ -75,11 +75,15 @@
     <style name="ContactView" />
 
     <style name="ContactView.Inverse">
-        <item name="titleTextAppearance">@style/ContactViewLightTitle</item>
+        <item name="titleTextAppearance">@style/ContactViewTitle.Light</item>
         <item name="secondaryTextAppearance">@style/ContactViewLightSecondary</item>
     </style>
 
-    <style name="ContactViewLightTitle" parent="@android:style/TextAppearance.Medium.Inverse">
+    <style name="ContactViewTitle.Light">
+        <item name="android:textAppearance">@android:style/TextAppearance.Medium.Inverse</item>
+    </style>
+
+    <style name="ContactViewTitle" parent="@android:style/TextAppearance.Medium">
         <item name="android:fontFamily">sans-serif-condensed</item>
     </style>
 

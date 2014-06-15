@@ -66,6 +66,7 @@ public class CustomActionBarView extends LinearLayout {
         actionItemsHost.getLayoutTransition().setAnimator(LayoutTransition.DISAPPEARING, null);
         homeChip = findViewById(R.id.home_chip);
         contactChip = ((ContactView) findViewById(R.id.contact_chip));
+        contactChip.setAlpha(0f);
 
         style();
         init();

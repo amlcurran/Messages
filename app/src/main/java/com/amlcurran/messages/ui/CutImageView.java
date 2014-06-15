@@ -58,6 +58,8 @@ public class CutImageView extends ImageView {
         croppedRect = new Rect();
         paint = new Paint();
 
+        setImageResource(R.drawable.ic_contact_picture_unknown);
+
         borderPaint.setStyle(Paint.Style.STROKE);
         borderPaint.setAntiAlias(true);
         borderPaint.setStrokeWidth(borderWidth);
@@ -70,11 +72,15 @@ public class CutImageView extends ImageView {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
         int maxDimen = Math.max(getMeasuredHeight(), getMeasuredWidth());
         setMeasuredDimension(maxDimen, maxDimen);
-        circleRectF.set(-2 * maxDimen, (float) (-CUT_HEIGHT_OFFSET * maxDimen),
-                maxDimen - borderWidth, (float) (1 + CUT_HEIGHT_OFFSET) * maxDimen);
+        setCircleRect(circleRectF, maxDimen);
         insetRect(borderRectF, circleRectF, - borderWidth / 2);
         recycleBitmap();
         bitmapBuffer = Bitmap.createBitmap(maxDimen, maxDimen, Bitmap.Config.ARGB_8888);
+    }
+
+    protected void setCircleRect(RectF circleRectF, int maxDimen) {
+        circleRectF.set(-2 * maxDimen, (float) (-CUT_HEIGHT_OFFSET * maxDimen),
+                maxDimen - borderWidth, (float) (1 + CUT_HEIGHT_OFFSET) * maxDimen);
     }
 
     private void insetRect(RectF dest, RectF src, float offset) {

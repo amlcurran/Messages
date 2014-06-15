@@ -26,6 +26,7 @@ import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -55,7 +56,7 @@ public class ComposeNewFragment extends Fragment implements ComposeMessageView.O
     private DefaultAppChecker defaultAppChecker;
     private SmsComposeListener listener;
     private ArrayListSource<Contact> contactSource;
-    private ListView personListView;
+    private AbsListView personListView;
     private SourceBinderAdapter<Contact> adapter;
     private MessagesLoader loader;
     private RecipientChooser recipientChooser;
@@ -87,7 +88,7 @@ public class ComposeNewFragment extends Fragment implements ComposeMessageView.O
         composeView.setComposeListener(this);
         pickPersonView = ((EditText) view.findViewById(R.id.new_pick_person));
         pickPersonView.addTextChangedListener(this);
-        personListView = ((ListView) view.findViewById(R.id.new_person_list));
+        personListView = ((AbsListView) view.findViewById(R.id.new_person_list));
         return view;
     }
 
@@ -220,7 +221,7 @@ public class ComposeNewFragment extends Fragment implements ComposeMessageView.O
 
         @Override
         public View createView(Context context, int itemViewType, ViewGroup parent) {
-            return LayoutInflater.from(context).inflate(android.R.layout.simple_list_item_2, parent, false);
+            return LayoutInflater.from(context).inflate(R.layout.view_pick_contact, parent, false);
         }
     }
 
