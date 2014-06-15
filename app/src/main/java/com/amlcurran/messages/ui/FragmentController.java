@@ -17,6 +17,7 @@
 package com.amlcurran.messages.ui;
 
 import android.app.Fragment;
+import android.view.MenuItem;
 
 public interface FragmentController {
     void loadMessagesListFragment();
@@ -28,6 +29,8 @@ public interface FragmentController {
     void showSettings();
 
     void loadComposeNewFragment();
+
+    boolean optionsItemSelected(MenuItem item);
 
     public interface Callback {
         void insertedDetail();

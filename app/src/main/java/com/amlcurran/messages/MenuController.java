@@ -78,7 +78,7 @@ public class MenuController implements OnOptionsItemSelectedListener {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem menuItem) {
-        return itemSelected(menuItem.getItemId());
+        return activity.onOptionsItemSelected(menuItem);
     }
 
     public static interface Callbacks {

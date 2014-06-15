@@ -19,6 +19,7 @@ package com.amlcurran.messages.ui;
 import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
+import android.view.MenuItem;
 
 import com.amlcurran.messages.ComposeNewFragment;
 import com.amlcurran.messages.EmptyFragment;
@@ -74,4 +75,8 @@ public class MasterDetailFragmentController implements FragmentController {
         callback.insertedDetail();
     }
 
+    @Override
+    public boolean optionsItemSelected(MenuItem item) {
+        return activity.getFragmentManager().findFragmentById(R.id.secondary).onOptionsItemSelected(item);
+    }
 }
