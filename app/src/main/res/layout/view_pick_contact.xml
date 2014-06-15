@@ -22,9 +22,9 @@
 
     <view
         android:layout_width="96dp"
-        android:layout_height="wrap_content"
+        android:layout_height="96dp"
         class="com.amlcurran.messages.ui.CircularImageView"
-        android:id="@+id/view"
+        android:id="@+id/imageView"
         android:layout_gravity="center_horizontal" />
 
     <TextView
