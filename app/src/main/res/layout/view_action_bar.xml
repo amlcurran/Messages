@@ -57,6 +57,7 @@
             </LinearLayout>
 
         <view
+            android:layout_marginLeft="4dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             class="com.amlcurran.messages.ui.ContactView"
