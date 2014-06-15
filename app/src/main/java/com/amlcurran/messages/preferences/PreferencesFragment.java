@@ -17,9 +17,6 @@
 package com.amlcurran.messages.preferences;
 
 import android.content.SharedPreferences;
-import android.media.Ringtone;
-import android.media.RingtoneManager;
-import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceFragment;
 
@@ -27,14 +24,15 @@ import com.amlcurran.messages.R;
 
 public class PreferencesFragment extends PreferenceFragment implements SharedPreferences.OnSharedPreferenceChangeListener {
 
-    private PreferenceStore preferencesStore;
+    private RingtoneHelper ringtoneHelper;
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        preferencesStore = new PreferenceStore(getActivity());
+        PreferenceStore preferencesStore = new PreferenceStore(getActivity());
+        ringtoneHelper = new RingtoneHelper(this, preferencesStore);
         addPreferencesFromResource(R.xml.preferences);
-        setUpToneSummary();
+        ringtoneHelper.setUpToneSummary();
     }
 
     @Override
@@ -49,28 +47,10 @@ public class PreferencesFragment extends PreferenceFragment implements SharedPre
         getPreferenceManager().getSharedPreferences().unregisterOnSharedPreferenceChangeListener(this);
     }
 
-    private void setUpToneSummary() {
-        Uri ringtoneUri = preferencesStore.getRingtoneUri();
-
-        String summary;
-        if (ringtoneUri != null) {
-            Ringtone current = getCurrentRingtone(ringtoneUri);
-            summary = current.getTitle(getActivity());
-        } else {
-            summary = getString(R.string.default_str);
-        }
-
-        findPreference(PreferenceStore.RINGTONE).setSummary(summary);
-    }
-
-    private Ringtone getCurrentRingtone(Uri ringtoneUri) {
-        return RingtoneManager.getRingtone(getActivity(), ringtoneUri);
-    }
-
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
         if (PreferenceStore.RINGTONE.equals(key)) {
-            setUpToneSummary();
+            ringtoneHelper.setUpToneSummary();
         }
     }
 }
