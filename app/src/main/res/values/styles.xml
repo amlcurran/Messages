@@ -72,6 +72,13 @@
         <item name="lv_scale">@integer/loading_scale_large</item>
     </style>
 
+    <style name="ContactView" />
+
+    <style name="ContactView.Inverse">
+        <item name="titleTextAppearance">?android:attr/textAppearanceMediumInverse</item>
+        <item name="secondaryTextAppearance">?android:attr/textAppearanceSmallInverse</item>
+    </style>
+
     <integer name="loading_scale_small">2</integer>
     <integer name="loading_scale_large">1</integer>
 </resources>
