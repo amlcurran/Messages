@@ -28,7 +28,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
 
-public class ContactsTask implements Callable {
+class ContactsTask implements Callable {
     private final ContentResolver resolver;
     private final ContactListListener contactListListener;
 

@@ -32,7 +32,7 @@ import com.amlcurran.messages.R;
 import java.io.FileDescriptor;
 import java.io.IOException;
 
-public class ContactImageLoader {
+class ContactImageLoader {
 
     private final ContentResolver contentResolver;
     private final Resources resources;
