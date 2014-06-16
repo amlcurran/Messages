@@ -17,6 +17,7 @@
 package com.amlcurran.messages.threads;
 
 import android.app.Activity;
+import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -28,6 +29,7 @@ import android.view.ViewGroup;
 import com.amlcurran.messages.ListeningCursorListFragment;
 import com.amlcurran.messages.R;
 import com.amlcurran.messages.SmsComposeListener;
+import com.amlcurran.messages.core.data.Contact;
 import com.amlcurran.messages.core.data.SmsMessage;
 import com.amlcurran.messages.core.loaders.ConversationListChangeListener;
 import com.amlcurran.messages.core.loaders.ThreadListener;
@@ -36,6 +38,9 @@ import com.amlcurran.messages.events.BroadcastEventBus;
 import com.amlcurran.messages.loaders.MessagesLoader;
 import com.amlcurran.messages.telephony.DefaultAppChecker;
 import com.amlcurran.messages.ui.ComposeMessageView;
+import com.amlcurran.messages.ui.ContactView;
+import com.amlcurran.messages.ui.CustomHeaderFragment;
+import com.amlcurran.messages.ui.ThemeHelper;
 import com.espian.utils.ProviderHelper;
 import com.github.amlcurran.sourcebinder.ArrayListSource;
 import com.github.amlcurran.sourcebinder.SourceBinderAdapter;
@@ -43,7 +48,9 @@ import com.github.amlcurran.sourcebinder.SourceBinderAdapter;
 import java.util.Calendar;
 import java.util.List;
 
-public class ThreadFragment extends ListeningCursorListFragment<SmsMessage> implements ThreadListener, ComposeMessageView.OnMessageComposedListener, ConversationListChangeListener {
+public class ThreadFragment extends ListeningCursorListFragment<SmsMessage> implements ThreadListener,
+        ComposeMessageView.OnMessageComposedListener, ConversationListChangeListener,
+        CustomHeaderFragment {
 
     private static final String THREAD_ID = "threadId";
     private static final String ADDRESS = "address";
@@ -53,6 +60,7 @@ public class ThreadFragment extends ListeningCursorListFragment<SmsMessage> impl
     private DefaultAppChecker defaultChecker;
     private ComposeMessageView composeView;
     private ArrayListSource<SmsMessage> source;
+    private ContactView contactView;
 
     public static ThreadFragment create(String threadId, String address) {
         Bundle bundle = new Bundle();
@@ -164,4 +172,13 @@ public class ThreadFragment extends ListeningCursorListFragment<SmsMessage> impl
         });
     }
 
+    @Override
+    public View getHeaderView(Context context) {
+        contactView = new ContactView(ThemeHelper.getThemedContext(context), null);
+        return contactView;
+    }
+
+    public void setContactView(Contact contact, MessagesLoader messagesLoader) {
+        contactView.setContact(contact, messagesLoader);
+    }
 }

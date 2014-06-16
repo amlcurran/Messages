@@ -23,6 +23,7 @@ import android.os.Bundle;
 import android.os.StrictMode;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 
 import com.amlcurran.messages.conversationlist.ConversationListFragment;
 import com.amlcurran.messages.conversationlist.ConversationModalMarshall;
@@ -216,20 +217,20 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
     @Override
     public void onConversationSelected(Conversation conversation) {
         String address = conversation.getAddress();
-        ThreadFragment fragment = ThreadFragment.create(conversation.getThreadId(), address);
+        final ThreadFragment fragment = ThreadFragment.create(conversation.getThreadId(), address);
 
+        fragmentController.replaceFragment(fragment, false);
         messagesLoader.queryContact(address, new OnContactQueryListener() {
             @Override
             public void contactLoaded(final Contact contact) {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        actionBarController.contactSelected(contact, messagesLoader);
+                        fragment.setContactView(contact, messagesLoader);
                     }
                 });
             }
         });
-        fragmentController.replaceFragment(fragment, false);
     }
 
     @Override
@@ -335,6 +336,16 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
     @Override
     public void insertedMaster() {
         viewController.hideSecondary();
+    }
+
+    @Override
+    public void removeCustomHeader() {
+        actionBarController.removeCustomHeader();
+    }
+
+    @Override
+    public void addCustomHeader(View headerView) {
+        actionBarController.addCustomHeader(headerView);
     }
 
 }

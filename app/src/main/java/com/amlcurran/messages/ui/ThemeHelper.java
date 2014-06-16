@@ -16,30 +16,15 @@
 
 package com.amlcurran.messages.ui;
 
-import android.app.Fragment;
-import android.view.MenuItem;
-import android.view.View;
+import android.app.Activity;
+import android.content.Context;
 
-public interface FragmentController {
-    void loadMessagesListFragment();
-
-    void replaceFragment(Fragment fragment, boolean addToStack);
-
-    void loadEmptyFragment();
-
-    void showSettings();
-
-    void loadComposeNewFragment();
-
-    boolean optionsItemSelected(MenuItem item);
-
-    public interface Callback {
-        void insertedDetail();
-
-        void insertedMaster();
-
-        void removeCustomHeader();
-
-        void addCustomHeader(View headerView);
+public class ThemeHelper {
+    public static Context getThemedContext(Context context) {
+        try {
+            return ((Activity) context).getActionBar().getThemedContext();
+        } catch (Exception e) {
+            return context;
+        }
     }
 }

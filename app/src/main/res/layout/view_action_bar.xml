@@ -56,11 +56,10 @@
 
             </LinearLayout>
 
-        <view
+        <FrameLayout
             android:layout_marginLeft="4dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            class="com.amlcurran.messages.ui.ContactView"
             style="@style/ContactView.Inverse"
             android:id="@+id/contact_chip" />
 

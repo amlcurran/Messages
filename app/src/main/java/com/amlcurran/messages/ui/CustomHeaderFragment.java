@@ -16,30 +16,9 @@
 
 package com.amlcurran.messages.ui;
 
-import android.app.Fragment;
-import android.view.MenuItem;
+import android.content.Context;
 import android.view.View;
 
-public interface FragmentController {
-    void loadMessagesListFragment();
-
-    void replaceFragment(Fragment fragment, boolean addToStack);
-
-    void loadEmptyFragment();
-
-    void showSettings();
-
-    void loadComposeNewFragment();
-
-    boolean optionsItemSelected(MenuItem item);
-
-    public interface Callback {
-        void insertedDetail();
-
-        void insertedMaster();
-
-        void removeCustomHeader();
-
-        void addCustomHeader(View headerView);
-    }
+public interface CustomHeaderFragment {
+    View getHeaderView(Context context);
 }

@@ -17,7 +17,6 @@
 package com.amlcurran.messages.ui;
 
 import android.animation.LayoutTransition;
-import android.app.Activity;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
@@ -27,14 +26,13 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupMenu;
 import android.widget.Toast;
 
 import com.amlcurran.messages.R;
-import com.amlcurran.messages.core.data.Contact;
-import com.amlcurran.messages.loaders.MessagesLoader;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -45,9 +43,10 @@ public class CustomActionBarView extends LinearLayout {
 
     private final LinearLayout actionItemsHost;
     private final View homeChip;
-    private final ContactView contactChip;
+    private final FrameLayout customChip;
     private final List<MenuItem> overflowItems = new ArrayList<MenuItem>();
     private OnOptionsItemSelectedListener listener = OnOptionsItemSelectedListener.NONE;
+    private boolean hasCustomView;
 
     public CustomActionBarView(Context context, AttributeSet attrs) {
         this(context, attrs, R.style.ActionBar_Solid_Messages);
@@ -65,16 +64,18 @@ public class CustomActionBarView extends LinearLayout {
         actionItemsHost.getLayoutTransition().setAnimator(LayoutTransition.CHANGE_DISAPPEARING, null);
         actionItemsHost.getLayoutTransition().setAnimator(LayoutTransition.DISAPPEARING, null);
         homeChip = findViewById(R.id.home_chip);
-        contactChip = ((ContactView) findViewById(R.id.contact_chip));
-        contactChip.setAlpha(0f);
+        customChip = ((FrameLayout) findViewById(R.id.contact_chip));
+        customChip.setAlpha(0f);
 
         style();
         init();
     }
 
     public void setSecondaryVisibility(float visibility) {
-        contactChip.setAlpha(1 - visibility);
-        homeChip.setAlpha(visibility);
+        if (hasCustomView) {
+            customChip.setAlpha(1 - visibility);
+            homeChip.setAlpha(visibility);
+        }
     }
 
     public void setOnOptionsItemSelectedListener(OnOptionsItemSelectedListener listener) {
@@ -186,7 +187,7 @@ public class CustomActionBarView extends LinearLayout {
     private OnClickListener mOverflowItemClickListener = new OnClickListener() {
         @Override
         public void onClick(View v) {
-            PopupMenu menu = new PopupMenu(getThemedContext(), v);
+            PopupMenu menu = new PopupMenu(ThemeHelper.getThemedContext(getContext()), v);
             for (MenuItem item : overflowItems) {
                 menu.getMenu().add(0, item.getItemId(), 0, item.getTitle());
             }
@@ -203,16 +204,17 @@ public class CustomActionBarView extends LinearLayout {
         }
     };
 
-    public void selectedContact(Contact contact, MessagesLoader messagesLoader) {
-        contactChip.setContact(contact, messagesLoader);
+    public void removeCustomHeader() {
+        hasCustomView = false;
+        customChip.removeAllViews();
+        customChip.setVisibility(INVISIBLE);
+        homeChip.setAlpha(1f);
     }
 
-    private Context getThemedContext() {
-        try {
-            return ((Activity) getContext()).getActionBar().getThemedContext();
-        } catch (Exception e) {
-            return getContext();
-        }
+    public void addCustomHeader(View customHeader) {
+        hasCustomView = true;
+        customChip.removeAllViews();
+        customChip.addView(customHeader);
+        customChip.setVisibility(VISIBLE);
     }
-
 }

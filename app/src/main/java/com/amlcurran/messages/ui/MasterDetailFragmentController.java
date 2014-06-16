@@ -66,6 +66,13 @@ public class MasterDetailFragmentController implements FragmentController {
     }
 
     private void replaceFragmentInternal(Fragment fragment, boolean addToStack) {
+
+        if (fragment instanceof CustomHeaderFragment) {
+            callback.addCustomHeader(((CustomHeaderFragment) fragment).getHeaderView(activity));
+        } else {
+            callback.removeCustomHeader();
+        }
+
         FragmentTransaction transaction = activity.getFragmentManager().beginTransaction()
                 .replace(R.id.secondary, fragment);
         if (addToStack) {

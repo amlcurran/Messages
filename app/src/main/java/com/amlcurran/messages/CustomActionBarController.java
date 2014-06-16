@@ -17,9 +17,8 @@
 package com.amlcurran.messages;
 
 import android.view.Menu;
+import android.view.View;
 
-import com.amlcurran.messages.core.data.Contact;
-import com.amlcurran.messages.loaders.MessagesLoader;
 import com.amlcurran.messages.ui.CustomActionBarView;
 
 public class CustomActionBarController {
@@ -37,15 +36,15 @@ public class CustomActionBarController {
         actionBarView.setMenu(menu);
     }
 
-    public boolean itemSelected(int itemId) {
-        return false;
-    }
-
     public void secondaryVisibility(float slideOffset) {
         actionBarView.setSecondaryVisibility(slideOffset);
     }
 
-    public void contactSelected(Contact contact, MessagesLoader messagesLoader) {
-        actionBarView.selectedContact(contact, messagesLoader);
+    public void removeCustomHeader() {
+        actionBarView.removeCustomHeader();
+    }
+
+    public void addCustomHeader(View headerView) {
+        actionBarView.addCustomHeader(headerView);
     }
 }
