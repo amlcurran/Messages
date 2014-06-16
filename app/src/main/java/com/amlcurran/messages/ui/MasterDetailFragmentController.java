@@ -19,13 +19,14 @@ package com.amlcurran.messages.ui;
 import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
+import android.content.Context;
 import android.view.MenuItem;
 
 import com.amlcurran.messages.ComposeNewFragment;
 import com.amlcurran.messages.EmptyFragment;
-import com.amlcurran.messages.preferences.PreferencesFragment;
 import com.amlcurran.messages.R;
 import com.amlcurran.messages.conversationlist.ConversationListFragment;
+import com.amlcurran.messages.preferences.PreferencesFragment;
 
 public class MasterDetailFragmentController implements FragmentController {
 
@@ -68,7 +69,8 @@ public class MasterDetailFragmentController implements FragmentController {
     private void replaceFragmentInternal(Fragment fragment, boolean addToStack) {
 
         if (fragment instanceof CustomHeaderFragment) {
-            callback.addCustomHeader(((CustomHeaderFragment) fragment).getHeaderView(activity));
+            Context themedContext = ThemeHelper.getThemedContext(activity);
+            callback.addCustomHeader(((CustomHeaderFragment) fragment).getHeaderView(themedContext));
         } else {
             callback.removeCustomHeader();
         }

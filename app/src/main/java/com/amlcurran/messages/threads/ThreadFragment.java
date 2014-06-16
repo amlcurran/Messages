@@ -40,7 +40,6 @@ import com.amlcurran.messages.telephony.DefaultAppChecker;
 import com.amlcurran.messages.ui.ComposeMessageView;
 import com.amlcurran.messages.ui.ContactView;
 import com.amlcurran.messages.ui.CustomHeaderFragment;
-import com.amlcurran.messages.ui.ThemeHelper;
 import com.espian.utils.ProviderHelper;
 import com.github.amlcurran.sourcebinder.ArrayListSource;
 import com.github.amlcurran.sourcebinder.SourceBinderAdapter;
@@ -174,7 +173,7 @@ public class ThreadFragment extends ListeningCursorListFragment<SmsMessage> impl
 
     @Override
     public View getHeaderView(Context context) {
-        contactView = new ContactView(ThemeHelper.getThemedContext(context), null);
+        contactView = new ContactView(context, null);
         return contactView;
     }
 
