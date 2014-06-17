@@ -1,5 +1,9 @@
 apply plugin: 'android'
 
+def VERSION_MAJOR=0
+def VERSION_MINOR=1
+def VERSION_PATCH=0
+
 android {
     compileSdkVersion 19
     buildToolsVersion '19.0.3'
@@ -7,15 +11,19 @@ android {
     defaultConfig {
         minSdkVersion 19
         targetSdkVersion 19
-        versionCode 1
-        versionName "1.0"
+        versionCode getVersionCode()
+        versionName "alpha 1"
+        /*versionName "${VERSION_MAJOR}.${VERSION_MINOR}.${VERSION_PATCH}"*/
     }
-    buildTypes {
-        release {
-            runProguard false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
-        }
-    }
+}
+
+def getVersionName() {
+    String versionName = "${VERSION_MAJOR}.${VERSION_MINOR}.${VERSION_PATCH}"
+    return versionName
+}
+
+def getVersionCode() {
+    return Integer.parseInt(new Date(System.currentTimeMillis()).format("YYYYMMdd"))
 }
 
 dependencies {
