@@ -19,7 +19,12 @@ package com.amlcurran.messages;
 import android.content.Intent;
 import android.os.Bundle;
 
+import com.amlcurran.messages.notifications.Notifier;
+
 public class LaunchAssistant {
+
+    public static final String EXTRA_THREAD_ID = "thread_id";
+    public static final String EXTRA_ADDRESS = "address";
 
     public Launch getLaunchType(Bundle savedInstanceState, Intent intent) {
 
@@ -33,6 +38,10 @@ public class LaunchAssistant {
 
         if (schemeIs(intent, "mms") || schemeIs(intent, "mmsto")) {
             throw new RuntimeException("MMS isn't currently supported");
+        }
+
+        if (Notifier.ACTION_VIEW_CONVERSATION.equals(intent.getAction())) {
+            return Launch.VIEW_CONVERSATION;
         }
 
         if (Intent.ACTION_SEND.equals(intent.getAction())) {

@@ -33,6 +33,7 @@ public class Notifier {
     private static final int NOTIFICATION_UNREAD_MESSAGES = 22;
     private static final int NOTIFICATION_SEND_ERROR = 44;
     private static final int NOTIFICATION_MMS_ERROR = 66;
+    public static final String ACTION_VIEW_CONVERSATION = "com.amlcurran.messages.notification.VIEW_CONVERSATION";
     private final NotificationManager notificationManager;
     private final Context context;
     private final NotificationBuilder notificationBuilder;

@@ -27,6 +27,7 @@ import android.text.Spanned;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.StyleSpan;
 
+import com.amlcurran.messages.LaunchAssistant;
 import com.amlcurran.messages.MessagesActivity;
 import com.amlcurran.messages.preferences.PreferenceStore;
 import com.amlcurran.messages.R;
@@ -101,10 +102,19 @@ public class NotificationBuilder {
         return getDefaultBuilder()
                 .setTicker(buildTicker(conversation))
                 .setContentTitle(conversation.getContact().getDisplayName())
+                .setContentIntent(buildSingleUnreadIntent(conversation))
                 .setContentText(conversation.getBody())
                 .setStyle(buildBigStyle(conversation))
                 .setWhen(timestampMillis)
                 .build();
+    }
+
+    private PendingIntent buildSingleUnreadIntent(Conversation conversation) {
+        Intent intent = new Intent(context, MessagesActivity.class);
+        intent.setAction(Notifier.ACTION_VIEW_CONVERSATION);
+        intent.putExtra(LaunchAssistant.EXTRA_THREAD_ID, conversation.getThreadId());
+        intent.putExtra(LaunchAssistant.EXTRA_ADDRESS, conversation.getAddress());
+        return PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT);
     }
 
     private static Notification.Style buildBigStyle(Conversation conversation) {

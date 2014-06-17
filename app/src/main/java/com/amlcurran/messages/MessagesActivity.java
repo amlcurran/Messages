@@ -121,8 +121,18 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
                 anonymousSendWithMessage(message);
                 break;
 
+            case VIEW_CONVERSATION:
+                String threadId = getIntent().getStringExtra(LaunchAssistant.EXTRA_THREAD_ID);
+                String address = getIntent().getStringExtra(LaunchAssistant.EXTRA_ADDRESS);
+                viewConversation(threadId, address);
+
         }
 
+    }
+
+    private void viewConversation(String threadId, String address) {
+        fragmentController.loadMessagesListFragment();
+        fragmentController.replaceFragment(ThreadFragment.create(threadId, address), false);
     }
 
     private void anonymousSendWithMessage(String message) {
