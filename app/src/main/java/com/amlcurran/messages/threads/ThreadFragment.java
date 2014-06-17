@@ -75,6 +75,7 @@ public class ThreadFragment extends ListeningCursorListFragment<SmsMessage> impl
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_thread, container, false);
+        view.findViewById(android.R.id.list).setBackgroundResource(R.drawable.compose_shadow_background);
         composeView = ((ComposeMessageView) view.findViewById(R.id.thread_compose_view));
         composeView.setComposeListener(this);
         return view;

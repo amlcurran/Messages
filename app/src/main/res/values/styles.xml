@@ -51,6 +51,7 @@
 
     <style name="ConversationTitle">
         <item name="android:textAppearance">?android:attr/textAppearanceMedium</item>
+        <item name="android:fontFamily">sans-serif-condensed</item>
         <item name="android:singleLine">true</item>
         <item name="android:ellipsize">end</item>
     </style>
