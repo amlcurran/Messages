@@ -17,8 +17,6 @@
 package com.amlcurran.messages;
 
 import android.app.Activity;
-import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.view.Menu;
@@ -37,7 +35,6 @@ import com.amlcurran.messages.loaders.MessagesLoader;
 import com.amlcurran.messages.loaders.MessagesLoaderProvider;
 import com.amlcurran.messages.loaders.OnContactQueryListener;
 import com.amlcurran.messages.loaders.OnThreadDeleteListener;
-import com.amlcurran.messages.reporting.NullStatReporter;
 import com.amlcurran.messages.reporting.StatReporter;
 import com.amlcurran.messages.telephony.DefaultAppChecker;
 import com.amlcurran.messages.threads.ThreadFragment;
@@ -95,10 +92,10 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
                     .detectLeakedSqlLiteObjects()
                     .penaltyLog()
                     .build());
-            statReporter = new NullStatReporter();
         }
 
         Launch launch = launchHelper.getLaunchType(savedInstanceState, getIntent());
+        IntentDataExtractor intentDataExtractor = new IntentDataExtractor(getIntent());
 
         switch (launch) {
 
@@ -111,20 +108,15 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
                 break;
 
             case SEND_TO:
-                Uri data = getIntent().getData();
-                String sendAddress = data.getSchemeSpecificPart();
-                sendTo(sendAddress);
+                sendTo(intentDataExtractor.getAddressFromUri());
                 break;
 
             case SHARE_TO:
-                String message = getIntent().getStringExtra(Intent.EXTRA_TEXT);
-                anonymousSendWithMessage(message);
+                anonymousSendWithMessage(intentDataExtractor.getMessage());
                 break;
 
             case VIEW_CONVERSATION:
-                String threadId = getIntent().getStringExtra(LaunchAssistant.EXTRA_THREAD_ID);
-                String address = getIntent().getStringExtra(LaunchAssistant.EXTRA_ADDRESS);
-                viewConversation(threadId, address);
+                viewConversation(intentDataExtractor.getThreadId(), intentDataExtractor.getAddress());
                 break;
 
             case MMS_TO:
