@@ -18,7 +18,6 @@ package com.amlcurran.messages;
 
 import android.app.Activity;
 import android.os.Bundle;
-import android.os.StrictMode;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -67,10 +66,10 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        fragmentController = new MasterDetailFragmentController(this, this);
-        viewController = new SlidingPaneViewController(this, getActionBar());
-        toastNotifier = new ToastNotifier(this);
-        activityController = new ActivityController(this);
+        fragmentController  = new MasterDetailFragmentController(this, this);
+        viewController      = new SlidingPaneViewController(this, getActionBar());
+        toastNotifier       = new ToastNotifier(this);
+        activityController  = new ActivityController(this);
         messagesLoader      = SingletonManager.getMessagesLoader(this);
         statReporter        = SingletonManager.getStatsReporter(this);;
         eventBus            = SingletonManager.getEventBus(this);
@@ -83,19 +82,7 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
         menuController = new MenuController(this, this, actionBarView);
         appChecker = new DefaultAppChecker(this, this);
 
-        if (BuildConfig.DEBUG) {
-            StrictMode.setThreadPolicy(new StrictMode.ThreadPolicy.Builder()
-                    .detectAll()
-                    .penaltyFlashScreen()
-                    .build());
-            StrictMode.setVmPolicy(new StrictMode.VmPolicy.Builder()
-                    .detectLeakedSqlLiteObjects()
-                    .penaltyLog()
-                    .build());
-        }
-
         handleLaunch(savedInstanceState);
-
     }
 
     private void handleLaunch(Bundle savedInstanceState) {

@@ -17,6 +17,7 @@
 package com.amlcurran.messages;
 
 import android.app.Application;
+import android.os.StrictMode;
 import android.preference.PreferenceManager;
 import android.text.SpannableStringBuilder;
 import android.text.util.Linkify;
@@ -61,6 +62,18 @@ public class MessagesApp extends Application implements BroadcastEventSubscriber
         statsReporter = new NullStatReporter();
         activityController = new ActivityController(this);
         primeZygote(executor);
+
+        if (BuildConfig.DEBUG) {
+            StrictMode.setThreadPolicy(new StrictMode.ThreadPolicy.Builder()
+                    .detectAll()
+                    .penaltyFlashScreen()
+                    .build());
+            StrictMode.setVmPolicy(new StrictMode.VmPolicy.Builder()
+                    .detectLeakedSqlLiteObjects()
+                    .penaltyLog()
+                    .build());
+        }
+
     }
 
     private void primeZygote(ExecutorService executor) {
