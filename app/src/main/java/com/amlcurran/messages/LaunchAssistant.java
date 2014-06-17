@@ -37,7 +37,7 @@ public class LaunchAssistant {
         }
 
         if (schemeIs(intent, "mms") || schemeIs(intent, "mmsto")) {
-            throw new RuntimeException("MMS isn't currently supported");
+            return Launch.MMS_TO;
         }
 
         if (Notifier.ACTION_VIEW_CONVERSATION.equals(intent.getAction())) {

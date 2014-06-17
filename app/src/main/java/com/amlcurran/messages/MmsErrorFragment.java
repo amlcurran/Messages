@@ -16,6 +16,16 @@
 
 package com.amlcurran.messages;
 
-public enum Launch {
-    FIRST_START, SEND_ANONYMOUS, SEND_TO, SHARE_TO, OTHER, MMS_TO, VIEW_CONVERSATION
+import android.app.Fragment;
+import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+
+public class MmsErrorFragment extends Fragment {
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        return inflater.inflate(R.layout.fragment_mms_error, container, false);
+    }
 }

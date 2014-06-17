@@ -27,5 +27,7 @@
     <string name="pref_sum_notification">Display notifications for new and failed messages</string>
     <string name="pref_title_notifications">Show notifications</string>
     <string name="default_str">Default</string>
+    <string name="mms_error_fragment_title">MMS error</string>
+    <string name="mms_error_fragment_message">Messages cannot currently receive MMS. If you\'d like to send and receive MMS, please use another MMS app.</string>
 
 </resources>

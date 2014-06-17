@@ -125,9 +125,19 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
                 String threadId = getIntent().getStringExtra(LaunchAssistant.EXTRA_THREAD_ID);
                 String address = getIntent().getStringExtra(LaunchAssistant.EXTRA_ADDRESS);
                 viewConversation(threadId, address);
+                break;
+
+            case MMS_TO:
+                displayMmsError();
+                break;
 
         }
 
+    }
+
+    private void displayMmsError() {
+        fragmentController.loadMessagesListFragment();
+        fragmentController.replaceFragment(new MmsErrorFragment(), false);
     }
 
     private void viewConversation(String threadId, String address) {
