@@ -17,35 +17,28 @@
 package com.amlcurran.messages.notifications;
 
 import android.app.Notification;
-import android.app.PendingIntent;
 import android.content.Context;
-import android.content.Intent;
-import android.graphics.Color;
-import android.graphics.Typeface;
-import android.text.SpannableStringBuilder;
-import android.text.Spanned;
-import android.text.style.ForegroundColorSpan;
-import android.text.style.StyleSpan;
 
-import com.amlcurran.messages.LaunchAssistant;
-import com.amlcurran.messages.MessagesActivity;
-import com.amlcurran.messages.preferences.PreferenceStore;
 import com.amlcurran.messages.R;
 import com.amlcurran.messages.core.data.Conversation;
 import com.amlcurran.messages.data.InFlightSmsMessage;
-import com.amlcurran.messages.telephony.SmsSender;
+import com.amlcurran.messages.preferences.PreferenceStore;
 
 import java.util.Calendar;
 import java.util.List;
 
 public class NotificationBuilder {
     private static final long[] VIBRATE_PATTERN = new long[]{ 0, 200 };
+    private final NotificationIntentFactory notificationIntentFactory;
+    private final StyledTextFactory styledTextFactory;
     private Context context;
     private final PreferenceStore preferenceStore;
 
     public NotificationBuilder(Context context, PreferenceStore preferenceStore) {
         this.context = context;
         this.preferenceStore = preferenceStore;
+        this.notificationIntentFactory = new NotificationIntentFactory(context);
+        this.styledTextFactory = new StyledTextFactory();
     }
 
     public Notification buildUnreadNotification(List<Conversation> conversations) {
@@ -59,62 +52,32 @@ public class NotificationBuilder {
     private Notification buildMultipleUnreadNotification(List<Conversation> conversations) {
         long timestampMillis = Calendar.getInstance().getTimeInMillis();
         return getDefaultBuilder()
-                .setTicker(buildListSummary(conversations))
+                .setTicker(styledTextFactory.buildListSummary(conversations))
                 .setStyle(buildInboxStyle(conversations))
-                .setContentText(buildSenderList(conversations))
-                .setContentTitle(buildListSummary(conversations))
+                .setContentText(styledTextFactory.buildSenderList(conversations))
+                .setContentTitle(styledTextFactory.buildListSummary(conversations))
                 .setWhen(timestampMillis)
                 .build();
     }
 
-    private static CharSequence buildSenderList(List<Conversation> conversations) {
-        String result = "";
-        for (Conversation conversation : conversations) {
-            result += conversation.getContact().getDisplayName() + ", ";
-        }
-        return result.substring(0, result.length() - 2);
-    }
-
-    private static CharSequence buildListSummary(List<Conversation> conversations) {
-        return String.format("%1$d new messages", conversations.size());
-    }
-
-    private static Notification.Style buildInboxStyle(List<Conversation> conversations) {
+    private Notification.Style buildInboxStyle(List<Conversation> conversations) {
         Notification.InboxStyle inboxStyle = new Notification.InboxStyle();
         for (Conversation conversation : conversations) {
-            inboxStyle.addLine(getInboxLine(conversation));
+            inboxStyle.addLine(styledTextFactory.getInboxLine(conversation));
         }
         return inboxStyle;
-    }
-
-    private static CharSequence getInboxLine(Conversation conversation) {
-        SpannableStringBuilder builder = new SpannableStringBuilder();
-        builder.append(conversation.getContact().getDisplayName());
-        ForegroundColorSpan colorSpan = new ForegroundColorSpan(Color.parseColor("#cccccc"));
-        builder.setSpan(colorSpan, 0, builder.length(), Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
-        builder.append(" ");
-        builder.append(conversation.getBody());
-        return builder;
     }
 
     private Notification buildSingleUnreadNotification(Conversation conversation) {
         long timestampMillis = Calendar.getInstance().getTimeInMillis();
         return getDefaultBuilder()
-                .setTicker(buildTicker(conversation))
+                .setTicker(styledTextFactory.buildTicker(conversation))
                 .setContentTitle(conversation.getContact().getDisplayName())
-                .setContentIntent(buildSingleUnreadIntent(conversation))
+                .setContentIntent(notificationIntentFactory.createViewConversationIntent(conversation))
                 .setContentText(conversation.getBody())
                 .setStyle(buildBigStyle(conversation))
                 .setWhen(timestampMillis)
                 .build();
-    }
-
-    private PendingIntent buildSingleUnreadIntent(Conversation conversation) {
-        Intent intent = new Intent(context, MessagesActivity.class);
-        intent.setAction(Notifier.ACTION_VIEW_CONVERSATION);
-        intent.putExtra(LaunchAssistant.EXTRA_THREAD_ID, conversation.getThreadId());
-        intent.putExtra(LaunchAssistant.EXTRA_ADDRESS, conversation.getAddress());
-        return PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT);
     }
 
     private static Notification.Style buildBigStyle(Conversation conversation) {
@@ -123,19 +86,9 @@ public class NotificationBuilder {
                 .setBigContentTitle(conversation.getContact().getDisplayName());
     }
 
-    private static CharSequence buildTicker(Conversation conversation) {
-        SpannableStringBuilder builder = new SpannableStringBuilder(conversation.getContact().getDisplayName() + ": ");
-        builder.setSpan(new StyleSpan(Typeface.BOLD), 0, builder.length(), Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
-        builder.append(conversation.getBody());
-        return builder;
-    }
-
     private Notification.Builder getDefaultBuilder() {
-        Intent intent = new Intent(this.context, MessagesActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        PendingIntent pendingIntent = PendingIntent.getActivity(this.context, 0, intent, 0);
         return new Notification.Builder(this.context)
-                .setContentIntent(pendingIntent)
+                .setContentIntent(notificationIntentFactory.createLaunchActivityIntent())
                 .setDefaults(Notification.DEFAULT_LIGHTS | Notification.DEFAULT_VIBRATE)
                 .setSound(preferenceStore.getRingtoneUri())
                 .setAutoCancel(true)
@@ -144,15 +97,11 @@ public class NotificationBuilder {
     }
 
     public Notification buildFailureToSendNotification(InFlightSmsMessage message) {
-        Intent intent = new Intent(context, SmsSender.class);
-        intent.setAction(SmsSender.ACTION_SEND_REQUEST);
-        intent.putExtra(SmsSender.EXTRA_MESSAGE, message);
-        PendingIntent resendPending = PendingIntent.getService(context, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT);
         return getDefaultBuilder()
                 .setContentTitle(string(R.string.failed_to_send_message))
                 .setTicker(string(R.string.failed_to_send_message))
                 .setContentText(context.getString(R.string.couldnt_send_to, message.getAddress()))
-                .addAction(R.drawable.ic_action_send_holo, string(R.string.resend), resendPending)
+                .addAction(R.drawable.ic_action_send_holo, string(R.string.resend), notificationIntentFactory.createResendIntent(message))
                 .setSmallIcon(R.drawable.ic_notify_error)
                 .build();
     }
