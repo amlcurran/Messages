@@ -34,6 +34,8 @@ import com.amlcurran.messages.loaders.MessagesLoader;
 import com.amlcurran.messages.loaders.MessagesLoaderProvider;
 import com.amlcurran.messages.loaders.OnContactQueryListener;
 import com.amlcurran.messages.loaders.OnThreadDeleteListener;
+import com.amlcurran.messages.notifications.InUiNotifier;
+import com.amlcurran.messages.notifications.ToastInUiNotifier;
 import com.amlcurran.messages.reporting.StatReporter;
 import com.amlcurran.messages.telephony.DefaultAppChecker;
 import com.amlcurran.messages.threads.ThreadFragment;
@@ -50,7 +52,7 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
         DefaultAppChecker.Callback, SlidingPaneViewController.Callback, ConversationModalMarshall.Callback,
         OnThreadDeleteListener, ConversationListChangeListener, FragmentController.Callback, MenuController.Callbacks {
 
-    private Notifier toastNotifier;
+    private InUiNotifier toastInUiNotifier;
     private StatReporter statReporter;
     private FragmentController fragmentController;
     private ViewController viewController;
@@ -68,7 +70,7 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
         super.onCreate(savedInstanceState);
         fragmentController  = new MasterDetailFragmentController(this, this);
         viewController      = new SlidingPaneViewController(this, getActionBar());
-        toastNotifier       = new ToastNotifier(this);
+        toastInUiNotifier = new ToastInUiNotifier(this);
         activityController  = new ActivityController(this);
         messagesLoader      = SingletonManager.getMessagesLoader(this);
         statReporter        = SingletonManager.getStatsReporter(this);;
@@ -320,7 +322,7 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
                 } else {
                     toast = getString(R.string.deleted_many_threads, deletedConversations.size());
                 }
-                toastNotifier.notify(toast);
+                toastInUiNotifier.notify(toast);
                 eventBus.postListInvalidated();
             }
         });

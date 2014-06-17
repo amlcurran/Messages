@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-package com.amlcurran.messages;
+package com.amlcurran.messages.notifications;
 
-public interface Notifier {
+public interface InUiNotifier {
     void notify(String message);
 }

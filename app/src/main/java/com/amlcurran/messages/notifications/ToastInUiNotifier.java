@@ -14,15 +14,15 @@
  * limitations under the License.
  */
 
-package com.amlcurran.messages;
+package com.amlcurran.messages.notifications;
 
 import android.content.Context;
 import android.widget.Toast;
 
-public class ToastNotifier implements Notifier {
+public class ToastInUiNotifier implements InUiNotifier {
     private final Context context;
 
-    public ToastNotifier(Context context) {
+    public ToastInUiNotifier(Context context) {
         this.context = context;
     }
 
