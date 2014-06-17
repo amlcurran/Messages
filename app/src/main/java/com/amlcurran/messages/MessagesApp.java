@@ -30,9 +30,8 @@ import com.amlcurran.messages.loaders.MessagesCache;
 import com.amlcurran.messages.loaders.MessagesLoader;
 import com.amlcurran.messages.notifications.Notifier;
 import com.amlcurran.messages.preferences.PreferenceStore;
-import com.amlcurran.messages.reporting.EasyTrackerStatReporter;
+import com.amlcurran.messages.reporting.NullStatReporter;
 import com.amlcurran.messages.reporting.StatReporter;
-import com.google.analytics.tracking.android.EasyTracker;
 
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
@@ -59,7 +58,7 @@ public class MessagesApp extends Application implements BroadcastEventSubscriber
         loader = new ExecutorMessagesLoader(this, executor, cache, eventBus);
         subscriber = new BroadcastEventSubscriber(this, this);
         subscriber.startListening(BroadcastEventBus.BROADCAST_LIST_INVALIDATED);
-        statsReporter = new EasyTrackerStatReporter(EasyTracker.getInstance(this));
+        statsReporter = new NullStatReporter();
         activityController = new ActivityController(this);
         primeZygote(executor);
     }
