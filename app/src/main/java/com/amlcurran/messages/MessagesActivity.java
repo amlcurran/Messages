@@ -94,6 +94,11 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
                     .build());
         }
 
+        handleLaunch(savedInstanceState);
+
+    }
+
+    private void handleLaunch(Bundle savedInstanceState) {
         Launch launch = launchHelper.getLaunchType(savedInstanceState, getIntent());
         IntentDataExtractor intentDataExtractor = new IntentDataExtractor(getIntent());
 
@@ -124,7 +129,6 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
                 break;
 
         }
-
     }
 
     private void displayMmsError() {
