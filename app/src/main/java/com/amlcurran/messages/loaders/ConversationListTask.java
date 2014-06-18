@@ -19,6 +19,7 @@ package com.amlcurran.messages.loaders;
 import android.content.ContentResolver;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.Build;
 import android.provider.Telephony;
 
 import com.amlcurran.messages.core.conversationlist.ConversationListListener;
@@ -57,7 +58,12 @@ class ConversationListTask implements Callable<Object> {
     @Override
     public Object call() throws Exception {
         final List<Conversation> conversations = new ArrayList<Conversation>();
-        Cursor conversationsList = contentResolver.query(Telephony.Threads.CONTENT_URI, null, query, args, getSortString());
+        Cursor conversationsList;
+        if (isSamsungDevice()) {
+            conversationsList = contentResolver.query(Telephony.Threads.CONTENT_URI.buildUpon().appendQueryParameter("simple", "true").build(), null, query, args, getSortString());
+        } else {
+            conversationsList = contentResolver.query(Telephony.Threads.CONTENT_URI, null, query, args, getSortString());
+        }
 
         while (conversationsList.moveToNext()) {
             String address = CursorHelper.asString(conversationsList, Telephony.Sms.ADDRESS);
@@ -80,6 +86,10 @@ class ConversationListTask implements Callable<Object> {
         cache.storeConversationList(conversations);
         loadListener.onConversationListLoaded(conversations);
         return null;
+    }
+
+    private boolean isSamsungDevice() {
+        return Build.MANUFACTURER.toLowerCase().contains("samsung");
     }
 
     private Contact getContact(String address) {
