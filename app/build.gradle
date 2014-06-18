@@ -11,9 +11,25 @@ android {
     defaultConfig {
         minSdkVersion 19
         targetSdkVersion 19
-        versionCode getVersionCode()
+        versionCode Integer.parseInt(new Date(System.currentTimeMillis()).format("YYYYMMdd"))
         versionName "alpha 1"
         /*versionName "${VERSION_MAJOR}.${VERSION_MINOR}.${VERSION_PATCH}"*/
+    }
+
+    signingConfigs {
+        release {
+            storeFile file("../release.keystore")
+            storePassword MESSAGES_KEYSTORE_PW
+            keyAlias "messages"
+            keyPassword MESSAGES_ALIAS_PW
+        }
+    }
+
+    buildTypes {
+        release {
+            debuggable false
+            signingConfig signingConfigs.release
+        }
     }
 }
 
