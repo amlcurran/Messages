@@ -78,42 +78,28 @@ public class ConversationsBinder extends SimpleBinder<Conversation> {
 
         final Contact contact = item.getContact();
 
-            loader.loadPhoto(contact, new PhotoLoadListener() {
+        loader.loadPhoto(contact, new PhotoLoadListener() {
 
-                @Override
-                public void photoLoaded(final Bitmap photo) {
-                    imageView.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            imageView.setImageBitmap(photo);
-                            imageView.setTranslationX(-animationLength);
-                            imageView.animate()
-                                    .translationXBy(animationLength)
-                                    .alpha(1f).start();
-                        }
-                    });
-                }
+            @Override
+            public void photoLoaded(final Bitmap photo) {
+                imageView.setImageBitmap(photo);
+                imageView.setTranslationX(-animationLength);
+                imageView.animate()
+                        .translationXBy(animationLength)
+                        .alpha(1f).start();
+            }
 
-                @Override
-                public void photoLoadedFromCache(final Bitmap photo) {
-                    imageView.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            imageView.setImageBitmap(photo);
-                        }
-                    });
-                }
+            @Override
+            public void photoLoadedFromCache(final Bitmap photo) {
+                imageView.setImageBitmap(photo);
+            }
 
-                @Override
-                public void beforePhotoLoad(Contact contact) {
-                    imageView.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            resetContactImage(imageView);
-                        }
-                    });
-                }
-            });
+            @Override
+            public void beforePhotoLoad(Contact contact) {
+                resetContactImage(imageView);
+            }
+
+        });
 
     }
 

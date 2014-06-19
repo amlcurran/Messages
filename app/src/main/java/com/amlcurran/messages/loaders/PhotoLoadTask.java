@@ -19,6 +19,7 @@ package com.amlcurran.messages.loaders;
 import android.content.ContentResolver;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
+import android.os.Handler;
 
 import com.amlcurran.messages.conversationlist.PhotoLoadListener;
 import com.amlcurran.messages.core.data.Contact;
@@ -31,11 +32,13 @@ class PhotoLoadTask implements Callable<Object> {
     private final Bitmap defaultImage;
     private final Contact contact;
     private final MessagesCache cache;
+    private final Handler uiHandler;
     private final ContactImageLoader contactImageLoader;
 
-    public PhotoLoadTask(ContentResolver contentResolver, Resources resources, Contact contact, PhotoLoadListener photoLoadListener, MessagesCache cache) {
+    public PhotoLoadTask(ContentResolver contentResolver, Resources resources, Contact contact, PhotoLoadListener photoLoadListener, MessagesCache cache, Handler uiHandler) {
         this.contact = contact;
         this.cache = cache;
+        this.uiHandler = uiHandler;
         this.contactImageLoader = new ContactImageLoader(contentResolver, resources);
         this.defaultImage = contactImageLoader.getDefaultImage();
         this.photoLoadListener = photoLoadListener;
@@ -47,11 +50,11 @@ class PhotoLoadTask implements Callable<Object> {
         Bitmap result = null;
 
         if (cache.getContactPhoto(contact) != null) {
-            photoLoadListener.photoLoadedFromCache(cache.getContactPhoto(contact));
+            photoFromCache();
             return null;
         }
 
-        photoLoadListener.beforePhotoLoad(contact);
+        beforePhotoLoad();
 
         if (contact.getPhotoId() >= 0) {
             result = contactImageLoader.getLargeImage(contact.getPhotoId());
@@ -61,8 +64,39 @@ class PhotoLoadTask implements Callable<Object> {
         }
 
         cache.storeContactPhoto(contact, result);
-        photoLoadListener.photoLoaded(result);
+        photoLoaded(result);
         return null;
+    }
+
+    private void photoLoaded(final Bitmap result) {
+        uiHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                photoLoadListener.photoLoaded(result);
+            }
+        });
+    }
+
+    private void beforePhotoLoad() {
+        uiHandler.post(new Runnable() {
+
+            @Override
+            public void run() {
+                photoLoadListener.beforePhotoLoad(contact);
+            }
+
+        });
+    }
+
+    private void photoFromCache() {
+        uiHandler.post(new Runnable() {
+
+            @Override
+            public void run() {
+                photoLoadListener.photoLoadedFromCache(cache.getContactPhoto(contact));
+            }
+
+        });
     }
 
 }

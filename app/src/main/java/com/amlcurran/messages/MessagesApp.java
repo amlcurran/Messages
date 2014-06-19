@@ -17,6 +17,7 @@
 package com.amlcurran.messages;
 
 import android.app.Application;
+import android.os.Handler;
 import android.os.StrictMode;
 import android.preference.PreferenceManager;
 import android.text.SpannableStringBuilder;
@@ -51,12 +52,15 @@ public class MessagesApp extends Application implements BroadcastEventSubscriber
     @Override
     public void onCreate() {
         super.onCreate();
+
         PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
         ExecutorService executor = Executors.newCachedThreadPool();
+        Handler uiHandler = new Handler(getMainLooper());
+
         cache = new MemoryMessagesCache();
         notifier = new Notifier(this);
         eventBus = new BroadcastEventBus(this);
-        loader = new ExecutorMessagesLoader(this, executor, cache, eventBus);
+        loader = new ExecutorMessagesLoader(this, executor, cache, eventBus, uiHandler);
         subscriber = new BroadcastEventSubscriber(this, this);
         subscriber.startListening(BroadcastEventBus.BROADCAST_LIST_INVALIDATED);
         statsReporter = new NullStatReporter();

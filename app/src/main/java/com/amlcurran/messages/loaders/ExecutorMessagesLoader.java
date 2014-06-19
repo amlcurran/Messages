@@ -18,6 +18,7 @@ package com.amlcurran.messages.loaders;
 
 import android.content.ContentResolver;
 import android.content.Context;
+import android.os.Handler;
 
 import com.amlcurran.messages.core.loaders.ContactListListener;
 import com.amlcurran.messages.core.data.Contact;
@@ -39,12 +40,14 @@ public class ExecutorMessagesLoader implements MessagesLoader {
     private final ExecutorService executor;
     private final MessagesCache cache;
     private final EventBus eventBus;
+    private final Handler uiHandler;
 
-    public ExecutorMessagesLoader(Context context, ExecutorService executor, MessagesCache cache, EventBus eventBus) {
+    public ExecutorMessagesLoader(Context context, ExecutorService executor, MessagesCache cache, EventBus eventBus, Handler uiHandler) {
         this.context = context;
         this.executor = executor;
         this.cache = cache;
         this.eventBus = eventBus;
+        this.uiHandler = uiHandler;
     }
 
     private ContentResolver getResolver() {
@@ -91,7 +94,7 @@ public class ExecutorMessagesLoader implements MessagesLoader {
 
     @Override
     public void loadPhoto(Contact contact, PhotoLoadListener photoLoadListener) {
-        submit(new PhotoLoadTask(getResolver(), context.getResources(), contact, photoLoadListener, cache));
+        submit(new PhotoLoadTask(getResolver(), context.getResources(), contact, photoLoadListener, cache, uiHandler));
     }
 
     @Override

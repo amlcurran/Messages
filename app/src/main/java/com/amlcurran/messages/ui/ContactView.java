@@ -59,7 +59,7 @@ public class ContactView extends LinearLayout {
     }
 
     protected void inflate(LayoutInflater inflater) {
-       inflater.inflate(R.layout.view_contact, this, true);
+        inflater.inflate(R.layout.view_contact, this, true);
     }
 
     public void setContact(final Contact contact, MessagesLoader loader) {
@@ -74,7 +74,7 @@ public class ContactView extends LinearLayout {
         });
         loader.loadPhoto(contact, new PhotoLoadListener() {
             @Override
-            public void photoLoaded(final Bitmap photo) {
+            public void photoLoaded(Bitmap photo) {
                 setPhoto(photo);
             }
 
@@ -88,15 +88,10 @@ public class ContactView extends LinearLayout {
 
             }
 
-            private void setPhoto(final Bitmap photo) {
+            private void setPhoto(Bitmap photo) {
                 if (contactId == contact.getContactId() || contactId == -1) {
-                    post(new Runnable() {
-                        @Override
-                        public void run() {
-                            contactImageView.setImageBitmap(photo);
-                            contactImageView.animate().alpha(1f).start();
-                        }
-                    });
+                    contactImageView.setImageBitmap(photo);
+                    contactImageView.animate().alpha(1f).start();
                 }
             }
         });
