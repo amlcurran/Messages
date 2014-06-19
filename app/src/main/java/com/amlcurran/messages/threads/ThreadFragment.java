@@ -25,6 +25,8 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
+import android.widget.ListView;
 
 import com.amlcurran.messages.ListeningCursorListFragment;
 import com.amlcurran.messages.R;
@@ -75,7 +77,8 @@ public class ThreadFragment extends ListeningCursorListFragment<SmsMessage> impl
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_thread, container, false);
-        view.findViewById(android.R.id.list).setBackgroundResource(R.drawable.compose_shadow_background);
+        ListView listView = (ListView) view.findViewById(android.R.id.list);
+        listView.setOnScrollListener(listListener);
         composeView = ((ComposeMessageView) view.findViewById(R.id.thread_compose_view));
         composeView.setComposeListener(this);
         return view;
@@ -181,4 +184,30 @@ public class ThreadFragment extends ListeningCursorListFragment<SmsMessage> impl
     public void setContactView(Contact contact, MessagesLoader messagesLoader) {
         contactView.setContact(contact, messagesLoader);
     }
+
+    private AbsListView.OnScrollListener listListener = new AbsListView.OnScrollListener() {
+
+        @Override
+        public void onScrollStateChanged(AbsListView view, int scrollState) {
+
+        }
+
+        @Override
+        public void onScroll(AbsListView listView, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+
+            if (totalItemCount > 0) {
+
+                boolean lastVisibleIsLast = listView.getLastVisiblePosition() == totalItemCount - 1;
+                boolean lastViewIsAtBottom = listView.getChildAt(listView.getChildCount() - 1).getBottom() == listView.getBottom();
+
+                if (lastVisibleIsLast && lastViewIsAtBottom) {
+                    listView.setBackgroundResource(0);
+                } else {
+                    listView.setBackgroundResource(R.drawable.compose_shadow_background);
+                }
+
+            }
+        }
+    };
+
 }
