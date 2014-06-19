@@ -94,12 +94,12 @@
 
     <style name="ActionBarText" parent="@android:style/TextAppearance.Inverse">
         <item name="android:textSize">24sp</item>
-        <item name="android:fontFamily">sans-serif-condensed</item>
+        <item name="android:fontFamily">RobotoSlab-Regular.ttf</item>
     </style>
 
     <style name="ActionModeText" parent="@android:style/TextAppearance.Medium.Inverse">
         <item name="android:textSize">24sp</item>
-        <item name="android:fontFamily">sans-serif-condensed</item>
+        <item name="android:fontFamily">RobotoSlab-Regular.ttf</item>
     </style>
 
 </resources>

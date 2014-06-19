@@ -17,6 +17,7 @@
 package com.amlcurran.messages;
 
 import android.app.Activity;
+import android.content.Context;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -46,6 +47,8 @@ import com.amlcurran.messages.ui.SlidingPaneViewController;
 import com.amlcurran.messages.ui.ViewController;
 
 import java.util.List;
+
+import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
 public class MessagesActivity extends Activity implements MessagesLoaderProvider,
         ConversationListFragment.Listener, SmsComposeListener,
@@ -118,6 +121,11 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
                 break;
 
         }
+    }
+
+    @Override
+    protected void attachBaseContext(Context newBase) {
+        super.attachBaseContext(new CalligraphyContextWrapper(newBase));
     }
 
     private void displayMmsError() {
