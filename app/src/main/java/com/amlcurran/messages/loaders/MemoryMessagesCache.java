@@ -16,6 +16,10 @@
 
 package com.amlcurran.messages.loaders;
 
+import android.graphics.Bitmap;
+import android.util.LruCache;
+
+import com.amlcurran.messages.core.data.Contact;
 import com.amlcurran.messages.core.data.Conversation;
 
 import java.util.List;
@@ -23,6 +27,11 @@ import java.util.List;
 public class MemoryMessagesCache implements MessagesCache {
 
     private List<Conversation> conversations;
+    private final LruCache<Long, Bitmap> contactPhotoCache;
+
+    public MemoryMessagesCache() {
+        contactPhotoCache = new LruCache<Long, Bitmap>(20);
+    }
 
     @Override
     public List<Conversation> getConversationList() {
@@ -32,6 +41,16 @@ public class MemoryMessagesCache implements MessagesCache {
     @Override
     public void storeConversationList(List<Conversation> conversations) {
         this.conversations = conversations;
+    }
+
+    @Override
+    public Bitmap getContactPhoto(Contact contact) {
+        return contactPhotoCache.get(contact.getContactId());
+    }
+
+    @Override
+    public void storeContactPhoto(Contact contact, Bitmap bitmap) {
+        contactPhotoCache.put(contact.getContactId(), bitmap);
     }
 
     @Override

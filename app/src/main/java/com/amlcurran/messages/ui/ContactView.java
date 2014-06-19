@@ -74,7 +74,21 @@ public class ContactView extends LinearLayout {
         });
         loader.loadPhoto(contact, new PhotoLoadListener() {
             @Override
-            public void onPhotoLoaded(final Bitmap photo) {
+            public void photoLoaded(final Bitmap photo) {
+                setPhoto(photo);
+            }
+
+            @Override
+            public void photoLoadedFromCache(Bitmap photo) {
+                setPhoto(photo);
+            }
+
+            @Override
+            public void beforePhotoLoad(Contact contact) {
+
+            }
+
+            private void setPhoto(final Bitmap photo) {
                 if (contactId == contact.getContactId() || contactId == -1) {
                     post(new Runnable() {
                         @Override

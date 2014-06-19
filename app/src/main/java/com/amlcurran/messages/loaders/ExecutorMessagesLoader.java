@@ -91,7 +91,7 @@ public class ExecutorMessagesLoader implements MessagesLoader {
 
     @Override
     public void loadPhoto(Contact contact, PhotoLoadListener photoLoadListener) {
-        submit(new PhotoLoadTask(getResolver(), context.getResources(), contact, photoLoadListener));
+        submit(new PhotoLoadTask(getResolver(), context.getResources(), contact, photoLoadListener, cache));
     }
 
     @Override

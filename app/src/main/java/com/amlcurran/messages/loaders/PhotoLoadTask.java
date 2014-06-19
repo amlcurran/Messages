@@ -30,10 +30,12 @@ class PhotoLoadTask implements Callable<Object> {
     private final PhotoLoadListener photoLoadListener;
     private final Bitmap defaultImage;
     private final Contact contact;
+    private final MessagesCache cache;
     private final ContactImageLoader contactImageLoader;
 
-    public PhotoLoadTask(ContentResolver contentResolver, Resources resources, Contact contact, PhotoLoadListener photoLoadListener) {
+    public PhotoLoadTask(ContentResolver contentResolver, Resources resources, Contact contact, PhotoLoadListener photoLoadListener, MessagesCache cache) {
         this.contact = contact;
+        this.cache = cache;
         this.contactImageLoader = new ContactImageLoader(contentResolver, resources);
         this.defaultImage = contactImageLoader.getDefaultImage();
         this.photoLoadListener = photoLoadListener;
@@ -43,6 +45,14 @@ class PhotoLoadTask implements Callable<Object> {
     public Object call() throws Exception {
 
         Bitmap result = null;
+
+        if (cache.getContactPhoto(contact) != null) {
+            photoLoadListener.photoLoadedFromCache(cache.getContactPhoto(contact));
+            return null;
+        }
+
+        photoLoadListener.beforePhotoLoad(contact);
+
         if (contact.getPhotoId() >= 0) {
             result = contactImageLoader.getLargeImage(contact.getPhotoId());
         }
@@ -50,7 +60,8 @@ class PhotoLoadTask implements Callable<Object> {
             result = defaultImage;
         }
 
-        photoLoadListener.onPhotoLoaded(result);
+        cache.storeContactPhoto(contact, result);
+        photoLoadListener.photoLoaded(result);
         return null;
     }
 

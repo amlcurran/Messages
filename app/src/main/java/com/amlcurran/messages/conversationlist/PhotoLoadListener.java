@@ -18,6 +18,12 @@ package com.amlcurran.messages.conversationlist;
 
 import android.graphics.Bitmap;
 
+import com.amlcurran.messages.core.data.Contact;
+
 public interface PhotoLoadListener {
-    void onPhotoLoaded(Bitmap photo);
+    void photoLoaded(Bitmap photo);
+
+    void photoLoadedFromCache(Bitmap photo);
+
+    void beforePhotoLoad(Contact contact);
 }
