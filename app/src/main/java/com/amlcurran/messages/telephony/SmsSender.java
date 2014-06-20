@@ -27,6 +27,7 @@ import android.util.Log;
 import com.amlcurran.messages.SingletonManager;
 import com.amlcurran.messages.data.InFlightSmsMessage;
 import com.amlcurran.messages.events.BroadcastEventBus;
+import com.amlcurran.messages.notifications.Notifier;
 
 import java.util.ArrayList;
 
@@ -37,7 +38,9 @@ public class SmsSender extends IntentService {
     public static final String EXTRA_MESSAGE = "message";
     public static final String ACTION_SEND_REQUEST = "send_request";
     public static final String ACTION_MESSAGE_SENT = "message_send";
+    public static final int IS_FROM_FAILURE = 1;
     private static final String EXTRA_OUTBOX_URI = "outbox_uri";
+    public static final String EXTRA_FROM_FAILURE = "from_failure";
 
     private final SmsManager smsManager;
     private final SmsDatabaseWriter smsDatabaseWriter;
@@ -60,8 +63,14 @@ public class SmsSender extends IntentService {
     protected void onHandleIntent(Intent intent) {
         Log.d(TAG, intent.toString());
         if (isSendRequest(intent)) {
+
+            if (isFromFailure(intent)) {
+                new Notifier(this).clearFailureToSendNotification();
+            }
+
             InFlightSmsMessage message = intent.getParcelableExtra(EXTRA_MESSAGE);
             sendMessage(message);
+
         } else if (isSentNotification(intent)) {
             int result = intent.getIntExtra(SmsReceiver.EXTRA_RESULT, 0);
             InFlightSmsMessage message = intent.getParcelableExtra(EXTRA_MESSAGE);
@@ -73,6 +82,10 @@ public class SmsSender extends IntentService {
                 notifyFailureToSend(message, result);
             }
         }
+    }
+
+    private boolean isFromFailure(Intent intent) {
+        return intent.getIntExtra(EXTRA_FROM_FAILURE, -1) == IS_FROM_FAILURE;
     }
 
     private void deleteOutboxMessages(String address) {

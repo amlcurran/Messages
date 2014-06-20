@@ -103,4 +103,8 @@ public class Notifier {
     public void showMmsError() {
         notificationManager.notify(NOTIFICATION_MMS_ERROR, notificationBuilder.buildMmsErrorNotification());
     }
+
+    public void clearFailureToSendNotification() {
+        notificationManager.cancel(NOTIFICATION_SEND_ERROR);
+    }
 }

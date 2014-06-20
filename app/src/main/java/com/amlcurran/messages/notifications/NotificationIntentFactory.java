@@ -50,6 +50,7 @@ public class NotificationIntentFactory {
     PendingIntent createResendIntent(InFlightSmsMessage message) {
         Intent intent = new Intent(context, SmsSender.class);
         intent.setAction(SmsSender.ACTION_SEND_REQUEST);
+        intent.putExtra(SmsSender.EXTRA_FROM_FAILURE, SmsSender.IS_FROM_FAILURE);
         intent.putExtra(SmsSender.EXTRA_MESSAGE, message);
         return PendingIntent.getService(context, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT);
     }
