@@ -18,6 +18,7 @@ package com.amlcurran.messages.notifications;
 
 import android.app.Notification;
 import android.content.Context;
+import android.graphics.Bitmap;
 
 import com.amlcurran.messages.R;
 import com.amlcurran.messages.core.data.Conversation;
@@ -41,9 +42,9 @@ public class NotificationBuilder {
         this.styledTextFactory = new StyledTextFactory();
     }
 
-    public Notification buildUnreadNotification(List<Conversation> conversations) {
+    public Notification buildUnreadNotification(List<Conversation> conversations, Bitmap photo) {
         if (conversations.size() == 1) {
-            return buildSingleUnreadNotification(conversations.get(0));
+            return buildSingleUnreadNotification(conversations.get(0), photo);
         } else {
             return buildMultipleUnreadNotification(conversations);
         }
@@ -68,11 +69,12 @@ public class NotificationBuilder {
         return inboxStyle;
     }
 
-    private Notification buildSingleUnreadNotification(Conversation conversation) {
+    private Notification buildSingleUnreadNotification(Conversation conversation, Bitmap photo) {
         long timestampMillis = Calendar.getInstance().getTimeInMillis();
         return getDefaultBuilder()
                 .setTicker(styledTextFactory.buildTicker(conversation))
                 .setContentTitle(conversation.getContact().getDisplayName())
+                .setLargeIcon(photo)
                 .setContentIntent(notificationIntentFactory.createViewConversationIntent(conversation))
                 .setContentText(conversation.getBody())
                 .setStyle(buildBigStyle(conversation))

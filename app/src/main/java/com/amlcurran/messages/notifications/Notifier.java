@@ -19,8 +19,11 @@ package com.amlcurran.messages.notifications;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.content.Context;
+import android.graphics.Bitmap;
 
 import com.amlcurran.messages.SingletonManager;
+import com.amlcurran.messages.conversationlist.PhotoLoadListener;
+import com.amlcurran.messages.core.data.Contact;
 import com.amlcurran.messages.preferences.PreferenceStore;
 import com.amlcurran.messages.core.data.Conversation;
 import com.amlcurran.messages.core.conversationlist.ConversationListListener;
@@ -49,7 +52,32 @@ public class Notifier {
             SingletonManager.getMessagesLoader(context).loadUnreadConversationList(new ConversationListListener() {
                 @Override
                 public void onConversationListLoaded(final List<Conversation> conversations) {
-                    Notification notification = notificationBuilder.buildUnreadNotification(conversations);
+                    if (conversations.size() == 1) {
+                        // Load the contact photo as well
+                        Conversation singleConvo = conversations.get(0);
+                        SingletonManager.getMessagesLoader(context).loadPhoto(singleConvo.getContact(), new PhotoLoadListener() {
+                            @Override
+                            public void photoLoaded(Bitmap photo) {
+                                postUnreadNotification(conversations, photo);
+                            }
+
+                            @Override
+                            public void photoLoadedFromCache(Bitmap photo) {
+                                postUnreadNotification(conversations, photo);
+                            }
+
+                            @Override
+                            public void beforePhotoLoad(Contact contact) {
+
+                            }
+                        });
+                    } else {
+                        postUnreadNotification(conversations, null);
+                    }
+                }
+
+                private void postUnreadNotification(List<Conversation> conversations, Bitmap photo) {
+                    Notification notification = notificationBuilder.buildUnreadNotification(conversations, photo);
                     notificationManager.notify(NOTIFICATION_UNREAD_MESSAGES, notification);
                 }
             });
