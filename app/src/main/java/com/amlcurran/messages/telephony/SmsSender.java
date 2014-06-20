@@ -63,7 +63,7 @@ public class SmsSender extends IntentService {
             InFlightSmsMessage message = intent.getParcelableExtra(EXTRA_MESSAGE);
             sendMessage(message);
         } else if (isSentNotification(intent)) {
-            int result = intent.getIntExtra("result", 0);
+            int result = intent.getIntExtra(SmsReceiver.EXTRA_RESULT, 0);
             InFlightSmsMessage message = intent.getParcelableExtra(EXTRA_MESSAGE);
             Uri outboxSms = Uri.parse(intent.getStringExtra(EXTRA_OUTBOX_URI));
             if (result == Activity.RESULT_OK) {

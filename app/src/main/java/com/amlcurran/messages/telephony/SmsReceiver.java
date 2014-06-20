@@ -19,56 +19,42 @@ package com.amlcurran.messages.telephony;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
 import android.provider.Telephony;
-import android.util.Log;
 
-import com.amlcurran.messages.SingletonManager;
-import com.amlcurran.messages.data.InFlightSmsMessageFactory;
 import com.amlcurran.messages.data.InFlightSmsMessage;
-import com.amlcurran.messages.events.BroadcastEventBus;
+import com.amlcurran.messages.data.InFlightSmsMessageFactory;
 
 public class SmsReceiver extends BroadcastReceiver {
 
-    public static final String TAG = SmsReceiver.class.getSimpleName();
-
-    private final SmsDatabaseWriter smsDatabaseWriter;
-
-    public SmsReceiver() {
-        smsDatabaseWriter = new SmsDatabaseWriter();
-    }
+    static final String ASYNC_WRITE = "com.amlcurran.messages.smsreceiver.ASYNC_WRITE";
+    static final String EXTRA_MESSAGE = "message";
+    static final String EXTRA_RESULT = "result";
 
     @Override
     public void onReceive(Context context, Intent intent) {
         if (Telephony.Sms.Intents.SMS_DELIVER_ACTION.equals(intent.getAction())) {
+
             android.telephony.SmsMessage[] messages = Telephony.Sms.Intents.getMessagesFromIntent(intent);
-            writeSmsToProvider(context, InFlightSmsMessageFactory.fromDeliverBroadcast(messages));
+            InFlightSmsMessage inFlightSmsMessage = InFlightSmsMessageFactory.fromDeliverBroadcast(messages);
+
+            Intent asyncWriteIntent = new Intent(context, SmsAsyncService.class);
+            asyncWriteIntent.setAction(ASYNC_WRITE);
+            asyncWriteIntent.putExtra(EXTRA_MESSAGE, inFlightSmsMessage);
+
+            context.startService(asyncWriteIntent);
+
         } else {
-            Intent intent2 = new Intent(context, SmsSender.class);
-            intent2.setAction(SmsSender.ACTION_MESSAGE_SENT);
-            intent2.putExtras(intent.getExtras());
+
             int resultCode = getResultCode();
-            intent2.putExtra("result", resultCode);
-            context.startService(intent2);
+
+            Intent sentIntent = new Intent(context, SmsSender.class);
+            sentIntent.setAction(SmsSender.ACTION_MESSAGE_SENT);
+            sentIntent.putExtras(intent.getExtras());
+            sentIntent.putExtra(EXTRA_RESULT, resultCode);
+
+            context.startService(sentIntent);
+
         }
-    }
-
-    private void writeSmsToProvider(final Context context, final InFlightSmsMessage message) {
-        smsDatabaseWriter.writeInboxSms(context.getContentResolver(), new SmsDatabaseWriter.WriteListener() {
-
-            @Override
-            public void written(Uri inserted) {
-                new BroadcastEventBus(context).postMessageReceived();
-                SingletonManager.getNotifier(context).updateUnreadNotification();
-            }
-
-            @Override
-            public void failed() {
-                Log.e(TAG, "Failed to write message to inbox database");
-            }
-
-        }, message);
-
     }
 
 }

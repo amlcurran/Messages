@@ -79,6 +79,8 @@
 
         <activity android:name=".AboutActivity" />
 
+        <service android:name=".telephony.SmsAsyncService" />
+
     </application>
 
 </manifest>
