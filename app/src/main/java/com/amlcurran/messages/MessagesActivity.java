@@ -260,11 +260,13 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
     @Override
     public void isDefaultSmsApp() {
         viewController.hideDisabledBanner();
+        viewController.disableNewMessageButton();
     }
 
     @Override
     public void isNotDefaultSmsApp() {
         viewController.showDisabledBanner();
+        viewController.enableNewMessageButton();
     }
 
     @Override

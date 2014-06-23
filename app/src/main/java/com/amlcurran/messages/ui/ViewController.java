@@ -35,6 +35,10 @@ public interface ViewController {
 
     void showNewMessageButton();
 
+    void disableNewMessageButton();
+
+    void enableNewMessageButton();
+
     public interface Callback {
         void secondaryVisible();
 

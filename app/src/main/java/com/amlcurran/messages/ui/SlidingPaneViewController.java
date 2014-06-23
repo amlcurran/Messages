@@ -130,6 +130,16 @@ public class SlidingPaneViewController implements ViewController, View.OnClickLi
                 .start();
     }
 
+    @Override
+    public void disableNewMessageButton() {
+        newMessageButton.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void enableNewMessageButton() {
+        newMessageButton.setVisibility(View.GONE);
+    }
+
     private void showPersonChip() {
         actionBar.setDisplayShowCustomEnabled(true);
         actionBar.setDisplayShowHomeEnabled(false);
