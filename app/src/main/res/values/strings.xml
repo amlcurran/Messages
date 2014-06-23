@@ -29,5 +29,8 @@
     <string name="default_str">Default</string>
     <string name="mms_error_fragment_title">MMS error</string>
     <string name="mms_error_fragment_message">Messages cannot currently receive MMS. If you\'d like to send and receive MMS, please use another MMS app.</string>
+    <string name="mms_confirm_title">Confirm default</string>
+    <string name="mms_confirm_message">Messages does not currently support MMS. Any MMS messages (such as video or images) will not be received or stored on your phone. If you use MMS frequently, please use another messaging app.</string>
+    <string name="continue_text">Continue</string>
 
 </resources>

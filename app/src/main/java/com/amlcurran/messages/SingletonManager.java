@@ -40,10 +40,6 @@ public class SingletonManager {
         return getMessagesApp(context).loader;
     }
 
-    public static ActivityController getActivityController(Context context) {
-        return getMessagesApp(context).activityController;
-    }
-
     public static com.amlcurran.messages.notifications.Notifier getNotifier(Context context) {
         return getMessagesApp(context).notifier;
     }

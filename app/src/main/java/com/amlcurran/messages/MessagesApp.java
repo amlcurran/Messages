@@ -49,7 +49,6 @@ public class MessagesApp extends Application implements BroadcastEventSubscriber
     Notifier notifier;
     EventBus eventBus;
     StatReporter statsReporter;
-    ActivityController activityController;
 
     @Override
     public void onCreate() {
@@ -66,7 +65,6 @@ public class MessagesApp extends Application implements BroadcastEventSubscriber
         subscriber = new BroadcastEventSubscriber(this, this);
         subscriber.startListening(BroadcastEventBus.BROADCAST_LIST_INVALIDATED);
         statsReporter = new NullStatReporter();
-        activityController = new ActivityController(this);
         primeZygote(executor);
 
         if (BuildConfig.DEBUG) {

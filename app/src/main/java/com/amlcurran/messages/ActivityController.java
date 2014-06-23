@@ -16,20 +16,21 @@
 
 package com.amlcurran.messages;
 
-import android.content.Context;
+import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.provider.Telephony;
 import android.telephony.PhoneNumberUtils;
 
 import com.amlcurran.messages.data.InFlightSmsMessage;
+import com.amlcurran.messages.notifications.Dialog;
 import com.amlcurran.messages.telephony.SmsSender;
 
 public class ActivityController {
 
-    private final Context activity;
+    private final Activity activity;
 
-    public ActivityController(Context activity) {
+    public ActivityController(Activity activity) {
         this.activity = activity;
     }
 
@@ -41,9 +42,28 @@ public class ActivityController {
     }
 
     public void switchSmsApp() {
-        Intent intent = new Intent(Telephony.Sms.Intents.ACTION_CHANGE_DEFAULT);
-        intent.putExtra(Telephony.Sms.Intents.EXTRA_PACKAGE_NAME, activity.getPackageName());
-        activity.startActivity(intent);
+        String title = activity.getString(R.string.mms_confirm_title);
+        String message = activity.getString(R.string.mms_confirm_message);
+
+        Dialog.Button cancelButton = new Dialog.Button(activity.getString(android.R.string.cancel));
+        Dialog.Button continueButton = new Dialog.Button(activity.getString(R.string.continue_text));
+
+        Dialog.create(title, message, cancelButton, continueButton)
+                .setCallbacks(new Dialog.Callbacks() {
+
+                    @Override
+                    public void positive() {
+                        Intent intent = new Intent(Telephony.Sms.Intents.ACTION_CHANGE_DEFAULT);
+                        intent.putExtra(Telephony.Sms.Intents.EXTRA_PACKAGE_NAME, activity.getPackageName());
+                        activity.startActivity(intent);
+                    }
+
+                    @Override
+                    public void negative() {
+
+                    }
+
+                }).show(activity.getFragmentManager(), "mms");
     }
 
     public void viewContact(Uri contactUri) {

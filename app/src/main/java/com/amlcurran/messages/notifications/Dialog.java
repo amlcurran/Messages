@@ -18,19 +18,59 @@ package com.amlcurran.messages.notifications;
 
 import android.app.DialogFragment;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.widget.TextView;
 
 import com.amlcurran.messages.R;
 
 public class Dialog extends DialogFragment {
 
+    private static final String TITLE = "title";
+    private static final String TEXT = "message";
+    private static final String NEGATIVE_LABEL = "button_neg";
+    private static final String POSITIVE_LABEL = "button_pos";
+    private Callbacks callbacks;
+
+    public static Dialog create(String title, String message, Button negative, Button positive) {
+        Dialog dialog = new Dialog();
+
+        Bundle bundle = new BundleBuilder()
+                .put(TITLE, title)
+                .put(TEXT, message)
+                .put(NEGATIVE_LABEL, negative.label)
+                .put(POSITIVE_LABEL, positive.label)
+                .build();
+
+        dialog.setArguments(bundle);
+        return dialog;
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.dialog, container, false);
+
+        ((TextView) view.findViewById(R.id.dialog_title)).setText(getArguments().getString(TITLE));
+        ((TextView) view.findViewById(R.id.dialog_text)).setText(getArguments().getString(TEXT));
+
+        TextView negativeButton = (TextView) view.findViewById(R.id.dialog_button_negative);
+        String negativeLabel = getArguments().getString(NEGATIVE_LABEL);
+        setUpButton(negativeButton, negativeLabel);
+
+        TextView positiveButton = (TextView) view.findViewById(R.id.dialog_button_positive);
+        String positiveLabel = getArguments().getString(POSITIVE_LABEL);
+        setUpButton(positiveButton, positiveLabel);
+
         return view;
+    }
+
+    private void setUpButton(TextView button, String label) {
+        button.setText(label);
+        button.setOnClickListener(buttonListener);
+        button.setVisibility(TextUtils.isEmpty(label) ? View.GONE : View.VISIBLE);
     }
 
     @Override
@@ -40,5 +80,37 @@ public class Dialog extends DialogFragment {
         dialog.getWindow().setBackgroundDrawableResource(R.drawable.dialog_bg);
         setStyle(Dialog.STYLE_NO_FRAME, android.R.style.Theme_Holo_Light_Dialog);
         return dialog;
+    }
+
+    private View.OnClickListener buttonListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            if (v.getId() == R.id.dialog_button_positive) {
+                callbacks.positive();
+                dismiss();
+            } else if (v.getId() == R.id.dialog_button_negative) {
+                callbacks.negative();
+                dismiss();
+            }
+        }
+    };
+
+    public Dialog setCallbacks(Callbacks callbacks) {
+        this.callbacks = callbacks;
+        return this;
+    }
+
+    public interface Callbacks {
+        void positive();
+
+        void negative();
+    }
+
+    public static class Button {
+        private final String label;
+
+        public Button(String label) {
+            this.label = label;
+        }
     }
 }
