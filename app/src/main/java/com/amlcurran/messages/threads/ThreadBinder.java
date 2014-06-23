@@ -36,6 +36,8 @@ class ThreadBinder extends SimpleBinder<SmsMessage> {
 
     private static final int ITEM_ME = 0;
     private static final int ITEM_THEM = 1;
+    private static final float ALPHA_SCALING_MILLIS = 1000 * 60 * 4 * 60f; // four hours
+    private static final float ALPHA_MIN_VALUE = 0.6f;
     private final DateFormat formatter = new SimpleDateFormat("HH:mm dd-MMM-yy");
     private final Date date = new Date();
     private final ListView listView;
@@ -51,6 +53,7 @@ class ThreadBinder extends SimpleBinder<SmsMessage> {
 
         TextView bodyText = getTextView(convertView, android.R.id.text1);
         bodyText.setText(item.getBody());
+        //bodyText.setAlpha(getAlphaForTime(item.getTimestamp()));
         if (item.isSending()) {
             getTextView(convertView, android.R.id.text2).setText("Sending...");
             convertView.findViewById(R.id.sending_image).setVisibility(View.VISIBLE);
@@ -64,6 +67,15 @@ class ThreadBinder extends SimpleBinder<SmsMessage> {
         Linkify.addLinks(bodyText, Linkify.ALL);
 
         return convertView;
+    }
+
+    private float getAlphaForTime(long timestamp) {
+
+        long deltaMillis = System.currentTimeMillis() - timestamp;
+        float alphaFraction = 1 - deltaMillis / ALPHA_SCALING_MILLIS;
+        alphaFraction = Math.max(alphaFraction, ALPHA_MIN_VALUE);
+
+        return alphaFraction;
     }
 
     @Override

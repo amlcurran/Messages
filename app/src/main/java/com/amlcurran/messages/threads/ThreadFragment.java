@@ -194,20 +194,21 @@ public class ThreadFragment extends ListeningCursorListFragment<SmsMessage> impl
 
         @Override
         public void onScroll(AbsListView listView, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
-
             if (totalItemCount > 0) {
-
-                boolean lastVisibleIsLast = listView.getLastVisiblePosition() == totalItemCount - 1;
-                boolean lastViewIsAtBottom = listView.getChildAt(listView.getChildCount() - 1).getBottom() == listView.getBottom();
-
-                if (lastVisibleIsLast && lastViewIsAtBottom) {
-                    listView.setBackgroundResource(0);
-                } else {
-                    listView.setBackgroundResource(R.drawable.compose_shadow_background);
-                }
-
+                setUpViewShadow(listView, totalItemCount);
             }
         }
     };
+
+    private void setUpViewShadow(AbsListView listView, int totalItemCount) {
+        boolean lastVisibleIsLast = listView.getLastVisiblePosition() == totalItemCount - 1;
+        boolean lastViewIsAtBottom = listView.getChildAt(listView.getChildCount() - 1).getBottom() == listView.getBottom();
+
+        if (lastVisibleIsLast && lastViewIsAtBottom) {
+            listView.setBackgroundResource(0);
+        } else {
+            listView.setBackgroundResource(R.drawable.compose_shadow_background);
+        }
+    }
 
 }
