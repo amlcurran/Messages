@@ -17,6 +17,7 @@
 package com.amlcurran.messages.threads;
 
 import android.app.Activity;
+import android.app.ListFragment;
 import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -28,40 +29,33 @@ import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.ListView;
 
-import com.amlcurran.messages.ListeningCursorListFragment;
 import com.amlcurran.messages.R;
 import com.amlcurran.messages.SmsComposeListener;
 import com.amlcurran.messages.core.data.Contact;
 import com.amlcurran.messages.core.data.SmsMessage;
-import com.amlcurran.messages.core.loaders.ConversationListChangeListener;
-import com.amlcurran.messages.core.loaders.ThreadListener;
 import com.amlcurran.messages.data.InFlightSmsMessage;
-import com.amlcurran.messages.events.BroadcastEventBus;
 import com.amlcurran.messages.loaders.MessagesLoader;
-import com.amlcurran.messages.telephony.DefaultAppChecker;
 import com.amlcurran.messages.ui.ComposeMessageView;
 import com.amlcurran.messages.ui.ContactView;
 import com.amlcurran.messages.ui.CustomHeaderFragment;
 import com.espian.utils.ProviderHelper;
-import com.github.amlcurran.sourcebinder.ArrayListSource;
+import com.github.amlcurran.sourcebinder.Source;
 import com.github.amlcurran.sourcebinder.SourceBinderAdapter;
 
 import java.util.Calendar;
-import java.util.List;
 
-public class ThreadFragment extends ListeningCursorListFragment<SmsMessage> implements ThreadListener,
-        ComposeMessageView.OnMessageComposedListener, ConversationListChangeListener,
-        CustomHeaderFragment {
+public class ThreadFragment extends ListFragment implements
+        ComposeMessageView.OnMessageComposedListener,
+        CustomHeaderFragment, ThreadController.Callback {
 
     private static final String THREAD_ID = "threadId";
     private static final String ADDRESS = "address";
 
     private SmsComposeListener listener;
     private String sendAddress;
-    private DefaultAppChecker defaultChecker;
     private ComposeMessageView composeView;
-    private ArrayListSource<SmsMessage> source;
     private ContactView contactView;
+    private ThreadController threadController;
 
     public static ThreadFragment create(String threadId, String address) {
         Bundle bundle = new Bundle();
@@ -79,6 +73,8 @@ public class ThreadFragment extends ListeningCursorListFragment<SmsMessage> impl
         View view = inflater.inflate(R.layout.fragment_thread, container, false);
         ListView listView = (ListView) view.findViewById(android.R.id.list);
         listView.setOnScrollListener(listListener);
+        listView.setStackFromBottom(true);
+        listView.setDivider(null);
         composeView = ((ComposeMessageView) view.findViewById(R.id.thread_compose_view));
         composeView.setComposeListener(this);
         return view;
@@ -93,31 +89,32 @@ public class ThreadFragment extends ListeningCursorListFragment<SmsMessage> impl
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        setHasOptionsMenu(true);
         sendAddress = getArguments().getString(ADDRESS);
+        threadController = new ThreadController(getThreadId(), this);
+        threadController.create(getActivity(), composeView);
 
-        source = new ArrayListSource<SmsMessage>();
-        adapter = new SourceBinderAdapter<SmsMessage>(getActivity(), source, new ThreadBinder(getListView()));
-        defaultChecker = new DefaultAppChecker(getActivity(), composeView);
+        setHasOptionsMenu(true);
+
+        SourceBinderAdapter<SmsMessage> adapter = new SourceBinderAdapter<SmsMessage>(getActivity(), threadController.getSource(), new ThreadBinder(getListView()));
         setListAdapter(adapter);
-        getListView().setStackFromBottom(true);
-        getListView().setDivider(null);
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        defaultChecker.checkSmsApp();
+        threadController.resume();
     }
 
     @Override
-    public void loadData(MessagesLoader loader, boolean isRefresh) {
-        loader.loadThread(getThreadId(), this);
+    public void onStart() {
+        super.onStart();
+        threadController.start();
     }
 
     @Override
-    public String[] getActions() {
-        return new String[] { BroadcastEventBus.BROADCAST_MESSAGE_SENDING };
+    public void onStop() {
+        super.onStop();
+        threadController.stop();
     }
 
     @Override
@@ -141,11 +138,11 @@ public class ThreadFragment extends ListeningCursorListFragment<SmsMessage> impl
         return getArguments().getString(THREAD_ID);
     }
 
-    private void scrollToBottom() {
+    private void scrollTo(final int position) {
         getListView().post(new Runnable() {
             @Override
             public void run() {
-                getListView().smoothScrollToPosition(source.getCount() -1);
+                getListView().smoothScrollToPosition(position);
             }
         });
     }
@@ -156,23 +153,6 @@ public class ThreadFragment extends ListeningCursorListFragment<SmsMessage> impl
         long timestamp = Calendar.getInstance().getTimeInMillis();
         InFlightSmsMessage smsMessage = new InFlightSmsMessage(sendAddress, message, timestamp);
         listener.sendSms(smsMessage);
-    }
-
-    @Override
-    public void listChanged() {
-        new BroadcastEventBus(getActivity()).postListInvalidated();
-    }
-
-    @Override
-    public void onThreadLoaded(final List<SmsMessage> messageList) {
-        onUiThread(new Runnable() {
-            @Override
-            public void run() {
-                source.replace(messageList);
-                scrollToBottom();
-                getMessageLoader().markThreadAsRead(getThreadId(), ThreadFragment.this);
-            }
-        });
     }
 
     @Override
@@ -209,6 +189,11 @@ public class ThreadFragment extends ListeningCursorListFragment<SmsMessage> impl
         } else {
             listView.setBackgroundResource(R.drawable.compose_shadow_background);
         }
+    }
+
+    @Override
+    public void dataLoaded(Source<SmsMessage> source) {
+        scrollTo(source.getCount() - 1);
     }
 
 }
