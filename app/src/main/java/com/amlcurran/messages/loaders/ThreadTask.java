@@ -19,6 +19,7 @@ package com.amlcurran.messages.loaders;
 import android.content.ContentResolver;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.Handler;
 import android.provider.Telephony;
 
 import com.amlcurran.messages.core.loaders.ThreadListener;
@@ -35,16 +36,18 @@ class ThreadTask implements Callable<Object> {
     private final String threadId;
     private final Uri contentUri;
     private final ThreadListener threadListener;
+    private final Handler uiHandler;
 
-    public ThreadTask(ContentResolver contentResolver, String threadId, ThreadListener threadListener) {
-        this(contentResolver, threadId, Telephony.Sms.CONTENT_URI, threadListener);
-    }
-
-    public ThreadTask(ContentResolver contentResolver, String threadId, Uri contentUri, ThreadListener threadListener) {
+    public ThreadTask(ContentResolver contentResolver, String threadId, Uri contentUri, ThreadListener threadListener, Handler uiHandler) {
         this.contentResolver = contentResolver;
         this.threadId = threadId;
         this.contentUri = contentUri;
         this.threadListener = threadListener;
+        this.uiHandler = uiHandler;
+    }
+
+    public ThreadTask(ContentResolver resolver, String threadId, ThreadListener threadListener, Handler uiHandler) {
+        this(resolver, threadId, Telephony.Sms.CONTENT_URI, threadListener, uiHandler);
     }
 
     @Override
@@ -52,9 +55,14 @@ class ThreadTask implements Callable<Object> {
         String selection = Telephony.Sms.THREAD_ID + "=?";
         String[] selectionArgs = {threadId};
         Cursor cursor = contentResolver.query(contentUri, null, selection, selectionArgs, Telephony.Sms.DEFAULT_SORT_ORDER.replace("DESC", "ASC"));
-        List<SmsMessage> messageList = createMessageList(cursor);
+        final List<SmsMessage> messageList = createMessageList(cursor);
         cursor.close();
-        threadListener.onThreadLoaded(messageList);
+        uiHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                threadListener.onThreadLoaded(messageList);
+            }
+        });
         return null;
     }
 

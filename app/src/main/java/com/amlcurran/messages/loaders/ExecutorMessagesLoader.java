@@ -84,7 +84,7 @@ public class ExecutorMessagesLoader implements MessagesLoader {
 
     @Override
     public void loadThread(String threadId, ThreadListener threadListener) {
-        submit(new ThreadTask(getResolver(), threadId, threadListener));
+        submit(new ThreadTask(getResolver(), threadId, threadListener, uiHandler));
     }
 
     @Override
@@ -119,7 +119,7 @@ public class ExecutorMessagesLoader implements MessagesLoader {
 
     @Override
     public void markThreadAsUnread(List<Conversation> conversations, ConversationListChangeListener changeListener) {
-        submit(new MarkUnreadTask(getResolver(), conversations, changeListener));
+        submit(new MarkUnreadTask(getResolver(), conversations, changeListener, uiHandler));
     }
 
     @Override

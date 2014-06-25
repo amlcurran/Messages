@@ -18,6 +18,7 @@ package com.amlcurran.messages.loaders;
 
 import android.content.ContentResolver;
 import android.content.ContentValues;
+import android.os.Handler;
 import android.provider.Telephony;
 import android.util.Log;
 
@@ -33,11 +34,13 @@ class MarkUnreadTask implements Callable<Object> {
     private final ContentResolver contentResolver;
     private final List<Conversation> conversationList;
     private final ConversationListChangeListener changeListener;
+    private final Handler uiHandler;
 
-    public MarkUnreadTask(ContentResolver contentResolver, List<Conversation> conversationList, ConversationListChangeListener changeListener) {
+    public MarkUnreadTask(ContentResolver contentResolver, List<Conversation> conversationList, ConversationListChangeListener changeListener, Handler uiHandler) {
         this.contentResolver = contentResolver;
         this.conversationList = conversationList;
         this.changeListener = changeListener;
+        this.uiHandler = uiHandler;
     }
 
     @Override
@@ -58,7 +61,7 @@ class MarkUnreadTask implements Callable<Object> {
                     }
 
                 }
-            }).call();
+            }, uiHandler).call();
         }
         changeListener.listChanged();
         return null;
