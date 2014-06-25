@@ -89,7 +89,7 @@ public class ExecutorMessagesLoader implements MessagesLoader {
 
     @Override
     public void markThreadAsRead(String threadId, ConversationListChangeListener listChangeListener) {
-        submit(new MarkReadTask(getResolver(), threadId, listChangeListener));
+        submit(new MarkReadTask(getResolver(), threadId, eventBus));
     }
 
     @Override

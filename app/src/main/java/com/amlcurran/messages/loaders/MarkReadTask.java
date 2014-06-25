@@ -20,19 +20,19 @@ import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.provider.Telephony;
 
-import com.amlcurran.messages.core.loaders.ConversationListChangeListener;
+import com.amlcurran.messages.events.EventBus;
 
 import java.util.concurrent.Callable;
 
 class MarkReadTask implements Callable<Object> {
     private final ContentResolver contentResolver;
     private final String threadId;
-    private final ConversationListChangeListener listChangeListener;
+    private final EventBus eventBus;
 
-    public MarkReadTask(ContentResolver contentResolver, String threadId, ConversationListChangeListener listChangeListener) {
+    public MarkReadTask(ContentResolver contentResolver, String threadId, EventBus eventBus) {
         this.contentResolver = contentResolver;
         this.threadId = threadId;
-        this.listChangeListener = listChangeListener;
+        this.eventBus = eventBus;
     }
 
     @Override
@@ -40,7 +40,7 @@ class MarkReadTask implements Callable<Object> {
         String selection = String.format("%1$s=? AND %2$s=?", Telephony.Sms.THREAD_ID, Telephony.Sms.READ);
         String[] args = new String[]{threadId, "0" };
         contentResolver.update(Telephony.Sms.CONTENT_URI, createReadContentValues(), selection, args);
-        listChangeListener.listChanged();
+        eventBus.postListInvalidated();
         return null;
     }
 
