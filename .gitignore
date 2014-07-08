@@ -6,3 +6,4 @@ Messages.iml
 .idea/
 app/src/main/res/values/analytics.xml
 /release.keystore
+build/
