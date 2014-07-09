@@ -41,9 +41,14 @@ public class Dialog extends DialogFragment {
         Bundle bundle = new BundleBuilder()
                 .put(TITLE, title)
                 .put(TEXT, message)
-                .put(NEGATIVE_LABEL, negative.label)
-                .put(POSITIVE_LABEL, positive.label)
                 .build();
+
+        if (negative != null) {
+            bundle.putString(NEGATIVE_LABEL, negative.label);
+        }
+        if (positive != null) {
+            bundle.putString(POSITIVE_LABEL, positive.label);
+        }
 
         dialog.setArguments(bundle);
         return dialog;

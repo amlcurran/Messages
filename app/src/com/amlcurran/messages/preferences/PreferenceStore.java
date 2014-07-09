@@ -32,6 +32,7 @@ public class PreferenceStore {
     static final String UNREAD_PRIORITY = "unread_priority";
     static final String RINGTONE = "ringtone";
     static final String NOTIFICATIONS = "notifications";
+    static final String SHOWN_ALPHA_MESSAGE = "alpha_message";
     private final SharedPreferences preferences;
     private final List<PreferenceChangedListener> changedListenerList = new ArrayList<PreferenceChangedListener>();
 
@@ -87,6 +88,16 @@ public class PreferenceStore {
         for (PreferenceChangedListener listener : changedListenerList) {
             listener.preferenceChanged(key);
         }
+    }
+
+    public boolean hasNotShownAlphaMessage() {
+        return preferences.getBoolean(SHOWN_ALPHA_MESSAGE, true);
+    }
+
+    public void storeHasShownAlphaMessage() {
+        preferences.edit()
+                .putBoolean(SHOWN_ALPHA_MESSAGE, false)
+                .apply();
     }
 
     public interface PreferenceChangedListener {

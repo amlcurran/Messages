@@ -40,8 +40,10 @@ import com.amlcurran.messages.loaders.OnContactQueryListener;
 import com.amlcurran.messages.loaders.OnThreadDeleteListener;
 import com.amlcurran.messages.notifications.BlockingInUiDialogNotifier;
 import com.amlcurran.messages.notifications.BlockingInUiNotifier;
+import com.amlcurran.messages.notifications.Dialog;
 import com.amlcurran.messages.notifications.InUiNotifier;
 import com.amlcurran.messages.notifications.InUiToastNotifier;
+import com.amlcurran.messages.preferences.PreferenceStore;
 import com.amlcurran.messages.reporting.StatReporter;
 import com.amlcurran.messages.telephony.DefaultAppChecker;
 import com.amlcurran.messages.threads.ThreadFragment;
@@ -72,7 +74,8 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
     private boolean isSecondaryVisible;
     private MessagesLoader messagesLoader;
     private CustomActionBarController actionBarController;
-    private BlockingInUiNotifier dialogInUiNotifier;
+    private BlockingInUiNotifier blockingInUiNotifier;
+    private PreferenceStore preferencesStore;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,11 +83,12 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
         fragmentController  = new MasterDetailFragmentController(this, this);
         viewController      = new SlidingPaneViewController(this, getActionBar());
         toastInUiNotifier   = new InUiToastNotifier(this);
-        dialogInUiNotifier  = new BlockingInUiDialogNotifier(getFragmentManager());
-        activityController  = new ActivityController(this, dialogInUiNotifier);
+        blockingInUiNotifier = new BlockingInUiDialogNotifier(getFragmentManager());
+        activityController  = new ActivityController(this, blockingInUiNotifier);
         messagesLoader      = SingletonManager.getMessagesLoader(this);
         statReporter        = SingletonManager.getStatsReporter(this);;
         eventBus            = SingletonManager.getEventBus(this);
+        preferencesStore    = new PreferenceStore(this);
         getActionBar().hide();
 
         viewController.setContentView(this);
@@ -94,11 +98,11 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
         menuController = new MenuController(this, this, actionBarView);
         appChecker = new DefaultAppChecker(this, this);
 
-        handleLaunch(savedInstanceState);
+        handleLaunch(savedInstanceState, preferencesStore);
     }
 
-    private void handleLaunch(Bundle savedInstanceState) {
-        Launch launch = launchHelper.getLaunchType(savedInstanceState, getIntent());
+    private void handleLaunch(Bundle savedInstanceState, PreferenceStore preferencesStore) {
+        Launch launch = launchHelper.getLaunchType(savedInstanceState, getIntent(), preferencesStore);
         IntentDataExtractor intentDataExtractor = new IntentDataExtractor(getIntent());
 
         switch (launch) {
@@ -127,7 +131,27 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
                 displayMmsError();
                 break;
 
+            case FIRST_EVER_LAUNCH:
+                firstStart();
+                showFirstDialog();
+                break;
+
         }
+    }
+
+    private void showFirstDialog() {
+        blockingInUiNotifier.show(new BlockingInUiNotifier.Callbacks() {
+            @Override
+            public void positive() {
+
+            }
+
+            @Override
+            public void negative() {
+
+            }
+        }, getString(R.string.alpha_title), getString(R.string.alpha_message),
+                new Dialog.Button("OK"));
     }
 
     @Override

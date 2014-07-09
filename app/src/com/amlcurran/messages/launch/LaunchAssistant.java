@@ -20,13 +20,19 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import com.amlcurran.messages.notifications.Notifier;
+import com.amlcurran.messages.preferences.PreferenceStore;
 
 public class LaunchAssistant {
 
     public static final String EXTRA_THREAD_ID = "thread_id";
     public static final String EXTRA_ADDRESS = "address";
 
-    public Launch getLaunchType(Bundle savedInstanceState, Intent intent) {
+    public Launch getLaunchType(Bundle savedInstanceState, Intent intent, PreferenceStore preferencesStore) {
+
+        if (preferencesStore.hasNotShownAlphaMessage()) {
+            preferencesStore.storeHasShownAlphaMessage();
+            return Launch.FIRST_EVER_LAUNCH;
+        }
 
         if (schemeIs(intent, "sms")) {
             return Launch.SEND_ANONYMOUS;
