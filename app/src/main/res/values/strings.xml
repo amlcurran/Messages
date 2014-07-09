@@ -32,5 +32,6 @@
     <string name="mms_confirm_title">Confirm default</string>
     <string name="mms_confirm_message">Messages does not currently support MMS. Any MMS messages (such as video or images) will not be received or stored on your phone. If you use MMS frequently, please use another messaging app.</string>
     <string name="continue_text">Continue</string>
+    <string name="about">About</string>
 
 </resources>

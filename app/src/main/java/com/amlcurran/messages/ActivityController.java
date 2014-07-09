@@ -73,7 +73,7 @@ public class ActivityController {
     }
 
     public void showAbout() {
-        activity.startActivity(new Intent(activity, AboutActivity.class));
+        //activity.startActivity(new Intent(activity, AboutActivity.class));
     }
 
     public void sendSms(InFlightSmsMessage message) {

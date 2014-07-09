@@ -78,8 +78,6 @@
             </intent-filter>
         </service>
 
-        <activity android:name=".AboutActivity" />
-
         <service android:name=".telephony.SmsAsyncService" />
 
         <receiver android:name=".events.BootNotificationReceiver">

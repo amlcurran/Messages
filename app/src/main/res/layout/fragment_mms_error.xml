@@ -31,7 +31,7 @@
             android:layout_height="wrap_content"
             android:text="@string/mms_error_fragment_title"
             android:id="@+id/textView"
-            style="@style/Text.Title" />
+            style="@style/ContactViewTitle" />
 
         <TextView
             android:layout_width="wrap_content"
