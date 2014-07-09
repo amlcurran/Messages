@@ -31,7 +31,7 @@ public class LaunchAssistant {
 
         if (preferencesStore.hasNotShownAlphaMessage()) {
             preferencesStore.storeHasShownAlphaMessage();
-            return Launch.SHOW_ALPHA_MESSAGEN;
+            return Launch.SHOW_ALPHA_MESSAGE;
         }
 
         if (schemeIs(intent, "sms")) {
