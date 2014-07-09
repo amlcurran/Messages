@@ -20,7 +20,7 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 
-import com.amlcurran.messages.LaunchAssistant;
+import com.amlcurran.messages.launch.LaunchAssistant;
 import com.amlcurran.messages.MessagesActivity;
 import com.amlcurran.messages.core.data.Conversation;
 import com.amlcurran.messages.data.InFlightSmsMessage;

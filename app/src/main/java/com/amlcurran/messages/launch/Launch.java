@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.amlcurran.messages;
+package com.amlcurran.messages.launch;
 
 public enum Launch {
     FIRST_START, SEND_ANONYMOUS, SEND_TO, SHARE_TO, OTHER, MMS_TO, VIEW_CONVERSATION

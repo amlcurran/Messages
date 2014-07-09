@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.amlcurran.messages;
+package com.amlcurran.messages.launch;
 
 import android.content.Intent;
 import android.net.Uri;
@@ -26,7 +26,7 @@ public class IntentDataExtractor {
         this.intent = intent;
     }
 
-    String getAddressFromUri() {
+    public String getAddressFromUri() {
         Uri data = intent.getData();
         return data.getSchemeSpecificPart();
     }
