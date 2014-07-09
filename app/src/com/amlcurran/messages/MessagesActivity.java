@@ -131,7 +131,7 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
                 displayMmsError();
                 break;
 
-            case FIRST_EVER_LAUNCH:
+            case SHOW_ALPHA_MESSAGE:
                 firstStart();
                 showFirstDialog();
                 break;
