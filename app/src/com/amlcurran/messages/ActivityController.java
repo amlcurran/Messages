@@ -24,14 +24,17 @@ import android.telephony.PhoneNumberUtils;
 
 import com.amlcurran.messages.data.InFlightSmsMessage;
 import com.amlcurran.messages.notifications.Dialog;
+import com.amlcurran.messages.notifications.BlockingInUiNotifier;
 import com.amlcurran.messages.telephony.SmsSender;
 
 public class ActivityController {
 
     private final Activity activity;
+    private BlockingInUiNotifier blockingInUiNotifier;
 
-    public ActivityController(Activity activity) {
+    public ActivityController(Activity activity, BlockingInUiNotifier blockingInUiNotifier) {
         this.activity = activity;
+        this.blockingInUiNotifier = blockingInUiNotifier;
     }
 
     void callNumber(String sendAddress) {
@@ -48,22 +51,23 @@ public class ActivityController {
         Dialog.Button cancelButton = new Dialog.Button(activity.getString(android.R.string.cancel));
         Dialog.Button continueButton = new Dialog.Button(activity.getString(R.string.continue_text));
 
-        Dialog.create(title, message, cancelButton, continueButton)
-                .setCallbacks(new Dialog.Callbacks() {
+        BlockingInUiNotifier.Callbacks callbacks = new BlockingInUiNotifier.Callbacks() {
 
-                    @Override
-                    public void positive() {
-                        Intent intent = new Intent(Telephony.Sms.Intents.ACTION_CHANGE_DEFAULT);
-                        intent.putExtra(Telephony.Sms.Intents.EXTRA_PACKAGE_NAME, activity.getPackageName());
-                        activity.startActivity(intent);
-                    }
+            @Override
+            public void positive() {
+                Intent intent = new Intent(Telephony.Sms.Intents.ACTION_CHANGE_DEFAULT);
+                intent.putExtra(Telephony.Sms.Intents.EXTRA_PACKAGE_NAME, activity.getPackageName());
+                activity.startActivity(intent);
+            }
 
-                    @Override
-                    public void negative() {
+            @Override
+            public void negative() {
 
-                    }
+            }
 
-                }).show(activity.getFragmentManager(), "mms");
+        };
+
+        blockingInUiNotifier.show(callbacks, title, message, cancelButton, continueButton);
     }
 
     public void viewContact(Uri contactUri) {

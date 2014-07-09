@@ -19,10 +19,10 @@ package com.amlcurran.messages.notifications;
 import android.content.Context;
 import android.widget.Toast;
 
-public class ToastInUiNotifier implements InUiNotifier {
+public class InUiToastNotifier implements InUiNotifier {
     private final Context context;
 
-    public ToastInUiNotifier(Context context) {
+    public InUiToastNotifier(Context context) {
         this.context = context;
     }
 

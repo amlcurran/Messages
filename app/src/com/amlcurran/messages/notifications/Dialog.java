@@ -33,7 +33,7 @@ public class Dialog extends DialogFragment {
     private static final String TEXT = "message";
     private static final String NEGATIVE_LABEL = "button_neg";
     private static final String POSITIVE_LABEL = "button_pos";
-    private Callbacks callbacks;
+    private BlockingInUiNotifier.Callbacks callbacks;
 
     public static Dialog create(String title, String message, Button negative, Button positive) {
         Dialog dialog = new Dialog();
@@ -95,15 +95,9 @@ public class Dialog extends DialogFragment {
         }
     };
 
-    public Dialog setCallbacks(Callbacks callbacks) {
+    public Dialog setCallbacks(BlockingInUiNotifier.Callbacks callbacks) {
         this.callbacks = callbacks;
         return this;
-    }
-
-    public interface Callbacks {
-        void positive();
-
-        void negative();
     }
 
     public static class Button {

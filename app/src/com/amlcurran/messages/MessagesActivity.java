@@ -38,8 +38,10 @@ import com.amlcurran.messages.loaders.MessagesLoader;
 import com.amlcurran.messages.loaders.MessagesLoaderProvider;
 import com.amlcurran.messages.loaders.OnContactQueryListener;
 import com.amlcurran.messages.loaders.OnThreadDeleteListener;
+import com.amlcurran.messages.notifications.BlockingInUiDialogNotifier;
+import com.amlcurran.messages.notifications.BlockingInUiNotifier;
 import com.amlcurran.messages.notifications.InUiNotifier;
-import com.amlcurran.messages.notifications.ToastInUiNotifier;
+import com.amlcurran.messages.notifications.InUiToastNotifier;
 import com.amlcurran.messages.reporting.StatReporter;
 import com.amlcurran.messages.telephony.DefaultAppChecker;
 import com.amlcurran.messages.threads.ThreadFragment;
@@ -70,14 +72,16 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
     private boolean isSecondaryVisible;
     private MessagesLoader messagesLoader;
     private CustomActionBarController actionBarController;
+    private BlockingInUiNotifier dialogInUiNotifier;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         fragmentController  = new MasterDetailFragmentController(this, this);
         viewController      = new SlidingPaneViewController(this, getActionBar());
-        toastInUiNotifier   = new ToastInUiNotifier(this);
-        activityController  = new ActivityController(this);
+        toastInUiNotifier   = new InUiToastNotifier(this);
+        dialogInUiNotifier  = new BlockingInUiDialogNotifier(getFragmentManager());
+        activityController  = new ActivityController(this, dialogInUiNotifier);
         messagesLoader      = SingletonManager.getMessagesLoader(this);
         statReporter        = SingletonManager.getStatsReporter(this);;
         eventBus            = SingletonManager.getEventBus(this);
