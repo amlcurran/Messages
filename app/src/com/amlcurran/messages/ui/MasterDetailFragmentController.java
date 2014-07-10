@@ -40,10 +40,17 @@ public class MasterDetailFragmentController implements FragmentController {
 
     @Override
     public void loadMessagesListFragment() {
-        activity.getFragmentManager().beginTransaction()
-                .add(R.id.container, new ConversationListFragment())
-                .commit();
-        callback.insertedMaster();
+        if (doesNotHaveMessagesList()) {
+            activity.getFragmentManager().beginTransaction()
+                    .add(R.id.container, new ConversationListFragment())
+                    .commit();
+            callback.insertedMaster();
+        }
+    }
+
+    private boolean doesNotHaveMessagesList() {
+        Fragment fragment = activity.getFragmentManager().findFragmentById(R.id.container);
+        return fragment != null && fragment instanceof ConversationListFragment;
     }
 
     @Override
@@ -58,7 +65,7 @@ public class MasterDetailFragmentController implements FragmentController {
 
     @Override
     public void showSettings() {
-        replaceFragmentInternal(new PreferencesFragment(), true);
+        replaceFragmentInternal(new PreferencesFragment(), false);
     }
 
     @Override
