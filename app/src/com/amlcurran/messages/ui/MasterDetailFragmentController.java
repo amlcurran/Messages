@@ -50,7 +50,7 @@ public class MasterDetailFragmentController implements FragmentController {
 
     private boolean doesNotHaveMessagesList() {
         Fragment fragment = activity.getFragmentManager().findFragmentById(R.id.container);
-        return fragment != null && fragment instanceof ConversationListFragment;
+        return fragment == null || !(fragment instanceof ConversationListFragment);
     }
 
     @Override
