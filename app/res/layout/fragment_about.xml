@@ -6,6 +6,13 @@
               android:layout_height="match_parent"
               android:padding="16dp">
 
+    <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/imageView"
+            android:layout_gravity="center_horizontal"
+            android:src="@drawable/ic_launch_sms_large"/>
+
     <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -21,7 +28,6 @@
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:fontFamily="sans-serif-condensed"
-            android:text="version"
             android:id="@+id/about_version"
             android:layout_gravity="center_horizontal"/>
 </LinearLayout>
