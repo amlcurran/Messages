@@ -102,6 +102,12 @@
         <item name="android:textColor">#bbffffff</item>
     </style>
 
+    <style name="Text.Mission">
+        <item name="android:lineSpacingMultiplier">1.1</item>
+    </style>
+
+    <style name="Text" parent="android:TextAppearance.Holo.Medium" />
+
     <integer name="loading_scale_small">2</integer>
     <integer name="loading_scale_large">1</integer>
 </resources>

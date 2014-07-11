@@ -38,5 +38,6 @@
     <string name="alpha_message">Thanks for trying out Messages. Please note that Messages is currently in alpha, so quirks and bugs are likely. \n\nPlease give feedback through the Github project!</string>
     <string name="alpha_title">Messages alpha</string>
     <string name="version_name_label">version %1$s</string>
+    <string name="messages_mission">Messages is an open-source SMS app, designed to push innovation on SMS, without locking users into proprietary messaging systems.</string>
 
 </resources>
