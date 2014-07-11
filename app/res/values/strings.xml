@@ -2,6 +2,8 @@
 <resources>
 
     <string name="app_name">Messages</string>
+    <string name="version_name">alpha 1</string>
+
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
     <string name="disabled_app_message">Messages is not your default SMS app. Change this in Settings.</string>
@@ -35,5 +37,6 @@
     <string name="about">About</string>
     <string name="alpha_message">Thanks for trying out Messages. Please note that Messages is currently in alpha, so quirks and bugs are likely. \n\nPlease give feedback through the Github project!</string>
     <string name="alpha_title">Messages alpha</string>
+    <string name="version_name_label">version %1$s</string>
 
 </resources>

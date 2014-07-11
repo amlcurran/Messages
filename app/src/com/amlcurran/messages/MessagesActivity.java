@@ -232,7 +232,7 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
 
     @Override
     public void showAbout() {
-        activityController.showAbout();
+        fragmentController.replaceFragment(new AboutFragment(), false);
     }
 
     @Override

@@ -55,25 +55,25 @@ public class MasterDetailFragmentController implements FragmentController {
 
     @Override
     public void replaceFragment(Fragment fragment, boolean addToStack) {
-        replaceFragmentInternal(fragment, addToStack);
+        replaceFragmentInternal(fragment);
     }
 
     @Override
     public void loadEmptyFragment() {
-        replaceFragmentInternal(new EmptyFragment(), false);
+        replaceFragmentInternal(new EmptyFragment());
     }
 
     @Override
     public void showSettings() {
-        replaceFragmentInternal(new PreferencesFragment(), false);
+        replaceFragmentInternal(new PreferencesFragment());
     }
 
     @Override
     public void loadComposeNewFragment() {
-        replaceFragmentInternal(new ComposeNewFragment(), false);
+        replaceFragmentInternal(new ComposeNewFragment());
     }
 
-    private void replaceFragmentInternal(Fragment fragment, boolean addToStack) {
+    private void replaceFragmentInternal(Fragment fragment) {
 
         if (fragment instanceof CustomHeaderFragment) {
             Context themedContext = ThemeHelper.getThemedContext(activity);
@@ -84,9 +84,6 @@ public class MasterDetailFragmentController implements FragmentController {
 
         FragmentTransaction transaction = activity.getFragmentManager().beginTransaction()
                 .replace(R.id.secondary, fragment);
-        if (addToStack) {
-            transaction.addToBackStack(null);
-        }
         transaction.commit();
         callback.insertedDetail();
     }

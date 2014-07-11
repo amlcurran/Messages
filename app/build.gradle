@@ -12,7 +12,6 @@ android {
         minSdkVersion 19
         targetSdkVersion 19
         versionCode Integer.parseInt(new Date(System.currentTimeMillis()).format("YYYYMMdd"))
-        versionName "alpha 1"
         /*versionName "${VERSION_MAJOR}.${VERSION_MINOR}.${VERSION_PATCH}"*/
     }
 
