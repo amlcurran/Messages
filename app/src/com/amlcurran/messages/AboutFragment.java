@@ -38,6 +38,7 @@ public class AboutFragment extends Fragment {
 
         points.add(new Point("Github Project", "View the app's open source project"));
         points.add(new Point("Calligraphy", "Used under Apache 2.0 License", "https://github.com/chrisjenx/Calligraphy"));
+        points.add(new Point("SourceBinder", "Used under Apache 2.0 License", "https://github.com/amlcurran/SourceBinder"));
 
         ArrayAdapter<Point> pointArrayAdapter = new PointsArrayAdapter(getActivity());
         pointArrayAdapter.addAll(points);
