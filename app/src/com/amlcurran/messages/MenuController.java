@@ -28,10 +28,9 @@ public class MenuController implements OnOptionsItemSelectedListener {
     private final Activity activity;
     private final Callbacks callbacks;
 
-    public MenuController(Activity activity, Callbacks callbacks, CustomActionBarView actionBarView) {
+    public MenuController(Activity activity, Callbacks callbacks) {
         this.activity = activity;
         this.callbacks = callbacks;
-        actionBarView.setOnOptionsItemSelectedListener(this);
     }
 
     public boolean create(Menu menu) {

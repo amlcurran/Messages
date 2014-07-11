@@ -16,6 +16,7 @@
 
 package com.amlcurran.messages;
 
+import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
@@ -47,7 +48,6 @@ import com.amlcurran.messages.preferences.PreferenceStore;
 import com.amlcurran.messages.reporting.StatReporter;
 import com.amlcurran.messages.telephony.DefaultAppChecker;
 import com.amlcurran.messages.threads.ThreadFragment;
-import com.amlcurran.messages.ui.CustomActionBarView;
 import com.amlcurran.messages.ui.FragmentController;
 import com.amlcurran.messages.ui.MasterDetailFragmentController;
 import com.amlcurran.messages.ui.SlidingPaneViewController;
@@ -73,7 +73,6 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
     private LaunchAssistant launchHelper = new LaunchAssistant();
     private boolean isSecondaryVisible;
     private MessagesLoader messagesLoader;
-    private CustomActionBarController actionBarController;
     private BlockingInUiNotifier blockingInUiNotifier;
     private PreferenceStore preferencesStore;
 
@@ -81,21 +80,20 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         fragmentController  = new MasterDetailFragmentController(this, this);
-        viewController      = new SlidingPaneViewController(this, getActionBar());
+        viewController      = new SlidingPaneViewController(this);
         toastInUiNotifier   = new InUiToastNotifier(this);
-        blockingInUiNotifier = new BlockingInUiDialogNotifier(getFragmentManager());
+        blockingInUiNotifier= new BlockingInUiDialogNotifier(getFragmentManager());
         activityController  = new ActivityController(this, blockingInUiNotifier);
         messagesLoader      = SingletonManager.getMessagesLoader(this);
         statReporter        = SingletonManager.getStatsReporter(this);;
         eventBus            = SingletonManager.getEventBus(this);
         preferencesStore    = new PreferenceStore(this);
-        getActionBar().hide();
+        //getActionBar().hide();
 
         viewController.setContentView(this);
 
-        CustomActionBarView actionBarView = (CustomActionBarView) findViewById(R.id.action_bar);
-        actionBarController = new CustomActionBarController(actionBarView);
-        menuController = new MenuController(this, this, actionBarView);
+
+        menuController = new MenuController(this, this);
         appChecker = new DefaultAppChecker(this, this);
 
         handleLaunch(savedInstanceState, preferencesStore);
@@ -211,14 +209,12 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         menuController.create(menu);
-        actionBarController.menuCreated(menu);
         return true;
     }
 
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
         menuController.prepare(menu, isSecondaryVisible);
-        actionBarController.prepareMenu(menu);
         return true;
     }
 
@@ -305,6 +301,7 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
         isSecondaryVisible = true;
         menuController.update();
         viewController.showNewMessageButton();
+        showPersonChip();
     }
 
     @Override
@@ -312,11 +309,12 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
         isSecondaryVisible = false;
         menuController.update();
         viewController.hideNewMessageButton();
+        hidePersonChip();
     }
 
     @Override
     public void secondarySliding(float slideOffset) {
-        actionBarController.secondaryVisibility(slideOffset);
+        //actionBarController.secondaryVisibility(slideOffset);
     }
 
     @Override
@@ -386,12 +384,29 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
 
     @Override
     public void removeCustomHeader() {
-        actionBarController.removeCustomHeader();
+        getActionBar().setCustomView(null);
+        hidePersonChip();
+        //actionBarController.removeCustomHeader();
+    }
+
+    private void hidePersonChip() {
+        getActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_HOME |
+            ActionBar.DISPLAY_SHOW_TITLE);
+        //getActionBar().setDisplayShowTitleEnabled(true);
+        //getActionBar().setDisplayShowCustomEnabled(false);
     }
 
     @Override
     public void addCustomHeader(View headerView) {
-        actionBarController.addCustomHeader(headerView);
+        getActionBar().setCustomView(headerView);
+        showPersonChip();
+        //actionBarController.addCustomHeader(headerView);
+    }
+
+    private void showPersonChip() {
+        //getActionBar().setDisplayShowTitleEnabled(false);
+        //getActionBar().setDisplayShowCustomEnabled(true);
+        getActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
     }
 
 }

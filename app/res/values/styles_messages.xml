@@ -25,8 +25,6 @@
     </style>
 
     <style name="Theme.Messages" parent="@android:style/Theme.Holo.Light.DarkActionBar">
-        <item name="android:windowActionModeOverlay">true</item>
-        <item name="android:windowActionBarOverlay">true</item>
         <item name="android:actionBarItemBackground">@drawable/selectable_background_messages</item>
         <item name="android:popupMenuStyle">@style/PopupMenu.Messages</item>
         <item name="android:dropDownListViewStyle">@style/DropDownListView.Messages</item>
@@ -37,9 +35,14 @@
         <item name="android:actionModeBackground">@drawable/cab_background_top_messages</item>
         <item name="android:actionModeSplitBackground">@drawable/cab_background_bottom_messages</item>
         <item name="android:actionModeCloseButtonStyle">@style/ActionButton.CloseMode.Messages</item>
-                <!-- Light.DarkActionBar specific -->
+        <item name="android:actionOverflowButtonStyle">@style/overflow_style</item>
+        <!-- Light.DarkActionBar specific -->
         <item name="android:actionBarWidgetTheme">@style/Theme.Messages.Widget</item>
 
+    </style>
+
+    <style name="overflow_style" parent="@android:style/Widget.Holo.ActionButton.Overflow">
+        <item name="android:src">@drawable/ic_overflow_white_16</item>
     </style>
 
     <style name="ActionBar.Solid.Messages" parent="@android:style/Widget.Holo.Light.ActionBar.Solid.Inverse">
@@ -61,7 +64,7 @@
     </style>
 
     <style name="PopupMenu.Messages" parent="@android:style/Widget.Holo.ListPopupWindow">
-        <item name="android:popupBackground">@drawable/menu_dropdown_panel_messages</item>	
+        <item name="android:popupBackground">@drawable/menu_dropdown_panel_messages</item>
     </style>
 
     <style name="DropDownListView.Messages" parent="@android:style/Widget.Holo.ListView.DropDown">
@@ -77,11 +80,11 @@
         <item name="android:popupBackground">@drawable/menu_dropdown_panel_messages</item>
         <item name="android:dropDownSelector">@drawable/selectable_background_messages</item>
     </style>
-    
+
     <style name="ProgressBar.Messages" parent="@android:style/Widget.Holo.ProgressBar.Horizontal">
         <item name="android:progressDrawable">@drawable/progress_horizontal_messages</item>
     </style>
-    
+
     <style name="ActionButton.CloseMode.Messages" parent="@android:style/Widget.Holo.ActionButton.CloseMode">
         <item name="android:background">@drawable/btn_cab_done_messages</item>
     </style>

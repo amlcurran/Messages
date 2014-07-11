@@ -16,7 +16,6 @@
 
 package com.amlcurran.messages.ui;
 
-import android.app.ActionBar;
 import android.app.Activity;
 import android.support.v4.widget.SlidingPaneLayout;
 import android.view.View;
@@ -26,15 +25,13 @@ import com.amlcurran.messages.R;
 public class SlidingPaneViewController implements ViewController, View.OnClickListener {
 
     private final Callback callback;
-    private final ActionBar actionBar;
     private View disabledBanner;
     private SlidingPaneLayout slider;
     private View newMessageButton;
     private boolean isSecondaryOpen = false;
 
-    public SlidingPaneViewController(Callback callback, ActionBar actionBar) {
+    public SlidingPaneViewController(Callback callback) {
         this.callback = callback;
-        this.actionBar = actionBar;
     }
 
     @Override
@@ -140,14 +137,4 @@ public class SlidingPaneViewController implements ViewController, View.OnClickLi
         newMessageButton.setVisibility(View.GONE);
     }
 
-    private void showPersonChip() {
-        actionBar.setDisplayShowCustomEnabled(true);
-        actionBar.setDisplayShowHomeEnabled(false);
-        //contactView.setAlpha(1);
-    }
-
-    private void hidePersonChip() {
-        actionBar.setDisplayShowCustomEnabled(false);
-        actionBar.setDisplayShowHomeEnabled(true);
-    }
 }

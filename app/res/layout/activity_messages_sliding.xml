@@ -28,6 +28,7 @@
             android:layout_height="wrap_content"
             class="com.amlcurran.messages.ui.CustomActionBarView"
             android:id="@+id/action_bar"
+            android:visibility="gone"
             android:layout_gravity="center_horizontal" />
 
         <view xmlns:android="http://schemas.android.com/apk/res/android"
