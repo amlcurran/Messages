@@ -32,7 +32,12 @@ public class CircularImageView extends CutImageView {
 
     @Override
     protected void setCircleRect(RectF circleRectF, int maxDimen) {
-        int padding = (int) (maxDimen / 16f);
+        int padding;
+        if (drawOutline) {
+            padding = (int) (maxDimen / 16f);
+        } else {
+            padding = 0;
+        }
         circleRectF.set(padding, padding, maxDimen - padding, maxDimen - padding);
     }
 }

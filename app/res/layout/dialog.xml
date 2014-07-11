@@ -17,6 +17,7 @@
   -->
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -35,7 +36,7 @@
             android:layout_height="56dp"
             android:text="Dialog title"
             android:id="@+id/dialog_title"
-            android:fontFamily="RobotoSlab-Regular.ttf"
+            app:fontPath="RobotoSlab-Regular.ttf"
             android:textColor="@color/theme_colour_100"
             android:textSize="24sp"
             android:layout_marginBottom="0dp"

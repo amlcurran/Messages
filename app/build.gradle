@@ -64,5 +64,5 @@ dependencies {
     //compile 'com.github.amlcurran.about:library:0.1.0-SNAPSHOT'
     compile 'com.github.amlcurran.sourcebinder:library:1.0.0-SNAPSHOT'
     compile project(':core')
-    compile 'uk.co.chrisjenx:calligraphy:0.7.+'
+    compile 'uk.co.chrisjenx:calligraphy:1.0.+'
 }

@@ -17,6 +17,7 @@
 package com.amlcurran.messages.ui;
 
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -40,6 +41,7 @@ public class CutImageView extends ImageView {
     private final Paint borderPaint;
     private final Rect croppedRect;
     private final float borderWidth;
+    protected final boolean drawOutline;
     private Bitmap bitmapBuffer;
     private final Paint paint;
 
@@ -50,6 +52,10 @@ public class CutImageView extends ImageView {
     public CutImageView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
         setLayerType(LAYER_TYPE_SOFTWARE, null);
+
+        TypedArray ta = context.obtainStyledAttributes(attrs, R.styleable.CutImageView);
+        drawOutline = ta.getBoolean(R.styleable.CutImageView_drawOutline, true);
+
         borderWidth = context.getResources().getDimension(R.dimen.cut_image_border);
 
         circleRectF = new RectF();
@@ -111,7 +117,9 @@ public class CutImageView extends ImageView {
             int w = getWidth(), h = getHeight();
             Bitmap roundBitmap = getCroppedBitmap(bitmap, w);
             canvas.drawBitmap(roundBitmap, 0, 0, null);
-            canvas.drawArc(borderRectF, 0, 360, true, borderPaint);
+            if (drawOutline) {
+                canvas.drawArc(borderRectF, 0, 360, true, borderPaint);
+            }
         }
     }
 

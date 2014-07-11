@@ -10,4 +10,6 @@
     <dimen name="photo_animation_length">16dp</dimen>
     <dimen name="cut_image_border">2dp</dimen>
     <dimen name="action_home_size">32dp</dimen>
+    <dimen name="contact_chip_width">176dp</dimen>
+    <dimen name="contact_chip_height">48dp</dimen>
 </resources>

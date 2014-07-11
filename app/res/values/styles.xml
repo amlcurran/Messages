@@ -51,7 +51,7 @@
 
     <style name="ConversationTitle">
         <item name="android:textAppearance">?android:attr/textAppearanceMedium</item>
-        <item name="android:fontFamily">RobotoSlab-Regular.ttf</item>
+        <item name="fontPath">RobotoSlab-Regular.ttf</item>
         <item name="android:singleLine">true</item>
         <item name="android:ellipsize">end</item>
     </style>
@@ -62,7 +62,7 @@
 
     <style name="ConversationTitle.Unread">
         <item name="android:textStyle">bold</item>
-        <item name="android:fontFamily">RobotoSlab-Bold.ttf</item>
+        <item name="fontPath">RobotoSlab-Bold.ttf</item>
         <item name="android:textColor">@color/theme_colour</item>
     </style>
 
@@ -76,6 +76,10 @@
 
     <style name="ContactView" />
 
+    <style name="ContactView.Chip">
+        <item name="titleTextAppearance">@style/ContactViewTitleChip</item>
+    </style>
+
     <style name="ContactView.Inverse">
         <item name="titleTextAppearance">@style/ContactViewTitle.Light</item>
         <item name="secondaryTextAppearance">@style/ContactViewLightSecondary</item>
@@ -86,7 +90,12 @@
     </style>
 
     <style name="ContactViewTitle" parent="@android:style/TextAppearance.Medium">
-        <item name="android:fontFamily">RobotoSlab-Regular.ttf</item>
+        <item name="fontPath">RobotoSlab-Regular.ttf</item>
+    </style>
+
+    <style name="ContactViewTitleChip" parent="@android:style/TextAppearance.Medium">
+        <item name="android:fontFamily">sans-serif-condensed</item>
+        <item name="android:textColor">#99000000</item>
     </style>
 
     <style name="ContactViewLightSecondary" parent="@android:style/TextAppearance.Small.Inverse">

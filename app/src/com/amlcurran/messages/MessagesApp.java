@@ -53,7 +53,7 @@ public class MessagesApp extends Application implements BroadcastEventSubscriber
     @Override
     public void onCreate() {
         super.onCreate();
-        CalligraphyConfig.initDefault(null);
+        CalligraphyConfig.initDefault(R.attr.fontPath);
         PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
         ExecutorService executor = Executors.newCachedThreadPool();
         Handler uiHandler = new Handler(getMainLooper());

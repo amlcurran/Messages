@@ -16,12 +16,15 @@
   -->
 
 <resources>
-    <attr name="fontPath"/>
+    <attr name="fontPath" format="string"/>
     <declare-styleable name="LoadingView">
         <attr name="lv_scale" format="integer|reference" />
     </declare-styleable>
     <declare-styleable name="ContactView">
         <attr name="titleTextAppearance" format="reference" />
         <attr name="secondaryTextAppearance" format="reference" />
+    </declare-styleable>
+    <declare-styleable name="CutImageView">
+        <attr name="drawOutline" format="boolean|reference" />
     </declare-styleable>
 </resources>
