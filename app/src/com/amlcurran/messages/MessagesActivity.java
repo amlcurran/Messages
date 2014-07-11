@@ -16,7 +16,6 @@
 
 package com.amlcurran.messages;
 
-import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
@@ -75,6 +74,7 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
     private MessagesLoader messagesLoader;
     private BlockingInUiNotifier blockingInUiNotifier;
     private PreferenceStore preferencesStore;
+    private HoloActionBarController actionBarController;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,10 +88,9 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
         statReporter        = SingletonManager.getStatsReporter(this);;
         eventBus            = SingletonManager.getEventBus(this);
         preferencesStore    = new PreferenceStore(this);
-        //getActionBar().hide();
+        actionBarController = new HoloActionBarController(getActionBar());
 
         viewController.setContentView(this);
-
 
         menuController = new MenuController(this, this);
         appChecker = new DefaultAppChecker(this, this);
@@ -301,7 +300,7 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
         isSecondaryVisible = true;
         menuController.update();
         viewController.showNewMessageButton();
-        showPersonChip();
+        actionBarController.showHeader();
     }
 
     @Override
@@ -309,7 +308,7 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
         isSecondaryVisible = false;
         menuController.update();
         viewController.hideNewMessageButton();
-        hidePersonChip();
+        actionBarController.hideHeader();
     }
 
     @Override
@@ -384,29 +383,12 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
 
     @Override
     public void removeCustomHeader() {
-        getActionBar().setCustomView(null);
-        hidePersonChip();
-        //actionBarController.removeCustomHeader();
-    }
-
-    private void hidePersonChip() {
-        getActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_HOME |
-            ActionBar.DISPLAY_SHOW_TITLE);
-        //getActionBar().setDisplayShowTitleEnabled(true);
-        //getActionBar().setDisplayShowCustomEnabled(false);
+        actionBarController.removeHeader();
     }
 
     @Override
     public void addCustomHeader(View headerView) {
-        getActionBar().setCustomView(headerView);
-        showPersonChip();
-        //actionBarController.addCustomHeader(headerView);
-    }
-
-    private void showPersonChip() {
-        //getActionBar().setDisplayShowTitleEnabled(false);
-        //getActionBar().setDisplayShowCustomEnabled(true);
-        getActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
+        actionBarController.addHeader(headerView);
     }
 
 }
