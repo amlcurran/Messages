@@ -20,9 +20,10 @@ import android.app.Activity;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import com.amlcurran.messages.ui.CustomActionBarView;
 import com.amlcurran.messages.ui.OnOptionsItemSelectedListener;
 import com.espian.utils.ui.MenuFinder;
+
+import static com.espian.utils.Verbose.not;
 
 public class MenuController implements OnOptionsItemSelectedListener {
     private final Activity activity;
@@ -47,7 +48,7 @@ public class MenuController implements OnOptionsItemSelectedListener {
         }
         for (int menuRes : masterRes) {
             MenuItem item = MenuFinder.findItemById(menu, menuRes);
-            item.setVisible(!isSecondaryVisible);
+            item.setVisible(not(isSecondaryVisible));
         }
         return true;
     }
