@@ -34,6 +34,6 @@
     <string name="continue_text">Continue</string>
     <string name="about">About</string>
     <string name="alpha_message">Thanks for trying out Messages. Please note that Messages is currently in alpha, so quirks and bugs are likely. \n\nPlease give feedback through the Github project!</string>
-    <string name="alpha_title">Messages \u03b1lpha</string>
+    <string name="alpha_title">Messages alpha</string>
 
 </resources>
