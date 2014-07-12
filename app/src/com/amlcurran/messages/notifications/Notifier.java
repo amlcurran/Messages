@@ -21,7 +21,6 @@ import android.app.NotificationManager;
 import android.content.Context;
 import android.graphics.Bitmap;
 
-import com.amlcurran.messages.MessagesLog;
 import com.amlcurran.messages.SingletonManager;
 import com.amlcurran.messages.conversationlist.PhotoLoadListener;
 import com.amlcurran.messages.core.conversationlist.ConversationListListener;
@@ -55,7 +54,7 @@ public class Notifier {
                 public void onConversationListLoaded(final List<Conversation> conversations) {
 
                     if (conversations.size() == 0) {
-                        MessagesLog.d(Notifier.this, "Update to the notification, but no new messages");
+                        clearNewMessagesNotification();
                     } else if (conversations.size() == 1) {
                         // Load the contact photo as well
                         Conversation singleConvo = conversations.get(0);

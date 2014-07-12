@@ -53,12 +53,12 @@ public class NotificationBuilder {
 
     private Notification buildMultipleUnreadNotification(List<Conversation> conversations, boolean fromNewMessage) {
         long timestampMillis = Calendar.getInstance().getTimeInMillis();
-        CharSequence ticker = fromNewMessage ? styledTextFactory.buildTicker(conversations.get(0)) : styledTextFactory.buildListSummary(conversations);
+        CharSequence ticker = fromNewMessage ? styledTextFactory.buildTicker(conversations.get(0)) : styledTextFactory.buildListSummary(context, conversations);
         return getDefaultBuilder(fromNewMessage)
                 .setTicker(ticker)
                 .setStyle(buildInboxStyle(conversations))
                 .setContentText(styledTextFactory.buildSenderList(conversations))
-                .setContentTitle(styledTextFactory.buildListSummary(conversations))
+                .setContentTitle(styledTextFactory.buildListSummary(context, conversations))
                 .setWhen(timestampMillis)
                 .build();
     }
@@ -73,7 +73,7 @@ public class NotificationBuilder {
 
     private Notification buildSingleUnreadNotification(Conversation conversation, Bitmap photo, boolean fromNewMessage) {
         long timestampMillis = Calendar.getInstance().getTimeInMillis();
-        CharSequence tickerText = fromNewMessage ? styledTextFactory.buildTicker(conversation) : styledTextFactory.buildListSummary(Collections.singletonList(conversation));
+        CharSequence tickerText = fromNewMessage ? styledTextFactory.buildTicker(conversation) : styledTextFactory.buildListSummary(context, Collections.singletonList(conversation));
         return getDefaultBuilder(fromNewMessage)
                 .setTicker(tickerText)
                 .setContentTitle(conversation.getContact().getDisplayName())

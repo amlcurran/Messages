@@ -16,6 +16,7 @@
 
 package com.amlcurran.messages.notifications;
 
+import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.text.SpannableStringBuilder;
@@ -23,6 +24,7 @@ import android.text.Spanned;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.StyleSpan;
 
+import com.amlcurran.messages.R;
 import com.amlcurran.messages.core.data.Conversation;
 
 import java.util.List;
@@ -37,8 +39,8 @@ public class StyledTextFactory {
         return result.substring(0, result.length() - 2);
     }
 
-    CharSequence buildListSummary(List<Conversation> conversations) {
-        return String.format("%1$d new messages", conversations.size());
+    CharSequence buildListSummary(Context context, List<Conversation> conversations) {
+        return context.getResources().getQuantityString(R.plurals.unread_message, conversations.size(), conversations.size());
     }
 
     CharSequence getInboxLine(Conversation conversation) {
