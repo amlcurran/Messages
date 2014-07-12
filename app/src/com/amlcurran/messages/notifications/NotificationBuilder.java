@@ -53,7 +53,7 @@ public class NotificationBuilder {
     private Notification buildMultipleUnreadNotification(List<Conversation> conversations) {
         long timestampMillis = Calendar.getInstance().getTimeInMillis();
         return getDefaultBuilder()
-                .setTicker(styledTextFactory.buildListSummary(conversations))
+                .setTicker(styledTextFactory.buildTicker(conversations.get(0)))
                 .setStyle(buildInboxStyle(conversations))
                 .setContentText(styledTextFactory.buildSenderList(conversations))
                 .setContentTitle(styledTextFactory.buildListSummary(conversations))
