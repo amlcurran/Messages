@@ -22,8 +22,8 @@ import android.os.Parcelable;
 public class InFlightSmsMessage implements Parcelable {
 
     private final PhoneNumber phoneNumber;
-    private String body;
-    private long timestamp;
+    private final String body;
+    private final long timestamp;
 
     public InFlightSmsMessage(PhoneNumber phoneNumber, String message, long timestamp) {
         this.phoneNumber = phoneNumber;
