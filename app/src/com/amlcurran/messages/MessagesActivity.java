@@ -342,8 +342,20 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
     }
 
     @Override
-    public void deleteThreads(List<Conversation> conversationList) {
-        messagesLoader.deleteThreads(conversationList, this);
+    public void deleteThreads(final List<Conversation> conversationList) {
+        Dialog.Button no = new Dialog.Button("No");
+        Dialog.Button yes = new Dialog.Button("Yes");
+        blockingInUiNotifier.show(new BlockingInUiNotifier.Callbacks() {
+            @Override
+            public void positive() {
+                messagesLoader.deleteThreads(conversationList, MessagesActivity.this);
+            }
+
+            @Override
+            public void negative() {
+
+            }
+        }, getString(R.string.dialog_title_delete_threads), getString(R.string.dialog_sum_delete_threads), no, yes);
     }
 
     @Override
