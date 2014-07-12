@@ -21,6 +21,7 @@ import android.content.Intent;
 import android.support.v4.content.LocalBroadcastManager;
 
 import com.amlcurran.messages.data.InFlightSmsMessage;
+import com.amlcurran.messages.data.PhoneNumber;
 
 public class BroadcastEventBus implements EventBus {
 
@@ -65,7 +66,7 @@ public class BroadcastEventBus implements EventBus {
     }
 
     @Override
-    public void postMessageDrafted(String address) {
+    public void postMessageDrafted(PhoneNumber phoneNumber) {
         broadcaster.sendBroadcast(new Intent(BROADCAST_MESSAGE_DRAFT));
     }
 }

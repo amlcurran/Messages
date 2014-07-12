@@ -29,10 +29,10 @@ public class InFlightSmsMessageFactory {
         if (messages.length == 0) {
             throw new NullPointerException("Creating SMS message from empty array");
         }
-        String address = messages[0].getDisplayOriginatingAddress();
+        PhoneNumber phoneNumber = new PhoneNumber(messages[0].getDisplayOriginatingAddress());
         String body = createBody(messages);
         long timestamp = messages[0].getTimestampMillis();
-        return new InFlightSmsMessage(address, body, timestamp);
+        return new InFlightSmsMessage(phoneNumber, body, timestamp);
     }
 
     public static SmsMessage fromCursor(Cursor cursor) {
@@ -56,7 +56,7 @@ public class InFlightSmsMessageFactory {
     public static ContentValues toContentValues(InFlightSmsMessage smsMessage, int messageTypeSent) {
         ContentValues contentValues = new ContentValues();
         contentValues.put(Telephony.Sms.Inbox.BODY, smsMessage.getBody());
-        contentValues.put(Telephony.Sms.Inbox.ADDRESS, smsMessage.getAddress());
+        contentValues.put(Telephony.Sms.Inbox.ADDRESS, smsMessage.getPhoneNumber().toString());
         contentValues.put(Telephony.Sms.Inbox.DATE, smsMessage.getTimestamp());
         contentValues.put(Telephony.Sms.Inbox.DATE_SENT, smsMessage.getTimestamp());
         contentValues.put(Telephony.Sms.Inbox.TYPE, messageTypeSent);

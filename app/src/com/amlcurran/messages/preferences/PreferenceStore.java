@@ -20,10 +20,10 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.preference.PreferenceManager;
-import android.telephony.PhoneNumberUtils;
 
 import com.amlcurran.messages.core.TextUtils;
 import com.amlcurran.messages.core.data.Sort;
+import com.amlcurran.messages.data.PhoneNumber;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -101,24 +101,24 @@ public class PreferenceStore {
                 .apply();
     }
 
-    public String getDraft(String address) {
+    public String getDraft(PhoneNumber address) {
         return preferences.getString(getDraftKey(address), null);
     }
 
-    public void storeDraft(String address, String body) {
+    public void storeDraft(PhoneNumber address, String body) {
         preferences.edit()
                 .putString(getDraftKey(address), body)
                 .apply();
     }
 
-    public void clearDraft(String address) {
+    public void clearDraft(PhoneNumber address) {
         preferences.edit()
                 .remove(getDraftKey(address))
                 .apply();
     }
 
-    private static String getDraftKey(String address) {
-        return "draft" + PhoneNumberUtils.stripSeparators(address);
+    private static String getDraftKey(PhoneNumber phoneNumber) {
+        return "draft" + phoneNumber.toString();
     }
 
     public interface PreferenceChangedListener {

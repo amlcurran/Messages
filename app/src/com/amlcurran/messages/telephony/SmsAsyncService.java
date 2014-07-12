@@ -61,7 +61,7 @@ public class SmsAsyncService extends IntentService {
 
             @Override
             public void written(Uri inserted) {
-                new BroadcastEventBus(SmsAsyncService.this).postMessageDrafted(smsMessage.getAddress());
+                new BroadcastEventBus(SmsAsyncService.this).postMessageDrafted(smsMessage.getPhoneNumber());
                 Log.d(TAG, "Written draft");
             }
 

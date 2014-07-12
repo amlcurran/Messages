@@ -26,6 +26,7 @@ import android.telephony.SmsManager;
 import com.amlcurran.messages.MessagesLog;
 import com.amlcurran.messages.SingletonManager;
 import com.amlcurran.messages.data.InFlightSmsMessage;
+import com.amlcurran.messages.data.PhoneNumber;
 import com.amlcurran.messages.events.BroadcastEventBus;
 import com.amlcurran.messages.notifications.Notifier;
 
@@ -76,7 +77,7 @@ public class SmsSender extends IntentService {
             InFlightSmsMessage message = intent.getParcelableExtra(EXTRA_MESSAGE);
             Uri outboxSms = Uri.parse(intent.getStringExtra(EXTRA_OUTBOX_URI));
             if (result == Activity.RESULT_OK) {
-                deleteOutboxMessages(message.getAddress());
+                deleteOutboxMessages(message.getPhoneNumber());
                 writeMessageToProvider(message);
             } else {
                 notifyFailureToSend(message, result);
@@ -88,8 +89,8 @@ public class SmsSender extends IntentService {
         return intent.getIntExtra(EXTRA_FROM_FAILURE, -1) == IS_FROM_FAILURE;
     }
 
-    private void deleteOutboxMessages(String address) {
-        smsDatabaseWriter.deleteOutboxMessages(getContentResolver(), address);
+    private void deleteOutboxMessages(PhoneNumber phoneNumber) {
+        smsDatabaseWriter.deleteOutboxMessages(getContentResolver(), phoneNumber.toString());
     }
 
     private void notifyFailureToSend(InFlightSmsMessage message, int result) {
@@ -118,7 +119,7 @@ public class SmsSender extends IntentService {
             public void written(Uri inserted) {
                 eventBus.postMessageSending(message);
                 ArrayList<PendingIntent> messageSendIntents = getMessageSendIntents(message, inserted);
-                smsManager.sendMultipartTextMessage(message.getAddress(), null, smsManager.divideMessage(message.getBody()), messageSendIntents, null);
+                smsManager.sendMultipartTextMessage(message.getPhoneNumber().toString(), null, smsManager.divideMessage(message.getBody()), messageSendIntents, null);
             }
 
             @Override

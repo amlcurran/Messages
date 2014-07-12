@@ -33,6 +33,7 @@ import android.widget.Toast;
 import com.amlcurran.messages.core.data.Contact;
 import com.amlcurran.messages.core.loaders.ContactListListener;
 import com.amlcurran.messages.data.InFlightSmsMessage;
+import com.amlcurran.messages.data.PhoneNumber;
 import com.amlcurran.messages.loaders.MessagesLoader;
 import com.amlcurran.messages.loaders.MessagesLoaderProvider;
 import com.amlcurran.messages.telephony.DefaultAppChecker;
@@ -172,9 +173,10 @@ public class ComposeNewFragment extends Fragment implements ComposeMessageView.O
     public void onMessageComposed(CharSequence body) {
         if (isValid(getEnteredAddress())) {
             String address = String.valueOf(getEnteredAddress());
+            PhoneNumber phoneNumber = new PhoneNumber(address);
             String message = String.valueOf(body);
             long timestamp = Calendar.getInstance().getTimeInMillis();
-            InFlightSmsMessage smsMessage = new InFlightSmsMessage(address, message, timestamp);
+            InFlightSmsMessage smsMessage = new InFlightSmsMessage(phoneNumber, message, timestamp);
             listener.sendSms(smsMessage);
         } else {
             Toast.makeText(getActivity(), "Enter a valid recipient", Toast.LENGTH_SHORT).show();

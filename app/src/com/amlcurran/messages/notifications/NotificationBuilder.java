@@ -102,7 +102,7 @@ public class NotificationBuilder {
         return getDefaultBuilder()
                 .setContentTitle(string(R.string.failed_to_send_message))
                 .setTicker(string(R.string.failed_to_send_message))
-                .setContentText(context.getString(R.string.couldnt_send_to, message.getAddress()))
+                .setContentText(context.getString(R.string.couldnt_send_to, message.getPhoneNumber().toString()))
                 .addAction(R.drawable.ic_action_send_holo, string(R.string.resend), notificationIntentFactory.createResendIntent(message))
                 .setSmallIcon(R.drawable.ic_notify_error)
                 .build();

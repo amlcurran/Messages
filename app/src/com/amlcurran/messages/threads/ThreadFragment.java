@@ -20,7 +20,6 @@ import android.app.Activity;
 import android.app.ListFragment;
 import android.content.Context;
 import android.os.Bundle;
-import android.telephony.PhoneNumberUtils;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -35,6 +34,7 @@ import com.amlcurran.messages.SmsComposeListener;
 import com.amlcurran.messages.core.data.Contact;
 import com.amlcurran.messages.core.data.SmsMessage;
 import com.amlcurran.messages.data.InFlightSmsMessage;
+import com.amlcurran.messages.data.PhoneNumber;
 import com.amlcurran.messages.loaders.MessagesLoader;
 import com.amlcurran.messages.preferences.PreferenceStore;
 import com.amlcurran.messages.telephony.CentralWriter;
@@ -56,7 +56,7 @@ public class ThreadFragment extends ListFragment implements
     private static final String EXTRA_WRITTEN_TEXT = "written_text";
 
     private SmsComposeListener listener;
-    private String sendAddress;
+    private PhoneNumber phoneNumber;
     private ComposeMessageView composeView;
     private ContactView contactView;
     private ThreadController threadController;
@@ -93,7 +93,7 @@ public class ThreadFragment extends ListFragment implements
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        sendAddress = getArguments().getString(ADDRESS);
+        phoneNumber = new PhoneNumber(getArguments().getString(ADDRESS));
         threadController = new ThreadController(getThreadId(), this);
         threadController.create(getActivity(), composeView);
 
@@ -102,16 +102,16 @@ public class ThreadFragment extends ListFragment implements
         SourceBinderAdapter<SmsMessage> adapter = new SourceBinderAdapter<SmsMessage>(getActivity(), threadController.getSource(), new ThreadBinder(getListView()));
         setListAdapter(adapter);
 
-        composeView.setText(retrieveDraft(sendAddress));
+        composeView.setText(retrieveDraft(phoneNumber));
     }
 
-    private String retrieveDraft(String sendAddress) {
-        return new PreferenceStore(getActivity()).getDraft(PhoneNumberUtils.stripSeparators(sendAddress));
+    private String retrieveDraft(PhoneNumber phoneNumber) {
+        return new PreferenceStore(getActivity()).getDraft(phoneNumber);
     }
 
     private void saveDraft() {
         String text = composeView.getText();
-        InFlightSmsMessage message = new InFlightSmsMessage(sendAddress, text, System.currentTimeMillis());
+        InFlightSmsMessage message = new InFlightSmsMessage(phoneNumber, text, System.currentTimeMillis());
         new CentralWriter(getActivity()).storeDraft(message);
     }
 
@@ -149,7 +149,7 @@ public class ThreadFragment extends ListFragment implements
         switch (item.getItemId()) {
 
             case R.id.menu_call:
-                listener.callNumber(sendAddress);
+                listener.callNumber(phoneNumber);
                 return true;
 
         }
@@ -173,9 +173,9 @@ public class ThreadFragment extends ListFragment implements
     public void onMessageComposed(CharSequence body) {
         String message = String.valueOf(body);
         long timestamp = Calendar.getInstance().getTimeInMillis();
-        InFlightSmsMessage smsMessage = new InFlightSmsMessage(sendAddress, message, timestamp);
+        InFlightSmsMessage smsMessage = new InFlightSmsMessage(phoneNumber, message, timestamp);
         listener.sendSms(smsMessage);
-        new CentralWriter(getActivity()).clearDraft(sendAddress);
+        new CentralWriter(getActivity()).clearDraft(phoneNumber);
     }
 
     @Override

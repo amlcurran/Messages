@@ -20,11 +20,11 @@ import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.provider.Telephony;
-import android.telephony.PhoneNumberUtils;
 
 import com.amlcurran.messages.data.InFlightSmsMessage;
-import com.amlcurran.messages.notifications.Dialog;
+import com.amlcurran.messages.data.PhoneNumber;
 import com.amlcurran.messages.notifications.BlockingInUiNotifier;
+import com.amlcurran.messages.notifications.Dialog;
 import com.amlcurran.messages.telephony.SmsSender;
 
 public class ActivityController {
@@ -37,8 +37,8 @@ public class ActivityController {
         this.blockingInUiNotifier = blockingInUiNotifier;
     }
 
-    void callNumber(String sendAddress) {
-        Uri telUri = Uri.parse("tel:" + PhoneNumberUtils.stripSeparators(sendAddress));
+    void callNumber(PhoneNumber phoneNumber) {
+        Uri telUri = Uri.parse("tel:" + phoneNumber.toString());
         Intent intent = new Intent(Intent.ACTION_CALL);
         intent.setData(telUri);
         activity.startActivity(intent);

@@ -17,6 +17,7 @@
 package com.amlcurran.messages.events;
 
 import com.amlcurran.messages.data.InFlightSmsMessage;
+import com.amlcurran.messages.data.PhoneNumber;
 
 public interface EventBus {
     void postListInvalidated();
@@ -29,5 +30,5 @@ public interface EventBus {
 
     void postListLoaded();
 
-    void postMessageDrafted(String address);
+    void postMessageDrafted(PhoneNumber phoneNumber);
 }

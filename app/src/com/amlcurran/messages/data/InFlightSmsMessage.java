@@ -21,18 +21,18 @@ import android.os.Parcelable;
 
 public class InFlightSmsMessage implements Parcelable {
 
-    private String address;
+    private final PhoneNumber phoneNumber;
     private String body;
     private long timestamp;
 
-    public InFlightSmsMessage(String address, String body, long timestamp) {
-        this.address = address;
-        this.body = body;
+    public InFlightSmsMessage(PhoneNumber phoneNumber, String message, long timestamp) {
+        this.phoneNumber = phoneNumber;
+        this.body = message;
         this.timestamp = timestamp;
     }
 
-    public String getAddress() {
-        return address;
+    public PhoneNumber getPhoneNumber() {
+        return phoneNumber;
     }
 
     public String getBody() {
@@ -46,7 +46,7 @@ public class InFlightSmsMessage implements Parcelable {
     public static final Creator<InFlightSmsMessage> CREATOR = new Creator<InFlightSmsMessage>() {
 
         public InFlightSmsMessage createFromParcel(Parcel in) {
-            return new InFlightSmsMessage(in.readString(), in.readString(), in.readLong());
+            return new InFlightSmsMessage(((PhoneNumber) in.readParcelable(getClass().getClassLoader())), in.readString(), in.readLong());
         }
 
         public InFlightSmsMessage[] newArray(int size) {
@@ -61,7 +61,7 @@ public class InFlightSmsMessage implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(address);
+        dest.writeParcelable(phoneNumber, 0);
         dest.writeString(body);
         dest.writeLong(timestamp);
     }
