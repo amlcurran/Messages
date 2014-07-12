@@ -19,6 +19,7 @@ package com.amlcurran.messages.threads;
 import android.app.Activity;
 
 import com.amlcurran.messages.core.data.SmsMessage;
+import com.amlcurran.messages.core.events.Broadcast;
 import com.amlcurran.messages.core.events.EventSubscriber;
 import com.amlcurran.messages.core.loaders.ThreadListener;
 import com.amlcurran.messages.events.BroadcastEventBus;
@@ -64,7 +65,7 @@ class ThreadController implements ThreadListener {
 
     void start() {
         loadData(messageLoader, false);
-        messageReceiver.startListening(getActions());
+        messageReceiver.startListening(getBroadcastsToListenTo());
     }
 
     void stop() {
@@ -90,8 +91,12 @@ class ThreadController implements ThreadListener {
         return source;
     }
 
-    public String[] getActions() {
-        return new String[]{ BroadcastEventBus.BROADCAST_MESSAGE_SENDING, BroadcastEventBus.BROADCAST_MESSAGE_DRAFT };
+    private static Broadcast[] getBroadcastsToListenTo() {
+        return new Broadcast[]{
+                new Broadcast(BroadcastEventBus.BROADCAST_MESSAGE_SENT, null),
+                new Broadcast(BroadcastEventBus.BROADCAST_MESSAGE_RECEIVED, null),
+                new Broadcast(BroadcastEventBus.BROADCAST_MESSAGE_SENDING, null),
+                new Broadcast(BroadcastEventBus.BROADCAST_MESSAGE_DRAFT, null) };
     }
 
     public interface Callback {

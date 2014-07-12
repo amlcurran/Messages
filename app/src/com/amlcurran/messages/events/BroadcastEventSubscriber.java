@@ -22,6 +22,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.support.v4.content.LocalBroadcastManager;
 
+import com.amlcurran.messages.core.events.Broadcast;
 import com.amlcurran.messages.core.events.EventSubscriber;
 
 public class BroadcastEventSubscriber extends BroadcastReceiver implements EventSubscriber {
@@ -35,8 +36,8 @@ public class BroadcastEventSubscriber extends BroadcastReceiver implements Event
     }
 
     @Override
-    public void startListening(String... actions) {
-        LocalBroadcastManager.getInstance(context).registerReceiver(this, buildMessageFilter(actions));
+    public void startListening(Broadcast... broadcasts) {
+        LocalBroadcastManager.getInstance(context).registerReceiver(this, buildMessageFilter(broadcasts));
     }
 
     @Override
@@ -49,12 +50,10 @@ public class BroadcastEventSubscriber extends BroadcastReceiver implements Event
         listener.onMessageReceived();
     }
 
-    private IntentFilter buildMessageFilter(String[] actions) {
+    private IntentFilter buildMessageFilter(Broadcast[] broadcasts) {
         IntentFilter filter = new IntentFilter();
-        filter.addAction(BroadcastEventBus.BROADCAST_MESSAGE_SENT);
-        filter.addAction(BroadcastEventBus.BROADCAST_MESSAGE_RECEIVED);
-        for (String action : actions) {
-            filter.addAction(action);
+        for (Broadcast broadcast : broadcasts) {
+            filter.addAction(broadcast.getAction());
         }
         return filter;
     }

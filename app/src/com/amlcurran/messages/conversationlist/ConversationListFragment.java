@@ -25,6 +25,7 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 
 import com.amlcurran.messages.ListeningCursorListFragment;
+import com.amlcurran.messages.core.events.Broadcast;
 import com.amlcurran.messages.preferences.PreferenceStore;
 import com.amlcurran.messages.R;
 import com.amlcurran.messages.core.conversationlist.ConversationListListener;
@@ -91,8 +92,8 @@ public class ConversationListFragment extends ListeningCursorListFragment<Conver
     }
 
     @Override
-    public String[] getActions() {
-        return new String[] { BroadcastEventBus.BROADCAST_LIST_LOADED };
+    public Broadcast[] getActions() {
+        return new Broadcast[] { new Broadcast(BroadcastEventBus.BROADCAST_LIST_LOADED, null) };
     }
 
     @Override

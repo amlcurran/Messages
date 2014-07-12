@@ -23,6 +23,7 @@ import android.preference.PreferenceManager;
 import android.text.SpannableStringBuilder;
 import android.text.util.Linkify;
 
+import com.amlcurran.messages.core.events.Broadcast;
 import com.amlcurran.messages.events.BroadcastEventBus;
 import com.amlcurran.messages.events.BroadcastEventSubscriber;
 import com.amlcurran.messages.events.EventBus;
@@ -63,7 +64,10 @@ public class MessagesApp extends Application implements BroadcastEventSubscriber
         eventBus = new BroadcastEventBus(this);
         loader = new ExecutorMessagesLoader(this, executor, cache, eventBus, uiHandler);
         subscriber = new BroadcastEventSubscriber(this, this);
-        subscriber.startListening(BroadcastEventBus.BROADCAST_LIST_INVALIDATED);
+        subscriber.startListening(
+                new Broadcast(BroadcastEventBus.BROADCAST_MESSAGE_SENT, null),
+                new Broadcast(BroadcastEventBus.BROADCAST_MESSAGE_RECEIVED, null),
+                new Broadcast(BroadcastEventBus.BROADCAST_LIST_INVALIDATED, null));
         statsReporter = new NullStatReporter();
         primeZygote(executor);
 

@@ -19,6 +19,7 @@ package com.amlcurran.messages;
 import android.app.ListFragment;
 import android.os.Bundle;
 
+import com.amlcurran.messages.core.events.Broadcast;
 import com.amlcurran.messages.core.events.EventSubscriber;
 import com.amlcurran.messages.events.BroadcastEventSubscriber;
 import com.amlcurran.messages.loaders.MessagesLoader;
@@ -48,8 +49,8 @@ public abstract class ListeningCursorListFragment<T> extends ListFragment implem
         messageReceiver.startListening(getActions());
     }
 
-    public String[] getActions() {
-        return new String[0];
+    public Broadcast[] getActions() {
+        return new Broadcast[0];
     }
 
     @Override
