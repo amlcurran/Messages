@@ -16,6 +16,7 @@
 
 package com.amlcurran.messages;
 
+import android.animation.LayoutTransition;
 import android.app.Activity;
 import android.app.Fragment;
 import android.content.Context;
@@ -90,6 +91,11 @@ public class ComposeNewFragment extends Fragment implements ComposeMessageView.O
         composeView.setComposeListener(this);
         pickPersonView = ((EditText) view.findViewById(R.id.new_pick_person));
         personListView = ((AbsListView) view.findViewById(R.id.new_person_list));
+
+        // Set-up the layout transitions
+        LayoutTransition layoutTransition = ((ViewGroup) view.findViewById(R.id.recipient_view_host)).getLayoutTransition();
+        layoutTransition.setDuration(150);
+
         return view;
     }
 
