@@ -91,7 +91,7 @@ class ThreadController implements ThreadListener {
     }
 
     public String[] getActions() {
-        return new String[]{BroadcastEventBus.BROADCAST_MESSAGE_SENDING};
+        return new String[]{ BroadcastEventBus.BROADCAST_MESSAGE_SENDING, BroadcastEventBus.BROADCAST_MESSAGE_DRAFT };
     }
 
     public interface Callback {
