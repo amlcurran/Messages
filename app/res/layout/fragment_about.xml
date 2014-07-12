@@ -1,54 +1,61 @@
 <?xml version="1.0" encoding="utf-8"?>
+<ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="16dp"
+        android:clipToPadding="false"
+        android:scrollbarStyle="outsideInset"
+        xmlns:android="http://schemas.android.com/apk/res/android">
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:orientation="vertical"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:padding="16dp">
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                  android:orientation="vertical"
+                  android:layout_width="match_parent"
+                  android:layout_height="wrap_content">
 
-    <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/app_name"
-            android:layout_gravity="center_horizontal"
-            style="@style/ConversationTitle"
-            android:textColor="@color/theme_colour"
-            android:textSize="32sp"/>
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/app_name"
+                android:layout_gravity="center_horizontal"
+                style="@style/ConversationTitle"
+                android:textColor="@color/theme_colour"
+                android:textSize="32sp"/>
 
-    <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:fontFamily="sans-serif-condensed"
-            android:id="@+id/about_version"
-            android:layout_gravity="center_horizontal"
-            android:text="sometext"/>
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:fontFamily="sans-serif-condensed"
+                android:id="@+id/about_version"
+                android:layout_gravity="center_horizontal"
+                android:text="sometext"/>
 
-    <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/imageView"
-            android:src="@drawable/ic_launch_sms_large"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginTop="8dp"
-            android:layout_marginBottom="8dp"
-            android:importantForAccessibility="no"/>
+        <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/imageView"
+                android:src="@drawable/ic_launch_sms_large"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"
+                android:importantForAccessibility="no"/>
 
-    <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/messages_mission"
-            android:id="@+id/textView2"
-            style="@style/Text.Mission"
-            android:textColor="#99000000"/>
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/messages_mission"
+                android:id="@+id/textView2"
+                style="@style/Text.Mission"
+                android:textColor="#99000000"/>
 
-    <LinearLayout
-            android:orientation="vertical"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/about_points"
-            android:divider="?android:attr/dividerHorizontal"
-            android:showDividers="middle|beginning"
-            android:layout_marginTop="8dp">
+        <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/about_points"
+                android:divider="?android:attr/dividerHorizontal"
+                android:showDividers="middle|beginning"
+                android:layout_marginTop="8dp">
+        </LinearLayout>
     </LinearLayout>
-</LinearLayout>
+</ScrollView>
