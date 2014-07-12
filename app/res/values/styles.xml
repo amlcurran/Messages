@@ -90,7 +90,6 @@
     </style>
 
     <style name="ContactViewTitle" parent="@android:style/TextAppearance.Medium">
-        <item name="fontPath">RobotoSlab-Regular.ttf</item>
     </style>
 
     <style name="ContactViewTitleChip" parent="@android:style/TextAppearance.Medium">
