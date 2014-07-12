@@ -82,9 +82,9 @@ public class ConversationListFragment extends ListFragment implements Conversati
     @Override
     public void onStart() {
         super.onStart();
-        loadData(messageLoader, false);
         messageReceiver.startListening(getActions());
         preferenceListener.startListening();
+        loadData(messageLoader, false);
     }
 
     @Override
@@ -149,7 +149,7 @@ public class ConversationListFragment extends ListFragment implements Conversati
 
     @Override
     public void onMessageReceived() {
-
+        loadData(messageLoader, true);
     }
 
     public interface Listener {
