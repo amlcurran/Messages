@@ -50,6 +50,7 @@ public class ThreadFragment extends ListFragment implements
 
     private static final String THREAD_ID = "threadId";
     private static final String ADDRESS = "address";
+    private static final String EXTRA_WRITTEN_TEXT = "written_text";
 
     private SmsComposeListener listener;
     private String sendAddress;
@@ -97,6 +98,8 @@ public class ThreadFragment extends ListFragment implements
 
         SourceBinderAdapter<SmsMessage> adapter = new SourceBinderAdapter<SmsMessage>(getActivity(), threadController.getSource(), new ThreadBinder(getListView()));
         setListAdapter(adapter);
+
+        composeView.setText(Bundler.getString(EXTRA_WRITTEN_TEXT, savedInstanceState));
     }
 
     @Override
@@ -115,6 +118,12 @@ public class ThreadFragment extends ListFragment implements
     public void onStop() {
         super.onStop();
         threadController.stop();
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putString(EXTRA_WRITTEN_TEXT, composeView.getText());
     }
 
     @Override
