@@ -36,22 +36,36 @@ public class SmsAsyncService extends IntentService {
     @Override
     protected void onHandleIntent(Intent intent) {
         if (SmsReceiver.ASYNC_WRITE.equals(intent.getAction())) {
-            InFlightSmsMessage message = intent.getParcelableExtra(SmsReceiver.EXTRA_MESSAGE);
-            SmsDatabaseWriter smsDatabaseWriter = new SmsDatabaseWriter();
-            smsDatabaseWriter.writeInboxSms(getContentResolver(), new SmsDatabaseWriter.WriteListener() {
 
-                @Override
-                public void written(Uri inserted) {
-                    new BroadcastEventBus(SmsAsyncService.this).postMessageReceived();
-                    SingletonManager.getNotifier(SmsAsyncService.this).updateUnreadNotification();
-                }
+            WriteType writeType = WriteType.fromIntent(intent);
 
-                @Override
-                public void failed() {
-                    Log.e(TAG, "Failed to write message to inbox database");
-                }
+            switch (writeType) {
 
-            }, message);
+                case INBOX:
+                    writeInbox(((InFlightSmsMessage) intent.getParcelableExtra(SmsReceiver.EXTRA_MESSAGE)));
+                    break;
+
+            }
         }
+    }
+
+    private void writeInbox(InFlightSmsMessage smsMessage) {
+
+        SmsDatabaseWriter smsDatabaseWriter = new SmsDatabaseWriter();
+        smsDatabaseWriter.writeInboxSms(getContentResolver(), new SmsDatabaseWriter.WriteListener() {
+
+            @Override
+            public void written(Uri inserted) {
+                new BroadcastEventBus(SmsAsyncService.this).postMessageReceived();
+                SingletonManager.getNotifier(SmsAsyncService.this).updateUnreadNotification();
+            }
+
+            @Override
+            public void failed() {
+                Log.e(TAG, "Failed to write message to inbox database");
+            }
+
+        }, smsMessage);
+
     }
 }
