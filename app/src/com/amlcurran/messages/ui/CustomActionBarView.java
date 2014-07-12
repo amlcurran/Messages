@@ -20,7 +20,6 @@ import android.animation.LayoutTransition;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -32,6 +31,7 @@ import android.widget.LinearLayout;
 import android.widget.PopupMenu;
 import android.widget.Toast;
 
+import com.amlcurran.messages.MessagesLog;
 import com.amlcurran.messages.R;
 
 import java.util.ArrayList;
@@ -165,7 +165,7 @@ public class CustomActionBarView extends LinearLayout {
             if (v.getTag() != null) {
                 listener.onOptionsItemSelected(((MenuItem) v.getTag()));
             } else {
-                Log.w(TAG, "Action view clicked without menu item tag");
+                MessagesLog.w(CustomActionBarView.this, "Action view clicked without menu item tag");
             }
         }
     };
@@ -178,7 +178,7 @@ public class CustomActionBarView extends LinearLayout {
                 Toast toast = Toast.makeText(getContext(), menuItem.getTitle(), Toast.LENGTH_SHORT);
                 toast.show();
             } else {
-                Log.w(TAG, "Action view long clicked without menu item tag");
+                MessagesLog.w(CustomActionBarView.this, "Action view long clicked without menu item tag");
             }
             return true;
         }

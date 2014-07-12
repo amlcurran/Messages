@@ -20,8 +20,8 @@ import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.os.Handler;
 import android.provider.Telephony;
-import android.util.Log;
 
+import com.amlcurran.messages.MessagesLog;
 import com.amlcurran.messages.core.data.Conversation;
 import com.amlcurran.messages.core.data.SmsMessage;
 import com.amlcurran.messages.core.loaders.ConversationListChangeListener;
@@ -57,7 +57,7 @@ class MarkUnreadTask implements Callable<Object> {
                     String[] args = new String[]{conversation.getThreadId(), String.valueOf(lastMessage.getId()) };
                     int updated = contentResolver.update(Telephony.Sms.Inbox.CONTENT_URI, createUnreadContentValues(), selection, args);
                     if (updated == 0) {
-                        Log.w("MarkUnreadTask", "Couldn't mark conversation " + conversation.toString() + " as read");
+                        MessagesLog.w(MarkUnreadTask.this, "Couldn't mark conversation " + conversation.toString() + " as read");
                     }
 
                 }

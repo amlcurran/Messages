@@ -21,6 +21,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.util.Log;
 
+import com.amlcurran.messages.MessagesLog;
 import com.amlcurran.messages.SingletonManager;
 import com.amlcurran.messages.data.InFlightSmsMessage;
 import com.amlcurran.messages.events.BroadcastEventBus;
@@ -48,7 +49,7 @@ public class SmsAsyncService extends IntentService {
 
                 @Override
                 public void failed() {
-                    Log.e(TAG, "Failed to write message to inbox database");
+                    MessagesLog.e(SmsAsyncService.this, "Failed to write message to inbox database");
                 }
 
             }, message);

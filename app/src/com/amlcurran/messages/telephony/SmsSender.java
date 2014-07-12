@@ -22,8 +22,8 @@ import android.app.PendingIntent;
 import android.content.Intent;
 import android.net.Uri;
 import android.telephony.SmsManager;
-import android.util.Log;
 
+import com.amlcurran.messages.MessagesLog;
 import com.amlcurran.messages.SingletonManager;
 import com.amlcurran.messages.data.InFlightSmsMessage;
 import com.amlcurran.messages.events.BroadcastEventBus;
@@ -61,7 +61,7 @@ public class SmsSender extends IntentService {
 
     @Override
     protected void onHandleIntent(Intent intent) {
-        Log.d(TAG, intent.toString());
+        MessagesLog.d(this, intent.toString());
         if (isSendRequest(intent)) {
 
             if (isFromFailure(intent)) {
@@ -106,7 +106,7 @@ public class SmsSender extends IntentService {
 
             @Override
             public void failed() {
-                Log.e(TAG, "Failed to write a sent message to the database");
+                MessagesLog.e(SmsSender.this, "Failed to write a sent message to the database");
             }
         }, message);
     }

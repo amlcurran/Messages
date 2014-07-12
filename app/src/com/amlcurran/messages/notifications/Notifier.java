@@ -20,15 +20,15 @@ import android.app.Notification;
 import android.app.NotificationManager;
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.util.Log;
 
+import com.amlcurran.messages.MessagesLog;
 import com.amlcurran.messages.SingletonManager;
 import com.amlcurran.messages.conversationlist.PhotoLoadListener;
-import com.amlcurran.messages.core.data.Contact;
-import com.amlcurran.messages.preferences.PreferenceStore;
-import com.amlcurran.messages.core.data.Conversation;
 import com.amlcurran.messages.core.conversationlist.ConversationListListener;
+import com.amlcurran.messages.core.data.Contact;
+import com.amlcurran.messages.core.data.Conversation;
 import com.amlcurran.messages.data.InFlightSmsMessage;
+import com.amlcurran.messages.preferences.PreferenceStore;
 
 import java.util.List;
 
@@ -55,7 +55,7 @@ public class Notifier {
                 public void onConversationListLoaded(final List<Conversation> conversations) {
 
                     if (conversations.size() == 0) {
-                        Log.d("Messages", "Update to the notification, but no new messages");
+                        MessagesLog.d(Notifier.this, "Update to the notification, but no new messages");
                     } else if (conversations.size() == 1) {
                         // Load the contact photo as well
                         Conversation singleConvo = conversations.get(0);
