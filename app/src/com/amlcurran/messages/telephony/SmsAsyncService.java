@@ -17,6 +17,7 @@
 package com.amlcurran.messages.telephony;
 
 import android.app.IntentService;
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.util.Log;
@@ -37,6 +38,7 @@ public class SmsAsyncService extends IntentService {
     @Override
     protected void onHandleIntent(Intent intent) {
         if (SmsReceiver.ASYNC_WRITE.equals(intent.getAction())) {
+<<<<<<< HEAD
             InFlightSmsMessage message = intent.getParcelableExtra(SmsReceiver.EXTRA_MESSAGE);
             SmsDatabaseWriter smsDatabaseWriter = new SmsDatabaseWriter();
             smsDatabaseWriter.writeInboxSms(getContentResolver(), new SmsDatabaseWriter.WriteListener() {
@@ -53,6 +55,67 @@ public class SmsAsyncService extends IntentService {
                 }
 
             }, message);
+=======
+
+            WriteType writeType = WriteType.fromIntent(intent);
+            InFlightSmsMessage smsMessage = intent.getParcelableExtra(SmsReceiver.EXTRA_MESSAGE);
+
+            switch (writeType) {
+
+                case INBOX:
+                    writeInbox(smsMessage);
+                    break;
+
+                case DRAFT:
+                    writeDraft(smsMessage);
+                    break;
+
+            }
+>>>>>>> Messages-10
         }
+    }
+
+    private void writeDraft(final InFlightSmsMessage smsMessage) {
+        SmsDatabaseWriter smsDatabaseWriter = new SmsDatabaseWriter();
+        smsDatabaseWriter.writeDraft(smsMessage, getContentResolver(), new SmsDatabaseWriter.WriteListener() {
+
+            @Override
+            public void written(Uri inserted) {
+                new BroadcastEventBus(SmsAsyncService.this).postMessageDrafted(smsMessage.getAddress());
+                Log.d(TAG, "Written draft");
+            }
+
+            @Override
+            public void failed() {
+                Log.e(TAG, "Failed to write message to inbox database");
+            }
+
+        });
+    }
+
+    private void writeInbox(InFlightSmsMessage smsMessage) {
+        SmsDatabaseWriter smsDatabaseWriter = new SmsDatabaseWriter();
+        smsDatabaseWriter.writeInboxSms(getContentResolver(), new SmsDatabaseWriter.WriteListener() {
+
+            @Override
+            public void written(Uri inserted) {
+                new BroadcastEventBus(SmsAsyncService.this).postMessageReceived();
+                SingletonManager.getNotifier(SmsAsyncService.this).updateUnreadNotification();
+            }
+
+            @Override
+            public void failed() {
+                Log.e(TAG, "Failed to write message to inbox database");
+            }
+
+        }, smsMessage);
+    }
+
+    public static Intent getAsyncWriteIntent(Context context, InFlightSmsMessage message, WriteType writeType) {
+        Intent intent = new Intent(context, SmsAsyncService.class);
+        intent.setAction(SmsReceiver.ASYNC_WRITE);
+        intent.putExtra(SmsReceiver.EXTRA_MESSAGE, message);
+        intent.putExtra(SmsReceiver.EXTRA_WRITE_TYPE, writeType.toString());
+        return intent;
     }
 }

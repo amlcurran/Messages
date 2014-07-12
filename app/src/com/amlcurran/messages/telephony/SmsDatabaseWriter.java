@@ -42,7 +42,7 @@ public class SmsDatabaseWriter {
     }
 
     public void writeInboxSms(ContentResolver resolver, WriteListener inboxWriteListener, InFlightSmsMessage message) {
-        final ContentValues contentValues = InFlightSmsMessageFactory.toContentValues(message, Telephony.Sms.Sent.MESSAGE_TYPE_INBOX);
+        ContentValues contentValues = InFlightSmsMessageFactory.toContentValues(message, Telephony.Sms.Sent.MESSAGE_TYPE_INBOX);
         writeInboxSmsInternal(resolver, inboxWriteListener, contentValues);
     }
 
@@ -73,6 +73,16 @@ public class SmsDatabaseWriter {
         String selection = String.format("%1$s=? AND %2$s=?", Telephony.Sms.ADDRESS, Telephony.Sms.TYPE);
         String[] args = new String[] { outboundAddress, String.valueOf(Telephony.Sms.MESSAGE_TYPE_OUTBOX) };
         contentResolver.delete(Telephony.Sms.CONTENT_URI, selection, args);
+    }
+
+    public void writeDraft(InFlightSmsMessage smsMessage, ContentResolver contentResolver, WriteListener writeListener) {
+        ContentValues contentValues = InFlightSmsMessageFactory.toContentValues(smsMessage, Telephony.Sms.MESSAGE_TYPE_DRAFT);
+        Uri uri = contentResolver.insert(Telephony.Sms.Draft.CONTENT_URI, contentValues);
+        if (uri != null) {
+            writeListener.written(uri);
+        } else {
+            writeListener.failed();
+        }
     }
 
     public interface WriteListener {

@@ -113,6 +113,10 @@ public class ComposeMessageView extends LinearLayout implements View.OnClickList
         textEntryField.setText(message);
     }
 
+    public String getText() {
+        return String.valueOf(textEntryField.getText());
+    }
+
     public interface OnMessageComposedListener {
         OnMessageComposedListener NONE = new OnMessageComposedListener() {
             @Override

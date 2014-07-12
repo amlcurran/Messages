@@ -36,6 +36,7 @@ public class ContactView extends LinearLayout {
     private final TextView nameTextField;
     private final TextView secondTextField;
     private long contactId = -1;
+    protected Contact contact;
 
     public ContactView(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
@@ -63,7 +64,8 @@ public class ContactView extends LinearLayout {
     }
 
     public void setContact(final Contact contact, MessagesLoader loader) {
-        contactId = contact.getContactId();
+        this.contact = contact;
+        this.contactId = contact.getContactId();
         post(new Runnable() {
             @Override
             public void run() {

@@ -24,7 +24,8 @@
                 android:ellipsize="end"
                 android:paddingLeft="28dp"
                 android:gravity="center_vertical"
-                android:background="@color/theme_colour_40"/>
+                android:background="@color/theme_colour_40"
+                android:layout_alignParentEnd="true"/>
 
         <view
                 android:layout_width="44dp"
@@ -39,6 +40,16 @@
                 android:id="@android:id/text2"
                 android:textSize="24sp"
                 android:visibility="gone"/>
+
+        <ImageButton
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:id="@+id/chip_remove"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentTop="true"
+                android:src="@drawable/ic_action_remove"
+                android:background="@drawable/selectable_background_messages"/>
     </RelativeLayout>
 
 </LinearLayout>

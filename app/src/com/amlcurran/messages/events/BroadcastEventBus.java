@@ -30,6 +30,7 @@ public class BroadcastEventBus implements EventBus {
     public static final String BROADCAST_MESSAGE_RECEIVED = BASE_BROADCAST + ".broadcast_message_received";
     public static final String BROADCAST_MESSAGE_SENDING = BASE_BROADCAST + ".broadcast_message_sending";
     public static final String BROADCAST_LIST_LOADED = BASE_BROADCAST + ".LIST_LOADED";
+    public static final String BROADCAST_MESSAGE_DRAFT = BASE_BROADCAST + ".broadcast_message_drafted";
     private final LocalBroadcastManager broadcaster;
 
     public BroadcastEventBus(Context context) {
@@ -61,5 +62,10 @@ public class BroadcastEventBus implements EventBus {
     @Override
     public void postListLoaded() {
         broadcaster.sendBroadcast(new Intent(BROADCAST_LIST_LOADED));
+    }
+
+    @Override
+    public void postMessageDrafted(String address) {
+        broadcaster.sendBroadcast(new Intent(BROADCAST_MESSAGE_DRAFT));
     }
 }

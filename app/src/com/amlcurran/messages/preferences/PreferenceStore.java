@@ -20,6 +20,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.preference.PreferenceManager;
+import android.telephony.PhoneNumberUtils;
 
 import com.amlcurran.messages.core.TextUtils;
 import com.amlcurran.messages.core.data.Sort;
@@ -98,6 +99,26 @@ public class PreferenceStore {
         preferences.edit()
                 .putBoolean(SHOWN_ALPHA_MESSAGE, false)
                 .apply();
+    }
+
+    public String getDraft(String address) {
+        return preferences.getString(getDraftKey(address), null);
+    }
+
+    public void storeDraft(String address, String body) {
+        preferences.edit()
+                .putString(getDraftKey(address), body)
+                .apply();
+    }
+
+    public void clearDraft(String address) {
+        preferences.edit()
+                .remove(getDraftKey(address))
+                .apply();
+    }
+
+    private static String getDraftKey(String address) {
+        return "draft" + PhoneNumberUtils.stripSeparators(address);
     }
 
     public interface PreferenceChangedListener {

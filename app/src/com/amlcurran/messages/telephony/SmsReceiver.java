@@ -29,6 +29,7 @@ public class SmsReceiver extends BroadcastReceiver {
     static final String ASYNC_WRITE = "com.amlcurran.messages.smsreceiver.ASYNC_WRITE";
     static final String EXTRA_MESSAGE = "message";
     static final String EXTRA_RESULT = "result";
+    static final String EXTRA_WRITE_TYPE = "write_type";
 
     @Override
     public void onReceive(Context context, Intent intent) {
@@ -39,6 +40,7 @@ public class SmsReceiver extends BroadcastReceiver {
 
             Intent asyncWriteIntent = new Intent(context, SmsAsyncService.class);
             asyncWriteIntent.setAction(ASYNC_WRITE);
+            asyncWriteIntent.putExtra(EXTRA_WRITE_TYPE, WriteType.INBOX.toString());
             asyncWriteIntent.putExtra(EXTRA_MESSAGE, inFlightSmsMessage);
 
             context.startService(asyncWriteIntent);

@@ -17,27 +17,53 @@
   -->
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+              xmlns:app="http://schemas.android.com/apk/res-auto"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent" >
 
-    <EditText
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/new_pick_person"
-        android:inputType="phone|textAutoComplete|textPersonName" />
+    <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="fill_parent"
+            android:layout_height="56dp"
+            android:id="@+id/recipient_view_host"
+            android:paddingLeft="4dp"
+            android:paddingRight="4dp"
+            android:animateLayoutChanges="true"  >
+
+        <view
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                class="com.amlcurran.messages.ui.ContactChipView"
+                android:visibility="gone"
+                android:id="@+id/new_compose_chip"
+                android:layout_gravity="center_vertical"
+                app:titleTextAppearance="@style/ContactViewTitleChip"
+                />
+
+        <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/hint_enter_number"
+                android:id="@+id/new_pick_person"
+                android:inputType="phone|textAutoComplete|textPersonName"
+                android:layout_gravity="center_vertical"/>
+    </LinearLayout>
 
     <GridView
-        android:layout_width="wrap_content"
-        android:numColumns="2"
-        android:layout_height="0dp"
-        android:id="@+id/new_person_list"
-        android:layout_weight="1" />
+            android:padding="8dp"
+            android:clipToPadding="false"
+            android:layout_width="wrap_content"
+            android:numColumns="2"
+            android:layout_height="0dp"
+            android:id="@+id/new_person_list"
+            android:layout_weight="1"/>
 
     <view
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        class="com.amlcurran.messages.ui.ComposeMessageView"
-        android:id="@+id/new_compose_view"
-        android:layout_gravity="center_horizontal" />
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            class="com.amlcurran.messages.ui.ComposeMessageView"
+            android:id="@+id/new_compose_view"
+            android:layout_gravity="center_horizontal"/>
 
 </LinearLayout>

@@ -20,6 +20,7 @@ import android.app.Activity;
 import android.app.ListFragment;
 import android.content.Context;
 import android.os.Bundle;
+import android.telephony.PhoneNumberUtils;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -35,6 +36,8 @@ import com.amlcurran.messages.core.data.Contact;
 import com.amlcurran.messages.core.data.SmsMessage;
 import com.amlcurran.messages.data.InFlightSmsMessage;
 import com.amlcurran.messages.loaders.MessagesLoader;
+import com.amlcurran.messages.preferences.PreferenceStore;
+import com.amlcurran.messages.telephony.CentralWriter;
 import com.amlcurran.messages.ui.ComposeMessageView;
 import com.amlcurran.messages.ui.ContactView;
 import com.amlcurran.messages.ui.CustomHeaderFragment;
@@ -50,6 +53,7 @@ public class ThreadFragment extends ListFragment implements
 
     private static final String THREAD_ID = "threadId";
     private static final String ADDRESS = "address";
+    private static final String EXTRA_WRITTEN_TEXT = "written_text";
 
     private SmsComposeListener listener;
     private String sendAddress;
@@ -97,6 +101,18 @@ public class ThreadFragment extends ListFragment implements
 
         SourceBinderAdapter<SmsMessage> adapter = new SourceBinderAdapter<SmsMessage>(getActivity(), threadController.getSource(), new ThreadBinder(getListView()));
         setListAdapter(adapter);
+
+        composeView.setText(retrieveDraft(sendAddress));
+    }
+
+    private String retrieveDraft(String sendAddress) {
+        return new PreferenceStore(getActivity()).getDraft(PhoneNumberUtils.stripSeparators(sendAddress));
+    }
+
+    private void saveDraft() {
+        String text = composeView.getText();
+        InFlightSmsMessage message = new InFlightSmsMessage(sendAddress, text, System.currentTimeMillis());
+        new CentralWriter(getActivity()).storeDraft(message);
     }
 
     @Override
@@ -115,6 +131,12 @@ public class ThreadFragment extends ListFragment implements
     public void onStop() {
         super.onStop();
         threadController.stop();
+        saveDraft();
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
     }
 
     @Override
@@ -153,6 +175,7 @@ public class ThreadFragment extends ListFragment implements
         long timestamp = Calendar.getInstance().getTimeInMillis();
         InFlightSmsMessage smsMessage = new InFlightSmsMessage(sendAddress, message, timestamp);
         listener.sendSms(smsMessage);
+        new CentralWriter(getActivity()).clearDraft(sendAddress);
     }
 
     @Override

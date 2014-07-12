@@ -28,4 +28,6 @@ public interface EventBus {
     void postMessageSending(InFlightSmsMessage message);
 
     void postListLoaded();
+
+    void postMessageDrafted(String address);
 }
