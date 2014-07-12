@@ -21,8 +21,6 @@ import android.app.Fragment;
 import android.content.Context;
 import android.os.Bundle;
 import android.telephony.PhoneNumberUtils;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -47,7 +45,7 @@ import com.github.amlcurran.sourcebinder.SourceBinderAdapter;
 import java.util.Calendar;
 import java.util.List;
 
-public class ComposeNewFragment extends Fragment implements ComposeMessageView.OnMessageComposedListener, TextWatcher, RecipientChooser.ChooserListener {
+public class ComposeNewFragment extends Fragment implements ComposeMessageView.OnMessageComposedListener, RecipientChooser.ChooserListener {
 
     private static final String EXTRA_ADDRESS = "address";
     private static final String EXTRA_MESSAGE = "message";
@@ -87,7 +85,6 @@ public class ComposeNewFragment extends Fragment implements ComposeMessageView.O
         composeView = (ComposeMessageView) view.findViewById(R.id.new_compose_view);
         composeView.setComposeListener(this);
         pickPersonView = ((EditText) view.findViewById(R.id.new_pick_person));
-        pickPersonView.addTextChangedListener(this);
         personListView = ((AbsListView) view.findViewById(R.id.new_person_list));
         return view;
     }
@@ -180,25 +177,6 @@ public class ComposeNewFragment extends Fragment implements ComposeMessageView.O
 
     private CharSequence getEnteredAddress() {
         return pickPersonView.getText();
-    }
-
-    @Override
-    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-    }
-
-    @Override
-    public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-    }
-
-    @Override
-    public void afterTextChanged(Editable s) {
-        refreshSuggestions();
-    }
-
-    private void refreshSuggestions() {
-
     }
 
     @Override
