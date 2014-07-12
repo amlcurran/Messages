@@ -32,6 +32,7 @@ public class BroadcastEventBus implements EventBus {
     public static final String BROADCAST_MESSAGE_SENDING = BASE_BROADCAST + ".broadcast_message_sending";
     public static final String BROADCAST_LIST_LOADED = BASE_BROADCAST + ".LIST_LOADED";
     public static final String BROADCAST_MESSAGE_DRAFT = BASE_BROADCAST + ".broadcast_message_drafted";
+    static final String EXTRA_FILTER = "filter";
     private final LocalBroadcastManager broadcaster;
 
     public BroadcastEventBus(Context context) {
@@ -44,19 +45,20 @@ public class BroadcastEventBus implements EventBus {
     }
 
     @Override
-    public void postMessageSent() {
-        broadcaster.sendBroadcast(new Intent(BROADCAST_MESSAGE_SENT));
+    public void postMessageSent(PhoneNumber phoneNumber) {
+        broadcaster.sendBroadcast(new Intent(BROADCAST_MESSAGE_SENT).putExtra(EXTRA_FILTER, phoneNumber.toString()));
     }
 
     @Override
-    public void postMessageReceived() {
-        broadcaster.sendBroadcast(new Intent(BROADCAST_MESSAGE_RECEIVED));
+    public void postMessageReceived(PhoneNumber phoneNumber) {
+        broadcaster.sendBroadcast(new Intent(BROADCAST_MESSAGE_RECEIVED).putExtra(EXTRA_FILTER, phoneNumber.toString()));
     }
 
     @Override
     public void postMessageSending(InFlightSmsMessage message) {
         Intent broadcast = new Intent(BROADCAST_MESSAGE_SENDING);
         broadcast.putExtra("message", message);
+        broadcast.putExtra(EXTRA_FILTER, message.getPhoneNumber().toString());
         broadcaster.sendBroadcast(broadcast);
     }
 
@@ -67,6 +69,6 @@ public class BroadcastEventBus implements EventBus {
 
     @Override
     public void postMessageDrafted(PhoneNumber phoneNumber) {
-        broadcaster.sendBroadcast(new Intent(BROADCAST_MESSAGE_DRAFT));
+        broadcaster.sendBroadcast(new Intent(BROADCAST_MESSAGE_DRAFT).putExtra(EXTRA_FILTER, phoneNumber.toString()));
     }
 }

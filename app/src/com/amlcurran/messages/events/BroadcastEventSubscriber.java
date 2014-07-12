@@ -25,29 +25,58 @@ import android.support.v4.content.LocalBroadcastManager;
 import com.amlcurran.messages.core.events.Broadcast;
 import com.amlcurran.messages.core.events.EventSubscriber;
 
+import java.util.ArrayList;
+import java.util.Collections;
+
 public class BroadcastEventSubscriber extends BroadcastReceiver implements EventSubscriber {
 
-    private Context context;
-    private Listener listener;
+    private final ArrayList<Broadcast> listeningBroadcasts;
+    private final Context context;
+    private final Listener listener;
 
     public BroadcastEventSubscriber(Context context, Listener listener) {
         this.context = context;
         this.listener = listener;
+        this.listeningBroadcasts = new ArrayList<Broadcast>();
     }
 
     @Override
     public void startListening(Broadcast... broadcasts) {
+        Collections.addAll(listeningBroadcasts, broadcasts);
         LocalBroadcastManager.getInstance(context).registerReceiver(this, buildMessageFilter(broadcasts));
     }
 
     @Override
     public void stopListening() {
+        listeningBroadcasts.clear();
         LocalBroadcastManager.getInstance(context).unregisterReceiver(this);
     }
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        listener.onMessageReceived();
+        Broadcast matchedActionBroadcast = matchBroadcastWithAction(listeningBroadcasts, intent.getAction());
+        assert matchedActionBroadcast != null;
+        if (matchedActionBroadcast.hasFilter()) {
+            // Only if the filter matches do we notify
+            if (matchesFilter(intent, matchedActionBroadcast)) {
+                listener.onMessageReceived();
+            }
+        } else {
+            listener.onMessageReceived();
+        }
+    }
+
+    private static boolean matchesFilter(Intent intent, Broadcast matchedActionBroadcast) {
+        return matchedActionBroadcast.getFilter().equals(intent.getStringExtra(BroadcastEventBus.EXTRA_FILTER));
+    }
+
+    private static Broadcast matchBroadcastWithAction(ArrayList<Broadcast> broadcasts, String action) {
+        for (Broadcast broadcast : broadcasts) {
+            if (broadcast.getAction().equals(action)) {
+                return broadcast;
+            }
+        }
+        return null;
     }
 
     private IntentFilter buildMessageFilter(Broadcast[] broadcasts) {

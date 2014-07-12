@@ -22,9 +22,9 @@ import com.amlcurran.messages.data.PhoneNumber;
 public interface EventBus {
     void postListInvalidated();
 
-    void postMessageSent();
+    void postMessageSent(PhoneNumber phoneNumber);
 
-    void postMessageReceived();
+    void postMessageReceived(PhoneNumber phoneNumber);
 
     void postMessageSending(InFlightSmsMessage message);
 

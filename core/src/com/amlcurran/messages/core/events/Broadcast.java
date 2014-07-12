@@ -1,5 +1,7 @@
 package com.amlcurran.messages.core.events;
 
+import com.amlcurran.messages.core.TextUtils;
+
 public class Broadcast {
 
     private final String action;
@@ -12,5 +14,13 @@ public class Broadcast {
 
     public String getAction() {
         return action;
+    }
+
+    public boolean hasFilter() {
+        return !TextUtils.isEmpty(filter);
+    }
+
+    public String getFilter() {
+        return filter;
     }
 }

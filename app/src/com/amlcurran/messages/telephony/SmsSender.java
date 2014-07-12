@@ -97,12 +97,12 @@ public class SmsSender extends IntentService {
         SingletonManager.getNotifier(this).showSendError(message);
     }
 
-    private void writeMessageToProvider(InFlightSmsMessage message) {
+    private void writeMessageToProvider(final InFlightSmsMessage message) {
         smsDatabaseWriter.writeSentMessage(getContentResolver(), new SmsDatabaseWriter.WriteListener() {
 
             @Override
             public void written(Uri inserted) {
-                new BroadcastEventBus(SmsSender.this).postMessageSent();
+                new BroadcastEventBus(SmsSender.this).postMessageSent(message.getPhoneNumber());
             }
 
             @Override

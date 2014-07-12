@@ -73,13 +73,13 @@ public class SmsAsyncService extends IntentService {
         });
     }
 
-    private void writeInbox(InFlightSmsMessage smsMessage) {
+    private void writeInbox(final InFlightSmsMessage smsMessage) {
         SmsDatabaseWriter smsDatabaseWriter = new SmsDatabaseWriter();
         smsDatabaseWriter.writeInboxSms(getContentResolver(), new SmsDatabaseWriter.WriteListener() {
 
             @Override
             public void written(Uri inserted) {
-                new BroadcastEventBus(SmsAsyncService.this).postMessageReceived();
+                new BroadcastEventBus(SmsAsyncService.this).postMessageReceived(smsMessage.getPhoneNumber());
                 SingletonManager.getNotifier(SmsAsyncService.this).updateUnreadNotification();
             }
 
