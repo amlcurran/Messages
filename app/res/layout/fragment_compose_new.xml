@@ -19,24 +19,36 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
               android:orientation="vertical"
               android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:animateLayoutChanges="true" >
+              android:layout_height="match_parent" >
 
-    <view
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            class="com.amlcurran.messages.ui.ContactChipView"
-            android:visibility="gone"
-            android:id="@+id/new_compose_chip"/>
+    <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="fill_parent"
+            android:layout_height="56dp"
+            android:paddingLeft="4dp"
+            android:paddingRight="4dp"
+            android:animateLayoutChanges="true"  >
 
-    <EditText
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="@string/hint_enter_number"
-            android:id="@+id/new_pick_person"
-            android:inputType="phone|textAutoComplete|textPersonName"/>
+        <view
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                class="com.amlcurran.messages.ui.ContactChipView"
+                android:visibility="gone"
+                android:id="@+id/new_compose_chip"
+                android:layout_gravity="center_vertical"/>
+
+        <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/hint_enter_number"
+                android:id="@+id/new_pick_person"
+                android:inputType="phone|textAutoComplete|textPersonName"
+                android:layout_gravity="center_vertical"/>
+    </LinearLayout>
 
     <GridView
+            android:padding="8dp"
+            android:clipToPadding="false"
             android:layout_width="wrap_content"
             android:numColumns="2"
             android:layout_height="0dp"
