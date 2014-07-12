@@ -22,7 +22,6 @@ import android.content.Intent;
 import android.net.Uri;
 import android.util.Log;
 
-import com.amlcurran.messages.MessagesLog;
 import com.amlcurran.messages.SingletonManager;
 import com.amlcurran.messages.data.InFlightSmsMessage;
 import com.amlcurran.messages.events.BroadcastEventBus;
@@ -38,24 +37,6 @@ public class SmsAsyncService extends IntentService {
     @Override
     protected void onHandleIntent(Intent intent) {
         if (SmsReceiver.ASYNC_WRITE.equals(intent.getAction())) {
-<<<<<<< HEAD
-            InFlightSmsMessage message = intent.getParcelableExtra(SmsReceiver.EXTRA_MESSAGE);
-            SmsDatabaseWriter smsDatabaseWriter = new SmsDatabaseWriter();
-            smsDatabaseWriter.writeInboxSms(getContentResolver(), new SmsDatabaseWriter.WriteListener() {
-
-                @Override
-                public void written(Uri inserted) {
-                    new BroadcastEventBus(SmsAsyncService.this).postMessageReceived();
-                    SingletonManager.getNotifier(SmsAsyncService.this).updateUnreadNotification();
-                }
-
-                @Override
-                public void failed() {
-                    MessagesLog.e(SmsAsyncService.this, "Failed to write message to inbox database");
-                }
-
-            }, message);
-=======
 
             WriteType writeType = WriteType.fromIntent(intent);
             InFlightSmsMessage smsMessage = intent.getParcelableExtra(SmsReceiver.EXTRA_MESSAGE);
@@ -71,7 +52,6 @@ public class SmsAsyncService extends IntentService {
                     break;
 
             }
->>>>>>> Messages-10
         }
     }
 
