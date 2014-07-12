@@ -22,6 +22,7 @@ import com.amlcurran.messages.core.data.SmsMessage;
 import com.amlcurran.messages.core.events.Broadcast;
 import com.amlcurran.messages.core.events.EventSubscriber;
 import com.amlcurran.messages.core.loaders.ThreadListener;
+import com.amlcurran.messages.data.PhoneNumber;
 import com.amlcurran.messages.events.BroadcastEventBus;
 import com.amlcurran.messages.events.BroadcastEventSubscriber;
 import com.amlcurran.messages.loaders.MessagesLoader;
@@ -36,14 +37,16 @@ import java.util.List;
 class ThreadController implements ThreadListener {
 
     private final String threadId;
+    private PhoneNumber phoneNumber;
     private final Callback callback;
     private ArrayListSource<SmsMessage> source;
     private EventSubscriber messageReceiver;
     private DefaultAppChecker defaultChecker;
     private MessagesLoader messageLoader;
 
-    public ThreadController(String threadId, Callback callback) {
+    public ThreadController(String threadId, PhoneNumber phoneNumber, Callback callback) {
         this.threadId = threadId;
+        this.phoneNumber = phoneNumber;
         this.callback = callback;
     }
 
@@ -91,12 +94,12 @@ class ThreadController implements ThreadListener {
         return source;
     }
 
-    private static Broadcast[] getBroadcastsToListenTo() {
+    private Broadcast[] getBroadcastsToListenTo() {
         return new Broadcast[]{
-                new Broadcast(BroadcastEventBus.BROADCAST_MESSAGE_SENT, null),
-                new Broadcast(BroadcastEventBus.BROADCAST_MESSAGE_RECEIVED, null),
-                new Broadcast(BroadcastEventBus.BROADCAST_MESSAGE_SENDING, null),
-                new Broadcast(BroadcastEventBus.BROADCAST_MESSAGE_DRAFT, null) };
+                new Broadcast(BroadcastEventBus.BROADCAST_MESSAGE_SENT, phoneNumber.toString()),
+                new Broadcast(BroadcastEventBus.BROADCAST_MESSAGE_RECEIVED, phoneNumber.toString()),
+                new Broadcast(BroadcastEventBus.BROADCAST_MESSAGE_SENDING, phoneNumber.toString()),
+                new Broadcast(BroadcastEventBus.BROADCAST_MESSAGE_DRAFT, phoneNumber.toString()) };
     }
 
     public interface Callback {

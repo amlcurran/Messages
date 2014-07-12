@@ -94,7 +94,7 @@ public class ThreadFragment extends ListFragment implements
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         phoneNumber = new PhoneNumber(getArguments().getString(ADDRESS));
-        threadController = new ThreadController(getThreadId(), this);
+        threadController = new ThreadController(getThreadId(), phoneNumber, this);
         threadController.create(getActivity(), composeView);
 
         setHasOptionsMenu(true);
