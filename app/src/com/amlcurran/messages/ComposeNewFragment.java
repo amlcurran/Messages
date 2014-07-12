@@ -96,6 +96,7 @@ public class ComposeNewFragment extends Fragment implements ComposeMessageView.O
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         defaultAppChecker = new DefaultAppChecker(getActivity(), composeView);
+        loader = new ProviderHelper<MessagesLoaderProvider>(MessagesLoaderProvider.class).get(getActivity()).getMessagesLoader();
         contactSource = new ArrayListSource<Contact>();
 
         adapter = new SourceBinderAdapter<Contact>(getActivity(), contactSource, new ContactBinder());
@@ -152,7 +153,6 @@ public class ComposeNewFragment extends Fragment implements ComposeMessageView.O
     public void onAttach(Activity activity) {
         super.onAttach(activity);
         listener = new ProviderHelper<SmsComposeListener>(SmsComposeListener.class).get(activity);
-        loader = new ProviderHelper<MessagesLoaderProvider>(MessagesLoaderProvider.class).get(activity).getMessagesLoader();
     }
 
     @Override
