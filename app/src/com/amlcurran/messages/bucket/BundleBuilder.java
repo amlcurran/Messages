@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.amlcurran.messages.notifications;
+package com.amlcurran.messages.bucket;
 
 import android.os.Bundle;
 

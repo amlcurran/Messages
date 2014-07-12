@@ -1,4 +1,4 @@
-package com.amlcurran.messages.notifications;
+package com.amlcurran.messages.bucket;
 
 public class ArrayHelper<T> {
     private T[] array;
@@ -7,7 +7,7 @@ public class ArrayHelper<T> {
         this.array = array;
     }
 
-    T atIndex(int index) {
+    public T atIndex(int index) {
         if (array.length > index) {
             return array[index];
         }

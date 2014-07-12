@@ -2,6 +2,8 @@ package com.amlcurran.messages.notifications;
 
 import android.app.FragmentManager;
 
+import com.amlcurran.messages.bucket.ArrayHelper;
+
 public class BlockingInUiDialogNotifier implements BlockingInUiNotifier {
 
     private FragmentManager fragmentManager;

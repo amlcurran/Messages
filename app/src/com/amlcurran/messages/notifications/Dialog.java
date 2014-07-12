@@ -26,6 +26,7 @@ import android.view.Window;
 import android.widget.TextView;
 
 import com.amlcurran.messages.R;
+import com.amlcurran.messages.bucket.BundleBuilder;
 
 public class Dialog extends DialogFragment {
 
