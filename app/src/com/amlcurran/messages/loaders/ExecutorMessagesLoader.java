@@ -20,6 +20,7 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.os.Handler;
 
+import com.amlcurran.messages.SingletonManager;
 import com.amlcurran.messages.core.loaders.ContactListListener;
 import com.amlcurran.messages.core.data.Contact;
 import com.amlcurran.messages.core.data.Sort;
@@ -75,6 +76,7 @@ public class ExecutorMessagesLoader implements MessagesLoader {
                 @Override
                 public void onConversationListLoaded(List<Conversation> conversations) {
                     eventBus.postListLoaded();
+                    SingletonManager.getNotifier(context).updateUnreadNotification(false);
                 }
             }, sort, cache));
         } else {

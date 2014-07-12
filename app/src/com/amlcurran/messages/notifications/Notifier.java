@@ -48,7 +48,7 @@ public class Notifier {
         this.notificationBuilder = new NotificationBuilder(context, new PreferenceStore(context));
     }
 
-    public void updateUnreadNotification() {
+    public void updateUnreadNotification(final boolean fromNewMessage) {
         if (showNotifications(context)) {
             SingletonManager.getMessagesLoader(context).loadUnreadConversationList(new ConversationListListener() {
                 @Override
@@ -81,7 +81,7 @@ public class Notifier {
                 }
 
                 private void postUnreadNotification(List<Conversation> conversations, Bitmap photo) {
-                    Notification notification = notificationBuilder.buildUnreadNotification(conversations, photo);
+                    Notification notification = notificationBuilder.buildUnreadNotification(conversations, photo, fromNewMessage);
                     notificationManager.notify(NOTIFICATION_UNREAD_MESSAGES, notification);
                 }
             });

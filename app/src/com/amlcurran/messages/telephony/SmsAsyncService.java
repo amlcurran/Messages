@@ -80,7 +80,7 @@ public class SmsAsyncService extends IntentService {
             @Override
             public void written(Uri inserted) {
                 new BroadcastEventBus(SmsAsyncService.this).postMessageReceived(smsMessage.getPhoneNumber());
-                SingletonManager.getNotifier(SmsAsyncService.this).updateUnreadNotification();
+                SingletonManager.getNotifier(SmsAsyncService.this).updateUnreadNotification(true);
             }
 
             @Override

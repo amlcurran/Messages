@@ -34,6 +34,7 @@ public class PreferenceStore {
     static final String RINGTONE = "ringtone";
     static final String NOTIFICATIONS = "notifications";
     static final String SHOWN_ALPHA_MESSAGE = "alpha_message";
+    public static final String PERSISTENT_NOTIFICATION = "persistent_notification";
     private final SharedPreferences preferences;
     private final List<PreferenceChangedListener> changedListenerList = new ArrayList<PreferenceChangedListener>();
 
@@ -119,6 +120,10 @@ public class PreferenceStore {
 
     private static String getDraftKey(PhoneNumber phoneNumber) {
         return "draft" + phoneNumber.toString();
+    }
+
+    public boolean isNotificationPersistent() {
+        return preferences.getBoolean(PERSISTENT_NOTIFICATION, false);
     }
 
     public interface PreferenceChangedListener {

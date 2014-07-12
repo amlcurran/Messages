@@ -29,7 +29,7 @@ import java.util.Calendar;
 import java.util.List;
 
 public class NotificationBuilder {
-    private static final long[] VIBRATE_PATTERN = new long[]{ 0, 200 };
+    private static final long[] VIBRATE_PATTERN = new long[]{0, 200};
     private final NotificationIntentFactory notificationIntentFactory;
     private final StyledTextFactory styledTextFactory;
     private Context context;
@@ -42,18 +42,19 @@ public class NotificationBuilder {
         this.styledTextFactory = new StyledTextFactory();
     }
 
-    public Notification buildUnreadNotification(List<Conversation> conversations, Bitmap photo) {
+    public Notification buildUnreadNotification(List<Conversation> conversations, Bitmap photo, boolean fromNewMessage) {
         if (conversations.size() == 1) {
-            return buildSingleUnreadNotification(conversations.get(0), photo);
+            return buildSingleUnreadNotification(conversations.get(0), photo, fromNewMessage);
         } else {
-            return buildMultipleUnreadNotification(conversations);
+            return buildMultipleUnreadNotification(conversations, fromNewMessage);
         }
     }
 
-    private Notification buildMultipleUnreadNotification(List<Conversation> conversations) {
+    private Notification buildMultipleUnreadNotification(List<Conversation> conversations, boolean fromNewMessage) {
         long timestampMillis = Calendar.getInstance().getTimeInMillis();
-        return getDefaultBuilder()
-                .setTicker(styledTextFactory.buildTicker(conversations.get(0)))
+        CharSequence ticker = fromNewMessage ? styledTextFactory.buildTicker(conversations.get(0)) : styledTextFactory.buildListSummary(conversations);
+        return getDefaultBuilder(fromNewMessage)
+                .setTicker(ticker)
                 .setStyle(buildInboxStyle(conversations))
                 .setContentText(styledTextFactory.buildSenderList(conversations))
                 .setContentTitle(styledTextFactory.buildListSummary(conversations))
@@ -69,9 +70,9 @@ public class NotificationBuilder {
         return inboxStyle;
     }
 
-    private Notification buildSingleUnreadNotification(Conversation conversation, Bitmap photo) {
+    private Notification buildSingleUnreadNotification(Conversation conversation, Bitmap photo, boolean fromNewMessage) {
         long timestampMillis = Calendar.getInstance().getTimeInMillis();
-        return getDefaultBuilder()
+        return getDefaultBuilder(fromNewMessage)
                 .setTicker(styledTextFactory.buildTicker(conversation))
                 .setContentTitle(conversation.getContact().getDisplayName())
                 .setLargeIcon(photo)
@@ -89,13 +90,22 @@ public class NotificationBuilder {
     }
 
     private Notification.Builder getDefaultBuilder() {
-        return new Notification.Builder(this.context)
+        return getDefaultBuilder(true);
+    }
+
+    private Notification.Builder getDefaultBuilder(boolean shouldSoundAndVibrate) {
+        Notification.Builder builder = new Notification.Builder(this.context)
                 .setContentIntent(notificationIntentFactory.createLaunchActivityIntent())
-                .setDefaults(Notification.DEFAULT_LIGHTS | Notification.DEFAULT_VIBRATE)
-                .setSound(preferenceStore.getRingtoneUri())
                 .setAutoCancel(true)
-                .setVibrate(VIBRATE_PATTERN)
-                .setSmallIcon(R.drawable.ic_notify_sms);
+                .setSmallIcon(R.drawable.ic_notify_sms)
+                .setDefaults(Notification.DEFAULT_LIGHTS);
+
+        if (shouldSoundAndVibrate) {
+            builder.setSound(preferenceStore.getRingtoneUri());
+            builder.setVibrate(VIBRATE_PATTERN);
+        }
+
+        return builder;
     }
 
     public Notification buildFailureToSendNotification(InFlightSmsMessage message) {

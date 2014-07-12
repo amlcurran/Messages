@@ -202,7 +202,9 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
     @Override
     protected void onResume() {
         super.onResume();
-        SingletonManager.getNotifier(this).clearNewMessagesNotification();
+        if (!preferencesStore.isNotificationPersistent()) {
+            SingletonManager.getNotifier(this).clearNewMessagesNotification();
+        }
         appChecker.checkSmsApp();
     }
 
