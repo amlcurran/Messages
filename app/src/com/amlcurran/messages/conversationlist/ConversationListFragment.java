@@ -17,6 +17,7 @@
 package com.amlcurran.messages.conversationlist;
 
 import android.app.Activity;
+import android.app.ListFragment;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,22 +25,24 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
-import com.amlcurran.messages.ListeningCursorListFragment;
-import com.amlcurran.messages.core.events.Broadcast;
-import com.amlcurran.messages.preferences.PreferenceStore;
 import com.amlcurran.messages.R;
 import com.amlcurran.messages.core.conversationlist.ConversationListListener;
 import com.amlcurran.messages.core.data.Conversation;
 import com.amlcurran.messages.core.data.Sort;
+import com.amlcurran.messages.core.events.Broadcast;
+import com.amlcurran.messages.core.events.EventSubscriber;
 import com.amlcurran.messages.events.BroadcastEventBus;
+import com.amlcurran.messages.events.BroadcastEventSubscriber;
 import com.amlcurran.messages.loaders.MessagesLoader;
+import com.amlcurran.messages.loaders.MessagesLoaderProvider;
+import com.amlcurran.messages.preferences.PreferenceStore;
 import com.espian.utils.ProviderHelper;
 import com.github.amlcurran.sourcebinder.ArrayListSource;
 import com.github.amlcurran.sourcebinder.SourceBinderAdapter;
 
 import java.util.List;
 
-public class ConversationListFragment extends ListeningCursorListFragment<Conversation> implements ConversationListListener, AdapterView.OnItemClickListener, PreferenceListener.ChangeListener {
+public class ConversationListFragment extends ListFragment implements ConversationListListener, AdapterView.OnItemClickListener, PreferenceListener.ChangeListener, BroadcastEventSubscriber.Listener {
 
     protected SourceBinderAdapter<Conversation> adapter;
     protected ArrayListSource<Conversation> source;
@@ -47,6 +50,8 @@ public class ConversationListFragment extends ListeningCursorListFragment<Conver
     private View emptyView;
     private ConversationModalMarshall.Callback modalCallback;
     private PreferenceListener preferenceListener;
+    private MessagesLoader messageLoader;
+    private EventSubscriber messageReceiver;
 
     public ConversationListFragment() { }
 
@@ -60,10 +65,12 @@ public class ConversationListFragment extends ListeningCursorListFragment<Conver
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        messageLoader = new ProviderHelper<MessagesLoaderProvider>(MessagesLoaderProvider.class).get(getActivity()).getMessagesLoader();
+        messageReceiver = new BroadcastEventSubscriber(getActivity(), this);
 
         preferenceListener = new PreferenceListener(getActivity(), this, "unread_priority");
         source = new ArrayListSource<Conversation>();
-        ConversationsBinder binder = new ConversationsBinder(getResources(), getMessageLoader());
+        ConversationsBinder binder = new ConversationsBinder(getResources(), messageLoader);
         adapter = new SourceBinderAdapter<Conversation>(getActivity(), source, binder);
         setListAdapter(adapter);
         getListView().setChoiceMode(ListView.CHOICE_MODE_MULTIPLE_MODAL);
@@ -75,6 +82,8 @@ public class ConversationListFragment extends ListeningCursorListFragment<Conver
     @Override
     public void onStart() {
         super.onStart();
+        loadData(messageLoader, false);
+        messageReceiver.startListening(getActions());
         preferenceListener.startListening();
     }
 
@@ -82,6 +91,7 @@ public class ConversationListFragment extends ListeningCursorListFragment<Conver
     public void onStop() {
         super.onStop();
         preferenceListener.stopListening();
+        messageReceiver.stopListening();
     }
 
     @Override
@@ -91,12 +101,10 @@ public class ConversationListFragment extends ListeningCursorListFragment<Conver
         modalCallback = new ProviderHelper<ConversationModalMarshall.Callback>(ConversationModalMarshall.Callback.class).get(activity);
     }
 
-    @Override
     public Broadcast[] getActions() {
         return new Broadcast[] { new Broadcast(BroadcastEventBus.BROADCAST_LIST_LOADED, null) };
     }
 
-    @Override
     public void loadData(MessagesLoader loader, boolean isRefresh) {
         if (!isRefresh) {
             showLoadingUi();
@@ -115,7 +123,7 @@ public class ConversationListFragment extends ListeningCursorListFragment<Conver
 
     @Override
     public void onConversationListLoaded(final List<Conversation> conversations) {
-        onUiThread(new Runnable() {
+        getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
                 source.replace(conversations);
@@ -137,6 +145,11 @@ public class ConversationListFragment extends ListeningCursorListFragment<Conver
     @Override
     public void preferenceChanged(String requestKey) {
         onMessageReceived();
+    }
+
+    @Override
+    public void onMessageReceived() {
+
     }
 
     public interface Listener {
