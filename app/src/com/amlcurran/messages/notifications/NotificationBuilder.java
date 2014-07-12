@@ -26,6 +26,7 @@ import com.amlcurran.messages.data.InFlightSmsMessage;
 import com.amlcurran.messages.preferences.PreferenceStore;
 
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.List;
 
 public class NotificationBuilder {
@@ -72,8 +73,9 @@ public class NotificationBuilder {
 
     private Notification buildSingleUnreadNotification(Conversation conversation, Bitmap photo, boolean fromNewMessage) {
         long timestampMillis = Calendar.getInstance().getTimeInMillis();
+        CharSequence tickerText = fromNewMessage ? styledTextFactory.buildTicker(conversation) : styledTextFactory.buildListSummary(Collections.singletonList(conversation));
         return getDefaultBuilder(fromNewMessage)
-                .setTicker(styledTextFactory.buildTicker(conversation))
+                .setTicker(tickerText)
                 .setContentTitle(conversation.getContact().getDisplayName())
                 .setLargeIcon(photo)
                 .setContentIntent(notificationIntentFactory.createViewConversationIntent(conversation))
