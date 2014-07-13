@@ -19,6 +19,7 @@ package com.amlcurran.messages.ui;
 import android.app.Activity;
 import android.support.v4.widget.SlidingPaneLayout;
 import android.view.View;
+import android.view.animation.DecelerateInterpolator;
 
 import com.amlcurran.messages.R;
 
@@ -85,6 +86,7 @@ public class SlidingPaneViewController implements ViewController, View.OnClickLi
             public void onPanelOpened(View panel) {
                 if (isSecondaryOpen) {
                     callback.secondaryHidden();
+                    showNewMessageButton();
                     isSecondaryOpen = false;
                 }
             }
@@ -93,6 +95,7 @@ public class SlidingPaneViewController implements ViewController, View.OnClickLi
             public void onPanelClosed(View panel) {
                 if (!isSecondaryOpen) {
                     callback.secondaryVisible();
+                    hideNewMessageButton();
                     isSecondaryOpen = true;
                 }
             }
@@ -111,18 +114,18 @@ public class SlidingPaneViewController implements ViewController, View.OnClickLi
         callback.defaultsBannerPressed();
     }
 
-    @Override
-    public void hideNewMessageButton() {
+    private void hideNewMessageButton() {
         newMessageButton.animate()
-                .translationYBy(-newMessageButton.getMeasuredHeight())
-                .setDuration(150)
+                .translationYBy(newMessageButton.getMeasuredHeight())
+                .setInterpolator(new DecelerateInterpolator(2))
+                .setDuration(300)
                 .start();
     }
 
-    @Override
-    public void showNewMessageButton() {
+    private void showNewMessageButton() {
         newMessageButton.animate()
-                .translationYBy(newMessageButton.getMeasuredHeight())
+                .translationYBy(-newMessageButton.getMeasuredHeight())
+                .setInterpolator(new DecelerateInterpolator(2))
                 .setDuration(150)
                 .start();
     }

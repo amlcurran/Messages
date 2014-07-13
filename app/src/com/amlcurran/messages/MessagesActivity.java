@@ -302,7 +302,6 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
     public void secondaryVisible() {
         isSecondaryVisible = true;
         menuController.update();
-        viewController.showNewMessageButton();
         actionBarController.showHeader();
     }
 
@@ -310,7 +309,6 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
     public void secondaryHidden() {
         isSecondaryVisible = false;
         menuController.update();
-        viewController.hideNewMessageButton();
         actionBarController.hideHeader();
     }
 

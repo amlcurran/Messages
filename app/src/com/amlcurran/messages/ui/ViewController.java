@@ -31,10 +31,6 @@ public interface ViewController {
 
     void setContentView(Activity activity);
 
-    void hideNewMessageButton();
-
-    void showNewMessageButton();
-
     void disableNewMessageButton();
 
     void enableNewMessageButton();
