@@ -4,12 +4,6 @@ import android.telephony.SmsMessage;
 
 public class SmsCounter {
 
-    private CharSequence text;
-
-    public void setText(CharSequence text) {
-        this.text = text;
-    }
-
     public SmsCount getSmsDeets(CharSequence text) {
         int[] results = SmsMessage.calculateLength(text, false);
         int length = results[1] + results[2];
