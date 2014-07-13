@@ -23,14 +23,6 @@
         android:orientation="vertical"
         android:layout_height="match_parent">
 
-        <view
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            class="com.amlcurran.messages.ui.CustomActionBarView"
-            android:id="@+id/action_bar"
-            android:visibility="gone"
-            android:layout_gravity="center_horizontal" />
-
         <view xmlns:android="http://schemas.android.com/apk/res/android"
             android:layout_width="match_parent"
             android:layout_height="0dp"
