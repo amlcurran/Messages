@@ -80,8 +80,8 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        fragmentController  = new MasterDetailFragmentController(this, this);
         viewController      = new SlidingPaneViewController(this);
+        fragmentController  = new MasterDetailFragmentController(this, this, viewController);
         toastInUiNotifier   = new InUiToastNotifier(this);
         blockingInUiNotifier= new BlockingInUiDialogNotifier(getFragmentManager());
         activityController  = new ActivityController(this, blockingInUiNotifier);
@@ -289,13 +289,13 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
     @Override
     public void isDefaultSmsApp() {
         viewController.hideDisabledBanner();
-        viewController.disableNewMessageButton();
+        viewController.enableNewMessageButton();
     }
 
     @Override
     public void isNotDefaultSmsApp() {
         viewController.showDisabledBanner();
-        viewController.enableNewMessageButton();
+        viewController.disableNewMessageButton();
     }
 
     @Override

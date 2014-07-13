@@ -32,17 +32,19 @@ public class MasterDetailFragmentController implements FragmentController {
 
     private final Activity activity;
     private final Callback callback;
+    private ViewController viewController;
 
-    public MasterDetailFragmentController(Activity activity, Callback callback) {
+    public MasterDetailFragmentController(Activity activity, Callback callback, ViewController viewController) {
         this.activity = activity;
         this.callback = callback;
+        this.viewController = viewController;
     }
 
     @Override
     public void loadMessagesListFragment() {
         if (doesNotHaveMessagesList()) {
             activity.getFragmentManager().beginTransaction()
-                    .add(R.id.container, new ConversationListFragment())
+                    .add(viewController.getMasterFrameId(), new ConversationListFragment())
                     .commit();
             callback.insertedMaster();
         }
@@ -83,13 +85,18 @@ public class MasterDetailFragmentController implements FragmentController {
         }
 
         FragmentTransaction transaction = activity.getFragmentManager().beginTransaction()
-                .replace(R.id.secondary, fragment);
+                .replace(viewController.getSecondaryFrameId(), fragment);
+
+        if (viewController.shouldPlaceOnBackStack()) {
+            transaction.addToBackStack(null);
+        }
+
         transaction.commit();
         callback.insertedDetail();
     }
 
     @Override
     public boolean optionsItemSelected(MenuItem item) {
-        return activity.getFragmentManager().findFragmentById(R.id.secondary).onOptionsItemSelected(item);
+        return activity.getFragmentManager().findFragmentById(viewController.getSecondaryFrameId()).onOptionsItemSelected(item);
     }
 }

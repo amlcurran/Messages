@@ -35,6 +35,12 @@ public interface ViewController {
 
     void enableNewMessageButton();
 
+    int getMasterFrameId();
+
+    int getSecondaryFrameId();
+
+    boolean shouldPlaceOnBackStack();
+
     public interface Callback {
         void secondaryVisible();
 

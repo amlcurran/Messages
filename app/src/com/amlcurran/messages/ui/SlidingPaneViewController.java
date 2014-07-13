@@ -132,12 +132,27 @@ public class SlidingPaneViewController implements ViewController, View.OnClickLi
 
     @Override
     public void disableNewMessageButton() {
-        newMessageButton.setVisibility(View.VISIBLE);
+        newMessageButton.setVisibility(View.GONE);
     }
 
     @Override
     public void enableNewMessageButton() {
-        newMessageButton.setVisibility(View.GONE);
+        newMessageButton.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public int getMasterFrameId() {
+        return R.id.container;
+    }
+
+    @Override
+    public int getSecondaryFrameId() {
+        return R.id.secondary;
+    }
+
+    @Override
+    public boolean shouldPlaceOnBackStack() {
+        return false;
     }
 
 }
