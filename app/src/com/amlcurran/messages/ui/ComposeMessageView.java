@@ -30,12 +30,15 @@ import android.widget.TextView;
 
 import com.amlcurran.messages.telephony.DefaultAppChecker;
 import com.amlcurran.messages.R;
+import com.amlcurran.messages.telephony.SmsCounter;
 
 
 public class ComposeMessageView extends LinearLayout implements View.OnClickListener, TextWatcher, DefaultAppChecker.Callback {
 
     private final EditText textEntryField;
     private final ImageButton sendButton;
+    private final BlockProgressBar progress;
+    private final SmsCounter smsCounter;
     private OnMessageComposedListener messageComposedListener = OnMessageComposedListener.NONE;
 
     public ComposeMessageView(Context context, AttributeSet attrs) {
@@ -47,6 +50,8 @@ public class ComposeMessageView extends LinearLayout implements View.OnClickList
         LayoutInflater.from(context).inflate(R.layout.view_compose_message, this);
         textEntryField = ((EditText) findViewById(R.id.thread_sms_entry));
         sendButton = ((ImageButton) findViewById(R.id.thread_sms_send));
+        progress = (BlockProgressBar) findViewById(R.id.compose_progress);
+        smsCounter = new SmsCounter();
         init();
     }
 
@@ -80,6 +85,9 @@ public class ComposeMessageView extends LinearLayout implements View.OnClickList
     @Override
     public void onTextChanged(CharSequence s, int start, int before, int count) {
         sendButton.setEnabled(!TextUtils.isEmpty(s));
+        smsCounter.setText(s);
+        progress.setTotal(smsCounter.getMessageLength());
+        progress.setProgress(textEntryField.getText().length());
     }
 
     @Override
