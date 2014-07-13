@@ -52,22 +52,6 @@ public class SinglePaneViewController implements ViewController {
     }
 
     @Override
-    public void hideNewMessageButton() {
-        newMessageButton.animate()
-                .translationYBy(-newMessageButton.getMeasuredHeight())
-                .setDuration(150)
-                .start();
-    }
-
-    @Override
-    public void showNewMessageButton() {
-        newMessageButton.animate()
-                .translationYBy(newMessageButton.getMeasuredHeight())
-                .setDuration(150)
-                .start();
-    }
-
-    @Override
     public void disableNewMessageButton() {
         newMessageButton.setVisibility(View.GONE);
     }
