@@ -1,10 +1,13 @@
 package com.amlcurran.messages.ui;
 
+import android.animation.ObjectAnimator;
+import android.animation.ValueAnimator;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.util.AttributeSet;
 import android.view.View;
+import android.view.animation.DecelerateInterpolator;
 
 import com.amlcurran.messages.R;
 
@@ -20,13 +23,29 @@ public class BlockProgressBar extends View {
     }
 
     public void setProgress(int progress) {
-        this.state.progress = progress;
-        invalidate();
+        ValueAnimator animator = ObjectAnimator.ofFloat(state, "progress", progress);
+        animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator animation) {
+                invalidate();
+            }
+        });
+        animator.setDuration(150);
+        animator.setInterpolator(new DecelerateInterpolator(2));
+        animator.start();
     }
 
     public void setTotal(int total) {
-        this.state.total = total;
-        invalidate();
+        ValueAnimator animator = ObjectAnimator.ofFloat(state, "total", total);
+        animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator animation) {
+                invalidate();
+            }
+        });
+        animator.setDuration(150);
+        animator.setInterpolator(new DecelerateInterpolator(2));
+        animator.start();
     }
 
     @Override
@@ -35,14 +54,36 @@ public class BlockProgressBar extends View {
         if (isInEditMode()) {
             completedFraction = 0.6f;
         } else {
-            completedFraction = state.progress / (float) state.total;
+            completedFraction = state.progress / state.total;
         }
         int completedPixels = (int) (completedFraction * getWidth());
         canvas.drawRect(0, 0, completedPixels, getHeight(), progressPaint);
     }
 
     private class State {
-        public int progress;
-        public int total;
+        public float progress;
+        public float total;
+
+        public void setProgress(float progress) {
+            this.progress = progress;
+        }
+
+        public void setTotal(float total) {
+            this.total = total;
+        }
+
+        public float getProgress() {
+
+            return progress;
+        }
+
+        public float getTotal() {
+            return total;
+        }
     }
+
+    private class RenderState {
+
+    }
+
 }

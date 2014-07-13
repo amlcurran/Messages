@@ -28,6 +28,7 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.amlcurran.messages.MessagesLog;
 import com.amlcurran.messages.telephony.DefaultAppChecker;
 import com.amlcurran.messages.R;
 import com.amlcurran.messages.telephony.SmsCounter;
@@ -86,8 +87,10 @@ public class ComposeMessageView extends LinearLayout implements View.OnClickList
     public void onTextChanged(CharSequence s, int start, int before, int count) {
         sendButton.setEnabled(!TextUtils.isEmpty(s));
         smsCounter.setText(s);
-        progress.setTotal(smsCounter.getMessageLength());
-        progress.setProgress(textEntryField.getText().length());
+        SmsCounter.SmsCount smsDeets = smsCounter.getSmsDeets(s);
+        MessagesLog.d(this, smsDeets.toString());
+        progress.setTotal(smsDeets.messageLength);
+        progress.setProgress(smsDeets.usedCharacters);
     }
 
     @Override
