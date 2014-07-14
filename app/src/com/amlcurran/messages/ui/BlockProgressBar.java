@@ -1,6 +1,5 @@
 package com.amlcurran.messages.ui;
 
-import android.animation.Animator;
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.content.Context;
@@ -8,21 +7,21 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.util.AttributeSet;
 import android.view.View;
-import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.DecelerateInterpolator;
 
 import com.amlcurran.messages.R;
 
-public class BlockProgressBar extends View {
+public class BlockProgressBar extends View implements AnimatorAssistant.MessageSentAnimationEvents {
 
-    private final State state = new State();
+    final State state = new State();
     private final Paint progressPaint;
-    private ValueAnimator fadeOutAnimator;
+    private final AnimatorAssistant animatorAssistant;
 
     public BlockProgressBar(Context context, AttributeSet attrs) {
         super(context, attrs);
         progressPaint = new Paint();
         progressPaint.setColor(getResources().getColor(R.color.theme_colour));
+        animatorAssistant = new AnimatorAssistant();
     }
 
     public void setProgress(int progress) {
@@ -66,72 +65,31 @@ public class BlockProgressBar extends View {
     }
 
     public void animateMessageSent() {
-        fadeOutAnimator = ObjectAnimator.ofFloat(state, "progress", state.total);
-        fadeOutAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-            @Override
-            public void onAnimationUpdate(ValueAnimator animation) {
-                invalidate();
-            }
-        });
-        fadeOutAnimator.addListener(new Animator.AnimatorListener() {
-            @Override
-            public void onAnimationStart(Animator animation) {
-
-            }
-
-            @Override
-            public void onAnimationEnd(Animator animation) {
-                fadeOut();
-            }
-
-            @Override
-            public void onAnimationCancel(Animator animation) {
-
-            }
-
-            @Override
-            public void onAnimationRepeat(Animator animation) {
-
-            }
-        });
-        fadeOutAnimator.setDuration(150);
-        fadeOutAnimator.setInterpolator(new AccelerateDecelerateInterpolator());
-        fadeOutAnimator.start();
+        animatorAssistant.startMessageSentAnimator(this, this);
     }
 
-    private void fadeOut() {
-        fadeOutAnimator = ObjectAnimator.ofFloat(this, "alpha", 0f);
-        fadeOutAnimator.addListener(new Animator.AnimatorListener() {
-            @Override
-            public void onAnimationStart(Animator animation) {
-
-            }
-
-            @Override
-            public void onAnimationEnd(Animator animation) {
-                setProgressNoAnimation(0);
-                setAlpha(1f);
-                fadeOutAnimator = null;
-            }
-
-            @Override
-            public void onAnimationCancel(Animator animation) {
-                setProgressNoAnimation(0);
-                setAlpha(1f);
-                fadeOutAnimator = null;
-            }
-
-            @Override
-            public void onAnimationRepeat(Animator animation) {
-
-            }
-        });
-        fadeOutAnimator.setInterpolator(new AccelerateDecelerateInterpolator());
-        fadeOutAnimator.setStartDelay(150);
-        fadeOutAnimator.start();
+    @Override
+    public void complete() {
+        animationEnded();
     }
 
-    private class State {
+    @Override
+    public void cancelled() {
+        animationEnded();
+    }
+
+    @Override
+    public void finishedFilling() {
+
+    }
+
+    private void animationEnded() {
+        setProgressNoAnimation(0);
+        setAlpha(1f);
+    }
+
+    class State {
+
         public float progress;
         public float total;
 
@@ -151,10 +109,6 @@ public class BlockProgressBar extends View {
         public float getTotal() {
             return total;
         }
-    }
-
-    private class RenderState {
-
     }
 
 }
