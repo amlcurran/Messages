@@ -89,8 +89,12 @@ public abstract class BaseViewController implements ViewController, View.OnClick
         newMessageButton.animate()
                 .translationYBy(-newMessageButton.getMeasuredHeight())
                 .setInterpolator(new DecelerateInterpolator(2))
-                .setDuration(150)
+                .setDuration(showMessageButtonDuration())
                 .start();
+    }
+
+    protected int showMessageButtonDuration() {
+        return 150;
     }
 
     public void disableNewMessageButton() {

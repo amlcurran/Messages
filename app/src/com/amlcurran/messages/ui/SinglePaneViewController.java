@@ -45,6 +45,11 @@ public class SinglePaneViewController extends BaseViewController {
     }
 
     @Override
+    protected int showMessageButtonDuration() {
+        return 300;
+    }
+
+    @Override
     public boolean shouldPlaceOnBackStack() {
         return true;
     }
