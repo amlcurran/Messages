@@ -34,14 +34,14 @@ public class MasterDetailFragmentController implements FragmentController {
     private final Callback callback;
     private ViewController viewController;
 
-    public MasterDetailFragmentController(Activity activity, Callback callback, ViewController viewController) {
+    public MasterDetailFragmentController(final Activity activity, final Callback callback, final ViewController viewController) {
         this.activity = activity;
         this.callback = callback;
         this.viewController = viewController;
     }
 
     @Override
-    public void loadMessagesListFragment() {
+    public void loadConversationListFragment() {
         if (doesNotHaveMessagesList()) {
             activity.getFragmentManager().beginTransaction()
                     .add(viewController.getMasterFrameId(), new ConversationListFragment())

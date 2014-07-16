@@ -16,17 +16,6 @@
 
 package com.amlcurran.messages.ui;
 
-import android.view.MenuItem;
-
 public interface OnOptionsItemSelectedListener {
-    public static final OnOptionsItemSelectedListener NONE = new OnOptionsItemSelectedListener() {
 
-        @Override
-        public boolean onOptionsItemSelected(MenuItem menuItem) {
-            return false;
-        }
-
-    };
-
-    boolean onOptionsItemSelected(MenuItem menuItem);
 }

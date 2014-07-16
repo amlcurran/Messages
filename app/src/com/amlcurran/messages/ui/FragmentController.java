@@ -21,7 +21,7 @@ import android.view.MenuItem;
 import android.view.View;
 
 public interface FragmentController {
-    void loadMessagesListFragment();
+    void loadConversationListFragment();
 
     void replaceFragment(Fragment fragment, boolean addToStack);
 

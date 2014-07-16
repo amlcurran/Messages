@@ -1,18 +1,13 @@
 package com.amlcurran.messages.ui;
 
 import android.app.Activity;
-import android.view.View;
 
-import com.amlcurran.messages.MessagesActivity;
 import com.amlcurran.messages.R;
 
-public class SinglePaneViewController implements ViewController {
+public class SinglePaneViewController extends BaseViewController {
 
-    private View disabledBanner;
-    private View newMessageButton;
-
-    public SinglePaneViewController(MessagesActivity messagesActivity) {
-
+    public SinglePaneViewController(Callback callback) {
+        super(callback);
     }
 
     @Override
@@ -21,44 +16,22 @@ public class SinglePaneViewController implements ViewController {
     }
 
     @Override
-    public void hideDisabledBanner() {
-        disabledBanner.setVisibility(View.GONE);
-    }
-
-    @Override
-    public void showDisabledBanner() {
-        disabledBanner.setVisibility(View.VISIBLE);
-    }
-
-    @Override
     public void hideSecondary() {
-
+        showNewMessageButton();
     }
 
     @Override
     public void showSecondary() {
-
+        hideNewMessageButton();
     }
 
     @Override
-    public void setContentView(Activity activity) {
-        activity.setContentView(R.layout.activity_messages);
-        initView(activity);
-    }
-
-    private void initView(Activity activity) {
-        disabledBanner = activity.findViewById(R.id.disabled_banner);
-        newMessageButton = activity.findViewById(R.id.button_new_message);
+    protected int getLayout() {
+        return R.layout.activity_messages;
     }
 
     @Override
-    public void disableNewMessageButton() {
-        newMessageButton.setVisibility(View.GONE);
-    }
-
-    @Override
-    public void enableNewMessageButton() {
-        newMessageButton.setVisibility(View.VISIBLE);
+    protected void initView(Activity activity) {
     }
 
     @Override
@@ -69,6 +42,11 @@ public class SinglePaneViewController implements ViewController {
     @Override
     public int getSecondaryFrameId() {
         return R.id.container;
+    }
+
+    @Override
+    protected int showMessageButtonDuration() {
+        return 300;
     }
 
     @Override
