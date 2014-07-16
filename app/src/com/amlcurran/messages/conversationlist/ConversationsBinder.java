@@ -57,7 +57,7 @@ public class ConversationsBinder extends SimpleBinder<Conversation> {
     public View bindView(View convertView, Conversation item, int position) {
         TextView textView1 = getTextView(convertView, android.R.id.text1);
         TextView textView2 = getTextView(convertView, android.R.id.text2);
-        final ImageView imageView = (ImageView) convertView.findViewById(R.id.image);
+        ImageView imageView = (ImageView) convertView.findViewById(R.id.image);
 
         if (isNotSameItem(convertView, item)) {
             loadContactPhoto(item, imageView);

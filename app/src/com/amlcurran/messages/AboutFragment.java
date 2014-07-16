@@ -36,7 +36,7 @@ public class AboutFragment extends Fragment {
         super.onActivityCreated(savedInstanceState);
         versionText.setText(createVersionString());
 
-        points.add(new Point("Github Project", "View the app's open source project"));
+        points.add(new Point("Github Project", "View the app's open source project", "https://github.com/amlcurran/Messages"));
         points.add(new Point("Calligraphy", "Used under Apache 2.0 License", "https://github.com/chrisjenx/Calligraphy"));
         points.add(new Point("SourceBinder", "Used under Apache 2.0 License", "https://github.com/amlcurran/SourceBinder"));
 
@@ -66,12 +66,6 @@ public class AboutFragment extends Fragment {
         private final String title;
         private final String secondary;
         private final String url;
-
-        public Point(String title, String secondary) {
-            this.title = title;
-            this.secondary = secondary;
-            this.url = secondary;
-        }
 
         public Point(String title, String secondary, String url) {
             this.title = title;
