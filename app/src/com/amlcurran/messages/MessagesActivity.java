@@ -50,7 +50,7 @@ import com.amlcurran.messages.reporting.StatReporter;
 import com.amlcurran.messages.telephony.DefaultAppChecker;
 import com.amlcurran.messages.threads.ThreadFragment;
 import com.amlcurran.messages.ui.FragmentController;
-import com.amlcurran.messages.ui.MasterDetailFragmentController;
+import com.amlcurran.messages.ui.SinglePaneViewController;
 import com.amlcurran.messages.ui.SlidingPaneViewController;
 import com.amlcurran.messages.ui.ViewController;
 
@@ -81,8 +81,8 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        viewController      = new SlidingPaneViewController(this);
-        fragmentController  = new MasterDetailFragmentController(this, this, viewController);
+        viewController      = new SinglePaneViewController(this);
+        fragmentController  = new SinglePaneFragmentController(getFragmentManager(), viewController, this, this);
         toastInUiNotifier   = new InUiToastNotifier(this);
         blockingInUiNotifier= new BlockingInUiDialogNotifier(getFragmentManager());
         activityController  = new ActivityController(this, blockingInUiNotifier);
@@ -159,33 +159,33 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
     }
 
     private void displayMmsError() {
-        fragmentController.loadMessagesListFragment();
+        fragmentController.loadConversationListFragment();
         fragmentController.replaceFragment(new MmsErrorFragment(), false);
     }
 
     private void viewConversation(String threadId, String address) {
-        fragmentController.loadMessagesListFragment();
+        fragmentController.loadConversationListFragment();
         fragmentController.replaceFragment(ThreadFragment.create(threadId, address), false);
     }
 
     private void anonymousSendWithMessage(String message) {
-        fragmentController.loadMessagesListFragment();
+        fragmentController.loadConversationListFragment();
         fragmentController.replaceFragment(ComposeNewFragment.withMessage(message), false);
     }
 
     private void sendTo(String sendAddress) {
-        fragmentController.loadMessagesListFragment();
+        fragmentController.loadConversationListFragment();
         fragmentController.replaceFragment(ComposeNewFragment.withAddress(sendAddress), false);
     }
 
     private void anonymousSend() {
-        fragmentController.loadMessagesListFragment();
+        fragmentController.loadConversationListFragment();
         fragmentController.replaceFragment(new ComposeNewFragment(), false);
     }
 
     private void firstStart() {
         fragmentController.loadEmptyFragment();
-        fragmentController.loadMessagesListFragment();
+        fragmentController.loadConversationListFragment();
     }
 
     @Override
