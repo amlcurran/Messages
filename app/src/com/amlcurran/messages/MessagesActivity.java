@@ -18,6 +18,7 @@ package com.amlcurran.messages;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -96,12 +97,12 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
         menuController = new MenuController(this, this);
         appChecker = new DefaultAppChecker(this, this);
 
-        handleLaunch(savedInstanceState, preferencesStore);
+        handleLaunch(savedInstanceState, getIntent(), preferencesStore);
     }
 
-    private void handleLaunch(Bundle savedInstanceState, PreferenceStore preferencesStore) {
-        Launch launch = launchHelper.getLaunchType(savedInstanceState, getIntent(), preferencesStore);
-        IntentDataExtractor intentDataExtractor = new IntentDataExtractor(getIntent());
+    private void handleLaunch(Bundle savedInstanceState, Intent intent, PreferenceStore preferencesStore) {
+        Launch launch = launchHelper.getLaunchType(savedInstanceState, intent, preferencesStore);
+        IntentDataExtractor intentDataExtractor = new IntentDataExtractor(intent);
 
         switch (launch) {
 
@@ -185,6 +186,11 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
     private void firstStart() {
         fragmentController.loadEmptyFragment();
         fragmentController.loadMessagesListFragment();
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        handleLaunch(null, intent, preferencesStore);
     }
 
     @Override
