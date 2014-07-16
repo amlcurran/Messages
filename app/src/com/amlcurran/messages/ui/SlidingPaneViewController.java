@@ -19,20 +19,16 @@ package com.amlcurran.messages.ui;
 import android.app.Activity;
 import android.support.v4.widget.SlidingPaneLayout;
 import android.view.View;
-import android.view.animation.DecelerateInterpolator;
 
 import com.amlcurran.messages.R;
 
-public class SlidingPaneViewController implements ViewController, View.OnClickListener {
+public class SlidingPaneViewController extends BaseViewController implements View.OnClickListener {
 
-    private final Callback callback;
-    private View disabledBanner;
     private SlidingPaneLayout slider;
-    private View newMessageButton;
     private boolean isSecondaryOpen = false;
 
     public SlidingPaneViewController(Callback callback) {
-        this.callback = callback;
+        super(callback);
     }
 
     @Override
@@ -42,16 +38,6 @@ public class SlidingPaneViewController implements ViewController, View.OnClickLi
             return true;
         }
         return false;
-    }
-
-    @Override
-    public void hideDisabledBanner() {
-        disabledBanner.setVisibility(View.GONE);
-    }
-
-    @Override
-    public void showDisabledBanner() {
-        disabledBanner.setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -65,14 +51,12 @@ public class SlidingPaneViewController implements ViewController, View.OnClickLi
     }
 
     @Override
-    public void setContentView(Activity activity) {
-        activity.setContentView(R.layout.activity_messages_sliding);
-        initView(activity);
+    protected int getLayout() {
+        return R.layout.activity_messages_sliding;
     }
 
-    private void initView(Activity activity) {
-        disabledBanner = activity.findViewById(R.id.disabled_banner);
-        disabledBanner.setOnClickListener(this);
+    @Override
+    protected void initView(Activity activity) {
         slider = (SlidingPaneLayout) activity.findViewById(R.id.sliding_pane);
         slider.setParallaxDistance((int) activity.getResources().getDimension(R.dimen.slider_parallax));
         slider.setShadowResource(R.drawable.slider_shadow);
@@ -100,44 +84,6 @@ public class SlidingPaneViewController implements ViewController, View.OnClickLi
                 }
             }
         });
-        newMessageButton = activity.findViewById(R.id.button_new_message);
-        newMessageButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                callback.newMessageButtonClicked();
-            }
-        });
-    }
-
-    @Override
-    public void onClick(View v) {
-        callback.defaultsBannerPressed();
-    }
-
-    private void hideNewMessageButton() {
-        newMessageButton.animate()
-                .translationYBy(newMessageButton.getMeasuredHeight())
-                .setInterpolator(new DecelerateInterpolator(2))
-                .setDuration(300)
-                .start();
-    }
-
-    private void showNewMessageButton() {
-        newMessageButton.animate()
-                .translationYBy(-newMessageButton.getMeasuredHeight())
-                .setInterpolator(new DecelerateInterpolator(2))
-                .setDuration(150)
-                .start();
-    }
-
-    @Override
-    public void disableNewMessageButton() {
-        newMessageButton.setVisibility(View.GONE);
-    }
-
-    @Override
-    public void enableNewMessageButton() {
-        newMessageButton.setVisibility(View.VISIBLE);
     }
 
     @Override

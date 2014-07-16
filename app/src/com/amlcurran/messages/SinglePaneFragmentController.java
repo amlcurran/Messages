@@ -51,6 +51,10 @@ public class SinglePaneFragmentController implements FragmentController {
             public void onBackStackChanged() {
                 Fragment currentFragment = activity.getFragmentManager().findFragmentById(viewController.getSecondaryFrameId());
                 handleCustomHeader(currentFragment, activity, callback);
+                // This is a hack to force the new messages button to show
+                if (currentFragment instanceof ConversationListFragment) {
+                    callback.insertedMaster();
+                }
             }
         });
     }

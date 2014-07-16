@@ -76,11 +76,6 @@ public class MenuController implements OnOptionsItemSelectedListener {
         activity.invalidateOptionsMenu();
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem menuItem) {
-        return activity.onOptionsItemSelected(menuItem);
-    }
-
     public static interface Callbacks {
         void showSettings();
 
