@@ -19,7 +19,7 @@ package com.amlcurran.messages.loaders;
 import android.content.ContentResolver;
 import android.database.Cursor;
 import android.net.Uri;
-import android.os.Build;
+import android.provider.ContactsContract;
 import android.provider.Telephony;
 
 import com.amlcurran.messages.core.conversationlist.ConversationListListener;
@@ -27,6 +27,8 @@ import com.amlcurran.messages.core.data.Contact;
 import com.amlcurran.messages.core.data.Conversation;
 import com.amlcurran.messages.core.data.Sort;
 import com.amlcurran.messages.data.ContactFactory;
+import com.amlcurran.messages.loaders.fudges.ConversationListHelper;
+import com.amlcurran.messages.loaders.fudges.ConversationListHelperFactory;
 import com.github.amlcurran.sourcebinder.CursorHelper;
 
 import java.util.ArrayList;
@@ -41,6 +43,7 @@ class ConversationListTask implements Callable<Object> {
     private final ConversationListListener loadListener;
     private final Sort sort;
     private final MessagesCache cache;
+    private final ConversationListHelper helper;
 
     ConversationListTask(ContentResolver contentResolver, String query, String[] args, ConversationListListener loadListener, Sort sort, MessagesCache cache) {
         this.contentResolver = contentResolver;
@@ -49,6 +52,7 @@ class ConversationListTask implements Callable<Object> {
         this.loadListener = loadListener;
         this.sort = sort;
         this.cache = cache;
+        helper = ConversationListHelperFactory.get();
     }
 
     public ConversationListTask(ContentResolver contentResolver, ConversationListListener loadListener, Sort sort, MessagesCache cache) {
@@ -58,23 +62,19 @@ class ConversationListTask implements Callable<Object> {
     @Override
     public Object call() throws Exception {
         final List<Conversation> conversations = new ArrayList<Conversation>();
-        Cursor conversationsList;
-        if (isSamsungDevice()) {
-            conversationsList = contentResolver.query(Telephony.Threads.CONTENT_URI.buildUpon().appendQueryParameter("simple", "true").build(), null, query, args, getSortString());
-        } else {
-            conversationsList = contentResolver.query(Telephony.Threads.CONTENT_URI, null, query, args, getSortString());
-        }
+
+        Cursor conversationsList = helper.queryConversationList(contentResolver, query, args, getSortString());
 
         while (conversationsList.moveToNext()) {
-            String address = CursorHelper.asString(conversationsList, Telephony.Sms.ADDRESS);
 
-            Contact contact = getContact(address);
+            String address = helper.getAddressFromRow(contentResolver, conversationsList);
+            Contact contact = getContact(contentResolver, address);
 
-            String body = CursorHelper.asString(conversationsList, Telephony.Sms.BODY);
+            String body = CursorHelper.asString(conversationsList, helper.getSnippetCursorKey());
             String s = CursorHelper.asString(conversationsList, Telephony.Sms.Inbox.READ);
             boolean isRead = s.toLowerCase().equals("1");
-            String threadId = CursorHelper.asString(conversationsList, Telephony.Sms.THREAD_ID);
-            Conversation conversation = new Conversation(address, body, threadId, isRead, contact);
+            String threadId = CursorHelper.asString(conversationsList, helper.getThreadIdCursorKey());
+            Conversation conversation = new Conversation(contact.getNumber(), body, threadId, isRead, contact);
 
             if (conversation.getThreadId() != null) {
                 conversations.add(conversation);
@@ -88,11 +88,7 @@ class ConversationListTask implements Callable<Object> {
         return null;
     }
 
-    private boolean isSamsungDevice() {
-        return Build.MANUFACTURER.toLowerCase().contains("samsung");
-    }
-
-    private Contact getContact(String address) {
+    private Contact getContact(ContentResolver contentResolver, String address) {
         Uri phoneLookupUri = createPhoneLookupUri(address);
         Cursor peopleCursor = contentResolver.query(phoneLookupUri, ContactFactory.VALID_PROJECTION, null, null, null);
 
@@ -106,6 +102,10 @@ class ConversationListTask implements Callable<Object> {
         return contact;
     }
 
+    private static Uri createPhoneLookupUri(String phoneRaw) {
+        return Uri.withAppendedPath(ContactsContract.CommonDataKinds.Phone.CONTENT_FILTER_URI, Uri.encode(phoneRaw));
+    }
+
     private String getSortString() {
         String sortOrder;
         if (sort == Sort.UNREAD) {
@@ -114,10 +114,6 @@ class ConversationListTask implements Callable<Object> {
             sortOrder = Telephony.Sms.DEFAULT_SORT_ORDER;
         }
         return sortOrder;
-    }
-
-    private static Uri createPhoneLookupUri(String phoneRaw) {
-        return ContactTask.createPhoneLookupUri(phoneRaw);
     }
 
 }
