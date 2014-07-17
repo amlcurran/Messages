@@ -59,7 +59,7 @@ def getVersionCode() {
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile 'com.android.support:support-v4:19.+'
+    compile 'com.android.support:support-v4:20.0.+'
     //compile 'com.github.amlcurran.about:library:0.1.0-SNAPSHOT'
     compile 'com.github.amlcurran.sourcebinder:library:1.0.0-SNAPSHOT'
     compile project(':core')

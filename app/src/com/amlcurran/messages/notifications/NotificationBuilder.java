@@ -17,13 +17,18 @@
 package com.amlcurran.messages.notifications;
 
 import android.app.Notification;
+import android.app.PendingIntent;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
+import android.support.v4.app.NotificationCompat;
+import android.support.v4.app.RemoteInput;
 
 import com.amlcurran.messages.R;
 import com.amlcurran.messages.core.data.Conversation;
 import com.amlcurran.messages.data.InFlightSmsMessage;
 import com.amlcurran.messages.preferences.PreferenceStore;
+import com.amlcurran.messages.telephony.SmsSender;
 
 import java.util.Calendar;
 import java.util.Collections;
@@ -63,8 +68,8 @@ public class NotificationBuilder {
                 .build();
     }
 
-    private Notification.Style buildInboxStyle(List<Conversation> conversations) {
-        Notification.InboxStyle inboxStyle = new Notification.InboxStyle();
+    private NotificationCompat.Style buildInboxStyle(List<Conversation> conversations) {
+        NotificationCompat.InboxStyle inboxStyle = new NotificationCompat.InboxStyle();
         for (Conversation conversation : conversations) {
             inboxStyle.addLine(styledTextFactory.getInboxLine(conversation));
         }
@@ -74,6 +79,7 @@ public class NotificationBuilder {
     private Notification buildSingleUnreadNotification(Conversation conversation, Bitmap photo, boolean fromNewMessage) {
         long timestampMillis = Calendar.getInstance().getTimeInMillis();
         CharSequence tickerText = fromNewMessage ? styledTextFactory.buildTicker(conversation) : styledTextFactory.buildListSummary(context, Collections.singletonList(conversation));
+        NotificationCompat.Action voiceInputAction = buildReplyAction(conversation);
         return getDefaultBuilder(fromNewMessage)
                 .setTicker(tickerText)
                 .setContentTitle(conversation.getContact().getDisplayName())
@@ -82,21 +88,38 @@ public class NotificationBuilder {
                 .setContentText(conversation.getBody())
                 .setStyle(buildBigStyle(conversation))
                 .setWhen(timestampMillis)
+                .extend(new NotificationCompat.WearableExtender().addAction(voiceInputAction))
                 .build();
     }
 
-    private static Notification.Style buildBigStyle(Conversation conversation) {
-        return new Notification.BigTextStyle()
+    private NotificationCompat.Action buildReplyAction(Conversation conversation) {
+        RemoteInput remoteInput = new RemoteInput.Builder(SmsSender.EXTRA_VOICE_REPLY)
+                .setLabel(context.getString(R.string.reply))
+                .build();
+
+        Intent replyIntent = new Intent(context, SmsSender.class);
+        replyIntent.setAction(SmsSender.ACTION_SEND_REQUEST);
+        replyIntent.putExtra(SmsSender.FROM_WEAR, true);
+        replyIntent.putExtra(SmsSender.EXTRA_NUMBER, conversation.getAddress());
+        PendingIntent replyPendingIntent = PendingIntent.getService(context, 0, replyIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        return new NotificationCompat.Action.Builder(R.drawable.ic_wear_reply,
+                 context.getString(R.string.reply), replyPendingIntent)
+                .addRemoteInput(remoteInput)
+                .build();
+    }
+
+    private static NotificationCompat.Style buildBigStyle(Conversation conversation) {
+        return new NotificationCompat.BigTextStyle()
                 .bigText(conversation.getBody())
                 .setBigContentTitle(conversation.getContact().getDisplayName());
     }
 
-    private Notification.Builder getDefaultBuilder() {
+    private NotificationCompat.Builder getDefaultBuilder() {
         return getDefaultBuilder(true);
     }
 
-    private Notification.Builder getDefaultBuilder(boolean shouldSoundAndVibrate) {
-        Notification.Builder builder = new Notification.Builder(this.context)
+    private NotificationCompat.Builder getDefaultBuilder(boolean shouldSoundAndVibrate) {
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this.context)
                 .setContentIntent(notificationIntentFactory.createLaunchActivityIntent())
                 .setAutoCancel(true)
                 .setSmallIcon(R.drawable.ic_notify_sms)

@@ -21,6 +21,8 @@ import android.app.IntentService;
 import android.app.PendingIntent;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Bundle;
+import android.support.v4.app.RemoteInput;
 import android.telephony.SmsManager;
 
 import com.amlcurran.messages.MessagesLog;
@@ -42,6 +44,9 @@ public class SmsSender extends IntentService {
     public static final int IS_FROM_FAILURE = 1;
     private static final String EXTRA_OUTBOX_URI = "outbox_uri";
     public static final String EXTRA_FROM_FAILURE = "from_failure";
+    public static final String FROM_WEAR = "wear";
+    public static final String EXTRA_NUMBER = "number";
+    public static final String EXTRA_VOICE_REPLY = "voice_reply";
 
     private final SmsManager smsManager;
     private final SmsDatabaseWriter smsDatabaseWriter;
@@ -69,7 +74,12 @@ public class SmsSender extends IntentService {
                 new Notifier(this).clearFailureToSendNotification();
             }
 
-            InFlightSmsMessage message = intent.getParcelableExtra(EXTRA_MESSAGE);
+            InFlightSmsMessage message;
+            if (isFromWear(intent)) {
+                message = extractInFlightFromWear(intent);
+            } else {
+                message = intent.getParcelableExtra(EXTRA_MESSAGE);
+            }
             sendMessage(message);
 
         } else if (isSentNotification(intent)) {
@@ -83,6 +93,24 @@ public class SmsSender extends IntentService {
                 notifyFailureToSend(message, result);
             }
         }
+    }
+
+    private InFlightSmsMessage extractInFlightFromWear(Intent intent) {
+        String address = intent.getStringExtra(EXTRA_NUMBER);
+        CharSequence input = getMessageText(intent);
+        return new InFlightSmsMessage(new PhoneNumber(address), String.valueOf(input), System.currentTimeMillis());
+    }
+
+    private CharSequence getMessageText(Intent intent) {
+        Bundle remoteInput = RemoteInput.getResultsFromIntent(intent);
+        if (remoteInput != null) {
+            return remoteInput.getCharSequence(EXTRA_VOICE_REPLY);
+        }
+        return null;
+    }
+
+    private boolean isFromWear(Intent intent) {
+        return intent.getBooleanExtra(FROM_WEAR, false);
     }
 
     private boolean isFromFailure(Intent intent) {
