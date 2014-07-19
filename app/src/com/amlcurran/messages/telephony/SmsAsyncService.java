@@ -22,7 +22,6 @@ import android.content.Intent;
 import android.net.Uri;
 import android.util.Log;
 
-import com.amlcurran.messages.SingletonManager;
 import com.amlcurran.messages.data.InFlightSmsMessage;
 import com.amlcurran.messages.events.BroadcastEventBus;
 
@@ -80,7 +79,7 @@ public class SmsAsyncService extends IntentService {
             @Override
             public void written(Uri inserted) {
                 new BroadcastEventBus(SmsAsyncService.this).postMessageReceived(smsMessage.getPhoneNumber());
-                SingletonManager.getNotifier(SmsAsyncService.this).updateUnreadNotification(true);
+                //SingletonManager.getNotifier(SmsAsyncService.this).updateUnreadNotification(true);
             }
 
             @Override

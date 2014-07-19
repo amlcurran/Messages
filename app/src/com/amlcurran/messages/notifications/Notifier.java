@@ -80,7 +80,7 @@ public class Notifier {
                 }
 
                 private void postUnreadNotification(List<Conversation> conversations, Bitmap photo) {
-                    Notification notification = notificationBuilder.buildUnreadNotification(conversations, photo, fromNewMessage);
+                    Notification notification = notificationBuilder.buildUnreadNotification(conversations, photo, true);
                     notificationManager.notify(NOTIFICATION_UNREAD_MESSAGES, notification);
                 }
             });
