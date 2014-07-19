@@ -22,6 +22,7 @@ import android.view.MenuItem;
 import android.widget.AbsListView;
 
 import com.amlcurran.messages.R;
+import com.amlcurran.messages.core.data.Contact;
 import com.amlcurran.messages.core.data.Conversation;
 import com.espian.utils.ui.MenuFinder;
 import com.github.amlcurran.sourcebinder.Source;
@@ -49,8 +50,13 @@ public class ConversationModalMarshall implements AbsListView.MultiChoiceModeLis
 
     @Override
     public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
-        MenuFinder.findItemById(menu, R.id.modal_contact).setVisible(onlyOneSelected());
+        MenuFinder.findItemById(menu, R.id.modal_contact).setVisible(onlyOneSelected() && selectedSavedContact());
+        MenuFinder.findItemById(menu, R.id.modal_contact_add).setVisible(onlyOneSelected() && !selectedSavedContact());
         return true;
+    }
+
+    private boolean selectedSavedContact() {
+        return selectedConversations.get(0).getContact().isSaved();
     }
 
     private boolean onlyOneSelected() {
@@ -73,6 +79,11 @@ public class ConversationModalMarshall implements AbsListView.MultiChoiceModeLis
 
             case R.id.modal_mark_unread:
                 callback.markAsUnread(copyConversations());
+                mode.finish();
+                return true;
+
+            case R.id.modal_contact_add:
+                callback.addContact(selectedConversations.get(0).getContact());
                 mode.finish();
                 return true;
 
@@ -102,8 +113,12 @@ public class ConversationModalMarshall implements AbsListView.MultiChoiceModeLis
 
     public interface Callback {
         void viewContact(String address);
+
         void deleteThreads(List<Conversation> conversation);
+
         void markAsUnread(List<Conversation> threadId);
+
+        void addContact(Contact contact);
     }
 
 }

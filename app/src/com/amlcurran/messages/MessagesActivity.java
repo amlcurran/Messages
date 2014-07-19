@@ -263,6 +263,12 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
     }
 
     @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        activityController.activityResult(requestCode, resultCode, data);
+        super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    @Override
     public void onConversationSelected(Conversation conversation) {
         String address = conversation.getAddress();
         final ThreadFragment fragment = ThreadFragment.create(conversation.getThreadId(), address);
@@ -366,6 +372,11 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
     public void markAsUnread(List<Conversation> threadId) {
         statReporter.sendUiEvent("mark_thread_unread");
         messagesLoader.markThreadAsUnread(threadId, this);
+    }
+
+    @Override
+    public void addContact(Contact contact) {
+        activityController.addContact(contact.getNumber());
     }
 
     @Override

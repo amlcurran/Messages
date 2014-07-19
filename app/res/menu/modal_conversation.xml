@@ -23,6 +23,11 @@
         android:showAsAction="ifRoom"
         android:id="@+id/modal_contact" />
     <item
+        android:icon="@drawable/ic_action_add_person"
+        android:title="@string/add_contact"
+        android:showAsAction="ifRoom"
+        android:id="@+id/modal_contact_add" />
+    <item
         android:icon="@drawable/ic_action_mark_unread"
         android:title="@string/mark_as_unread"
         android:showAsAction="ifRoom"

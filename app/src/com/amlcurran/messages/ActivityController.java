@@ -19,7 +19,9 @@ package com.amlcurran.messages;
 import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
+import android.provider.ContactsContract;
 import android.provider.Telephony;
+import android.telephony.PhoneNumberUtils;
 
 import com.amlcurran.messages.data.InFlightSmsMessage;
 import com.amlcurran.messages.data.PhoneNumber;
@@ -29,6 +31,7 @@ import com.amlcurran.messages.telephony.SmsSender;
 
 public class ActivityController {
 
+    private static final int SAVE_CONTACT = 20202;
     private final Activity activity;
     private BlockingInUiNotifier blockingInUiNotifier;
 
@@ -85,5 +88,12 @@ public class ActivityController {
         intent.setAction(SmsSender.ACTION_SEND_REQUEST);
         intent.putExtra(SmsSender.EXTRA_MESSAGE, message);
         activity.startService(intent);
+    }
+
+    public void addContact(String number) {
+        Intent intent = new Intent(Intent.ACTION_INSERT);
+        intent.setType(ContactsContract.Contacts.CONTENT_TYPE);
+        intent.putExtra(ContactsContract.Intents.Insert.PHONE, PhoneNumberUtils.stripSeparators(number));
+        activity.startActivityForResult(intent, SAVE_CONTACT);
     }
 }

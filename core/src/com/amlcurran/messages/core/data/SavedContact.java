@@ -64,6 +64,11 @@ public class SavedContact implements Contact {
     }
 
     @Override
+    public boolean isSaved() {
+        return true;
+    }
+
+    @Override
     public boolean equals(Object obj) {
         return obj instanceof SavedContact && contactId == ((SavedContact) obj).contactId && contactId != -1;
     }

@@ -48,4 +48,9 @@ public class RawContact implements Contact {
     public String getNumber() {
         return address;
     }
+
+    @Override
+    public boolean isSaved() {
+        return false;
+    }
 }
