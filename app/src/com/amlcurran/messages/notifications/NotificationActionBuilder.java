@@ -19,11 +19,14 @@ package com.amlcurran.messages.notifications;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.RemoteInput;
 
 import com.amlcurran.messages.R;
+import com.amlcurran.messages.core.data.Contact;
 import com.amlcurran.messages.core.data.Conversation;
+import com.amlcurran.messages.data.PhoneNumber;
 import com.amlcurran.messages.loaders.ExecutingIntentService;
 import com.amlcurran.messages.telephony.SmsSender;
 
@@ -63,5 +66,18 @@ class NotificationActionBuilder {
         PendingIntent markReadIntent = ExecutingIntentService.markReadPendingIntent(context, conversations);
         String label = context.getString(R.string.mark_all_as_read);
         return new NotificationCompat.Action.Builder(R.drawable.ic_action_read, label, markReadIntent).build();
+    }
+
+    public NotificationCompat.Action call(Contact contact) {
+        PendingIntent callIntent = callPendingIntent(new PhoneNumber(contact.getNumber()));
+        String label = context.getString(R.string.call);
+        return new NotificationCompat.Action.Builder(R.drawable.ic_action_ring_volume, label, callIntent).build();
+    }
+
+    private PendingIntent callPendingIntent(PhoneNumber number) {
+        Uri telUri = Uri.parse("tel:" + number.toString());
+        Intent intent = new Intent(Intent.ACTION_CALL);
+        intent.setData(telUri);
+        return PendingIntent.getActivity(context, 12121, intent, PendingIntent.FLAG_UPDATE_CURRENT);
     }
 }

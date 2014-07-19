@@ -81,9 +81,11 @@ public class NotificationBuilder {
         CharSequence tickerText = fromNewMessage ? styledTextFactory.buildTicker(conversation) : styledTextFactory.buildListSummary(context, Collections.singletonList(conversation));
         NotificationCompat.Action voiceInputAction = actionBuilder.buildReplyAction(conversation);
         NotificationCompat.Action singleUnreadAction = actionBuilder.buildSingleMarkReadAction(conversation);
+        NotificationCompat.Action callAction = actionBuilder.call(conversation.getContact());
         NotificationCompat.Extender extender = new NotificationCompat.WearableExtender().addAction(voiceInputAction);
         return getDefaultBuilder(fromNewMessage)
                 .addAction(singleUnreadAction)
+                .addAction(callAction)
                 .setTicker(tickerText)
                 .setContentTitle(conversation.getContact().getDisplayName())
                 .setLargeIcon(photo)
