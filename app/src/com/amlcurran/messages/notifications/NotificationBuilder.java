@@ -51,7 +51,8 @@ public class NotificationBuilder {
 
     public List<Notification> buildUnreadNotification(List<Conversation> conversations, Bitmap photo, boolean fromNewMessage) {
         if (conversations.size() == 1) {
-            return Collections.singletonList(buildSingleUnreadNotification(conversations.get(0), photo, fromNewMessage));
+            NotificationCompat.Builder builder = buildSingleUnreadNotification(conversations.get(0), photo, fromNewMessage);
+            return Collections.singletonList(builder.build());
         } else {
             return buildMultipleUnreadNotification(conversations, fromNewMessage);
         }
@@ -61,7 +62,9 @@ public class NotificationBuilder {
         List<Notification> notifications = new ArrayList<Notification>();
         notifications.add(buildMultipleSummaryNotification(conversations, fromNewMessage));
         for (Conversation conversation : conversations) {
-            notifications.add(buildSingleUnreadNotification(conversation, null, fromNewMessage));
+            NotificationCompat.Builder builder = buildSingleUnreadNotification(conversation, null, fromNewMessage);
+            builder.setGroup(UNREAD_MESSAGES);
+            notifications.add(builder.build());
         }
         return notifications;
     }
@@ -90,7 +93,7 @@ public class NotificationBuilder {
         return inboxStyle;
     }
 
-    private Notification buildSingleUnreadNotification(Conversation conversation, Bitmap photo, boolean fromNewMessage) {
+    private NotificationCompat.Builder buildSingleUnreadNotification(Conversation conversation, Bitmap photo, boolean fromNewMessage) {
         long timestampMillis = Calendar.getInstance().getTimeInMillis();
         CharSequence tickerText = fromNewMessage ? styledTextFactory.buildTicker(conversation) : styledTextFactory.buildListSummary(context, Collections.singletonList(conversation));
         NotificationCompat.Action voiceInputAction = actionBuilder.buildReplyAction(conversation);
@@ -110,15 +113,13 @@ public class NotificationBuilder {
                 .addAction(singleUnreadAction)
                 .addAction(callAction)
                 .setTicker(tickerText)
-                .setGroup(UNREAD_MESSAGES)
                 .setContentTitle(conversation.getContact().getDisplayName())
                 .setLargeIcon(photo)
                 .setContentIntent(notificationIntentFactory.createViewConversationIntent(conversation))
                 .setContentText(conversation.getBody())
                 .setStyle(buildBigStyle(conversation))
                 .setWhen(timestampMillis)
-                .extend(extender)
-                .build();
+                .extend(extender);
     }
 
     private static NotificationCompat.Style buildBigStyle(Conversation conversation) {
