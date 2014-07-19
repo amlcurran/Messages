@@ -24,6 +24,7 @@ import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.RemoteInput;
 
 import com.amlcurran.messages.R;
+import com.amlcurran.messages.analysis.Link;
 import com.amlcurran.messages.core.data.Contact;
 import com.amlcurran.messages.core.data.Conversation;
 import com.amlcurran.messages.data.PhoneNumber;
@@ -79,5 +80,13 @@ class NotificationActionBuilder {
         Intent intent = new Intent(Intent.ACTION_CALL);
         intent.setData(telUri);
         return PendingIntent.getActivity(context, 12121, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+    }
+
+    public NotificationCompat.Action buildLinkAction(Link link) {
+        Intent intent = new Intent(Intent.ACTION_VIEW);
+        intent.setData(link.get());
+        PendingIntent linkIntent = PendingIntent.getActivity(context, 12123, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        String label = context.getString(R.string.open_link);
+        return new NotificationCompat.Action.Builder(R.drawable.ic_action_web_site, label, linkIntent).build();
     }
 }

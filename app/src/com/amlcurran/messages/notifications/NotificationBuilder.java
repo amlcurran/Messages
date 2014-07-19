@@ -22,6 +22,7 @@ import android.graphics.Bitmap;
 import android.support.v4.app.NotificationCompat;
 
 import com.amlcurran.messages.R;
+import com.amlcurran.messages.analysis.MessageAnalyser;
 import com.amlcurran.messages.core.data.Conversation;
 import com.amlcurran.messages.data.InFlightSmsMessage;
 import com.amlcurran.messages.preferences.PreferenceStore;
@@ -82,7 +83,16 @@ public class NotificationBuilder {
         NotificationCompat.Action singleUnreadAction = actionBuilder.buildSingleMarkReadAction(conversation);
         NotificationCompat.Action callAction = actionBuilder.call(conversation.getContact());
         NotificationCompat.Extender extender = new NotificationCompat.WearableExtender().addAction(voiceInputAction);
-        return getDefaultBuilder(fromNewMessage)
+        NotificationCompat.Builder builder = getDefaultBuilder(fromNewMessage);
+
+        // use some cheeky message analysis
+        MessageAnalyser analyser = new MessageAnalyser(conversation.getBody());
+        if (analyser.hasLink()) {
+            NotificationCompat.Action linkAction = actionBuilder.buildLinkAction(analyser.getLink());
+            builder.addAction(linkAction);
+        }
+
+        return builder
                 .addAction(singleUnreadAction)
                 .addAction(callAction)
                 .setTicker(tickerText)
