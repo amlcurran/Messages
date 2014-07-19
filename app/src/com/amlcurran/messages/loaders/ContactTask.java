@@ -51,6 +51,7 @@ class ContactTask implements Callable<Object> {
         } else {
             onContactQueryListener.contactLoaded(new RawContact(address));
         }
+        result.close();
         return null;
     }
 }
