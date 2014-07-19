@@ -19,6 +19,7 @@ package com.amlcurran.messages.loaders;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.os.Handler;
+import android.util.Log;
 
 import com.amlcurran.messages.SingletonManager;
 import com.amlcurran.messages.core.loaders.ContactListListener;
@@ -57,6 +58,7 @@ public class ExecutorMessagesLoader implements MessagesLoader {
     }
 
     private void submit(final Callable task) {
+        Log.d("Submitted task", task.getClass().getSimpleName());
         executor.execute(new Runnable() {
             @Override
             public void run() {

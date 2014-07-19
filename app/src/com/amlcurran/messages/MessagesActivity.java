@@ -50,7 +50,7 @@ import com.amlcurran.messages.reporting.StatReporter;
 import com.amlcurran.messages.telephony.DefaultAppChecker;
 import com.amlcurran.messages.threads.ThreadFragment;
 import com.amlcurran.messages.ui.FragmentController;
-import com.amlcurran.messages.ui.SinglePaneViewController;
+import com.amlcurran.messages.ui.MasterDetailFragmentController;
 import com.amlcurran.messages.ui.SlidingPaneViewController;
 import com.amlcurran.messages.ui.ViewController;
 
@@ -81,8 +81,8 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        viewController      = new SinglePaneViewController(this);
-        fragmentController  = new SinglePaneFragmentController(this, this, viewController);
+        viewController      = new SlidingPaneViewController(this);
+        fragmentController  = new MasterDetailFragmentController(this, this, viewController);
         toastInUiNotifier   = new InUiToastNotifier(this);
         blockingInUiNotifier= new BlockingInUiDialogNotifier(getFragmentManager());
         activityController  = new ActivityController(this, blockingInUiNotifier);
