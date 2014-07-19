@@ -24,6 +24,9 @@ import android.content.Intent;
 import com.amlcurran.messages.core.data.Conversation;
 import com.amlcurran.messages.events.BroadcastEventBus;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Service which will handle tasks asynchronously, if there's no callback requirement
  * (e.g. from Notifications)
@@ -32,7 +35,7 @@ public class ExecutingIntentService extends IntentService {
 
     private static final String BASE_ACTION = ExecutingIntentService.class.getCanonicalName() + ".";
     private static final String EXECUTE_MARK_UNREAD = BASE_ACTION + "mark_unread";
-    private static final String EXTRA_THREAD_ID = "threadId";
+    private static final String EXTRA_THREAD_ID_LIST = "threadId";
 
     public ExecutingIntentService() {
         super("ExecutingIntentService");
@@ -41,23 +44,31 @@ public class ExecutingIntentService extends IntentService {
     @Override
     protected void onHandleIntent(Intent intent) {
         if (EXECUTE_MARK_UNREAD.equals(intent.getAction())) {
-            String threadId = intent.getStringExtra(EXTRA_THREAD_ID);
+            ArrayList<String> threadIds = intent.getStringArrayListExtra(EXTRA_THREAD_ID_LIST);
             try {
-                new MarkReadTask(getContentResolver(), threadId, new BroadcastEventBus(this)).call();
+                new MarkReadTask(getContentResolver(), new BroadcastEventBus(this), threadIds).call();
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }
     }
 
-    public static Intent markReadIntent(Context context, Conversation conversation) {
+    public static Intent markReadIntent(Context context, List<Conversation> conversations) {
         Intent intent = new Intent(context, ExecutingIntentService.class);
         intent.setAction(EXECUTE_MARK_UNREAD);
-        intent.putExtra(EXTRA_THREAD_ID, conversation.getThreadId());
+        intent.putExtra(EXTRA_THREAD_ID_LIST, buildThreadIdList(conversations));
         return intent;
     }
 
-    public static PendingIntent markReadPendingIntent(Context context, Conversation conversation) {
-        return PendingIntent.getService(context, 0, markReadIntent(context, conversation), PendingIntent.FLAG_UPDATE_CURRENT);
+    private static ArrayList<String> buildThreadIdList(List<Conversation> conversations) {
+        ArrayList<String> threadIds = new ArrayList<String>();
+        for (Conversation conversation : conversations) {
+            threadIds.add(conversation.getThreadId());
+        }
+        return threadIds;
+    }
+
+    public static PendingIntent markReadPendingIntent(Context context, List<Conversation> conversations) {
+        return PendingIntent.getService(context, 0, markReadIntent(context, conversations), PendingIntent.FLAG_UPDATE_CURRENT);
     }
 }

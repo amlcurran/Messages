@@ -1,0 +1,67 @@
+/*
+ * Copyright 2014 Alex Curran
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package com.amlcurran.messages.notifications;
+
+import android.app.PendingIntent;
+import android.content.Context;
+import android.content.Intent;
+import android.support.v4.app.NotificationCompat;
+import android.support.v4.app.RemoteInput;
+
+import com.amlcurran.messages.R;
+import com.amlcurran.messages.core.data.Conversation;
+import com.amlcurran.messages.loaders.ExecutingIntentService;
+import com.amlcurran.messages.telephony.SmsSender;
+
+import java.util.Collections;
+import java.util.List;
+
+class NotificationActionBuilder {
+    private final Context context;
+
+    public NotificationActionBuilder(Context context) {
+        this.context = context;
+    }
+
+    NotificationCompat.Action buildSingleMarkReadAction(Conversation conversation) {
+        PendingIntent markReadIntent = ExecutingIntentService.markReadPendingIntent(context, Collections.singletonList(conversation));
+        String label = context.getString(R.string.mark_as_read);
+        return new NotificationCompat.Action.Builder(R.drawable.ic_action_read, label, markReadIntent).build();
+    }
+
+    NotificationCompat.Action buildReplyAction(Conversation conversation) {
+        RemoteInput remoteInput = new RemoteInput.Builder(SmsSender.EXTRA_VOICE_REPLY)
+                .setLabel(context.getString(R.string.reply))
+                .build();
+
+        Intent replyIntent = new Intent(context, SmsSender.class);
+        replyIntent.setAction(SmsSender.ACTION_SEND_REQUEST);
+        replyIntent.putExtra(SmsSender.FROM_WEAR, true);
+        replyIntent.putExtra(SmsSender.EXTRA_NUMBER, conversation.getAddress());
+        PendingIntent replyPendingIntent = PendingIntent.getService(context, 0, replyIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        return new NotificationCompat.Action.Builder(R.drawable.ic_wear_reply,
+                context.getString(R.string.reply), replyPendingIntent)
+                .addRemoteInput(remoteInput)
+                .build();
+    }
+
+    NotificationCompat.Action buildMultipleMarkReadAction(List<Conversation> conversations) {
+        PendingIntent markReadIntent = ExecutingIntentService.markReadPendingIntent(context, conversations);
+        String label = context.getString(R.string.mark_all_as_read);
+        return new NotificationCompat.Action.Builder(R.drawable.ic_action_read, label, markReadIntent).build();
+    }
+}

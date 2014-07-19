@@ -17,19 +17,14 @@
 package com.amlcurran.messages.notifications;
 
 import android.app.Notification;
-import android.app.PendingIntent;
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.support.v4.app.NotificationCompat;
-import android.support.v4.app.RemoteInput;
 
 import com.amlcurran.messages.R;
 import com.amlcurran.messages.core.data.Conversation;
 import com.amlcurran.messages.data.InFlightSmsMessage;
-import com.amlcurran.messages.loaders.ExecutingIntentService;
 import com.amlcurran.messages.preferences.PreferenceStore;
-import com.amlcurran.messages.telephony.SmsSender;
 
 import java.util.Calendar;
 import java.util.Collections;
@@ -39,6 +34,7 @@ public class NotificationBuilder {
     private static final long[] VIBRATE_PATTERN = new long[]{0, 200};
     private final NotificationIntentFactory notificationIntentFactory;
     private final StyledTextFactory styledTextFactory;
+    private final NotificationActionBuilder actionBuilder;
     private Context context;
     private final PreferenceStore preferenceStore;
 
@@ -47,6 +43,7 @@ public class NotificationBuilder {
         this.preferenceStore = preferenceStore;
         this.notificationIntentFactory = new NotificationIntentFactory(context);
         this.styledTextFactory = new StyledTextFactory();
+        this.actionBuilder = new NotificationActionBuilder(context);
     }
 
     public Notification buildUnreadNotification(List<Conversation> conversations, Bitmap photo, boolean fromNewMessage) {
@@ -60,7 +57,9 @@ public class NotificationBuilder {
     private Notification buildMultipleUnreadNotification(List<Conversation> conversations, boolean fromNewMessage) {
         long timestampMillis = Calendar.getInstance().getTimeInMillis();
         CharSequence ticker = fromNewMessage ? styledTextFactory.buildTicker(conversations.get(0)) : styledTextFactory.buildListSummary(context, conversations);
+        NotificationCompat.Action markReadAction = actionBuilder.buildMultipleMarkReadAction(conversations);
         return getDefaultBuilder(fromNewMessage)
+                .addAction(markReadAction)
                 .setTicker(ticker)
                 .setStyle(buildInboxStyle(conversations))
                 .setContentText(styledTextFactory.buildSenderList(conversations))
@@ -80,8 +79,8 @@ public class NotificationBuilder {
     private Notification buildSingleUnreadNotification(Conversation conversation, Bitmap photo, boolean fromNewMessage) {
         long timestampMillis = Calendar.getInstance().getTimeInMillis();
         CharSequence tickerText = fromNewMessage ? styledTextFactory.buildTicker(conversation) : styledTextFactory.buildListSummary(context, Collections.singletonList(conversation));
-        NotificationCompat.Action voiceInputAction = buildReplyAction(conversation);
-        NotificationCompat.Action singleUnreadAction = buildSingleUnreadAction(conversation);
+        NotificationCompat.Action voiceInputAction = actionBuilder.buildReplyAction(conversation);
+        NotificationCompat.Action singleUnreadAction = actionBuilder.buildSingleMarkReadAction(conversation);
         NotificationCompat.Extender extender = new NotificationCompat.WearableExtender().addAction(voiceInputAction);
         return getDefaultBuilder(fromNewMessage)
                 .addAction(singleUnreadAction)
@@ -93,29 +92,6 @@ public class NotificationBuilder {
                 .setStyle(buildBigStyle(conversation))
                 .setWhen(timestampMillis)
                 .extend(extender)
-                .build();
-    }
-
-    private NotificationCompat.Action buildSingleUnreadAction(Conversation conversation) {
-        PendingIntent markReadIntent = ExecutingIntentService.markReadPendingIntent(context, conversation);
-        NotificationCompat.Action.Builder builder = new NotificationCompat.Action.Builder(R.drawable.ic_action_read,
-                context.getString(R.string.mark_as_read), markReadIntent);
-        return builder.build();
-    }
-
-    private NotificationCompat.Action buildReplyAction(Conversation conversation) {
-        RemoteInput remoteInput = new RemoteInput.Builder(SmsSender.EXTRA_VOICE_REPLY)
-                .setLabel(context.getString(R.string.reply))
-                .build();
-
-        Intent replyIntent = new Intent(context, SmsSender.class);
-        replyIntent.setAction(SmsSender.ACTION_SEND_REQUEST);
-        replyIntent.putExtra(SmsSender.FROM_WEAR, true);
-        replyIntent.putExtra(SmsSender.EXTRA_NUMBER, conversation.getAddress());
-        PendingIntent replyPendingIntent = PendingIntent.getService(context, 0, replyIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-        return new NotificationCompat.Action.Builder(R.drawable.ic_wear_reply,
-                 context.getString(R.string.reply), replyPendingIntent)
-                .addRemoteInput(remoteInput)
                 .build();
     }
 

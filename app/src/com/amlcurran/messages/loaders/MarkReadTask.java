@@ -22,24 +22,28 @@ import android.provider.Telephony;
 
 import com.amlcurran.messages.events.EventBus;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.Callable;
 
 class MarkReadTask implements Callable<Object> {
     private final ContentResolver contentResolver;
-    private final String threadId;
+    private final List<String> threadIds;
     private final EventBus eventBus;
 
-    public MarkReadTask(ContentResolver contentResolver, String threadId, EventBus eventBus) {
+    public MarkReadTask(ContentResolver contentResolver, EventBus eventBus, List<String> threadIds) {
         this.contentResolver = contentResolver;
-        this.threadId = threadId;
+        this.threadIds = new ArrayList<String>(threadIds);
         this.eventBus = eventBus;
     }
 
     @Override
     public Object call() throws Exception {
-        String selection = String.format("%1$s=? AND %2$s=?", Telephony.Sms.THREAD_ID, Telephony.Sms.READ);
-        String[] args = new String[]{threadId, "0" };
-        contentResolver.update(Telephony.Sms.CONTENT_URI, createReadContentValues(), selection, args);
+        for (String threadId : threadIds) {
+            String selection = String.format("%1$s=? AND %2$s=?", Telephony.Sms.THREAD_ID, Telephony.Sms.READ);
+            String[] args = new String[]{threadId, "0"};
+            contentResolver.update(Telephony.Sms.CONTENT_URI, createReadContentValues(), selection, args);
+        }
         eventBus.postListInvalidated();
         return null;
     }

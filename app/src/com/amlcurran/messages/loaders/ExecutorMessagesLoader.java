@@ -31,6 +31,7 @@ import com.amlcurran.messages.core.loaders.ConversationListChangeListener;
 import com.amlcurran.messages.core.loaders.ThreadListener;
 import com.amlcurran.messages.events.EventBus;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
@@ -91,7 +92,7 @@ public class ExecutorMessagesLoader implements MessagesLoader {
 
     @Override
     public void markThreadAsRead(String threadId, ConversationListChangeListener listChangeListener) {
-        submit(new MarkReadTask(getResolver(), threadId, eventBus));
+        submit(new MarkReadTask(getResolver(), eventBus, Collections.singletonList(threadId)));
     }
 
     @Override
