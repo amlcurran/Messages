@@ -26,7 +26,7 @@ import com.amlcurran.messages.core.data.Conversation;
 import com.amlcurran.messages.data.InFlightSmsMessage;
 import com.amlcurran.messages.telephony.SmsSender;
 
-class NotificationIntentFactory {
+public class NotificationIntentFactory {
     private final Context context;
 
     public NotificationIntentFactory(Context context) {

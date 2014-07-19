@@ -28,6 +28,7 @@ import com.amlcurran.messages.data.InFlightSmsMessage;
 import com.amlcurran.messages.preferences.PreferenceStore;
 
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.List;
 
 public class NotificationBuilder {
@@ -56,7 +57,7 @@ public class NotificationBuilder {
 
     private Notification buildMultipleUnreadNotification(List<Conversation> conversations, boolean fromNewMessage) {
         long timestampMillis = Calendar.getInstance().getTimeInMillis();
-        CharSequence ticker = styledTextFactory.buildListSummary(context, conversations);
+        CharSequence ticker = fromNewMessage ? styledTextFactory.buildTicker(conversations.get(0)) : styledTextFactory.buildListSummary(context, conversations);
         NotificationCompat.Action markReadAction = actionBuilder.buildMultipleMarkReadAction(conversations);
         return getDefaultBuilder(fromNewMessage)
                 .addAction(markReadAction)
@@ -78,7 +79,7 @@ public class NotificationBuilder {
 
     private Notification buildSingleUnreadNotification(Conversation conversation, Bitmap photo, boolean fromNewMessage) {
         long timestampMillis = Calendar.getInstance().getTimeInMillis();
-        CharSequence tickerText = styledTextFactory.buildTicker(conversation);
+        CharSequence tickerText = fromNewMessage ? styledTextFactory.buildTicker(conversation) : styledTextFactory.buildListSummary(context, Collections.singletonList(conversation));
         NotificationCompat.Action voiceInputAction = actionBuilder.buildReplyAction(conversation);
         NotificationCompat.Action singleUnreadAction = actionBuilder.buildSingleMarkReadAction(conversation);
         NotificationCompat.Action callAction = actionBuilder.call(conversation.getContact());
