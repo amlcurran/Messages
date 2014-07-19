@@ -54,4 +54,8 @@ public class NotificationIntentFactory {
         intent.putExtra(SmsSender.EXTRA_MESSAGE, message);
         return PendingIntent.getService(context, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT);
     }
+
+    public PendingIntent markRead(Conversation conversation) {
+        return null;
+    }
 }

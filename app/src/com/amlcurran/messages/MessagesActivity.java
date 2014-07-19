@@ -263,12 +263,6 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        activityController.activityResult(requestCode, resultCode, data);
-        super.onActivityResult(requestCode, resultCode, data);
-    }
-
-    @Override
     public void onConversationSelected(Conversation conversation) {
         String address = conversation.getAddress();
         final ThreadFragment fragment = ThreadFragment.create(conversation.getThreadId(), address);

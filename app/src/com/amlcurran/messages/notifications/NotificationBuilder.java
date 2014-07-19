@@ -27,6 +27,7 @@ import android.support.v4.app.RemoteInput;
 import com.amlcurran.messages.R;
 import com.amlcurran.messages.core.data.Conversation;
 import com.amlcurran.messages.data.InFlightSmsMessage;
+import com.amlcurran.messages.loaders.ExecutingIntentService;
 import com.amlcurran.messages.preferences.PreferenceStore;
 import com.amlcurran.messages.telephony.SmsSender;
 
@@ -80,7 +81,10 @@ public class NotificationBuilder {
         long timestampMillis = Calendar.getInstance().getTimeInMillis();
         CharSequence tickerText = fromNewMessage ? styledTextFactory.buildTicker(conversation) : styledTextFactory.buildListSummary(context, Collections.singletonList(conversation));
         NotificationCompat.Action voiceInputAction = buildReplyAction(conversation);
+        NotificationCompat.Action singleUnreadAction = buildSingleUnreadAction(conversation);
+        NotificationCompat.Extender extender = new NotificationCompat.WearableExtender().addAction(voiceInputAction);
         return getDefaultBuilder(fromNewMessage)
+                .addAction(singleUnreadAction)
                 .setTicker(tickerText)
                 .setContentTitle(conversation.getContact().getDisplayName())
                 .setLargeIcon(photo)
@@ -88,8 +92,15 @@ public class NotificationBuilder {
                 .setContentText(conversation.getBody())
                 .setStyle(buildBigStyle(conversation))
                 .setWhen(timestampMillis)
-                .extend(new NotificationCompat.WearableExtender().addAction(voiceInputAction))
+                .extend(extender)
                 .build();
+    }
+
+    private NotificationCompat.Action buildSingleUnreadAction(Conversation conversation) {
+        PendingIntent markReadIntent = ExecutingIntentService.markReadPendingIntent(context, conversation);
+        NotificationCompat.Action.Builder builder = new NotificationCompat.Action.Builder(R.drawable.ic_action_read,
+                context.getString(R.string.mark_as_read), markReadIntent);
+        return builder.build();
     }
 
     private NotificationCompat.Action buildReplyAction(Conversation conversation) {

@@ -46,5 +46,6 @@
     <string name="dialog_sum_delete_threads">Are you sure you want to delete the selected conversations?</string>
     <string name="reply">Reply</string>
     <string name="add_contact">Add contact</string>
+    <string name="mark_as_read">Mark as read</string>
 
 </resources>
