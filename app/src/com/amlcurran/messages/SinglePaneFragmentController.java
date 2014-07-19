@@ -37,8 +37,8 @@ public class SinglePaneFragmentController implements FragmentController {
     private final Activity activity;
     private final Callback callback;
 
-    public SinglePaneFragmentController(FragmentManager fragmentManager, ViewController viewController, Activity activity, Callback callback) {
-        this.fragmentManager = fragmentManager;
+    public SinglePaneFragmentController(Activity activity, Callback callback, ViewController viewController) {
+        this.fragmentManager = activity.getFragmentManager();
         this.viewController = viewController;
         this.activity = activity;
         this.callback = callback;
