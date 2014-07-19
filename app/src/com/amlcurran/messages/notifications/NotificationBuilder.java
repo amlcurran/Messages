@@ -27,12 +27,14 @@ import com.amlcurran.messages.core.data.Conversation;
 import com.amlcurran.messages.data.InFlightSmsMessage;
 import com.amlcurran.messages.preferences.PreferenceStore;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.List;
 
 public class NotificationBuilder {
     private static final long[] VIBRATE_PATTERN = new long[]{0, 200};
+    private static final String UNREAD_MESSAGES = "unreads";
     private final NotificationIntentFactory notificationIntentFactory;
     private final StyledTextFactory styledTextFactory;
     private final NotificationActionBuilder actionBuilder;
@@ -47,21 +49,32 @@ public class NotificationBuilder {
         this.actionBuilder = new NotificationActionBuilder(context);
     }
 
-    public Notification buildUnreadNotification(List<Conversation> conversations, Bitmap photo, boolean fromNewMessage) {
+    public List<Notification> buildUnreadNotification(List<Conversation> conversations, Bitmap photo, boolean fromNewMessage) {
         if (conversations.size() == 1) {
-            return buildSingleUnreadNotification(conversations.get(0), photo, fromNewMessage);
+            return Collections.singletonList(buildSingleUnreadNotification(conversations.get(0), photo, fromNewMessage));
         } else {
             return buildMultipleUnreadNotification(conversations, fromNewMessage);
         }
     }
 
-    private Notification buildMultipleUnreadNotification(List<Conversation> conversations, boolean fromNewMessage) {
+    private List<Notification> buildMultipleUnreadNotification(List<Conversation> conversations, boolean fromNewMessage) {
+        List<Notification> notifications = new ArrayList<Notification>();
+        notifications.add(buildMultipleSummaryNotification(conversations, fromNewMessage));
+        for (Conversation conversation : conversations) {
+            notifications.add(buildSingleUnreadNotification(conversation, null, fromNewMessage));
+        }
+        return notifications;
+    }
+
+    private Notification buildMultipleSummaryNotification(List<Conversation> conversations, boolean fromNewMessage) {
         long timestampMillis = Calendar.getInstance().getTimeInMillis();
         CharSequence ticker = fromNewMessage ? styledTextFactory.buildTicker(conversations.get(0)) : styledTextFactory.buildListSummary(context, conversations);
         NotificationCompat.Action markReadAction = actionBuilder.buildMultipleMarkReadAction(conversations);
         return getDefaultBuilder(fromNewMessage)
                 .addAction(markReadAction)
                 .setTicker(ticker)
+                .setGroup(UNREAD_MESSAGES)
+                .setGroupSummary(true)
                 .setStyle(buildInboxStyle(conversations))
                 .setContentText(styledTextFactory.buildSenderList(conversations))
                 .setContentTitle(styledTextFactory.buildListSummary(context, conversations))
@@ -97,6 +110,7 @@ public class NotificationBuilder {
                 .addAction(singleUnreadAction)
                 .addAction(callAction)
                 .setTicker(tickerText)
+                .setGroup(UNREAD_MESSAGES)
                 .setContentTitle(conversation.getContact().getDisplayName())
                 .setLargeIcon(photo)
                 .setContentIntent(notificationIntentFactory.createViewConversationIntent(conversation))

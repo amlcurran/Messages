@@ -17,9 +17,9 @@
 package com.amlcurran.messages.notifications;
 
 import android.app.Notification;
-import android.app.NotificationManager;
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.support.v4.app.NotificationManagerCompat;
 
 import com.amlcurran.messages.SingletonManager;
 import com.amlcurran.messages.conversationlist.PhotoLoadListener;
@@ -37,13 +37,13 @@ public class Notifier {
     private static final int NOTIFICATION_SEND_ERROR = 44;
     private static final int NOTIFICATION_MMS_ERROR = 66;
     public static final String ACTION_VIEW_CONVERSATION = "com.amlcurran.messages.notification.VIEW_CONVERSATION";
-    private final NotificationManager notificationManager;
+    private final NotificationManagerCompat notificationManager;
     private final Context context;
     private final NotificationBuilder notificationBuilder;
 
     public Notifier(Context context) {
         this.context = context;
-        this.notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+        this.notificationManager = NotificationManagerCompat.from(context);
         this.notificationBuilder = new NotificationBuilder(context, new PreferenceStore(context));
     }
 
@@ -80,8 +80,10 @@ public class Notifier {
                 }
 
                 private void postUnreadNotification(List<Conversation> conversations, Bitmap photo) {
-                    Notification notification = notificationBuilder.buildUnreadNotification(conversations, photo, fromNewMessage);
-                    notificationManager.notify(NOTIFICATION_UNREAD_MESSAGES, notification);
+                    List<Notification> notifications = notificationBuilder.buildUnreadNotification(conversations, photo, fromNewMessage);
+                    for (int i = 0; i < notifications.size(); i++) {
+                        notificationManager.notify(NOTIFICATION_UNREAD_MESSAGES + i, notifications.get(i));
+                    }
                 }
             });
         }
