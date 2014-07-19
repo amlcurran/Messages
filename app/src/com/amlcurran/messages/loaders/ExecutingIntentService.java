@@ -21,6 +21,7 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 
+import com.amlcurran.messages.SingletonManager;
 import com.amlcurran.messages.core.data.Conversation;
 import com.amlcurran.messages.events.BroadcastEventBus;
 
@@ -34,7 +35,7 @@ import java.util.List;
 public class ExecutingIntentService extends IntentService {
 
     private static final String BASE_ACTION = ExecutingIntentService.class.getCanonicalName() + ".";
-    private static final String EXECUTE_MARK_UNREAD = BASE_ACTION + "mark_unread";
+    private static final String EXECUTE_MARK_READ = BASE_ACTION + "mark_read";
     private static final String EXTRA_THREAD_ID_LIST = "threadId";
 
     public ExecutingIntentService() {
@@ -43,7 +44,8 @@ public class ExecutingIntentService extends IntentService {
 
     @Override
     protected void onHandleIntent(Intent intent) {
-        if (EXECUTE_MARK_UNREAD.equals(intent.getAction())) {
+        if (EXECUTE_MARK_READ.equals(intent.getAction())) {
+            SingletonManager.getNotifier(this).clearNewMessagesNotification();
             ArrayList<String> threadIds = intent.getStringArrayListExtra(EXTRA_THREAD_ID_LIST);
             try {
                 new MarkReadTask(getContentResolver(), new BroadcastEventBus(this), threadIds).call();
@@ -55,7 +57,7 @@ public class ExecutingIntentService extends IntentService {
 
     public static Intent markReadIntent(Context context, List<Conversation> conversations) {
         Intent intent = new Intent(context, ExecutingIntentService.class);
-        intent.setAction(EXECUTE_MARK_UNREAD);
+        intent.setAction(EXECUTE_MARK_READ);
         intent.putExtra(EXTRA_THREAD_ID_LIST, buildThreadIdList(conversations));
         return intent;
     }

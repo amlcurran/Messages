@@ -92,9 +92,7 @@ public class Notifier {
     }
 
     public void clearNewMessagesNotification() {
-        if (showNotifications(context)) {
-            notificationManager.cancel(NOTIFICATION_UNREAD_MESSAGES);
-        }
+        notificationManager.cancel(NOTIFICATION_UNREAD_MESSAGES);
     }
 
     public void showSendError(InFlightSmsMessage message) {
