@@ -22,7 +22,7 @@ import com.amlcurran.messages.conversationlist.PhotoLoadListener;
 import com.amlcurran.messages.core.conversationlist.ConversationListListener;
 import com.amlcurran.messages.core.data.Contact;
 import com.amlcurran.messages.core.data.Conversation;
-import com.amlcurran.messages.core.data.RawContact;
+import com.amlcurran.messages.core.data.SavedContact;
 import com.amlcurran.messages.core.data.Sort;
 import com.amlcurran.messages.core.loaders.ContactListListener;
 import com.amlcurran.messages.core.loaders.ConversationListChangeListener;
@@ -31,7 +31,7 @@ import com.amlcurran.messages.loaders.MessagesLoader;
 import com.amlcurran.messages.loaders.OnContactQueryListener;
 import com.amlcurran.messages.loaders.OnThreadDeleteListener;
 
-import java.util.Collections;
+import java.util.ArrayList;
 import java.util.List;
 
 public class DemoMessagesLoader implements MessagesLoader {
@@ -43,8 +43,20 @@ public class DemoMessagesLoader implements MessagesLoader {
 
     @Override
     public void loadConversationList(ConversationListListener loadListener, Sort sort) {
-        Conversation conversation = new Conversation("+444", "Hello! This is body", "1", true, new RawContact("+44"));
-        loadListener.onConversationListLoaded(Collections.singletonList(conversation));
+        List<Conversation> fakeConversations = new ArrayList<Conversation>();
+        String[] numbers = getStringArray(R.array.demo_numbers);
+        String[] bodies = getStringArray(R.array.demo_bodies);
+        String[] contactNames = getStringArray(R.array.demo_contact_names);
+        for (int i = 0; i < numbers.length; i++) {
+            Contact contact = new SavedContact(i, contactNames[i], numbers[i], i, String.valueOf(i));
+            Conversation conversation = new Conversation(numbers[i], bodies[i], String.valueOf(i), i != 4, contact);
+            fakeConversations.add(conversation);
+        }
+        loadListener.onConversationListLoaded(fakeConversations);
+    }
+
+    private String[] getStringArray(int id) {
+        return context.getResources().getStringArray(id);
     }
 
     @Override
