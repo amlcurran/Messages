@@ -26,7 +26,7 @@ import com.amlcurran.messages.SingletonManager;
 import com.amlcurran.messages.data.InFlightSmsMessage;
 import com.amlcurran.messages.events.BroadcastEventBus;
 
-public class SmsAsycService extends IntentService {
+public class SmsAsyncService extends IntentService {
 
     public SmsAsyncService() {
         super(SmsAsyncService.class.getSimpleName());
