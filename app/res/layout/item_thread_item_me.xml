@@ -5,30 +5,12 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <LinearLayout
-        android:orientation="horizontal"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent">
-
-        <FrameLayout
-            android:layout_width="@dimen/thread_message_offset_horizontal"
-            android:layout_height="fill_parent">
-
-            <view
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                class="com.amlcurran.messages.ui.LoadingView"
-                app:lv_scale="@integer/loading_scale_small"
-                android:id="@+id/sending_image"
-                android:layout_gravity="center" />
-
-        </FrameLayout>
-
         <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
             android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:padding="8dp">
+            android:padding="8dp"
+            android:layout_marginLeft="48dp">
 
             <TextView
                 android:layout_width="match_parent"
@@ -44,7 +26,5 @@
                 android:gravity="right"
                 style="@style/ThreadTimeStamp" />
         </LinearLayout>
-
-    </LinearLayout>
 
 </FrameLayout>

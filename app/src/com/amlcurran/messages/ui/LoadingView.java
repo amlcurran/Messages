@@ -56,7 +56,11 @@ public class LoadingView extends View implements TimeAnimator.TimeListener {
         bubbleDrawable = context.getResources().getDrawable(R.drawable.ic_sending_bg);
         fourDip = context.getResources().getDisplayMetrics().density * 4 / scaleFactor;
         setUpDimensions();
-        setUpAnimator();
+        if (isInEditMode()) {
+            duration = 1200f;
+        } else {
+            setUpAnimator();
+        }
     }
 
     private void setUpDimensions() {

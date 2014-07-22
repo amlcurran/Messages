@@ -36,6 +36,7 @@ class ThreadBinder extends SimpleBinder<SmsMessage> {
 
     private static final int ITEM_ME = 0;
     private static final int ITEM_THEM = 1;
+    private static final int ITEM_ME_SENDING = 2;
     private static final float ALPHA_SCALING_MILLIS = 1000 * 60 * 4 * 60f; // four hours
     private static final float ALPHA_MIN_VALUE = 0.6f;
     private final DateFormat formatter = new SimpleDateFormat("HH:mm dd-MMM-yy");
@@ -54,16 +55,10 @@ class ThreadBinder extends SimpleBinder<SmsMessage> {
         TextView bodyText = getTextView(convertView, android.R.id.text1);
         bodyText.setText(item.getBody());
         //bodyText.setAlpha(getAlphaForTime(item.getTimestamp()));
-        if (item.isSending()) {
-            getTextView(convertView, android.R.id.text2).setText("Sending...");
-            convertView.findViewById(R.id.sending_image).setVisibility(View.VISIBLE);
-        } else {
+        if (!item.isSending()) {
             getTextView(convertView, android.R.id.text2).setText(formatter.format(date));
-            View sendingImage = convertView.findViewById(R.id.sending_image);
-            if (sendingImage != null) {
-                sendingImage.setVisibility(View.INVISIBLE);
-            }
         }
+
         Linkify.addLinks(bodyText, Linkify.ALL);
 
         return convertView;
@@ -84,18 +79,23 @@ class ThreadBinder extends SimpleBinder<SmsMessage> {
             return LayoutInflater.from(context).inflate(R.layout.item_thread_item_me, listView, false);
         } else if (itemViewType == ITEM_THEM) {
             return LayoutInflater.from(context).inflate(R.layout.item_thread_item_them, listView, false);
+        } else if (itemViewType == ITEM_ME_SENDING) {
+            return LayoutInflater.from(context).inflate(R.layout.item_thread_item_me_sending, listView, false);
         }
         return null;
     }
 
     @Override
     public int getViewTypeCount() {
-        return 2;
+        return 3;
     }
 
     @Override
     public int getItemViewType(int position, SmsMessage item) {
-        return item.isFromMe() ? ITEM_ME : ITEM_THEM;
+        if (item.isFromMe()) {
+            return item.isSending() ? ITEM_ME_SENDING : ITEM_ME;
+        }
+        return ITEM_THEM;
     }
 
     private TextView getTextView(View convertView, int text1) {

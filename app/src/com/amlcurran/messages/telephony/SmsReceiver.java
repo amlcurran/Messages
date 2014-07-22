@@ -37,12 +37,7 @@ public class SmsReceiver extends BroadcastReceiver {
 
             android.telephony.SmsMessage[] messages = Telephony.Sms.Intents.getMessagesFromIntent(intent);
             InFlightSmsMessage inFlightSmsMessage = InFlightSmsMessageFactory.fromDeliverBroadcast(messages);
-
-            Intent asyncWriteIntent = new Intent(context, SmsAsyncService.class);
-            asyncWriteIntent.setAction(ASYNC_WRITE);
-            asyncWriteIntent.putExtra(EXTRA_WRITE_TYPE, WriteType.INBOX.toString());
-            asyncWriteIntent.putExtra(EXTRA_MESSAGE, inFlightSmsMessage);
-
+            Intent asyncWriteIntent = SmsAsyncService.getAsyncWriteIntent(context, inFlightSmsMessage, WriteType.INBOX);
             context.startService(asyncWriteIntent);
 
         } else {
