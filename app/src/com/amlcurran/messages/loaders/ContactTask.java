@@ -19,6 +19,7 @@ package com.amlcurran.messages.loaders;
 import android.content.ContentResolver;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.Handler;
 import android.provider.ContactsContract;
 
 import com.amlcurran.messages.core.data.Contact;
@@ -31,11 +32,13 @@ class ContactTask implements Callable<Object> {
     private final ContentResolver contentResolver;
     private final String address;
     private final OnContactQueryListener onContactQueryListener;
+    private Handler uiHandler;
 
-    public ContactTask(ContentResolver contentResolver, String address, OnContactQueryListener onContactQueryListener) {
+    public ContactTask(ContentResolver contentResolver, String address, OnContactQueryListener onContactQueryListener, Handler uiHandler) {
         this.contentResolver = contentResolver;
         this.address = address;
         this.onContactQueryListener = onContactQueryListener;
+        this.uiHandler = uiHandler;
     }
 
     static Uri createPhoneLookupUri(String phoneRaw) {
@@ -47,11 +50,21 @@ class ContactTask implements Callable<Object> {
         Cursor result = contentResolver.query(createPhoneLookupUri(address), ContactFactory.VALID_PROJECTION, null, null, null);
         if (result.moveToFirst()) {
             Contact contact = ContactFactory.fromCursor(result);
-            onContactQueryListener.contactLoaded(contact);
+            postResult(contact);
         } else {
-            onContactQueryListener.contactLoaded(new RawContact(address));
+            RawContact contact = new RawContact(address);
+            postResult(contact);
         }
         result.close();
         return null;
+    }
+
+    private void postResult(final Contact contact) {
+        uiHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                onContactQueryListener.contactLoaded(contact);
+            }
+        });
     }
 }

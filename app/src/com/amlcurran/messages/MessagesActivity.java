@@ -17,6 +17,7 @@
 package com.amlcurran.messages;
 
 import android.app.Activity;
+import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -100,6 +101,12 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
         handleLaunch(savedInstanceState, getIntent(), preferencesStore);
     }
 
+    @Override
+    public void onAttachFragment(Fragment fragment) {
+        super.onAttachFragment(fragment);
+        fragmentController.attachedFragment(fragment);
+    }
+
     private void handleLaunch(Bundle savedInstanceState, Intent intent, PreferenceStore preferencesStore) {
         Launch launch = launchHelper.getLaunchType(savedInstanceState, intent, preferencesStore);
         IntentDataExtractor intentDataExtractor = new IntentDataExtractor(intent);
@@ -165,7 +172,7 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
 
     private void viewConversation(String threadId, String address) {
         fragmentController.loadConversationListFragment();
-        fragmentController.replaceFragment(ThreadFragment.create(threadId, address), false);
+        fragmentController.replaceFragment(ThreadFragment.create(threadId, address, null), false);
     }
 
     private void anonymousSendWithMessage(String message) {
@@ -265,20 +272,10 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
     @Override
     public void onConversationSelected(Conversation conversation) {
         String address = conversation.getAddress();
-        final ThreadFragment fragment = ThreadFragment.create(conversation.getThreadId(), address);
+        Bundle contactBundle = ContactFactory.smooshContact(conversation.getContact());
+        final ThreadFragment fragment = ThreadFragment.create(conversation.getThreadId(), address, contactBundle);
 
         fragmentController.replaceFragment(fragment, false);
-        messagesLoader.queryContact(address, new OnContactQueryListener() {
-            @Override
-            public void contactLoaded(final Contact contact) {
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        fragment.setContactView(contact, messagesLoader);
-                    }
-                });
-            }
-        });
     }
 
     @Override

@@ -34,4 +34,14 @@ public class BundleBuilder {
     public Bundle build() {
         return bundle;
     }
+
+    public BundleBuilder put(String key, long value) {
+        bundle.putLong(key, value);
+        return this;
+    }
+
+    public BundleBuilder put(String key, boolean value) {
+        bundle.putBoolean(key, value);
+        return this;
+    }
 }

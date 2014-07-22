@@ -19,10 +19,12 @@ package com.amlcurran.messages.data;
 import android.content.ContentResolver;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.Bundle;
 import android.provider.ContactsContract;
 
-import com.amlcurran.messages.core.data.RawContact;
+import com.amlcurran.messages.bucket.BundleBuilder;
 import com.amlcurran.messages.core.data.Contact;
+import com.amlcurran.messages.core.data.RawContact;
 import com.amlcurran.messages.core.data.SavedContact;
 import com.github.amlcurran.sourcebinder.CursorHelper;
 
@@ -33,6 +35,12 @@ public class ContactFactory {
             ContactsContract.Data.PHOTO_ID,
             ContactsContract.CommonDataKinds.Phone.NUMBER,
             ContactsContract.Contacts.LOOKUP_KEY };
+    public static final String SMOOSH_IS_SAVED = "saved";
+    public static final String SMOOSH_NUMBER = "number";
+    public static final String SMOOSH_LOOKUP_KEY = "lookupKey";
+    public static final String SMOOSH_CONTACT_ID = "contactId";
+    public static final String SMOOSH_PHOTO_ID = "photoId";
+    public static final String SMOOSH_DISPLAY_NAME = "displayName";
 
     public static Contact fromCursor(Cursor peopleCursor) {
         String person = CursorHelper.asString(peopleCursor, ContactsContract.CommonDataKinds.Identity.DISPLAY_NAME_PRIMARY);
@@ -51,4 +59,32 @@ public class ContactFactory {
         Uri lookupUri = ContactsContract.Contacts.getLookupUri(contact.getContactId(), contact.getLookupKey());
         return ContactsContract.Contacts.lookupContact(contentResolver, lookupUri);
     }
+
+    public static Bundle smooshContact(Contact contact) {
+        return new BundleBuilder()
+                .put(SMOOSH_DISPLAY_NAME, contact.getDisplayName())
+                .put(SMOOSH_PHOTO_ID, contact.getPhotoId())
+                .put(SMOOSH_CONTACT_ID, contact.getContactId())
+                .put(SMOOSH_LOOKUP_KEY, contact.getLookupKey())
+                .put(SMOOSH_NUMBER, contact.getNumber())
+                .put(SMOOSH_IS_SAVED, contact.isSaved())
+                .build();
+    }
+
+    public static Contact desmooshContact(Bundle bundle) {
+        if (bundle == null) {
+            return null;
+        }
+        if (bundle.getBoolean(SMOOSH_IS_SAVED)) {
+            String person = bundle.getString(SMOOSH_DISPLAY_NAME);
+            long photoId = bundle.getLong(SMOOSH_PHOTO_ID);
+            long contactId = bundle.getLong(SMOOSH_CONTACT_ID);
+            String rawAddress = bundle.getString(SMOOSH_NUMBER);
+            String lookupKey = bundle.getString(SMOOSH_LOOKUP_KEY);
+            return new SavedContact(contactId, person, rawAddress, photoId, lookupKey);
+        } else {
+            return new RawContact(bundle.getString(SMOOSH_NUMBER));
+        }
+    }
+
 }

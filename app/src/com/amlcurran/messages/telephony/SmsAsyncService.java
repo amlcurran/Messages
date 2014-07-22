@@ -20,18 +20,16 @@ import android.app.IntentService;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
-import android.util.Log;
 
+import com.amlcurran.messages.MessagesLog;
 import com.amlcurran.messages.SingletonManager;
 import com.amlcurran.messages.data.InFlightSmsMessage;
 import com.amlcurran.messages.events.BroadcastEventBus;
 
-public class SmsAsyncService extends IntentService {
-
-    public static final String TAG = SmsAsyncService.class.getSimpleName();
+public class SmsAsycService extends IntentService {
 
     public SmsAsyncService() {
-        super(TAG);
+        super(SmsAsyncService.class.getSimpleName());
     }
 
     @Override
@@ -62,12 +60,12 @@ public class SmsAsyncService extends IntentService {
             @Override
             public void written(Uri inserted) {
                 new BroadcastEventBus(SmsAsyncService.this).postMessageDrafted(smsMessage.getPhoneNumber());
-                Log.d(TAG, "Written draft");
+                MessagesLog.d(SmsAsyncService.this, "Written Draft");
             }
 
             @Override
             public void failed() {
-                Log.e(TAG, "Failed to write message to inbox database");
+                MessagesLog.e(SmsAsyncService.this, "Failed to write message to inbox database");
             }
 
         });
@@ -85,7 +83,7 @@ public class SmsAsyncService extends IntentService {
 
             @Override
             public void failed() {
-                Log.e(TAG, "Failed to write message to inbox database");
+                MessagesLog.e(SmsAsyncService.this, "Failed to write message to inbox database");
             }
 
         }, smsMessage);

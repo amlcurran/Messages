@@ -77,13 +77,6 @@ public class MasterDetailFragmentController implements FragmentController {
 
     private void replaceFragmentInternal(Fragment fragment) {
 
-        if (fragment instanceof CustomHeaderFragment) {
-            Context themedContext = ThemeHelper.getThemedContext(activity);
-            callback.addCustomHeader(((CustomHeaderFragment) fragment).getHeaderView(themedContext));
-        } else {
-            callback.removeCustomHeader();
-        }
-
         FragmentTransaction transaction = activity.getFragmentManager().beginTransaction()
                 .replace(viewController.getSecondaryFrameId(), fragment);
 
@@ -95,8 +88,28 @@ public class MasterDetailFragmentController implements FragmentController {
         callback.insertedDetail();
     }
 
+    private void getHeaderView(Fragment fragment) {
+        if (fragment instanceof CustomHeaderFragment) {
+            Context themedContext = ThemeHelper.getThemedContext(activity);
+            callback.addCustomHeader(((CustomHeaderFragment) fragment).getHeaderView(themedContext));
+        } else {
+            callback.removeCustomHeader();
+        }
+    }
+
     @Override
     public boolean optionsItemSelected(MenuItem item) {
         return activity.getFragmentManager().findFragmentById(viewController.getSecondaryFrameId()).onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void attachedFragment(Fragment fragment) {
+        if (fragmentIsContent(fragment)) {
+            getHeaderView(fragment);
+        }
+    }
+
+    private boolean fragmentIsContent(Fragment fragment) {
+        return !(fragment instanceof MasterFragment);
     }
 }

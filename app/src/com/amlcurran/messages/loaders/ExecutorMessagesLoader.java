@@ -19,15 +19,15 @@ package com.amlcurran.messages.loaders;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.os.Handler;
-import android.util.Log;
 
+import com.amlcurran.messages.MessagesLog;
 import com.amlcurran.messages.SingletonManager;
-import com.amlcurran.messages.core.loaders.ContactListListener;
-import com.amlcurran.messages.core.data.Contact;
-import com.amlcurran.messages.core.data.Sort;
-import com.amlcurran.messages.core.conversationlist.ConversationListListener;
 import com.amlcurran.messages.conversationlist.PhotoLoadListener;
+import com.amlcurran.messages.core.conversationlist.ConversationListListener;
+import com.amlcurran.messages.core.data.Contact;
 import com.amlcurran.messages.core.data.Conversation;
+import com.amlcurran.messages.core.data.Sort;
+import com.amlcurran.messages.core.loaders.ContactListListener;
 import com.amlcurran.messages.core.loaders.ConversationListChangeListener;
 import com.amlcurran.messages.core.loaders.ThreadListener;
 import com.amlcurran.messages.events.EventBus;
@@ -58,7 +58,7 @@ public class ExecutorMessagesLoader implements MessagesLoader {
     }
 
     private void submit(final Callable task) {
-        Log.d("Submitted task", task.getClass().getSimpleName());
+        MessagesLog.d(this, "Submitted " + task.getClass().getSimpleName());
         executor.execute(new Runnable() {
             @Override
             public void run() {
@@ -114,7 +114,7 @@ public class ExecutorMessagesLoader implements MessagesLoader {
 
     @Override
     public void queryContact(String address, OnContactQueryListener onContactQueryListener) {
-        submit(new ContactTask(getResolver(), address, onContactQueryListener));
+        submit(new ContactTask(getResolver(), address, onContactQueryListener, uiHandler));
     }
 
     @Override

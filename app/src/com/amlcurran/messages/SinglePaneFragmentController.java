@@ -119,4 +119,9 @@ public class SinglePaneFragmentController implements FragmentController {
     public boolean optionsItemSelected(MenuItem item) {
         return false;
     }
+
+    @Override
+    public void attachedFragment(Fragment fragment) {
+
+    }
 }

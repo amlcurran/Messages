@@ -30,12 +30,15 @@ import android.widget.AbsListView;
 import android.widget.ListView;
 
 import com.amlcurran.messages.R;
+import com.amlcurran.messages.SingletonManager;
 import com.amlcurran.messages.SmsComposeListener;
 import com.amlcurran.messages.core.data.Contact;
 import com.amlcurran.messages.core.data.SmsMessage;
+import com.amlcurran.messages.data.ContactFactory;
 import com.amlcurran.messages.data.InFlightSmsMessage;
 import com.amlcurran.messages.data.PhoneNumber;
 import com.amlcurran.messages.loaders.MessagesLoader;
+import com.amlcurran.messages.loaders.OnContactQueryListener;
 import com.amlcurran.messages.preferences.PreferenceStore;
 import com.amlcurran.messages.telephony.CentralWriter;
 import com.amlcurran.messages.ui.ComposeMessageView;
@@ -53,7 +56,7 @@ public class ThreadFragment extends ListFragment implements
 
     private static final String THREAD_ID = "threadId";
     private static final String ADDRESS = "address";
-    private static final String EXTRA_WRITTEN_TEXT = "written_text";
+    private static final String CONTACT = "contact";
 
     private SmsComposeListener listener;
     private PhoneNumber phoneNumber;
@@ -61,10 +64,11 @@ public class ThreadFragment extends ListFragment implements
     private ContactView contactView;
     private ThreadController threadController;
 
-    public static ThreadFragment create(String threadId, String address) {
+    public static ThreadFragment create(String threadId, String address, Bundle contactBundle) {
         Bundle bundle = new Bundle();
         bundle.putString(THREAD_ID, threadId);
         bundle.putString(ADDRESS, address);
+        bundle.putBundle(CONTACT, contactBundle);
 
         ThreadFragment fragment = new ThreadFragment();
         fragment.setArguments(bundle);
@@ -103,6 +107,22 @@ public class ThreadFragment extends ListFragment implements
         setListAdapter(adapter);
 
         composeView.setText(retrieveDraft(phoneNumber));
+        setUpContactView(phoneNumber);
+    }
+
+    private void setUpContactView(PhoneNumber phoneNumber) {
+        Contact receivedContact = ContactFactory.desmooshContact(getArguments().getBundle(CONTACT));
+        final MessagesLoader messagesLoader = SingletonManager.getMessagesLoader(getActivity());
+        if (receivedContact == null) {
+            messagesLoader.queryContact(phoneNumber.toString(), new OnContactQueryListener() {
+                @Override
+                public void contactLoaded(final Contact contact) {
+                    contactView.setContact(contact, messagesLoader);
+                }
+            });
+        } else {
+            contactView.setContact(receivedContact, messagesLoader);
+        }
     }
 
     private String retrieveDraft(PhoneNumber phoneNumber) {
