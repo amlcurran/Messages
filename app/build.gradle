@@ -1,20 +1,17 @@
 apply plugin: 'com.android.application'
 
-def VERSION_MAJOR=0
-def VERSION_MINOR=1
-def VERSION_PATCH=0
+def VERSION_MAJOR = 0
+def VERSION_MINOR = 1
+def VERSION_PATCH = 0
 
 android {
     compileSdkVersion 19
     buildToolsVersion '19.1.0'
-
     defaultConfig {
         minSdkVersion 19
         targetSdkVersion 19
-        versionCode Integer.parseInt(new Date(System.currentTimeMillis()).format("YYYYMMdd"))
         /*versionName "${VERSION_MAJOR}.${VERSION_MINOR}.${VERSION_PATCH}"*/
     }
-
     signingConfigs {
         release {
             storeFile file("../release.keystore")
@@ -23,7 +20,6 @@ android {
             keyPassword MESSAGES_ALIAS_PW
         }
     }
-
     buildTypes {
         debug {
             applicationIdSuffix ".debug"
@@ -33,19 +29,27 @@ android {
             signingConfig signingConfigs.release
         }
     }
-
-        sourceSets {
-            main {
-                manifest.srcFile 'AndroidManifest.xml'
-                java.srcDirs = ['src']
-                res.srcDirs = ['res']
-                assets.srcDirs = ['assets']
-            }
-            debug {
-                res.srcDirs = ['res-debug']
-            }
+    sourceSets {
+        main {
+            manifest.srcFile 'AndroidManifest.xml'
+            java.srcDirs = ['src']
+            res.srcDirs = ['res']
+            assets.srcDirs = ['assets']
         }
-
+        debug {
+            res.srcDirs = ['res-debug']
+        }
+        demo {
+            res.srcDirs = ['res-demo']
+        }
+    }
+    productFlavors {
+        demo {
+            targetSdkVersion 19
+        }
+        real {
+        }
+    }
 }
 
 def getVersionName() {
