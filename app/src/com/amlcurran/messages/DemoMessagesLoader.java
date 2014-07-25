@@ -61,7 +61,6 @@ public class DemoMessagesLoader implements MessagesLoader {
 
     @Override
     public void loadThread(String threadId, ThreadListener threadListener) {
-
     }
 
     @Override
