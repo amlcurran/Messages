@@ -31,7 +31,7 @@
             android:id="@+id/sliding_pane">
 
             <FrameLayout
-                android:layout_width="280dp"
+                android:layout_width="320dp"
                 android:layout_height="match_parent"
                 android:id="@+id/container" />
 
