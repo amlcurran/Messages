@@ -20,7 +20,6 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.os.Handler;
 
-import com.amlcurran.messages.MessagesLog;
 import com.amlcurran.messages.SingletonManager;
 import com.amlcurran.messages.conversationlist.PhotoLoadListener;
 import com.amlcurran.messages.core.conversationlist.ConversationListListener;
@@ -58,7 +57,6 @@ public class ExecutorMessagesLoader implements MessagesLoader {
     }
 
     private void submit(final Callable task) {
-        MessagesLog.d(this, "Submitted " + task.getClass().getSimpleName());
         executor.execute(new Runnable() {
             @Override
             public void run() {
