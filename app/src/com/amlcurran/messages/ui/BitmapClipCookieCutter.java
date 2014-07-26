@@ -27,7 +27,7 @@ import android.graphics.RectF;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 
-public class BitmapClipCookieCutter {
+public class BitmapClipCookieCutter implements CookieCutter {
 
     private final CutImageView cutImageView;
     private final Paint borderPaint;
@@ -45,7 +45,8 @@ public class BitmapClipCookieCutter {
         this.croppedRect = new Rect();
     }
 
-    void cookieDraw(Canvas canvas) {
+    @Override
+    public void cookieDraw(Canvas canvas) {
         Drawable drawable = cutImageView.getDrawable();
 
         if (drawable == null) {
@@ -68,7 +69,7 @@ public class BitmapClipCookieCutter {
         }
     }
 
-    public Bitmap getCroppedBitmap(Bitmap source, int diameter) {
+    private Bitmap getCroppedBitmap(Bitmap source, int diameter) {
         Bitmap sbmp;
         if (source.getWidth() != diameter || source.getHeight() != diameter) {
             sbmp = Bitmap.createScaledBitmap(source, diameter, diameter, false);
@@ -95,10 +96,12 @@ public class BitmapClipCookieCutter {
         return output;
     }
 
+    @Override
     public void updateCircleRect(RectF circleRectF) {
         this.circleRectF = circleRectF;
     }
 
+    @Override
     public void updateBorderRect(RectF borderRectF) {
         this.borderRectF = borderRectF;
     }

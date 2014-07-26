@@ -35,7 +35,7 @@ public class CutImageView extends ImageView {
     private final RectF borderRectF;
     private final float borderWidth;
     protected final boolean drawOutline;
-    private final BitmapClipCookieCutter bitmapClipCookieCutter;
+    private final CookieCutter bitmapClipCookieCutter;
     private Bitmap bitmapBuffer;
 
     public CutImageView(Context context, AttributeSet attrs) {
