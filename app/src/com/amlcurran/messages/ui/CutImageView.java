@@ -63,7 +63,7 @@ public class CutImageView extends ImageView {
         borderPaint.setColor(Color.WHITE);
         borderPaint.setShadowLayer(borderWidth, 0, 0, Color.GRAY);
 
-        cookieCutter = new BitmapShaderCookieCutter(paint, borderPaint, drawOutline);
+        cookieCutter = new BitmapClipCookieCutter(this, paint, borderPaint, drawOutline);
     }
 
     @Override
