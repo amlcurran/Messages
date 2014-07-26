@@ -46,7 +46,7 @@ public class BitmapClipCookieCutter implements CookieCutter {
     }
 
     @Override
-    public void cookieDraw(Canvas canvas) {
+    public void draw(Canvas canvas) {
         Drawable drawable = cutImageView.getDrawable();
 
         if (drawable == null) {
@@ -67,6 +67,16 @@ public class BitmapClipCookieCutter implements CookieCutter {
                 canvas.drawArc(borderRectF, 0, 360, true, borderPaint);
             }
         }
+    }
+
+    @Override
+    public void updateImage(Bitmap bitmap) {
+
+    }
+
+    @Override
+    public void updateViewBounds(int height, int width) {
+
     }
 
     private Bitmap getCroppedBitmap(Bitmap source, int diameter) {

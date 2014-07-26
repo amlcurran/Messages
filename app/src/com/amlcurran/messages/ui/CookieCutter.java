@@ -16,6 +16,7 @@
 
 package com.amlcurran.messages.ui;
 
+import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.RectF;
 
@@ -25,5 +26,9 @@ public interface CookieCutter {
 
     void updateBorderRect(RectF borderRectF);
 
-    void cookieDraw(Canvas canvas);
+    void draw(Canvas canvas);
+
+    void updateImage(Bitmap bitmap);
+
+    void updateViewBounds(int height, int width);
 }

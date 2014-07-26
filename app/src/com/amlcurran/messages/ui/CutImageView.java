@@ -35,8 +35,7 @@ public class CutImageView extends ImageView {
     private final RectF borderRectF;
     private final float borderWidth;
     protected final boolean drawOutline;
-    private final CookieCutter bitmapClipCookieCutter;
-    private Bitmap bitmapBuffer;
+    private final CookieCutter cookieCutter;
 
     public CutImageView(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
@@ -64,7 +63,7 @@ public class CutImageView extends ImageView {
         borderPaint.setColor(Color.WHITE);
         borderPaint.setShadowLayer(borderWidth, 0, 0, Color.GRAY);
 
-        bitmapClipCookieCutter = new BitmapClipCookieCutter(this, paint, borderPaint, drawOutline);
+        cookieCutter = new BitmapShaderCookieCutter(paint, borderPaint, drawOutline);
     }
 
     @Override
@@ -74,10 +73,17 @@ public class CutImageView extends ImageView {
         setMeasuredDimension(maxDimen, maxDimen);
         setCircleRect(circleRectF, maxDimen);
         insetRect(borderRectF, circleRectF, -borderWidth / 2);
-        bitmapClipCookieCutter.updateCircleRect(circleRectF);
-        bitmapClipCookieCutter.updateBorderRect(borderRectF);
-        recycleBitmap();
-        bitmapBuffer = Bitmap.createBitmap(maxDimen, maxDimen, Bitmap.Config.ARGB_8888);
+        cookieCutter.updateCircleRect(circleRectF);
+        cookieCutter.updateBorderRect(borderRectF);
+        cookieCutter.updateViewBounds(getHeight(), getWidth());
+    }
+
+    @Override
+    public void setImageBitmap(Bitmap bm) {
+        if (bm != null) {
+            cookieCutter.updateImage(bm);
+        }
+        super.setImageBitmap(bm);
     }
 
     protected void setCircleRect(RectF circleRectF, int maxDimen) {
@@ -89,15 +95,9 @@ public class CutImageView extends ImageView {
         dest.set(src.left - offset, src.top - offset, src.right + offset, src.bottom + offset);
     }
 
-    private void recycleBitmap() {
-        if (bitmapBuffer != null) {
-            bitmapBuffer.recycle();
-        }
-    }
-
     @Override
     protected void onDraw(Canvas canvas) {
-        bitmapClipCookieCutter.cookieDraw(canvas);
+        cookieCutter.draw(canvas);
     }
 
 }
