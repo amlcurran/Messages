@@ -22,12 +22,7 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.PorterDuff;
-import android.graphics.PorterDuffXfermode;
-import android.graphics.Rect;
 import android.graphics.RectF;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.widget.ImageView;
 
@@ -38,12 +33,10 @@ public class CutImageView extends ImageView {
     public static final double CUT_HEIGHT_OFFSET = 1.0;
     private final RectF circleRectF;
     private final RectF borderRectF;
-    private final Paint borderPaint;
-    private final Rect croppedRect;
     private final float borderWidth;
     protected final boolean drawOutline;
+    private final BitmapClipCookieCutter bitmapClipCookieCutter;
     private Bitmap bitmapBuffer;
-    private final Paint paint;
 
     public CutImageView(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
@@ -59,18 +52,19 @@ public class CutImageView extends ImageView {
         borderWidth = context.getResources().getDimension(R.dimen.cut_image_border);
 
         circleRectF = new RectF();
-        borderPaint = new Paint();
         borderRectF = new RectF();
-        croppedRect = new Rect();
-        paint = new Paint();
+        Paint paint = new Paint();
 
         setImageResource(R.drawable.ic_contact_picture_unknown);
 
+        Paint borderPaint = new Paint();
         borderPaint.setStyle(Paint.Style.STROKE);
         borderPaint.setAntiAlias(true);
         borderPaint.setStrokeWidth(borderWidth);
         borderPaint.setColor(Color.WHITE);
         borderPaint.setShadowLayer(borderWidth, 0, 0, Color.GRAY);
+
+        bitmapClipCookieCutter = new BitmapClipCookieCutter(this, paint, borderPaint, drawOutline);
     }
 
     @Override
@@ -79,7 +73,9 @@ public class CutImageView extends ImageView {
         int maxDimen = Math.max(getMeasuredHeight(), getMeasuredWidth());
         setMeasuredDimension(maxDimen, maxDimen);
         setCircleRect(circleRectF, maxDimen);
-        insetRect(borderRectF, circleRectF, - borderWidth / 2);
+        insetRect(borderRectF, circleRectF, -borderWidth / 2);
+        bitmapClipCookieCutter.updateCircleRect(circleRectF);
+        bitmapClipCookieCutter.updateBorderRect(borderRectF);
         recycleBitmap();
         bitmapBuffer = Bitmap.createBitmap(maxDimen, maxDimen, Bitmap.Config.ARGB_8888);
     }
@@ -101,53 +97,7 @@ public class CutImageView extends ImageView {
 
     @Override
     protected void onDraw(Canvas canvas) {
-        Drawable drawable = getDrawable();
-
-        if (drawable == null) {
-            return;
-        }
-
-        if (getWidth() == 0 || getHeight() == 0) {
-            return;
-        }
-        Bitmap b = ((BitmapDrawable) drawable).getBitmap();
-
-        if (b != null) {
-            Bitmap bitmap = b.copy(Bitmap.Config.ARGB_8888, true);
-            int w = getWidth(), h = getHeight();
-            Bitmap roundBitmap = getCroppedBitmap(bitmap, w);
-            canvas.drawBitmap(roundBitmap, 0, 0, null);
-            if (drawOutline) {
-                canvas.drawArc(borderRectF, 0, 360, true, borderPaint);
-            }
-        }
-    }
-
-    public Bitmap getCroppedBitmap(Bitmap source, int diameter) {
-        Bitmap sbmp;
-        if (source.getWidth() != diameter || source.getHeight() != diameter) {
-            sbmp = Bitmap.createScaledBitmap(source, diameter, diameter, false);
-        } else {
-            sbmp = source;
-        }
-        Bitmap output = Bitmap.createBitmap(sbmp.getWidth(),
-                sbmp.getHeight(), Bitmap.Config.ARGB_8888);
-        Canvas canvas = new Canvas(output);
-
-        croppedRect.set(0, 0, sbmp.getWidth(), sbmp.getHeight());
-
-        paint.reset();
-        paint.setAntiAlias(true);
-        paint.setFilterBitmap(true);
-        paint.setDither(true);
-        canvas.drawARGB(0, 0, 0, 0);
-        paint.setColor(Color.parseColor("#BAB399"));
-        canvas.drawOval(circleRectF, paint);
-        paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
-        canvas.drawBitmap(sbmp, croppedRect, croppedRect, paint);
-
-
-        return output;
+        bitmapClipCookieCutter.cookieDraw(canvas);
     }
 
 }
