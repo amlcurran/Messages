@@ -80,7 +80,8 @@ public class ThreadFragment extends ListFragment implements
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_thread, container, false);
         ListView listView = (ListView) view.findViewById(android.R.id.list);
-        listView.setOnScrollListener(listListener);
+        //listView.setOnScrollListener(listListener);
+        listView.setTranscriptMode(ListView.TRANSCRIPT_MODE_NORMAL);
         listView.setStackFromBottom(true);
         listView.setDivider(null);
         composeView = ((ComposeMessageView) view.findViewById(R.id.thread_compose_view));
