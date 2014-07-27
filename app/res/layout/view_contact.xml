@@ -41,13 +41,15 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@android:id/text1"
-            style="@style/ConversationTitle"/>
+            android:singleLine="true"
+            android:ellipsize="end"
+            style="@style/Material.Title.Light"/>
 
         <TextView
             android:id="@android:id/text2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            style="@style/ConversationText"
+            style="@style/Material.Body1.Light"
             android:layout_marginTop="-4dp" />
 
     </LinearLayout>
