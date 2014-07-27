@@ -6,15 +6,25 @@
     </style>
 
     <style name="ThreadTimeStamp">
-        <item name="android:textAppearance">?android:attr/textAppearanceSmall</item>
+        <item name="android:textSize">12sp</item>
         <item name="android:ellipsize">end</item>
         <item name="android:singleLine">true</item>
-        <item name="android:textColor">@color/time_stamp_colour</item>
+        <item name="android:textColor">@color/material_text_low_dark</item>
     </style>
 
-    <style name="ThreadMessage">
-        <item name="android:textAppearance">?android:attr/textAppearanceMedium</item>
+    <style name="ThreadTimeStamp.Received">
+        <item name="android:textColor">@color/material_text_low_light</item>
+    </style>
+
+    <style name="ThreadMessage" parent="Material.Body1">
+        <item name="android:textSize">16sp</item>
+        <item name="android:lineSpacingMultiplier">1.1</item>
+        <item name="android:textColor">@color/material_text_standard_dark</item>
         <item name="android:textIsSelectable">true</item>
+    </style>
+
+    <style name="ThreadMessage.Received">
+        <item name="android:textColor">@color/material_text_standard_light</item>
     </style>
 
     <style name="DisabledBannerText">

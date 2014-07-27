@@ -3,6 +3,7 @@
     <color name="theme_colour">#1d9900</color>
     <color name="theme_colour_100">#1d9900</color>
     <color name="theme_colour_40">#661d9900</color>
+    <color name="theme_colour_60">#991d9900</color>
     <color name="theme_colour_20">#331d9900</color>
     <color name="theme_colour_light">#93c388</color>
     <color name="theme_colour_dark">#ff0f4f00</color>
