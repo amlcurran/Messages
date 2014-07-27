@@ -31,38 +31,25 @@
         <item name="android:background">@null</item>
     </style>
 
-    <style name="ConversationText">
-        <item name="android:textAppearance">?android:attr/textAppearanceSmall</item>
+    <style name="ConversationText" parent="Material.Body1">
         <item name="android:ellipsize">end</item>
-        <item name="android:singleLine">false</item>
         <item name="android:maxLines">2</item>
         <item name="android:minLines">2</item>
         <item name="android:lines">2</item>
     </style>
 
-    <style name="ConversationText.Inverse">
-        <item name="android:textAppearance">?android:attr/textAppearanceSmallInverse</item>
-    </style>
-
     <style name="ConversationText.Unread">
         <item name="android:textStyle">bold</item>
-        <item name="android:textColor">@android:color/primary_text_light</item>
+        <item name="android:textColor">@color/material_text_standard_dark</item>
     </style>
 
-    <style name="ConversationTitle">
-        <item name="android:textAppearance">?android:attr/textAppearanceMedium</item>
-        <item name="fontPath">RobotoSlab-Regular.ttf</item>
+    <style name="ConversationTitle" parent="Material.Title">
         <item name="android:singleLine">true</item>
         <item name="android:ellipsize">end</item>
     </style>
 
-    <style name="ConversationTitle.Inverse">
-        <item name="android:textAppearance">?android:attr/textAppearanceMediumInverse</item>
-    </style>
-
     <style name="ConversationTitle.Unread">
         <item name="android:textStyle">bold</item>
-        <item name="fontPath">RobotoSlab-Bold.ttf</item>
         <item name="android:textColor">@color/theme_colour</item>
     </style>
 

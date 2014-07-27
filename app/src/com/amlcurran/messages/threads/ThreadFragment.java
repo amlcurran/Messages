@@ -204,10 +204,6 @@ public class ThreadFragment extends ListFragment implements
         return contactView;
     }
 
-    public void setContactView(Contact contact, MessagesLoader messagesLoader) {
-        contactView.setContact(contact, messagesLoader);
-    }
-
     private AbsListView.OnScrollListener listListener = new AbsListView.OnScrollListener() {
 
         @Override

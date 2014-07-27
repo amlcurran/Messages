@@ -17,7 +17,6 @@
 package com.amlcurran.messages.ui;
 
 import android.content.Context;
-import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
@@ -46,17 +45,10 @@ public class ContactView extends LinearLayout {
         super(context, attrs, defStyle);
         inflate(LayoutInflater.from(context));
 
-        TypedArray array = context.obtainStyledAttributes(attrs, R.styleable.ContactView, defStyle, R.style.ContactView);
-        int titleAppearance = array.getResourceId(R.styleable.ContactView_titleTextAppearance, R.style.ContactViewTitle);
-        int secondaryAppearance = array.getResourceId(R.styleable.ContactView_secondaryTextAppearance, R.style.ConversationText);
-        array.recycle();
-
         contactImageView = (ImageView) findViewById(R.id.image);
         nameTextField = (TextView) findViewById(android.R.id.text1);
         secondTextField = (TextView) findViewById(android.R.id.text2);
 
-        nameTextField.setTextAppearance(context, titleAppearance);
-        secondTextField.setTextAppearance(context, secondaryAppearance);
     }
 
     protected void inflate(LayoutInflater inflater) {

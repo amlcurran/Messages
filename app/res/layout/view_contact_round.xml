@@ -33,6 +33,7 @@
         android:singleLine="true"
         android:ellipsize="end"
         android:id="@android:id/text1"
+        style="@style/Material.Title"
         android:gravity="center_horizontal" />
 
     <TextView
@@ -41,5 +42,6 @@
         android:singleLine="true"
         android:ellipsize="end"
         android:id="@android:id/text2"
+        style="@style/Material.Body1"
         android:gravity="center_horizontal" />
 </LinearLayout>

@@ -21,21 +21,21 @@
     <style name="Material.Body1">
         <item name="android:textAppearance">?android:attr/textAppearance</item>
         <item name="android:textSize">14sp</item>
-        <item name="android:textColor">@color/text_low_dark</item>
+        <item name="android:textColor">@color/material_text_low_dark</item>
     </style>
 
     <style name="Material.Body1.Light">
-        <item name="android:textColor">@color/text_low_light</item>
+        <item name="android:textColor">@color/material_text_low_light</item>
     </style>
 
     <style name="Material.Title">
         <item name="android:textAppearance">?android:attr/textAppearance</item>
         <item name="android:textSize">16sp</item>
-        <item name="android:textColor">@color/text_standard_dark</item>
+        <item name="android:textColor">@color/material_text_standard_dark</item>
     </style>
 
     <style name="Material.Title.Light">
-        <item name="android:textColor">@color/text_standard_light</item>
+        <item name="android:textColor">@color/material_text_standard_light</item>
     </style>
 
 

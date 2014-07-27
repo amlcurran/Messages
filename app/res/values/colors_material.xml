@@ -16,8 +16,8 @@
   -->
 
 <resources>
-    <color name="text_low_dark">#89000000</color>
-    <color name="text_low_light">#89FFFFFF</color>
-    <color name="text_standard_dark">#DD000000</color>
-    <color name="text_standard_light">#DDFFFFFF</color>
+    <color name="material_text_low_dark">#89000000</color>
+    <color name="material_text_low_light">#89FFFFFF</color>
+    <color name="material_text_standard_dark">#DD000000</color>
+    <color name="material_text_standard_light">#DDFFFFFF</color>
 </resources>

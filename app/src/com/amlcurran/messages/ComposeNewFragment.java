@@ -39,7 +39,7 @@ import com.amlcurran.messages.loaders.MessagesLoaderProvider;
 import com.amlcurran.messages.telephony.DefaultAppChecker;
 import com.amlcurran.messages.ui.ComposeMessageView;
 import com.amlcurran.messages.ui.ContactChipView;
-import com.amlcurran.messages.ui.SmallContactView;
+import com.amlcurran.messages.ui.RoundContactView;
 import com.espian.utils.ProviderHelper;
 import com.github.amlcurran.sourcebinder.ArrayListSource;
 import com.github.amlcurran.sourcebinder.SimpleBinder;
@@ -212,13 +212,13 @@ public class ComposeNewFragment extends Fragment implements ComposeMessageView.O
 
         @Override
         public View bindView(View convertView, Contact item, int position) {
-            ((SmallContactView) convertView).setContact(item, loader);
+            ((RoundContactView) convertView).setContact(item, loader);
             return convertView;
         }
 
         @Override
         public View createView(Context context, int itemViewType, ViewGroup parent) {
-            return new SmallContactView(context, null);
+            return new RoundContactView(context, null);
         }
 
     }

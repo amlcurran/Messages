@@ -22,14 +22,14 @@ import android.view.LayoutInflater;
 
 import com.amlcurran.messages.R;
 
-public class SmallContactView extends ContactView {
+public class RoundContactView extends ContactView {
 
-    public SmallContactView(Context context, AttributeSet attrs) {
+    public RoundContactView(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
 
     @Override
     protected void inflate(LayoutInflater inflater) {
-        inflater.inflate(R.layout.view_contact_small, this, true);
+        inflater.inflate(R.layout.view_contact_round, this, true);
     }
 }
