@@ -33,9 +33,9 @@
 
     <style name="ConversationText" parent="Material.Body1">
         <item name="android:ellipsize">end</item>
-        <item name="android:maxLines">2</item>
-        <item name="android:minLines">2</item>
-        <item name="android:lines">2</item>
+        <item name="android:maxLines">@integer/conversation_preview_lines</item>
+        <item name="android:minLines">@integer/conversation_preview_lines</item>
+        <item name="android:lines">@integer/conversation_preview_lines</item>
     </style>
 
     <style name="ConversationText.Unread">
@@ -46,6 +46,7 @@
     <style name="ConversationTitle" parent="Material.Title">
         <item name="android:singleLine">true</item>
         <item name="android:ellipsize">end</item>
+        <item name="android:paddingBottom">2dp</item>
     </style>
 
     <style name="ConversationTitle.Unread">
