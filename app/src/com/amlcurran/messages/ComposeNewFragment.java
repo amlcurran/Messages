@@ -195,7 +195,7 @@ public class ComposeNewFragment extends Fragment implements ComposeMessageView.O
     public void recipientChosen(Contact contact) {
         contactChip.setVisibility(View.VISIBLE);
         contactChip.setContact(contact, SingletonManager.getMessagesLoader(getActivity()));
-        pickPersonView.setText(contact.getNumber());
+        pickPersonView.setText(contact.getNumber().flatten());
     }
 
     public String getPreparedAddress() {

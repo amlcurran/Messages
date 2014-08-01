@@ -36,6 +36,7 @@ import com.amlcurran.messages.events.BroadcastEventSubscriber;
 import com.amlcurran.messages.loaders.MessagesLoader;
 import com.amlcurran.messages.loaders.MessagesLoaderProvider;
 import com.amlcurran.messages.preferences.PreferenceStore;
+import com.amlcurran.messages.preferences.PreferenceStoreDraftRepository;
 import com.amlcurran.messages.ui.MasterFragment;
 import com.espian.utils.ProviderHelper;
 import com.github.amlcurran.sourcebinder.ArrayListSource;
@@ -71,7 +72,7 @@ public class ConversationListFragment extends ListFragment implements Conversati
 
         preferenceListener = new PreferenceListener(getActivity(), this, "unread_priority");
         source = new ArrayListSource<Conversation>();
-        ConversationsBinder binder = new ConversationsBinder(getResources(), messageLoader);
+        ConversationsBinder binder = new ConversationsBinder(getResources(), messageLoader, new PreferenceStoreDraftRepository(getActivity()));
         adapter = new SourceBinderAdapter<Conversation>(getActivity(), source, binder);
         setListAdapter(adapter);
         getListView().setChoiceMode(ListView.CHOICE_MODE_MULTIPLE_MODAL);

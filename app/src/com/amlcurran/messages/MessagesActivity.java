@@ -164,7 +164,7 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
         fragmentController.replaceFragment(new MmsErrorFragment(), false);
     }
 
-    private void viewConversation(String threadId, String address) {
+    private void viewConversation(String threadId, PhoneNumber address) {
         fragmentController.loadConversationListFragment();
         fragmentController.replaceFragment(ThreadFragment.create(threadId, address, null), false);
     }
@@ -265,7 +265,7 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
 
     @Override
     public void onConversationSelected(Conversation conversation) {
-        String address = conversation.getAddress();
+        PhoneNumber address = conversation.getAddress();
         Bundle contactBundle = ContactFactory.smooshContact(conversation.getContact());
         final ThreadFragment fragment = ThreadFragment.create(conversation.getThreadId(), address, contactBundle);
 
@@ -325,7 +325,7 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
     }
 
     @Override
-    public void viewContact(String address) {
+    public void viewContact(PhoneNumber address) {
         statReporter.sendUiEvent("view_contact");
         messagesLoader.queryContact(address, new OnContactQueryListener() {
 

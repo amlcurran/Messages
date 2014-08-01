@@ -22,11 +22,11 @@ public class SavedContact implements Contact {
 
     private final long contactId;
     private final String name;
-    private final String address;
+    private final PhoneNumber address;
     private final long photoId;
     private final String lookupKey;
 
-    public SavedContact(long contactId, String name, String address, long photoId, String lookupKey) {
+    public SavedContact(long contactId, String name, PhoneNumber address, long photoId, String lookupKey) {
         this.contactId = contactId;
         this.name = name;
         this.address = address;
@@ -39,7 +39,7 @@ public class SavedContact implements Contact {
         if (!TextUtils.isEmpty(name)) {
             return name;
         } else {
-            return address;
+            return address.flatten();
         }
     }
 
@@ -59,7 +59,7 @@ public class SavedContact implements Contact {
     }
 
     @Override
-    public String getNumber() {
+    public PhoneNumber getNumber() {
         return address;
     }
 

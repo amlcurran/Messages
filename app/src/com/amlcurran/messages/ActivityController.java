@@ -90,10 +90,10 @@ public class ActivityController {
         activity.startService(intent);
     }
 
-    public void addContact(String number) {
+    public void addContact(PhoneNumber number) {
         Intent intent = new Intent(Intent.ACTION_INSERT);
         intent.setType(ContactsContract.Contacts.CONTENT_TYPE);
-        intent.putExtra(ContactsContract.Intents.Insert.PHONE, PhoneNumberUtils.stripSeparators(number));
+        intent.putExtra(ContactsContract.Intents.Insert.PHONE, PhoneNumberUtils.stripSeparators(number.flatten()));
         activity.startActivityForResult(intent, SAVE_CONTACT);
     }
 }

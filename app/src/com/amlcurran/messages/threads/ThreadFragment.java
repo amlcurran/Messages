@@ -66,10 +66,10 @@ public class ThreadFragment extends ListFragment implements
     private ContactView contactView;
     private ThreadController threadController;
 
-    public static ThreadFragment create(String threadId, String address, Bundle contactBundle) {
+    public static ThreadFragment create(String threadId, PhoneNumber address, Bundle contactBundle) {
         Bundle bundle = new Bundle();
         bundle.putString(THREAD_ID, threadId);
-        bundle.putString(ADDRESS, address);
+        bundle.putString(ADDRESS, address.flatten());
         bundle.putBundle(CONTACT, contactBundle);
 
         ThreadFragment fragment = new ThreadFragment();
@@ -118,7 +118,7 @@ public class ThreadFragment extends ListFragment implements
         Contact receivedContact = ContactFactory.desmooshContact(getArguments().getBundle(CONTACT));
         final MessagesLoader messagesLoader = SingletonManager.getMessagesLoader(getActivity());
         if (receivedContact == null) {
-            messagesLoader.queryContact(phoneNumber.flatten(), new OnContactQueryListener() {
+            messagesLoader.queryContact(phoneNumber, new OnContactQueryListener() {
                 @Override
                 public void contactLoaded(final Contact contact) {
                     contactView.setContact(contact, messagesLoader);

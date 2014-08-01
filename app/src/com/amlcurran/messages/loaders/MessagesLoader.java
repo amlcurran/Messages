@@ -16,6 +16,7 @@
 
 package com.amlcurran.messages.loaders;
 
+import com.amlcurran.messages.core.data.PhoneNumber;
 import com.amlcurran.messages.core.loaders.ContactListListener;
 import com.amlcurran.messages.core.data.Contact;
 import com.amlcurran.messages.core.data.Sort;
@@ -41,7 +42,7 @@ public interface MessagesLoader {
 
     void cancelAll();
 
-    void queryContact(String address, OnContactQueryListener onContactQueryListener);
+    void queryContact(PhoneNumber phoneNumber, OnContactQueryListener onContactQueryListener);
 
     void deleteThreads(List<Conversation> conversation, OnThreadDeleteListener threadDeleteListener);
 

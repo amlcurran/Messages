@@ -25,6 +25,7 @@ import android.provider.ContactsContract;
 import com.amlcurran.messages.core.data.Contact;
 import com.amlcurran.messages.core.data.RawContact;
 import com.amlcurran.messages.data.ContactFactory;
+import com.amlcurran.messages.data.ParcelablePhoneNumber;
 
 import java.util.concurrent.Callable;
 
@@ -52,7 +53,7 @@ class ContactTask implements Callable<Object> {
             Contact contact = ContactFactory.fromCursor(result);
             postResult(contact);
         } else {
-            RawContact contact = new RawContact(address);
+            RawContact contact = new RawContact(new ParcelablePhoneNumber(address));
             postResult(contact);
         }
         result.close();

@@ -48,11 +48,11 @@ public class ContactFactory {
         long contactId = CursorHelper.asLong(peopleCursor, ContactsContract.Contacts._ID);
         String rawAddress = CursorHelper.asString(peopleCursor, ContactsContract.CommonDataKinds.Phone.NUMBER);
         String lookupKey = CursorHelper.asString(peopleCursor, ContactsContract.Contacts.LOOKUP_KEY);
-        return new SavedContact(contactId, person, rawAddress, photoId, lookupKey);
+        return new SavedContact(contactId, person, new ParcelablePhoneNumber(rawAddress), photoId, lookupKey);
     }
 
-    public static Contact fromAddress(String address1) {
-        return new RawContact(address1);
+    public static Contact fromAddress(String number) {
+        return new RawContact(new ParcelablePhoneNumber(number));
     }
 
     public static Uri uriForContact(Contact contact, ContentResolver contentResolver) {
@@ -66,7 +66,7 @@ public class ContactFactory {
                 .put(SMOOSH_PHOTO_ID, contact.getPhotoId())
                 .put(SMOOSH_CONTACT_ID, contact.getContactId())
                 .put(SMOOSH_LOOKUP_KEY, contact.getLookupKey())
-                .put(SMOOSH_NUMBER, contact.getNumber())
+                .put(SMOOSH_NUMBER, contact.getNumber().flatten())
                 .put(SMOOSH_IS_SAVED, contact.isSaved())
                 .build();
     }
@@ -81,9 +81,9 @@ public class ContactFactory {
             long contactId = bundle.getLong(SMOOSH_CONTACT_ID);
             String rawAddress = bundle.getString(SMOOSH_NUMBER);
             String lookupKey = bundle.getString(SMOOSH_LOOKUP_KEY);
-            return new SavedContact(contactId, person, rawAddress, photoId, lookupKey);
+            return new SavedContact(contactId, person, new ParcelablePhoneNumber(rawAddress), photoId, lookupKey);
         } else {
-            return new RawContact(bundle.getString(SMOOSH_NUMBER));
+            return new RawContact(new ParcelablePhoneNumber(bundle.getString(SMOOSH_NUMBER)));
         }
     }
 

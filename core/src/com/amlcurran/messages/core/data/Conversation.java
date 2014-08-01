@@ -18,13 +18,13 @@ package com.amlcurran.messages.core.data;
 
 public class Conversation {
 
-    private final String address;
+    private final PhoneNumber address;
     private final String body;
     private final String threadId;
     private final boolean isRead;
     private final Contact contact;
 
-    public Conversation(String address, String body, String threadId, boolean isRead, Contact contact) {
+    public Conversation(PhoneNumber address, String body, String threadId, boolean isRead, Contact contact) {
         this.address = address;
         this.body = body;
         this.threadId = threadId;
@@ -36,7 +36,7 @@ public class Conversation {
         return body;
     }
 
-    public String getAddress() {
+    public PhoneNumber getAddress() {
         return address;
     }
 

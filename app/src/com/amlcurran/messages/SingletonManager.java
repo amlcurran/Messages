@@ -20,6 +20,7 @@ import android.content.Context;
 
 import com.amlcurran.messages.events.EventBus;
 import com.amlcurran.messages.loaders.MessagesLoader;
+import com.amlcurran.messages.notifications.Notifier;
 import com.amlcurran.messages.reporting.StatReporter;
 
 public class SingletonManager {
@@ -40,7 +41,7 @@ public class SingletonManager {
         return getMessagesApp(context).loader;
     }
 
-    public static com.amlcurran.messages.notifications.Notifier getNotifier(Context context) {
+    public static Notifier getNotifier(Context context) {
         return getMessagesApp(context).notifier;
     }
 }

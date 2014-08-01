@@ -62,7 +62,7 @@ public class ContactView extends LinearLayout {
             @Override
             public void run() {
                 nameTextField.setText(contact.getDisplayName());
-                secondTextField.setText(contact.getNumber());
+                secondTextField.setText(contact.getNumber().flatten());
                 contactImageView.setAlpha(0f);
             }
         });

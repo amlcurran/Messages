@@ -22,11 +22,13 @@ import com.amlcurran.messages.conversationlist.PhotoLoadListener;
 import com.amlcurran.messages.core.conversationlist.ConversationListListener;
 import com.amlcurran.messages.core.data.Contact;
 import com.amlcurran.messages.core.data.Conversation;
+import com.amlcurran.messages.core.data.PhoneNumber;
 import com.amlcurran.messages.core.data.SavedContact;
 import com.amlcurran.messages.core.data.Sort;
 import com.amlcurran.messages.core.loaders.ContactListListener;
 import com.amlcurran.messages.core.loaders.ConversationListChangeListener;
 import com.amlcurran.messages.core.loaders.ThreadListener;
+import com.amlcurran.messages.data.ParcelablePhoneNumber;
 import com.amlcurran.messages.loaders.MessagesLoader;
 import com.amlcurran.messages.loaders.OnContactQueryListener;
 import com.amlcurran.messages.loaders.OnThreadDeleteListener;
@@ -48,8 +50,9 @@ public class DemoMessagesLoader implements MessagesLoader {
         String[] bodies = getStringArray(R.array.demo_bodies);
         String[] contactNames = getStringArray(R.array.demo_contact_names);
         for (int i = 0; i < numbers.length; i++) {
-            Contact contact = new SavedContact(i, contactNames[i], numbers[i], i, String.valueOf(i));
-            Conversation conversation = new Conversation(numbers[i], bodies[i], String.valueOf(i), i != 4, contact);
+            PhoneNumber number = new ParcelablePhoneNumber(numbers[i]);
+            Contact contact = new SavedContact(i, contactNames[i], number, i, String.valueOf(i));
+            Conversation conversation = new Conversation(number, bodies[i], String.valueOf(i), i != 4, contact);
             fakeConversations.add(conversation);
         }
         loadListener.onConversationListLoaded(fakeConversations);
@@ -84,7 +87,7 @@ public class DemoMessagesLoader implements MessagesLoader {
     }
 
     @Override
-    public void queryContact(String address, OnContactQueryListener onContactQueryListener) {
+    public void queryContact(PhoneNumber address, OnContactQueryListener onContactQueryListener) {
 
     }
 

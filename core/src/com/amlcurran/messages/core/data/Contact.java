@@ -25,7 +25,7 @@ public interface Contact {
 
     String getLookupKey();
 
-    String getNumber();
+    PhoneNumber getNumber();
 
     boolean isSaved();
 }

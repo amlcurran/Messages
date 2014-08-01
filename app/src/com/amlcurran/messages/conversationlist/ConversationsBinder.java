@@ -28,6 +28,7 @@ import android.widget.TextView;
 import com.amlcurran.messages.R;
 import com.amlcurran.messages.core.data.Contact;
 import com.amlcurran.messages.core.data.Conversation;
+import com.amlcurran.messages.core.data.DraftRepository;
 import com.amlcurran.messages.loaders.MessagesLoader;
 import com.github.amlcurran.sourcebinder.SimpleBinder;
 
@@ -37,9 +38,11 @@ public class ConversationsBinder extends SimpleBinder<Conversation> {
     private static final int IS_READ = 0;
     private final float animationLength;
     private final MessagesLoader loader;
+    private final DraftRepository draftRepository;
 
-    public ConversationsBinder(Resources resources, MessagesLoader loader) {
+    public ConversationsBinder(Resources resources, MessagesLoader loader, DraftRepository draftRepository) {
         this.loader = loader;
+        this.draftRepository = draftRepository;
         this.animationLength = resources.getDimension(R.dimen.photo_animation_length);
     }
 
@@ -64,10 +67,14 @@ public class ConversationsBinder extends SimpleBinder<Conversation> {
         }
 
         textView1.setText(item.getContact().getDisplayName());
-        textView2.setText(item.getSummaryText());
+        textView2.setText(getSummaryText(item));
 
         convertView.setTag(item);
         return convertView;
+    }
+
+    private CharSequence getSummaryText(Conversation item) {
+        return item.getSummaryText();
     }
 
     private static boolean isNotSameItem(View convertView, Conversation item) {

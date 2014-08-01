@@ -27,7 +27,6 @@ import com.amlcurran.messages.R;
 import com.amlcurran.messages.analysis.Link;
 import com.amlcurran.messages.core.data.Contact;
 import com.amlcurran.messages.core.data.Conversation;
-import com.amlcurran.messages.data.ParcelablePhoneNumber;
 import com.amlcurran.messages.core.data.PhoneNumber;
 import com.amlcurran.messages.loaders.ExecutingIntentService;
 import com.amlcurran.messages.telephony.SmsSender;
@@ -56,7 +55,7 @@ class NotificationActionBuilder {
         Intent replyIntent = new Intent(context, SmsSender.class);
         replyIntent.setAction(SmsSender.ACTION_SEND_REQUEST);
         replyIntent.putExtra(SmsSender.FROM_WEAR, true);
-        replyIntent.putExtra(SmsSender.EXTRA_NUMBER, conversation.getAddress());
+        replyIntent.putExtra(SmsSender.EXTRA_NUMBER, conversation.getAddress().flatten());
         PendingIntent replyPendingIntent = PendingIntent.getService(context, 0, replyIntent, PendingIntent.FLAG_UPDATE_CURRENT);
         return new NotificationCompat.Action.Builder(R.drawable.ic_wear_reply,
                 context.getString(R.string.reply), replyPendingIntent)
@@ -71,7 +70,7 @@ class NotificationActionBuilder {
     }
 
     public NotificationCompat.Action call(Contact contact) {
-        PendingIntent callIntent = callPendingIntent(new ParcelablePhoneNumber(contact.getNumber()));
+        PendingIntent callIntent = callPendingIntent(contact.getNumber());
         String label = context.getString(R.string.call);
         return new NotificationCompat.Action.Builder(R.drawable.ic_action_ring_volume, label, callIntent).build();
     }

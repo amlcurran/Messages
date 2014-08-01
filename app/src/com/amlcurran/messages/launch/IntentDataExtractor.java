@@ -19,6 +19,9 @@ package com.amlcurran.messages.launch;
 import android.content.Intent;
 import android.net.Uri;
 
+import com.amlcurran.messages.core.data.PhoneNumber;
+import com.amlcurran.messages.data.ParcelablePhoneNumber;
+
 public class IntentDataExtractor {
     private final Intent intent;
 
@@ -39,7 +42,7 @@ public class IntentDataExtractor {
         return intent.getStringExtra(LaunchAssistant.EXTRA_THREAD_ID);
     }
 
-    public String getAddress() {
-        return intent.getStringExtra(LaunchAssistant.EXTRA_ADDRESS);
+    public PhoneNumber getAddress() {
+        return new ParcelablePhoneNumber(intent.getStringExtra(LaunchAssistant.EXTRA_ADDRESS));
     }
 }

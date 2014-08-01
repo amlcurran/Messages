@@ -18,15 +18,15 @@ package com.amlcurran.messages.core.data;
 
 public class RawContact implements Contact {
 
-    private final String address;
+    private final PhoneNumber address;
 
-    public RawContact(String address) {
+    public RawContact(PhoneNumber address) {
         this.address = address;
     }
 
     @Override
     public String getDisplayName() {
-        return address;
+        return address.flatten();
     }
 
     @Override
@@ -45,7 +45,7 @@ public class RawContact implements Contact {
     }
 
     @Override
-    public String getNumber() {
+    public PhoneNumber getNumber() {
         return address;
     }
 

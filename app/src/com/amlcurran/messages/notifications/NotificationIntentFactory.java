@@ -37,7 +37,7 @@ public class NotificationIntentFactory {
         Intent intent = new Intent(context, MessagesActivity.class);
         intent.setAction(Notifier.ACTION_VIEW_CONVERSATION);
         intent.putExtra(LaunchAssistant.EXTRA_THREAD_ID, conversation.getThreadId());
-        intent.putExtra(LaunchAssistant.EXTRA_ADDRESS, conversation.getAddress());
+        intent.putExtra(LaunchAssistant.EXTRA_ADDRESS, conversation.getAddress().flatten());
         return PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT);
     }
 

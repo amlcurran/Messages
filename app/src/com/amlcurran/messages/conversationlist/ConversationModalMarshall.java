@@ -24,6 +24,7 @@ import android.widget.AbsListView;
 import com.amlcurran.messages.R;
 import com.amlcurran.messages.core.data.Contact;
 import com.amlcurran.messages.core.data.Conversation;
+import com.amlcurran.messages.core.data.PhoneNumber;
 import com.espian.utils.ui.MenuFinder;
 import com.github.amlcurran.sourcebinder.Source;
 
@@ -112,7 +113,7 @@ public class ConversationModalMarshall implements AbsListView.MultiChoiceModeLis
     }
 
     public interface Callback {
-        void viewContact(String address);
+        void viewContact(PhoneNumber address);
 
         void deleteThreads(List<Conversation> conversation);
 
