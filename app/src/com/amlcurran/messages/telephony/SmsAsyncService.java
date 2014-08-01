@@ -36,7 +36,7 @@ public class SmsAsyncService extends IntentService {
     protected void onHandleIntent(Intent intent) {
         if (SmsReceiver.ASYNC_WRITE.equals(intent.getAction())) {
 
-            WriteType writeType = WriteType.fromIntent(intent);
+            WriteType writeType = WriteTypeFactory.fromIntent(intent);
             InFlightSmsMessage smsMessage = intent.getParcelableExtra(SmsReceiver.EXTRA_MESSAGE);
 
             switch (writeType) {
