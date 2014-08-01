@@ -14,14 +14,12 @@
  * limitations under the License.
  */
 
-package com.amlcurran.messages.preferences;
+package com.amlcurran.messages.core.data;
 
-public class PreferencesDraftRepository {
+public interface DraftRepository {
+    String getDraft(PhoneNumber address);
 
-    private PreferenceStore preferenceStore;
+    void storeDraft(PhoneNumber address, String body);
 
-    public PreferencesDraftRepository(PreferenceStore preferenceStore) {
-        this.preferenceStore = preferenceStore;
-    }
-
+    void clearDraft(PhoneNumber address);
 }

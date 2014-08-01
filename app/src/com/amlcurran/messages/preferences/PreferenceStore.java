@@ -23,7 +23,6 @@ import android.preference.PreferenceManager;
 
 import com.amlcurran.messages.core.TextUtils;
 import com.amlcurran.messages.core.data.Sort;
-import com.amlcurran.messages.core.data.PhoneNumber;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,9 +36,11 @@ public class PreferenceStore {
     public static final String PERSISTENT_NOTIFICATION = "persistent_notification";
     private final SharedPreferences preferences;
     private final List<PreferenceChangedListener> changedListenerList = new ArrayList<PreferenceChangedListener>();
+    private final PreferenceStoreDraftRepository draftRepository;
 
     public PreferenceStore(Context context) {
-        this.preferences = PreferenceManager.getDefaultSharedPreferences(context);
+        preferences = PreferenceManager.getDefaultSharedPreferences(context);
+        draftRepository = new PreferenceStoreDraftRepository(context);
     }
 
     public Sort getConversationSort() {
@@ -71,11 +72,11 @@ public class PreferenceStore {
     }
 
     private void registerListener() {
-        this.preferences.registerOnSharedPreferenceChangeListener(internalChangeListener);
+        preferences.registerOnSharedPreferenceChangeListener(internalChangeListener);
     }
 
     private void unregisterListener() {
-        this.preferences.unregisterOnSharedPreferenceChangeListener(internalChangeListener);
+        preferences.unregisterOnSharedPreferenceChangeListener(internalChangeListener);
     }
 
     private SharedPreferences.OnSharedPreferenceChangeListener internalChangeListener =
@@ -100,26 +101,6 @@ public class PreferenceStore {
         preferences.edit()
                 .putBoolean(SHOWN_ALPHA_MESSAGE, false)
                 .apply();
-    }
-
-    public String getDraft(PhoneNumber address) {
-        return preferences.getString(getDraftKey(address), null);
-    }
-
-    public void storeDraft(PhoneNumber address, String body) {
-        preferences.edit()
-                .putString(getDraftKey(address), body)
-                .apply();
-    }
-
-    public void clearDraft(PhoneNumber address) {
-        preferences.edit()
-                .remove(getDraftKey(address))
-                .apply();
-    }
-
-    private static String getDraftKey(PhoneNumber phoneNumber) {
-        return "draft" + phoneNumber.flatten();
     }
 
     public boolean isNotificationPersistent() {

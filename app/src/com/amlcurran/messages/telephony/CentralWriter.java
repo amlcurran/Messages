@@ -2,9 +2,9 @@ package com.amlcurran.messages.telephony;
 
 import android.content.Context;
 
-import com.amlcurran.messages.data.InFlightSmsMessage;
 import com.amlcurran.messages.core.data.PhoneNumber;
-import com.amlcurran.messages.preferences.PreferenceStore;
+import com.amlcurran.messages.data.InFlightSmsMessage;
+import com.amlcurran.messages.preferences.PreferenceStoreDraftRepository;
 
 public class CentralWriter {
 
@@ -15,12 +15,10 @@ public class CentralWriter {
     }
 
     public void storeDraft(InFlightSmsMessage message) {
-//        Intent intent = SmsAsyncService.getAsyncWriteIntent(getActivity(), message, WriteType.DRAFT);
-//        getActivity().startService(intent);
-        new PreferenceStore(context).storeDraft(message.getPhoneNumber(), message.getBody());
+        new PreferenceStoreDraftRepository(context).storeDraft(message.getPhoneNumber(), message.getBody());
     }
 
     public void clearDraft(PhoneNumber phoneNumber) {
-        new PreferenceStore(context).clearDraft(phoneNumber);
+        new PreferenceStoreDraftRepository(context).clearDraft(phoneNumber);
     }
 }

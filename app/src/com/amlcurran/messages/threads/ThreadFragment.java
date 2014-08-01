@@ -34,14 +34,14 @@ import com.amlcurran.messages.R;
 import com.amlcurran.messages.SingletonManager;
 import com.amlcurran.messages.SmsComposeListener;
 import com.amlcurran.messages.core.data.Contact;
+import com.amlcurran.messages.core.data.PhoneNumber;
 import com.amlcurran.messages.core.data.SmsMessage;
 import com.amlcurran.messages.data.ContactFactory;
 import com.amlcurran.messages.data.InFlightSmsMessage;
 import com.amlcurran.messages.data.ParcelablePhoneNumber;
-import com.amlcurran.messages.core.data.PhoneNumber;
 import com.amlcurran.messages.loaders.MessagesLoader;
 import com.amlcurran.messages.loaders.OnContactQueryListener;
-import com.amlcurran.messages.preferences.PreferenceStore;
+import com.amlcurran.messages.preferences.PreferenceStoreDraftRepository;
 import com.amlcurran.messages.telephony.CentralWriter;
 import com.amlcurran.messages.ui.ComposeMessageView;
 import com.amlcurran.messages.ui.ContactView;
@@ -130,7 +130,7 @@ public class ThreadFragment extends ListFragment implements
     }
 
     private String retrieveDraft(PhoneNumber phoneNumber) {
-        return new PreferenceStore(getActivity()).getDraft(phoneNumber);
+        return new PreferenceStoreDraftRepository(getActivity()).getDraft(phoneNumber);
     }
 
     private void saveDraft() {
