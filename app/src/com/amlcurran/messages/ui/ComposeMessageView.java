@@ -39,7 +39,9 @@ public class ComposeMessageView extends LinearLayout implements View.OnClickList
     private final ImageButton sendButton;
     private final BlockProgressBar progress;
     private final SmsCounter smsCounter;
-    private OnMessageComposedListener messageComposedListener = OnMessageComposedListener.NONE;
+    private final TextView smsRequiredView;
+    private ComposureCallbacks messageComposedListener = NONE;
+    private int numberOfRequiredSms = 0;
 
     public ComposeMessageView(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
@@ -48,6 +50,7 @@ public class ComposeMessageView extends LinearLayout implements View.OnClickList
     public ComposeMessageView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
         LayoutInflater.from(context).inflate(R.layout.view_compose_message, this);
+        smsRequiredView = ((TextView) findViewById(R.id.compose_sms_number));
         textEntryField = ((EditText) findViewById(R.id.thread_sms_entry));
         sendButton = ((ImageButton) findViewById(R.id.thread_sms_send));
         progress = (BlockProgressBar) findViewById(R.id.compose_progress);
@@ -90,6 +93,12 @@ public class ComposeMessageView extends LinearLayout implements View.OnClickList
         SmsCounter.SmsCount smsDeets = smsCounter.getSmsDeets(s);
         progress.setTotal(smsDeets.messageLength);
         progress.setProgress(smsDeets.usedCharacters);
+        if (smsDeets.numberOfRequiredSms > 1) {
+            smsRequiredView.setText(Integer.toString(smsDeets.numberOfRequiredSms));
+            smsRequiredView.setVisibility(VISIBLE);
+        } else {
+            smsRequiredView.setVisibility(GONE);
+        }
     }
 
     @Override
@@ -97,7 +106,7 @@ public class ComposeMessageView extends LinearLayout implements View.OnClickList
 
     }
 
-    public void setComposeListener(OnMessageComposedListener messageComposedListener) {
+    public void setComposeListener(ComposureCallbacks messageComposedListener) {
         this.messageComposedListener = messageComposedListener;
     }
 
@@ -127,14 +136,15 @@ public class ComposeMessageView extends LinearLayout implements View.OnClickList
         return String.valueOf(textEntryField.getText());
     }
 
-    public interface OnMessageComposedListener {
-        OnMessageComposedListener NONE = new OnMessageComposedListener() {
-            @Override
-            public void onMessageComposed(CharSequence body) {
-
-            }
-        };
+    public interface ComposureCallbacks {
         void onMessageComposed(CharSequence body);
     }
+
+    public static final ComposureCallbacks NONE = new ComposureCallbacks() {
+        @Override
+        public void onMessageComposed(CharSequence body) {
+
+        }
+    };
 
 }

@@ -53,7 +53,7 @@ import com.github.amlcurran.sourcebinder.SourceBinderAdapter;
 import java.util.Calendar;
 
 public class ThreadFragment extends ListFragment implements
-        ComposeMessageView.OnMessageComposedListener,
+        ComposeMessageView.ComposureCallbacks,
         CustomHeaderFragment, ThreadController.Callback {
 
     private static final String THREAD_ID = "threadId";

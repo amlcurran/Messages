@@ -48,7 +48,7 @@ import com.github.amlcurran.sourcebinder.SourceBinderAdapter;
 import java.util.Calendar;
 import java.util.List;
 
-public class ComposeNewFragment extends Fragment implements ComposeMessageView.OnMessageComposedListener, RecipientChooser.ChooserListener, ContactChipView.RemoveListener {
+public class ComposeNewFragment extends Fragment implements ComposeMessageView.ComposureCallbacks, RecipientChooser.ChooserListener, ContactChipView.RemoveListener {
 
     private static final String EXTRA_ADDRESS = "address";
     private static final String EXTRA_MESSAGE = "message";

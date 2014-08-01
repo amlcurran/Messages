@@ -46,12 +46,33 @@
                 android:layout_gravity="center_vertical"
                 android:inputType="textShortMessage|text|textMultiLine|textCapSentences|textAutoCorrect"/>
 
-        <ImageButton
-                android:layout_width="@dimen/thread_message_offset_horizontal"
-                android:layout_height="match_parent"
-                android:contentDescription="@string/cd_send_button"
-                android:id="@+id/thread_sms_send"
-                android:src="@drawable/ic_action_send"
-                android:background="@drawable/selectable_background_messages"/>
+        <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="wrap_content"
+                android:animateLayoutChanges="true"
+                android:layout_height="fill_parent">
+
+            <ImageButton
+                    android:layout_width="@dimen/thread_message_offset_horizontal"
+                    android:layout_height="0dp"
+                    android:contentDescription="@string/cd_send_button"
+                    android:id="@+id/thread_sms_send"
+                    android:src="@drawable/ic_action_send"
+                    android:background="@drawable/selectable_background_messages"
+                    android:layout_weight="1"/>
+
+            <TextView
+                    android:layout_width="match_parent"
+                    android:padding="4dp"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/compose_sms_number"
+                    style="@style/Material.Body1.Light"
+                    android:textColor="@color/theme_colour_60"
+                    android:textSize="24sp"
+                    android:gravity="center"
+                    android:visibility="gone"/>
+
+        </LinearLayout>
+
     </LinearLayout>
 </LinearLayout>
