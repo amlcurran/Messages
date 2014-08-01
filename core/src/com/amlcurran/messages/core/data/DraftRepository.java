@@ -22,4 +22,6 @@ public interface DraftRepository {
     void storeDraft(PhoneNumber address, String body);
 
     void clearDraft(PhoneNumber address);
+
+    boolean hasDraft(PhoneNumber address);
 }

@@ -20,6 +20,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
+import com.amlcurran.messages.core.TextUtils;
 import com.amlcurran.messages.core.data.DraftRepository;
 import com.amlcurran.messages.core.data.PhoneNumber;
 
@@ -51,5 +52,10 @@ public class PreferenceStoreDraftRepository implements DraftRepository {
         preferences.edit()
                 .remove(getDraftKey(address))
                 .apply();
+    }
+
+    @Override
+    public boolean hasDraft(PhoneNumber address) {
+        return !TextUtils.isEmpty(preferences.getString(getDraftKey(address), null));
     }
 }

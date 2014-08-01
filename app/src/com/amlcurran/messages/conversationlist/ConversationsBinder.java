@@ -19,6 +19,7 @@ package com.amlcurran.messages.conversationlist;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
+import android.text.style.ForegroundColorSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,6 +27,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.amlcurran.messages.R;
+import com.amlcurran.messages.bucket.Truss;
 import com.amlcurran.messages.core.data.Contact;
 import com.amlcurran.messages.core.data.Conversation;
 import com.amlcurran.messages.core.data.DraftRepository;
@@ -39,11 +41,15 @@ public class ConversationsBinder extends SimpleBinder<Conversation> {
     private final float animationLength;
     private final MessagesLoader loader;
     private final DraftRepository draftRepository;
+    private final String draftPreamble;
+    private final int draftPreambleTextColor;
 
     public ConversationsBinder(Resources resources, MessagesLoader loader, DraftRepository draftRepository) {
         this.loader = loader;
         this.draftRepository = draftRepository;
         this.animationLength = resources.getDimension(R.dimen.photo_animation_length);
+        this.draftPreamble = resources.getString(R.string.draft_preamble);
+        this.draftPreambleTextColor = resources.getColor(R.color.theme_colour);
     }
 
     @Override
@@ -74,7 +80,24 @@ public class ConversationsBinder extends SimpleBinder<Conversation> {
     }
 
     private CharSequence getSummaryText(Conversation item) {
-        return item.getSummaryText();
+        if (showDraftAsSummary(item)) {
+            return constructDraftSummary(item);
+        } else {
+            return item.getSummaryText();
+        }
+    }
+
+    private boolean showDraftAsSummary(Conversation item) {
+        return draftRepository.hasDraft(item.getAddress()) && item.isRead();
+    }
+
+    private CharSequence constructDraftSummary(Conversation item) {
+        Truss truss = new Truss();
+        return truss.pushSpan(new ForegroundColorSpan(draftPreambleTextColor))
+                .append(draftPreamble)
+                .popSpan()
+                .append(draftRepository.getDraft(item.getAddress()))
+                .build();
     }
 
     private static boolean isNotSameItem(View convertView, Conversation item) {
