@@ -78,7 +78,6 @@ public class ExecutorMessagesLoader implements MessagesLoader {
                 @Override
                 public void onConversationListLoaded(List<Conversation> conversations) {
                     eventBus.postListLoaded();
-                    SingletonManager.getNotifier(context).updateUnreadNotification(false);
                 }
             }, sort, cache));
         } else {
