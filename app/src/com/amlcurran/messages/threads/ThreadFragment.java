@@ -37,7 +37,8 @@ import com.amlcurran.messages.core.data.Contact;
 import com.amlcurran.messages.core.data.SmsMessage;
 import com.amlcurran.messages.data.ContactFactory;
 import com.amlcurran.messages.data.InFlightSmsMessage;
-import com.amlcurran.messages.data.PhoneNumber;
+import com.amlcurran.messages.data.ParcelablePhoneNumber;
+import com.amlcurran.messages.core.data.PhoneNumber;
 import com.amlcurran.messages.loaders.MessagesLoader;
 import com.amlcurran.messages.loaders.OnContactQueryListener;
 import com.amlcurran.messages.preferences.PreferenceStore;
@@ -60,7 +61,7 @@ public class ThreadFragment extends ListFragment implements
     private static final String CONTACT = "contact";
 
     private SmsComposeListener listener;
-    private PhoneNumber phoneNumber;
+    private ParcelablePhoneNumber phoneNumber;
     private ComposeMessageView composeView;
     private ContactView contactView;
     private ThreadController threadController;
@@ -99,7 +100,7 @@ public class ThreadFragment extends ListFragment implements
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        phoneNumber = new PhoneNumber(getArguments().getString(ADDRESS));
+        phoneNumber = new ParcelablePhoneNumber(getArguments().getString(ADDRESS));
         threadController = new ThreadController(getThreadId(), phoneNumber, this);
         threadController.create(getActivity(), composeView);
         ((MessagesActivity) getActivity()).customHeader(this);
@@ -117,7 +118,7 @@ public class ThreadFragment extends ListFragment implements
         Contact receivedContact = ContactFactory.desmooshContact(getArguments().getBundle(CONTACT));
         final MessagesLoader messagesLoader = SingletonManager.getMessagesLoader(getActivity());
         if (receivedContact == null) {
-            messagesLoader.queryContact(phoneNumber.toString(), new OnContactQueryListener() {
+            messagesLoader.queryContact(phoneNumber.flatten(), new OnContactQueryListener() {
                 @Override
                 public void contactLoaded(final Contact contact) {
                     contactView.setContact(contact, messagesLoader);

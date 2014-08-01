@@ -28,7 +28,8 @@ import android.telephony.SmsManager;
 import com.amlcurran.messages.MessagesLog;
 import com.amlcurran.messages.SingletonManager;
 import com.amlcurran.messages.data.InFlightSmsMessage;
-import com.amlcurran.messages.data.PhoneNumber;
+import com.amlcurran.messages.data.ParcelablePhoneNumber;
+import com.amlcurran.messages.core.data.PhoneNumber;
 import com.amlcurran.messages.events.BroadcastEventBus;
 import com.amlcurran.messages.notifications.Notifier;
 
@@ -98,7 +99,7 @@ public class SmsSender extends IntentService {
     private InFlightSmsMessage extractInFlightFromWear(Intent intent) {
         String address = intent.getStringExtra(EXTRA_NUMBER);
         CharSequence input = getMessageText(intent);
-        return new InFlightSmsMessage(new PhoneNumber(address), String.valueOf(input), System.currentTimeMillis());
+        return new InFlightSmsMessage(new ParcelablePhoneNumber(address), String.valueOf(input), System.currentTimeMillis());
     }
 
     private CharSequence getMessageText(Intent intent) {
@@ -118,7 +119,7 @@ public class SmsSender extends IntentService {
     }
 
     private void deleteOutboxMessages(PhoneNumber phoneNumber) {
-        smsDatabaseWriter.deleteOutboxMessages(getContentResolver(), phoneNumber.toString());
+        smsDatabaseWriter.deleteOutboxMessages(getContentResolver(), phoneNumber.flatten());
     }
 
     private void notifyFailureToSend(InFlightSmsMessage message, int result) {
@@ -147,7 +148,7 @@ public class SmsSender extends IntentService {
             public void written(Uri inserted) {
                 eventBus.postMessageSending(message);
                 ArrayList<PendingIntent> messageSendIntents = getMessageSendIntents(message, inserted);
-                smsManager.sendMultipartTextMessage(message.getPhoneNumber().toString(), null, smsManager.divideMessage(message.getBody()), messageSendIntents, null);
+                smsManager.sendMultipartTextMessage(message.getPhoneNumber().flatten(), null, smsManager.divideMessage(message.getBody()), messageSendIntents, null);
             }
 
             @Override

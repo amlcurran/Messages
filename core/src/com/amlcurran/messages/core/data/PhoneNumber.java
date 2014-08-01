@@ -14,21 +14,8 @@
  * limitations under the License.
  */
 
-package com.amlcurran.messages.events;
+package com.amlcurran.messages.core.data;
 
-import com.amlcurran.messages.data.InFlightSmsMessage;
-import com.amlcurran.messages.core.data.PhoneNumber;
-
-public interface EventBus {
-    void postListInvalidated();
-
-    void postMessageSent(PhoneNumber phoneNumber);
-
-    void postMessageReceived(PhoneNumber phoneNumber);
-
-    void postMessageSending(InFlightSmsMessage message);
-
-    void postListLoaded();
-
-    void postMessageDrafted(PhoneNumber phoneNumber);
+public interface PhoneNumber {
+    String flatten();
 }

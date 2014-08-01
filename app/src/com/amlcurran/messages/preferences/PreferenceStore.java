@@ -23,7 +23,7 @@ import android.preference.PreferenceManager;
 
 import com.amlcurran.messages.core.TextUtils;
 import com.amlcurran.messages.core.data.Sort;
-import com.amlcurran.messages.data.PhoneNumber;
+import com.amlcurran.messages.core.data.PhoneNumber;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -119,7 +119,7 @@ public class PreferenceStore {
     }
 
     private static String getDraftKey(PhoneNumber phoneNumber) {
-        return "draft" + phoneNumber.toString();
+        return "draft" + phoneNumber.flatten();
     }
 
     public boolean isNotificationPersistent() {

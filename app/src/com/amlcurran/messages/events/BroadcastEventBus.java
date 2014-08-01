@@ -21,7 +21,7 @@ import android.content.Intent;
 import android.support.v4.content.LocalBroadcastManager;
 
 import com.amlcurran.messages.data.InFlightSmsMessage;
-import com.amlcurran.messages.data.PhoneNumber;
+import com.amlcurran.messages.core.data.PhoneNumber;
 
 public class BroadcastEventBus implements EventBus {
 
@@ -46,19 +46,19 @@ public class BroadcastEventBus implements EventBus {
 
     @Override
     public void postMessageSent(PhoneNumber phoneNumber) {
-        broadcaster.sendBroadcast(new Intent(BROADCAST_MESSAGE_SENT).putExtra(EXTRA_FILTER, phoneNumber.toString()));
+        broadcaster.sendBroadcast(new Intent(BROADCAST_MESSAGE_SENT).putExtra(EXTRA_FILTER, phoneNumber.flatten()));
     }
 
     @Override
     public void postMessageReceived(PhoneNumber phoneNumber) {
-        broadcaster.sendBroadcast(new Intent(BROADCAST_MESSAGE_RECEIVED).putExtra(EXTRA_FILTER, phoneNumber.toString()));
+        broadcaster.sendBroadcast(new Intent(BROADCAST_MESSAGE_RECEIVED).putExtra(EXTRA_FILTER, phoneNumber.flatten()));
     }
 
     @Override
     public void postMessageSending(InFlightSmsMessage message) {
         Intent broadcast = new Intent(BROADCAST_MESSAGE_SENDING);
         broadcast.putExtra("message", message);
-        broadcast.putExtra(EXTRA_FILTER, message.getPhoneNumber().toString());
+        broadcast.putExtra(EXTRA_FILTER, message.getPhoneNumber().flatten());
         broadcaster.sendBroadcast(broadcast);
     }
 
@@ -69,6 +69,6 @@ public class BroadcastEventBus implements EventBus {
 
     @Override
     public void postMessageDrafted(PhoneNumber phoneNumber) {
-        broadcaster.sendBroadcast(new Intent(BROADCAST_MESSAGE_DRAFT).putExtra(EXTRA_FILTER, phoneNumber.toString()));
+        broadcaster.sendBroadcast(new Intent(BROADCAST_MESSAGE_DRAFT).putExtra(EXTRA_FILTER, phoneNumber.flatten()));
     }
 }

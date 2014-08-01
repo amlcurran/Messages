@@ -3,7 +3,7 @@ package com.amlcurran.messages.telephony;
 import android.content.Context;
 
 import com.amlcurran.messages.data.InFlightSmsMessage;
-import com.amlcurran.messages.data.PhoneNumber;
+import com.amlcurran.messages.core.data.PhoneNumber;
 import com.amlcurran.messages.preferences.PreferenceStore;
 
 public class CentralWriter {

@@ -19,13 +19,15 @@ package com.amlcurran.messages.data;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.amlcurran.messages.core.data.PhoneNumber;
+
 public class InFlightSmsMessage implements Parcelable {
 
-    private final PhoneNumber phoneNumber;
+    private final ParcelablePhoneNumber phoneNumber;
     private final String body;
     private final long timestamp;
 
-    public InFlightSmsMessage(PhoneNumber phoneNumber, String message, long timestamp) {
+    public InFlightSmsMessage(ParcelablePhoneNumber phoneNumber, String message, long timestamp) {
         this.phoneNumber = phoneNumber;
         this.body = message;
         this.timestamp = timestamp;
@@ -46,7 +48,7 @@ public class InFlightSmsMessage implements Parcelable {
     public static final Creator<InFlightSmsMessage> CREATOR = new Creator<InFlightSmsMessage>() {
 
         public InFlightSmsMessage createFromParcel(Parcel in) {
-            return new InFlightSmsMessage(((PhoneNumber) in.readParcelable(getClass().getClassLoader())), in.readString(), in.readLong());
+            return new InFlightSmsMessage(((ParcelablePhoneNumber) in.readParcelable(getClass().getClassLoader())), in.readString(), in.readLong());
         }
 
         public InFlightSmsMessage[] newArray(int size) {

@@ -31,7 +31,7 @@ import com.amlcurran.messages.core.data.Conversation;
 import com.amlcurran.messages.core.loaders.ConversationListChangeListener;
 import com.amlcurran.messages.data.ContactFactory;
 import com.amlcurran.messages.data.InFlightSmsMessage;
-import com.amlcurran.messages.data.PhoneNumber;
+import com.amlcurran.messages.core.data.PhoneNumber;
 import com.amlcurran.messages.events.EventBus;
 import com.amlcurran.messages.launch.IntentDataExtractor;
 import com.amlcurran.messages.launch.Launch;

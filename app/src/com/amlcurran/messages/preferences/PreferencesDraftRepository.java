@@ -14,21 +14,14 @@
  * limitations under the License.
  */
 
-package com.amlcurran.messages.events;
+package com.amlcurran.messages.preferences;
 
-import com.amlcurran.messages.data.InFlightSmsMessage;
-import com.amlcurran.messages.core.data.PhoneNumber;
+public class PreferencesDraftRepository {
 
-public interface EventBus {
-    void postListInvalidated();
+    private PreferenceStore preferenceStore;
 
-    void postMessageSent(PhoneNumber phoneNumber);
+    public PreferencesDraftRepository(PreferenceStore preferenceStore) {
+        this.preferenceStore = preferenceStore;
+    }
 
-    void postMessageReceived(PhoneNumber phoneNumber);
-
-    void postMessageSending(InFlightSmsMessage message);
-
-    void postListLoaded();
-
-    void postMessageDrafted(PhoneNumber phoneNumber);
 }

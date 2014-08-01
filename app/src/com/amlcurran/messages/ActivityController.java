@@ -24,7 +24,7 @@ import android.provider.Telephony;
 import android.telephony.PhoneNumberUtils;
 
 import com.amlcurran.messages.data.InFlightSmsMessage;
-import com.amlcurran.messages.data.PhoneNumber;
+import com.amlcurran.messages.core.data.PhoneNumber;
 import com.amlcurran.messages.notifications.BlockingInUiNotifier;
 import com.amlcurran.messages.notifications.Dialog;
 import com.amlcurran.messages.telephony.SmsSender;
@@ -41,7 +41,7 @@ public class ActivityController {
     }
 
     void callNumber(PhoneNumber phoneNumber) {
-        Uri telUri = Uri.parse("tel:" + phoneNumber.toString());
+        Uri telUri = Uri.parse("tel:" + phoneNumber.flatten());
         Intent intent = new Intent(Intent.ACTION_CALL);
         intent.setData(telUri);
         activity.startActivity(intent);

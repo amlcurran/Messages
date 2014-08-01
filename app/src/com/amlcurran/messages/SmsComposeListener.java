@@ -17,7 +17,7 @@
 package com.amlcurran.messages;
 
 import com.amlcurran.messages.data.InFlightSmsMessage;
-import com.amlcurran.messages.data.PhoneNumber;
+import com.amlcurran.messages.core.data.PhoneNumber;
 
 public interface SmsComposeListener {
     void sendSms(InFlightSmsMessage smsMessage);

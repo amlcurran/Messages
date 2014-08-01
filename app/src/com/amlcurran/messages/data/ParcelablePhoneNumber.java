@@ -4,32 +4,34 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.telephony.PhoneNumberUtils;
 
-public class PhoneNumber implements Parcelable {
+import com.amlcurran.messages.core.data.PhoneNumber;
+
+public class ParcelablePhoneNumber implements Parcelable, PhoneNumber {
 
     private String formattedNumber;
 
-    public PhoneNumber(String number) {
+    public ParcelablePhoneNumber(String number) {
         this.formattedNumber = PhoneNumberUtils.stripSeparators(number);
     }
 
-    public PhoneNumber(Parcel in) {
+    public ParcelablePhoneNumber(Parcel in) {
         // We can have confidence that the number is preformatted
         this.formattedNumber = in.readString();
     }
 
     @Override
+    public String flatten() {
+        return formattedNumber;
+    }
+
+    @Override
     public boolean equals(Object o) {
-        return o instanceof PhoneNumber && formattedNumber.equals(((PhoneNumber) o).formattedNumber);
+        return o instanceof PhoneNumber && formattedNumber.equals(((PhoneNumber) o).flatten());
     }
 
     @Override
     public int hashCode() {
         return formattedNumber.hashCode();
-    }
-
-    @Override
-    public String toString() {
-        return formattedNumber;
     }
 
     // Parcelable crud
@@ -47,7 +49,7 @@ public class PhoneNumber implements Parcelable {
     public static final Creator<PhoneNumber> CREATOR = new Creator<PhoneNumber>() {
 
         public PhoneNumber createFromParcel(Parcel in) {
-            return new PhoneNumber(in);
+            return new ParcelablePhoneNumber(in);
         }
 
         public PhoneNumber[] newArray(int size) {

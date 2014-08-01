@@ -27,7 +27,8 @@ import com.amlcurran.messages.R;
 import com.amlcurran.messages.analysis.Link;
 import com.amlcurran.messages.core.data.Contact;
 import com.amlcurran.messages.core.data.Conversation;
-import com.amlcurran.messages.data.PhoneNumber;
+import com.amlcurran.messages.data.ParcelablePhoneNumber;
+import com.amlcurran.messages.core.data.PhoneNumber;
 import com.amlcurran.messages.loaders.ExecutingIntentService;
 import com.amlcurran.messages.telephony.SmsSender;
 
@@ -70,13 +71,13 @@ class NotificationActionBuilder {
     }
 
     public NotificationCompat.Action call(Contact contact) {
-        PendingIntent callIntent = callPendingIntent(new PhoneNumber(contact.getNumber()));
+        PendingIntent callIntent = callPendingIntent(new ParcelablePhoneNumber(contact.getNumber()));
         String label = context.getString(R.string.call);
         return new NotificationCompat.Action.Builder(R.drawable.ic_action_ring_volume, label, callIntent).build();
     }
 
     private PendingIntent callPendingIntent(PhoneNumber number) {
-        Uri telUri = Uri.parse("tel:" + number.toString());
+        Uri telUri = Uri.parse("tel:" + number.flatten());
         Intent intent = new Intent(Intent.ACTION_CALL);
         intent.setData(telUri);
         return PendingIntent.getActivity(context, 12121, intent, PendingIntent.FLAG_UPDATE_CURRENT);

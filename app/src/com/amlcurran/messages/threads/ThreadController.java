@@ -22,7 +22,7 @@ import com.amlcurran.messages.core.data.SmsMessage;
 import com.amlcurran.messages.core.events.Broadcast;
 import com.amlcurran.messages.core.events.EventSubscriber;
 import com.amlcurran.messages.core.loaders.ThreadListener;
-import com.amlcurran.messages.data.PhoneNumber;
+import com.amlcurran.messages.core.data.PhoneNumber;
 import com.amlcurran.messages.events.BroadcastEventBus;
 import com.amlcurran.messages.events.BroadcastEventSubscriber;
 import com.amlcurran.messages.loaders.MessagesLoader;
@@ -96,10 +96,10 @@ class ThreadController implements ThreadListener {
 
     private Broadcast[] getBroadcastsToListenTo() {
         return new Broadcast[]{
-                new Broadcast(BroadcastEventBus.BROADCAST_MESSAGE_SENT, phoneNumber.toString()),
-                new Broadcast(BroadcastEventBus.BROADCAST_MESSAGE_RECEIVED, phoneNumber.toString()),
-                new Broadcast(BroadcastEventBus.BROADCAST_MESSAGE_SENDING, phoneNumber.toString()),
-                new Broadcast(BroadcastEventBus.BROADCAST_MESSAGE_DRAFT, phoneNumber.toString()) };
+                new Broadcast(BroadcastEventBus.BROADCAST_MESSAGE_SENT, phoneNumber.flatten()),
+                new Broadcast(BroadcastEventBus.BROADCAST_MESSAGE_RECEIVED, phoneNumber.flatten()),
+                new Broadcast(BroadcastEventBus.BROADCAST_MESSAGE_SENDING, phoneNumber.flatten()),
+                new Broadcast(BroadcastEventBus.BROADCAST_MESSAGE_DRAFT, phoneNumber.flatten()) };
     }
 
     public interface Callback {
