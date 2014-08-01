@@ -64,7 +64,7 @@ public class ConversationsBinder extends SimpleBinder<Conversation> {
         }
 
         textView1.setText(item.getContact().getDisplayName());
-        textView2.setText(item.getBody());
+        textView2.setText(item.getSummaryText());
 
         convertView.setTag(item);
         return convertView;

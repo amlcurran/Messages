@@ -103,7 +103,7 @@ public class NotificationBuilder {
         NotificationCompat.Builder builder = getDefaultBuilder(fromNewMessage);
 
         // use some cheeky message analysis
-        MessageAnalyser analyser = new MessageAnalyser(conversation.getBody());
+        MessageAnalyser analyser = new MessageAnalyser(conversation.getSummaryText());
         if (analyser.hasLink()) {
             NotificationCompat.Action linkAction = actionBuilder.buildLinkAction(analyser.getLink());
             builder.addAction(linkAction);
@@ -116,7 +116,7 @@ public class NotificationBuilder {
                 .setContentTitle(conversation.getContact().getDisplayName())
                 .setLargeIcon(photo)
                 .setContentIntent(notificationIntentFactory.createViewConversationIntent(conversation))
-                .setContentText(conversation.getBody())
+                .setContentText(conversation.getSummaryText())
                 .setStyle(buildBigStyle(conversation))
                 .setWhen(timestampMillis)
                 .extend(extender);
@@ -124,7 +124,7 @@ public class NotificationBuilder {
 
     private static NotificationCompat.Style buildBigStyle(Conversation conversation) {
         return new NotificationCompat.BigTextStyle()
-                .bigText(conversation.getBody())
+                .bigText(conversation.getSummaryText())
                 .setBigContentTitle(conversation.getContact().getDisplayName());
     }
 

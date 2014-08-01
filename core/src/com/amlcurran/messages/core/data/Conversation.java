@@ -32,7 +32,7 @@ public class Conversation {
         this.contact = contact;
     }
 
-    public String getBody() {
+    public String getSummaryText() {
         return body;
     }
 

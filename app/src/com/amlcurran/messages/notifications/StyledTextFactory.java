@@ -49,14 +49,14 @@ public class StyledTextFactory {
         ForegroundColorSpan colorSpan = new ForegroundColorSpan(Color.parseColor("#cccccc"));
         builder.setSpan(colorSpan, 0, builder.length(), Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
         builder.append(" ");
-        builder.append(conversation.getBody());
+        builder.append(conversation.getSummaryText());
         return builder;
     }
 
     CharSequence buildTicker(Conversation conversation) {
         SpannableStringBuilder builder = new SpannableStringBuilder(conversation.getContact().getDisplayName() + ": ");
         builder.setSpan(new StyleSpan(Typeface.BOLD), 0, builder.length(), Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
-        builder.append(conversation.getBody());
+        builder.append(conversation.getSummaryText());
         return builder;
     }
 }

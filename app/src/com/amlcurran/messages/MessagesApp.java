@@ -62,11 +62,13 @@ public class MessagesApp extends Application implements BroadcastEventSubscriber
         cache = new MemoryMessagesCache();
         notifier = new Notifier(this);
         eventBus = new BroadcastEventBus(this);
+
         if (BuildConfig.FLAVOR.equals("demo")) {
             loader = new DemoMessagesLoader(this);
         } else {
             loader = new ExecutorMessagesLoader(this, executor, cache, eventBus, uiHandler);
         }
+
         subscriber = new BroadcastEventSubscriber(this, this);
         subscriber.startListening(
                 new Broadcast(BroadcastEventBus.BROADCAST_MESSAGE_SENT, null),
