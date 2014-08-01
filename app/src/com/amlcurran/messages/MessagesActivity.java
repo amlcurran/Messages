@@ -17,7 +17,6 @@
 package com.amlcurran.messages;
 
 import android.app.Activity;
-import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -50,6 +49,7 @@ import com.amlcurran.messages.preferences.PreferenceStore;
 import com.amlcurran.messages.reporting.StatReporter;
 import com.amlcurran.messages.telephony.DefaultAppChecker;
 import com.amlcurran.messages.threads.ThreadFragment;
+import com.amlcurran.messages.ui.CustomHeaderFragment;
 import com.amlcurran.messages.ui.FragmentController;
 import com.amlcurran.messages.ui.MasterDetailFragmentController;
 import com.amlcurran.messages.ui.SlidingPaneViewController;
@@ -99,12 +99,6 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
         appChecker = new DefaultAppChecker(this, this);
 
         handleLaunch(savedInstanceState, getIntent(), preferencesStore);
-    }
-
-    @Override
-    public void onAttachFragment(Fragment fragment) {
-        super.onAttachFragment(fragment);
-        fragmentController.attachedFragment(fragment);
     }
 
     private void handleLaunch(Bundle savedInstanceState, Intent intent, PreferenceStore preferencesStore) {
@@ -412,4 +406,7 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
         actionBarController.addHeader(headerView);
     }
 
+    public void customHeader(CustomHeaderFragment customHeaderFragment) {
+        fragmentController.attachedFragment((android.app.Fragment) customHeaderFragment);
+    }
 }

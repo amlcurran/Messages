@@ -29,6 +29,7 @@ import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.ListView;
 
+import com.amlcurran.messages.MessagesActivity;
 import com.amlcurran.messages.R;
 import com.amlcurran.messages.SingletonManager;
 import com.amlcurran.messages.SmsComposeListener;
@@ -101,6 +102,7 @@ public class ThreadFragment extends ListFragment implements
         phoneNumber = new PhoneNumber(getArguments().getString(ADDRESS));
         threadController = new ThreadController(getThreadId(), phoneNumber, this);
         threadController.create(getActivity(), composeView);
+        ((MessagesActivity) getActivity()).customHeader(this);
 
         setHasOptionsMenu(true);
 
