@@ -55,8 +55,7 @@ public class BroadcastEventSubscriber extends BroadcastReceiver implements Event
     @Override
     public void onReceive(Context context, Intent intent) {
         Broadcast matchedActionBroadcast = matchBroadcastWithAction(listeningBroadcasts, intent.getAction());
-        assert matchedActionBroadcast != null;
-        if (matchedActionBroadcast.hasFilter()) {
+        if (matchedActionBroadcast != null && matchedActionBroadcast.hasFilter()) {
             // Only if the filter matches do we notify
             if (matchesFilter(intent, matchedActionBroadcast)) {
                 listener.onMessageReceived();

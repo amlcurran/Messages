@@ -46,11 +46,11 @@ public class LaunchAssistant {
             return Launch.MMS_TO;
         }
 
-        if (Notifier.ACTION_VIEW_CONVERSATION.equals(intent.getAction())) {
+        if (actionIs(intent, Notifier.ACTION_VIEW_CONVERSATION)) {
             return Launch.VIEW_CONVERSATION;
         }
 
-        if (Intent.ACTION_SEND.equals(intent.getAction())) {
+        if (actionIs(intent, Intent.ACTION_SEND)) {
             return Launch.SHARE_TO;
         }
 
@@ -60,6 +60,10 @@ public class LaunchAssistant {
         }
 
         return Launch.OTHER;
+    }
+
+    private static boolean actionIs(Intent intent, String action) {
+        return action.equals(intent.getAction());
     }
 
     private static boolean schemeIs(Intent intent, String sms) {
