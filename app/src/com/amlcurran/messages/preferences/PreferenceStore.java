@@ -59,7 +59,7 @@ public class PreferenceStore {
 
     public void stopListeningToPreferenceChanges(PreferenceChangedListener changedListener) {
         changedListenerList.remove(changedListener);
-        if (changedListenerList.size() == 0) {
+        if (changedListenerList.isEmpty()) {
             unregisterListener();
         }
     }

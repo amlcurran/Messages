@@ -14,6 +14,10 @@ public class MessagesLog {
         Log.w(object.getClass().getSimpleName(), message);
     }
 
+    public static void e(Object object, Throwable throwable) {
+        e(object, throwable.getLocalizedMessage());
+    }
+
     public static void e(Object object, String message) {
         Log.e(object.getClass().getSimpleName(), message);
     }

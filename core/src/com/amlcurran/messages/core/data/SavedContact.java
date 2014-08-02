@@ -69,6 +69,11 @@ public class SavedContact implements Contact {
     }
 
     @Override
+    public int hashCode() {
+        return Long.valueOf(contactId).hashCode();
+    }
+
+    @Override
     public boolean equals(Object obj) {
         return obj instanceof SavedContact && contactId == ((SavedContact) obj).contactId && contactId != -1;
     }

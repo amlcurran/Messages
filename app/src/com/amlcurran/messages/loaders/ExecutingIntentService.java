@@ -46,7 +46,7 @@ public class ExecutingIntentService extends IntentService {
     protected void onHandleIntent(Intent intent) {
         if (EXECUTE_MARK_READ.equals(intent.getAction())) {
             SingletonManager.getNotifier(this).clearNewMessagesNotification();
-            ArrayList<String> threadIds = intent.getStringArrayListExtra(EXTRA_THREAD_ID_LIST);
+            List<String> threadIds = intent.getStringArrayListExtra(EXTRA_THREAD_ID_LIST);
             try {
                 new MarkReadTask(getContentResolver(), new BroadcastEventBus(this), threadIds).call();
             } catch (Exception e) {

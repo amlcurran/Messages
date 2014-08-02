@@ -20,7 +20,7 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.os.Handler;
 
-import com.amlcurran.messages.SingletonManager;
+import com.amlcurran.messages.MessagesLog;
 import com.amlcurran.messages.conversationlist.PhotoLoadListener;
 import com.amlcurran.messages.core.conversationlist.ConversationListListener;
 import com.amlcurran.messages.core.data.Contact;
@@ -64,7 +64,7 @@ public class ExecutorMessagesLoader implements MessagesLoader {
                 try {
                     task.call();
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    MessagesLog.e(ExecutorMessagesLoader.this, e);
                     throw new RuntimeException(e);
                 }
             }

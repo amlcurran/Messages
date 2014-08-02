@@ -126,32 +126,8 @@ public class ConversationsBinder extends SimpleBinder<Conversation> {
     }
 
     private void loadContactPhoto(final Conversation item, final ImageView imageView) {
-
-        final Contact contact = item.getContact();
-
-        loader.loadPhoto(contact, new PhotoLoadListener() {
-
-            @Override
-            public void photoLoaded(final Bitmap photo) {
-                imageView.setImageBitmap(photo);
-                imageView.setTranslationX(-animationLength);
-                imageView.animate()
-                        .translationXBy(animationLength)
-                        .alpha(1f).start();
-            }
-
-            @Override
-            public void photoLoadedFromCache(final Bitmap photo) {
-                imageView.setImageBitmap(photo);
-            }
-
-            @Override
-            public void beforePhotoLoad(Contact contact) {
-                resetContactImage(imageView);
-            }
-
-        });
-
+        Contact contact = item.getContact();
+        loader.loadPhoto(contact, new SettingPhotoLoadListener(imageView));
     }
 
     private void resetContactImage(ImageView imageView) {
@@ -170,5 +146,34 @@ public class ConversationsBinder extends SimpleBinder<Conversation> {
         } else {
             return LayoutInflater.from(context).inflate(R.layout.item_conversation_unread, parent, false);
         }
+    }
+
+    private class SettingPhotoLoadListener implements PhotoLoadListener {
+
+        private final ImageView imageView;
+
+        public SettingPhotoLoadListener(ImageView imageView) {
+            this.imageView = imageView;
+        }
+
+        @Override
+        public void photoLoaded(final Bitmap photo) {
+            imageView.setImageBitmap(photo);
+            imageView.setTranslationX(-animationLength);
+            imageView.animate()
+                    .translationXBy(animationLength)
+                    .alpha(1f).start();
+        }
+
+        @Override
+        public void photoLoadedFromCache(final Bitmap photo) {
+            imageView.setImageBitmap(photo);
+        }
+
+        @Override
+        public void beforePhotoLoad(Contact contact) {
+            resetContactImage(imageView);
+        }
+
     }
 }

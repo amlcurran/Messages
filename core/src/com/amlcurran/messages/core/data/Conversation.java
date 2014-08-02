@@ -55,6 +55,11 @@ public class Conversation {
     }
 
     @Override
+    public boolean equals(Object obj) {
+        return obj instanceof Conversation && threadId.equals(((Conversation) obj).getThreadId());
+    }
+
+    @Override
     public int hashCode() {
         return threadId.hashCode();
     }

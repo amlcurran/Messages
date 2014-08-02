@@ -71,8 +71,7 @@ class ConversationListTask implements Callable<Object> {
             Contact contact = getContact(contentResolver, address);
 
             String body = CursorHelper.asString(conversationsList, helper.getSnippetCursorKey());
-            String s = CursorHelper.asString(conversationsList, Telephony.Sms.Inbox.READ);
-            boolean isRead = s.toLowerCase().equals("1");
+            boolean isRead = "1".equals(CursorHelper.asString(conversationsList, Telephony.Sms.Inbox.READ));
             String threadId = CursorHelper.asString(conversationsList, helper.getThreadIdCursorKey());
             boolean lastFromMe = CursorHelper.asInt(conversationsList, Telephony.Sms.TYPE) != Telephony.Sms.MESSAGE_TYPE_INBOX;
             Conversation conversation = new Conversation(contact.getNumber(), body, threadId, isRead, contact, lastFromMe);
