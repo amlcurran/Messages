@@ -22,7 +22,6 @@ import android.net.Uri;
 import android.provider.ContactsContract;
 import android.provider.Telephony;
 
-import com.amlcurran.messages.MessagesLog;
 import com.amlcurran.messages.core.conversationlist.ConversationListListener;
 import com.amlcurran.messages.core.data.Contact;
 import com.amlcurran.messages.core.data.Conversation;
@@ -67,7 +66,6 @@ class ConversationListTask implements Callable<Object> {
         Cursor conversationsList = helper.queryConversationList(contentResolver, query, args, getSortString());
 
         while (conversationsList.moveToNext()) {
-            MessagesLog.d(this, CursorHelper.asString(conversationsList, Telephony.Sms.TYPE));
 
             String address = helper.getAddressFromRow(contentResolver, conversationsList);
             Contact contact = getContact(contentResolver, address);
