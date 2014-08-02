@@ -21,17 +21,19 @@ public class SmsMessage {
     private final String address;
     private final String body;
     private final long timestamp;
-    private final boolean isFromMe;
-    private final boolean isSending;
+    private Type type;
     private final long id;
 
-    public SmsMessage(long id, String address, String body, long timestamp, boolean isFromMe, boolean isSending) {
+    public SmsMessage(long id, String address, String body, long timestamp, Type type) {
         this.id = id;
         this.address = address;
         this.body = body;
         this.timestamp = timestamp;
-        this.isFromMe = isFromMe;
-        this.isSending = isSending;
+        this.type = type;
+    }
+
+    public Type getType() {
+        return type;
     }
 
     public String getAddress() {
@@ -47,14 +49,19 @@ public class SmsMessage {
     }
 
     public boolean isFromMe() {
-        return isFromMe;
+        return type != Type.INBOX;
     }
 
     public boolean isSending() {
-        return isSending;
+        return type == Type.SENDING;
     }
 
     public long getId() {
         return id;
     }
+
+    public enum Type {
+        INBOX, SENDING, DRAFT, FAILED, UNKNOWN, SENT
+    }
+
 }

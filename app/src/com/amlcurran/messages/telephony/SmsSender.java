@@ -92,8 +92,28 @@ public class SmsSender extends IntentService {
                 writeMessageToProvider(message);
             } else {
                 notifyFailureToSend(message, result);
+                deleteOutboxMessage(outboxSms);
+                writeFailedToSend(message);
             }
         }
+    }
+
+    private void writeFailedToSend(final InFlightSmsMessage message) {
+        smsDatabaseWriter.writeFailedToSend(message, getContentResolver(), new SmsDatabaseWriter.WriteListener() {
+            @Override
+            public void written(Uri inserted) {
+                eventBus.postMessageDrafted(message.getPhoneNumber());
+            }
+
+            @Override
+            public void failed() {
+
+            }
+        });
+    }
+
+    private void deleteOutboxMessage(Uri outboxSms) {
+        smsDatabaseWriter.deleteFromUri(getContentResolver(), outboxSms);
     }
 
     private InFlightSmsMessage extractInFlightFromWear(Intent intent) {

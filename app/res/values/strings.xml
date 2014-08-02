@@ -51,5 +51,6 @@
     <string name="open_link">Open link</string>
     <string name="sendingdotdotdot">Sending…</string>
     <string name="draft_preamble">Draft:</string>
+    <string name="cd_failed_to_send">Failed to send icon</string>
 
 </resources>

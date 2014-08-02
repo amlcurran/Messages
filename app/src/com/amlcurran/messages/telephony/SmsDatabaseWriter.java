@@ -85,9 +85,35 @@ public class SmsDatabaseWriter {
         }
     }
 
+    public void writeFailedToSend(InFlightSmsMessage smsMessage, ContentResolver contentResolver, WriteListener writeListener) {
+        ContentValues contentValues = InFlightSmsMessageFactory.toContentValues(smsMessage, Telephony.Sms.MESSAGE_TYPE_FAILED);
+        Uri uri = contentResolver.insert(Telephony.Sms.Draft.CONTENT_URI, contentValues);
+        if (uri != null) {
+            writeListener.written(uri);
+        } else {
+            writeListener.failed();
+        }
+    }
+
+    public int deleteFromUri(ContentResolver contentResolver, Uri outboxSms) {
+        return contentResolver.delete(outboxSms, null, null);
+    }
+
     public interface WriteListener {
         void written(Uri inserted);
         void failed();
+
+        public WriteListener NONE = new WriteListener() {
+            @Override
+            public void written(Uri inserted) {
+
+            }
+
+            @Override
+            public void failed() {
+
+            }
+        };
     }
 
 

@@ -6,11 +6,11 @@ import com.amlcurran.messages.core.data.PhoneNumber;
 import com.amlcurran.messages.data.InFlightSmsMessage;
 import com.amlcurran.messages.preferences.PreferenceStoreDraftRepository;
 
-public class CentralWriter {
+public class SynchronousDatabaseWriter {
 
     private final Context context;
 
-    public CentralWriter(Context context) {
+    public SynchronousDatabaseWriter(Context context) {
         this.context = context.getApplicationContext();
     }
 

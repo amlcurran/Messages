@@ -34,11 +34,6 @@ import java.util.Date;
 
 class ThreadBinder extends SimpleBinder<SmsMessage> {
 
-    private static final int ITEM_ME = 0;
-    private static final int ITEM_THEM = 1;
-    private static final int ITEM_ME_SENDING = 2;
-    private static final float ALPHA_SCALING_MILLIS = 1000 * 60 * 4 * 60f; // four hours
-    private static final float ALPHA_MIN_VALUE = 0.6f;
     private final DateFormat formatter = new SimpleDateFormat("HH:mm dd-MMM-yy");
     private final Date date = new Date();
     private final ListView listView;
@@ -54,7 +49,6 @@ class ThreadBinder extends SimpleBinder<SmsMessage> {
 
         TextView bodyText = getTextView(convertView, android.R.id.text1);
         bodyText.setText(item.getBody());
-        //bodyText.setAlpha(getAlphaForTime(item.getTimestamp()));
         if (!item.isSending()) {
             getTextView(convertView, android.R.id.text2).setText(formatter.format(date));
         }
@@ -64,38 +58,42 @@ class ThreadBinder extends SimpleBinder<SmsMessage> {
         return convertView;
     }
 
-    private float getAlphaForTime(long timestamp) {
-
-        long deltaMillis = System.currentTimeMillis() - timestamp;
-        float alphaFraction = 1 - deltaMillis / ALPHA_SCALING_MILLIS;
-        alphaFraction = Math.max(alphaFraction, ALPHA_MIN_VALUE);
-
-        return alphaFraction;
-    }
-
     @Override
     public View createView(Context context, int itemViewType, ViewGroup parent) {
-        if (itemViewType == ITEM_ME) {
-            return LayoutInflater.from(context).inflate(R.layout.item_thread_item_me, listView, false);
-        } else if (itemViewType == ITEM_THEM) {
-            return LayoutInflater.from(context).inflate(R.layout.item_thread_item_them, listView, false);
-        } else if (itemViewType == ITEM_ME_SENDING) {
-            return LayoutInflater.from(context).inflate(R.layout.item_thread_item_me_sending, listView, false);
+        // This is icky
+        SmsMessage.Type type = SmsMessage.Type.values()[itemViewType];
+
+        int layoutId = R.layout.item_thread_item_them;
+        switch (type) {
+
+            case INBOX:
+                layoutId = R.layout.item_thread_item_them;
+                break;
+
+            case SENT:
+                layoutId = R.layout.item_thread_item_me;
+                break;
+
+            case SENDING:
+                layoutId = R.layout.item_thread_item_me_sending;
+                break;
+
+            case FAILED:
+                layoutId = R.layout.item_thread_item_me_failed;
+                break;
         }
-        return null;
+
+        return LayoutInflater.from(context).inflate(layoutId, listView, false);
     }
 
     @Override
     public int getViewTypeCount() {
-        return 3;
+        return SmsMessage.Type.values().length;
     }
 
     @Override
     public int getItemViewType(int position, SmsMessage item) {
-        if (item.isFromMe()) {
-            return item.isSending() ? ITEM_ME_SENDING : ITEM_ME;
-        }
-        return ITEM_THEM;
+        return item.getType().ordinal();
     }
 
     private TextView getTextView(View convertView, int text1) {

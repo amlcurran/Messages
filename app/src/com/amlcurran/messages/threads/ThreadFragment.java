@@ -42,7 +42,7 @@ import com.amlcurran.messages.data.ParcelablePhoneNumber;
 import com.amlcurran.messages.loaders.MessagesLoader;
 import com.amlcurran.messages.loaders.OnContactQueryListener;
 import com.amlcurran.messages.preferences.PreferenceStoreDraftRepository;
-import com.amlcurran.messages.telephony.CentralWriter;
+import com.amlcurran.messages.telephony.SynchronousDatabaseWriter;
 import com.amlcurran.messages.ui.ComposeMessageView;
 import com.amlcurran.messages.ui.ContactView;
 import com.amlcurran.messages.ui.CustomHeaderFragment;
@@ -136,7 +136,7 @@ public class ThreadFragment extends ListFragment implements
     private void saveDraft() {
         String text = composeView.getText();
         InFlightSmsMessage message = new InFlightSmsMessage(phoneNumber, text, System.currentTimeMillis());
-        new CentralWriter(getActivity()).storeDraft(message);
+        new SynchronousDatabaseWriter(getActivity()).storeDraft(message);
     }
 
     @Override
@@ -199,7 +199,7 @@ public class ThreadFragment extends ListFragment implements
         long timestamp = Calendar.getInstance().getTimeInMillis();
         InFlightSmsMessage smsMessage = new InFlightSmsMessage(phoneNumber, message, timestamp);
         listener.sendSms(smsMessage);
-        new CentralWriter(getActivity()).clearDraft(phoneNumber);
+        new SynchronousDatabaseWriter(getActivity()).clearDraft(phoneNumber);
     }
 
     @Override

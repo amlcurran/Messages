@@ -38,11 +38,10 @@ public class InFlightSmsMessageFactory {
     public static SmsMessage fromCursor(Cursor cursor) {
         String body = CursorHelper.asString(cursor, Telephony.Sms.BODY);
         long timestamp = CursorHelper.asLong(cursor, Telephony.Sms.DATE);
-        boolean isSending = CursorHelper.asInt(cursor, Telephony.Sms.TYPE) == Telephony.Sms.MESSAGE_TYPE_OUTBOX;
-        boolean isFromMe = CursorHelper.asInt(cursor, Telephony.Sms.TYPE) == Telephony.Sms.MESSAGE_TYPE_SENT || isSending;
+        int messageType = CursorHelper.asInt(cursor, Telephony.Sms.TYPE);
         String address = CursorHelper.asString(cursor, Telephony.Sms.ADDRESS);
         long id = CursorHelper.asLong(cursor, Telephony.Sms._ID);
-        return new SmsMessage(id, address, body, timestamp, isFromMe, isSending);
+        return new SmsMessage(id, address, body, timestamp, fromApi(messageType));
     }
 
     private static String createBody(android.telephony.SmsMessage[] messages) {
@@ -62,4 +61,27 @@ public class InFlightSmsMessageFactory {
         contentValues.put(Telephony.Sms.Inbox.TYPE, messageTypeSent);
         return contentValues;
     }
+
+    private static SmsMessage.Type fromApi(int apiType) {
+        switch (apiType) {
+
+            case Telephony.Sms.MESSAGE_TYPE_INBOX:
+                return SmsMessage.Type.INBOX;
+
+            case Telephony.Sms.MESSAGE_TYPE_DRAFT:
+                return SmsMessage.Type.DRAFT;
+
+            case Telephony.Sms.MESSAGE_TYPE_FAILED:
+                return SmsMessage.Type.FAILED;
+
+            case Telephony.Sms.MESSAGE_TYPE_OUTBOX:
+                return SmsMessage.Type.SENDING;
+
+            case Telephony.Sms.MESSAGE_TYPE_SENT:
+                return SmsMessage.Type.SENT;
+
+        }
+        return SmsMessage.Type.UNKNOWN;
+    }
+
 }
