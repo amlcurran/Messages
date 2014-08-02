@@ -43,13 +43,18 @@
 
     <style name="ConversationText" parent="Material.Body1">
         <item name="android:ellipsize">end</item>
-        <item name="android:maxLines">@integer/conversation_preview_lines</item>
         <item name="android:minLines">@integer/conversation_preview_lines</item>
+    </style>
+
+    <style name="ConversationText.Read" parent="Material.Body1">
+        <item name="android:ellipsize">end</item>
+        <item name="android:maxLines">@integer/conversation_preview_lines</item>
         <item name="android:lines">@integer/conversation_preview_lines</item>
     </style>
 
     <style name="ConversationText.Unread">
         <item name="android:textStyle">bold</item>
+        <item name="android:maxLines">@integer/conversation_preview_lines_unread</item>
         <item name="android:textColor">@color/material_text_standard_dark</item>
     </style>
 
@@ -107,4 +112,5 @@
 
     <integer name="loading_scale_small">2</integer>
     <integer name="loading_scale_large">1</integer>
+    <integer name="conversation_preview_lines_unread">6</integer>
 </resources>
