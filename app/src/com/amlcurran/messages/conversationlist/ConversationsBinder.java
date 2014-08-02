@@ -16,10 +16,11 @@
 
 package com.amlcurran.messages.conversationlist;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
-import android.text.style.ForegroundColorSpan;
+import android.text.style.TextAppearanceSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -39,16 +40,20 @@ public class ConversationsBinder extends SimpleBinder<Conversation> {
     private static final int IS_UNREAD = 1;
     private static final int IS_READ = 0;
     private final float animationLength;
+    private final Activity activity;
     private final MessagesLoader loader;
     private final DraftRepository draftRepository;
     private final String draftPreamble;
     private final int draftPreambleTextColor;
+    private final String fromMePreamble;
 
-    public ConversationsBinder(Resources resources, MessagesLoader loader, DraftRepository draftRepository) {
+    public ConversationsBinder(Activity activity, Resources resources, MessagesLoader loader, DraftRepository draftRepository) {
+        this.activity = activity;
         this.loader = loader;
         this.draftRepository = draftRepository;
         this.animationLength = resources.getDimension(R.dimen.photo_animation_length);
         this.draftPreamble = resources.getString(R.string.draft_preamble);
+        this.fromMePreamble = resources.getString(R.string.from_me_preamble);
         this.draftPreambleTextColor = resources.getColor(R.color.theme_colour);
     }
 
@@ -82,20 +87,36 @@ public class ConversationsBinder extends SimpleBinder<Conversation> {
     private CharSequence getSummaryText(Conversation item) {
         if (showDraftAsSummary(item)) {
             return constructDraftSummary(item);
-        } else {
-            return item.getSummaryText();
+        } else if (showAsFromMe(item)) {
+            return constructFromMeSummary(item);
         }
+        return item.getSummaryText();
+    }
+
+    private boolean showAsFromMe(Conversation item) {
+        return item.isLastFromMe();
     }
 
     private boolean showDraftAsSummary(Conversation item) {
         return draftRepository.hasDraft(item.getAddress()) && item.isRead();
     }
 
+    private CharSequence constructFromMeSummary(Conversation item) {
+        Truss truss = new Truss();
+        return truss.pushSpan(new TextAppearanceSpan(activity, R.style.Material_Body2))
+                .append(fromMePreamble)
+                .popSpan()
+                .append(" — ")
+                .append(item.getSummaryText())
+                .build();
+    }
+
     private CharSequence constructDraftSummary(Conversation item) {
         Truss truss = new Truss();
-        return truss.pushSpan(new ForegroundColorSpan(draftPreambleTextColor))
+        return truss.pushSpan(new TextAppearanceSpan(activity, R.style.Material_Body2))
                 .append(draftPreamble)
                 .popSpan()
+                .append(" — ")
                 .append(draftRepository.getDraft(item.getAddress()))
                 .build();
     }

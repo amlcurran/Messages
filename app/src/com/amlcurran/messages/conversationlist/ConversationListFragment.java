@@ -73,7 +73,7 @@ public class ConversationListFragment extends ListFragment implements Conversati
 
         preferenceListener = new PreferenceListener(getActivity(), this, "unread_priority");
         source = new ArrayListSource<Conversation>();
-        ConversationsBinder binder = new ConversationsBinder(getResources(), messageLoader, new PreferenceStoreDraftRepository(getActivity()));
+        ConversationsBinder binder = new ConversationsBinder(getActivity(), getResources(), messageLoader, new PreferenceStoreDraftRepository(getActivity()));
         adapter = new SourceBinderAdapter<Conversation>(getActivity(), source, binder);
         setListAdapter(adapter);
         getListView().setChoiceMode(ListView.CHOICE_MODE_MULTIPLE_MODAL);

@@ -23,13 +23,19 @@ public class Conversation {
     private final String threadId;
     private final boolean isRead;
     private final Contact contact;
+    private boolean lastFromMe;
 
-    public Conversation(PhoneNumber address, String body, String threadId, boolean isRead, Contact contact) {
+    public Conversation(PhoneNumber address, String body, String threadId, boolean isRead, Contact contact, boolean lastFromMe) {
         this.address = address;
         this.body = body;
         this.threadId = threadId;
         this.isRead = isRead;
         this.contact = contact;
+        this.lastFromMe = lastFromMe;
+    }
+
+    public boolean isLastFromMe() {
+        return lastFromMe;
     }
 
     public String getSummaryText() {
