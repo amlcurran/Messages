@@ -9,4 +9,9 @@
     <color name="theme_colour_dark">#ff0f4f00</color>
     <color name="empty_hint_color">#C0C0C0</color>
     <color name="time_stamp_colour">#44000000</color>
+    <color name="theme_alt_color_1">#E8A70C</color>
+    <color name="theme_alt_color_1_60">#99E8A70C</color>
+    <color name="theme_alt_color_2">#B20000</color>
+    <color name="theme_alt_color_2_60">#99B20000</color>
+    <color name="theme_alt_color_3">#260CE8</color>
 </resources>

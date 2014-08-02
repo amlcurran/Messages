@@ -19,6 +19,7 @@ package com.amlcurran.messages.threads;
 import android.app.Activity;
 import android.app.ListFragment;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -42,6 +43,7 @@ import com.amlcurran.messages.data.ParcelablePhoneNumber;
 import com.amlcurran.messages.loaders.MessagesLoader;
 import com.amlcurran.messages.loaders.OnContactQueryListener;
 import com.amlcurran.messages.preferences.PreferenceStoreDraftRepository;
+import com.amlcurran.messages.telephony.SmsAsyncService;
 import com.amlcurran.messages.telephony.SynchronousDatabaseWriter;
 import com.amlcurran.messages.ui.ComposeMessageView;
 import com.amlcurran.messages.ui.ContactView;
@@ -107,7 +109,16 @@ public class ThreadFragment extends ListFragment implements
 
         setHasOptionsMenu(true);
 
-        SourceBinderAdapter<SmsMessage> adapter = new SourceBinderAdapter<SmsMessage>(getActivity(), threadController.getSource(), new ThreadBinder(getListView()));
+        ThreadBinder.ResendCallback resendCallback = new ThreadBinder.ResendCallback() {
+            @Override
+            public void resend(SmsMessage message) {
+                onMessageComposed(message.getBody());
+                Intent deleteFailed = SmsAsyncService.getAsyncDeleteIntent(getActivity(), message);
+                getActivity().startService(deleteFailed);
+            }
+        };
+        ThreadBinder threadBinder = new ThreadBinder(getListView(), getResources(), resendCallback);
+        SourceBinderAdapter<SmsMessage> adapter = new SourceBinderAdapter<SmsMessage>(getActivity(), threadController.getSource(), threadBinder);
         setListAdapter(adapter);
 
         composeView.setText(retrieveDraft(phoneNumber));

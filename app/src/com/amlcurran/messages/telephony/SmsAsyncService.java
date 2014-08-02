@@ -17,16 +17,22 @@
 package com.amlcurran.messages.telephony;
 
 import android.app.IntentService;
+import android.content.ContentUris;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.provider.Telephony;
 
 import com.amlcurran.messages.MessagesLog;
 import com.amlcurran.messages.SingletonManager;
+import com.amlcurran.messages.core.data.SmsMessage;
 import com.amlcurran.messages.data.InFlightSmsMessage;
 import com.amlcurran.messages.events.BroadcastEventBus;
 
 public class SmsAsyncService extends IntentService {
+
+    private static final String ACTION_DELETE = SmsAsyncService.class.getCanonicalName() + ".ACTION_DELETE";
+    private static final String EXTRA_MESSAGE_ID = "message_id";
 
     public SmsAsyncService() {
         super(SmsAsyncService.class.getSimpleName());
@@ -50,6 +56,17 @@ public class SmsAsyncService extends IntentService {
                     break;
 
             }
+        } else if (ACTION_DELETE.equals(intent.getAction())) {
+
+            long id = intent.getLongExtra(EXTRA_MESSAGE_ID, -1);
+            if (id > 0) {
+                Uri deleteUri = ContentUris.withAppendedId(Telephony.Sms.CONTENT_URI, id);
+                int deleted = new SmsDatabaseWriter().deleteFromUri(getContentResolver(), deleteUri);
+                if (deleted > 0) {
+                    MessagesLog.d(this, "Successfully deleted message");
+                }
+            }
+
         }
     }
 
@@ -96,4 +113,12 @@ public class SmsAsyncService extends IntentService {
         intent.putExtra(SmsReceiver.EXTRA_WRITE_TYPE, writeType.toString());
         return intent;
     }
+
+    public static Intent getAsyncDeleteIntent(Context context, SmsMessage message) {
+        Intent intent = new Intent(context, SmsAsyncService.class);
+        intent.setAction(SmsAsyncService.ACTION_DELETE);
+        intent.putExtra(SmsAsyncService.EXTRA_MESSAGE_ID, message.getId());
+        return intent;
+    }
+
 }

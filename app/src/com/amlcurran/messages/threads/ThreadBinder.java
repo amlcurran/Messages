@@ -17,10 +17,12 @@
 package com.amlcurran.messages.threads;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.text.util.Linkify;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -37,9 +39,13 @@ class ThreadBinder extends SimpleBinder<SmsMessage> {
     private final DateFormat formatter = new SimpleDateFormat("HH:mm dd-MMM-yy");
     private final Date date = new Date();
     private final ListView listView;
+    private Resources resources;
+    private ResendCallback resendCallback;
 
-    public ThreadBinder(ListView listView) {
+    public ThreadBinder(ListView listView, Resources resources, ResendCallback resendCallback) {
         this.listView = listView;
+        this.resources = resources;
+        this.resendCallback = resendCallback;
     }
 
     @Override
@@ -53,9 +59,24 @@ class ThreadBinder extends SimpleBinder<SmsMessage> {
             getTextView(convertView, android.R.id.text2).setText(formatter.format(date));
         }
 
+        manipulateView(convertView, item);
+
         Linkify.addLinks(bodyText, Linkify.ALL);
 
         return convertView;
+    }
+
+    private void manipulateView(View view, final SmsMessage smsMessage) {
+        if (smsMessage.getType() == SmsMessage.Type.FAILED) {
+            ImageView imageView = (ImageView) view.findViewById(R.id.failed_to_send_image);
+            imageView.setColorFilter(resources.getColor(R.color.theme_alt_color_2));
+            imageView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    resendCallback.resend(smsMessage);
+                }
+            });
+        }
     }
 
     @Override
@@ -98,6 +119,10 @@ class ThreadBinder extends SimpleBinder<SmsMessage> {
 
     private TextView getTextView(View convertView, int text1) {
         return (TextView) convertView.findViewById(text1);
+    }
+
+    public interface ResendCallback {
+        void resend(SmsMessage message);
     }
 
 }
