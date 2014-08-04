@@ -72,7 +72,7 @@ public class ExecutorMessagesLoader implements MessagesLoader {
     }
 
     @Override
-    public void loadConversationList(ConversationListListener loadListener, Sort sort) {
+    public void loadConversationList(final ConversationListListener loadListener, Sort sort) {
         if (cache.getConversationList() == null) {
             submit(new ConversationListTask(getResolver(), new ConversationListListener() {
                 @Override
@@ -81,7 +81,12 @@ public class ExecutorMessagesLoader implements MessagesLoader {
                 }
             }, sort, cache));
         } else {
-            loadListener.onConversationListLoaded(cache.getConversationList());
+            uiHandler.post(new Runnable() {
+                @Override
+                public void run() {
+                    loadListener.onConversationListLoaded(cache.getConversationList());
+                }
+            });
         }
     }
 

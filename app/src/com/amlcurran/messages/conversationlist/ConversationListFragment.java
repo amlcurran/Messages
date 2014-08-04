@@ -56,7 +56,8 @@ public class ConversationListFragment extends ListFragment implements Conversati
     private MessagesLoader messageLoader;
     private EventSubscriber messageReceiver;
 
-    public ConversationListFragment() { }
+    public ConversationListFragment() {
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -105,7 +106,7 @@ public class ConversationListFragment extends ListFragment implements Conversati
     }
 
     public Broadcast[] getActions() {
-        return new Broadcast[] { new Broadcast(BroadcastEventBus.BROADCAST_LIST_LOADED, null) };
+        return new Broadcast[]{new Broadcast(BroadcastEventBus.BROADCAST_LIST_LOADED, null)};
     }
 
     public void loadData(MessagesLoader loader, boolean isRefresh) {
@@ -127,13 +128,8 @@ public class ConversationListFragment extends ListFragment implements Conversati
     @Override
     public void onConversationListLoaded(final List<Conversation> conversations) {
         SingletonManager.getNotifier(getActivity()).updateUnreadNotification(false);
-        getActivity().runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                source.replace(conversations);
-                hideLoadingUi();
-            }
-        });
+        source.replace(conversations);
+        hideLoadingUi();
     }
 
     private void showLoadingUi() {
