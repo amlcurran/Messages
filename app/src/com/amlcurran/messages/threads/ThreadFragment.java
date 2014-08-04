@@ -16,7 +16,7 @@
 
 package com.amlcurran.messages.threads;
 
-import android.app.Activity;
+import android.animation.LayoutTransition;
 import android.app.ListFragment;
 import android.content.Context;
 import android.content.Intent;
@@ -27,7 +27,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AbsListView;
 import android.widget.ListView;
 
 import com.amlcurran.messages.MessagesActivity;
@@ -52,16 +51,14 @@ import com.espian.utils.ProviderHelper;
 import com.github.amlcurran.sourcebinder.Source;
 import com.github.amlcurran.sourcebinder.SourceBinderAdapter;
 
-import java.util.Calendar;
-
 public class ThreadFragment extends ListFragment implements
-        ComposeMessageView.ComposureCallbacks,
         CustomHeaderFragment, ThreadController.Callback {
 
     private static final String THREAD_ID = "threadId";
     private static final String ADDRESS = "address";
     private static final String CONTACT = "contact";
 
+    private StandardComposeCallbacks composureCallbacks;
     private SmsComposeListener listener;
     private ParcelablePhoneNumber phoneNumber;
     private ComposeMessageView composeView;
@@ -84,35 +81,34 @@ public class ThreadFragment extends ListFragment implements
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_thread, container, false);
         ListView listView = (ListView) view.findViewById(android.R.id.list);
-        listView.setOnScrollListener(listListener);
+        listView.setOnScrollListener(new LegacyShadowingScrollListener());
         listView.setTranscriptMode(ListView.TRANSCRIPT_MODE_NORMAL);
         listView.setStackFromBottom(true);
         listView.setDivider(null);
+        listView.setLayoutTransition(new LayoutTransition());
         composeView = ((ComposeMessageView) view.findViewById(R.id.thread_compose_view));
-        composeView.setComposeListener(this);
+        composeView.setComposeListener(composureCallbacks);
         return view;
-    }
-
-    @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-        listener = new ProviderHelper<SmsComposeListener>(SmsComposeListener.class).get(activity);
     }
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        listener = new ProviderHelper<SmsComposeListener>(SmsComposeListener.class).get(getActivity());
         phoneNumber = new ParcelablePhoneNumber(getArguments().getString(ADDRESS));
-        threadController = new ThreadController(getThreadId(), phoneNumber, this);
+        String threadId = getArguments().getString(THREAD_ID);
+        threadController = new ThreadController(threadId, phoneNumber, ThreadFragment.this);
         threadController.create(getActivity(), composeView);
-        ((MessagesActivity) getActivity()).customHeader(this);
+        ((MessagesActivity) getActivity()).customHeader(ThreadFragment.this);
+
+        composureCallbacks = new StandardComposeCallbacks(getActivity(), phoneNumber, listener);
 
         setHasOptionsMenu(true);
 
         ThreadBinder.ResendCallback resendCallback = new ThreadBinder.ResendCallback() {
             @Override
             public void resend(SmsMessage message) {
-                onMessageComposed(message.getBody());
+                composureCallbacks.onMessageComposed(message.getBody());
                 Intent deleteFailed = SmsAsyncService.getAsyncDeleteIntent(getActivity(), message);
                 getActivity().startService(deleteFailed);
             }
@@ -191,10 +187,6 @@ public class ThreadFragment extends ListFragment implements
         return super.onOptionsItemSelected(item);
     }
 
-    private String getThreadId() {
-        return getArguments().getString(THREAD_ID);
-    }
-
     private void scrollTo(final int position) {
         getListView().post(new Runnable() {
             @Override
@@ -205,44 +197,9 @@ public class ThreadFragment extends ListFragment implements
     }
 
     @Override
-    public void onMessageComposed(CharSequence body) {
-        String message = String.valueOf(body);
-        long timestamp = Calendar.getInstance().getTimeInMillis();
-        InFlightSmsMessage smsMessage = new InFlightSmsMessage(phoneNumber, message, timestamp);
-        listener.sendSms(smsMessage);
-        new SynchronousDatabaseWriter(getActivity()).clearDraft(phoneNumber);
-    }
-
-    @Override
     public View getHeaderView(Context context) {
         contactView = new ContactView(context, null);
         return contactView;
-    }
-
-    private AbsListView.OnScrollListener listListener = new AbsListView.OnScrollListener() {
-
-        @Override
-        public void onScrollStateChanged(AbsListView view, int scrollState) {
-
-        }
-
-        @Override
-        public void onScroll(AbsListView listView, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
-            if (totalItemCount > 0) {
-                setUpViewShadow(listView, totalItemCount);
-            }
-        }
-    };
-
-    private void setUpViewShadow(AbsListView listView, int totalItemCount) {
-        boolean lastVisibleIsLast = listView.getLastVisiblePosition() == totalItemCount - 1;
-        boolean lastViewIsAtBottom = listView.getChildAt(listView.getChildCount() - 1).getBottom() == listView.getBottom();
-
-        if (lastVisibleIsLast && lastViewIsAtBottom) {
-            listView.setBackgroundResource(0);
-        } else {
-            listView.setBackgroundResource(R.drawable.compose_shadow_background);
-        }
     }
 
     @Override

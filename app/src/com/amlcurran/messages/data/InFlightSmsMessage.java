@@ -27,8 +27,8 @@ public class InFlightSmsMessage implements Parcelable {
     private final String body;
     private final long timestamp;
 
-    public InFlightSmsMessage(ParcelablePhoneNumber phoneNumber, String message, long timestamp) {
-        this.phoneNumber = phoneNumber;
+    public InFlightSmsMessage(PhoneNumber phoneNumber, String message, long timestamp) {
+        this.phoneNumber = new ParcelablePhoneNumber(phoneNumber.flatten());
         this.body = message;
         this.timestamp = timestamp;
     }
