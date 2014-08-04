@@ -19,7 +19,6 @@ package com.amlcurran.messages.threads;
 import android.animation.LayoutTransition;
 import android.app.ListFragment;
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -34,16 +33,14 @@ import com.amlcurran.messages.R;
 import com.amlcurran.messages.SingletonManager;
 import com.amlcurran.messages.SmsComposeListener;
 import com.amlcurran.messages.core.data.Contact;
+import com.amlcurran.messages.core.data.DraftRepository;
 import com.amlcurran.messages.core.data.PhoneNumber;
 import com.amlcurran.messages.core.data.SmsMessage;
 import com.amlcurran.messages.data.ContactFactory;
-import com.amlcurran.messages.data.InFlightSmsMessage;
 import com.amlcurran.messages.data.ParcelablePhoneNumber;
 import com.amlcurran.messages.loaders.MessagesLoader;
 import com.amlcurran.messages.loaders.OnContactQueryListener;
 import com.amlcurran.messages.preferences.PreferenceStoreDraftRepository;
-import com.amlcurran.messages.telephony.SmsAsyncService;
-import com.amlcurran.messages.telephony.SynchronousDatabaseWriter;
 import com.amlcurran.messages.ui.ComposeMessageView;
 import com.amlcurran.messages.ui.ContactView;
 import com.amlcurran.messages.ui.CustomHeaderFragment;
@@ -64,6 +61,7 @@ public class ThreadFragment extends ListFragment implements
     private ComposeMessageView composeView;
     private ContactView contactView;
     private ThreadController threadController;
+    private DraftRepository draftRepository;
 
     public static ThreadFragment create(String threadId, PhoneNumber address, Bundle contactBundle) {
         Bundle bundle = new Bundle();
@@ -97,27 +95,21 @@ public class ThreadFragment extends ListFragment implements
         listener = new ProviderHelper<SmsComposeListener>(SmsComposeListener.class).get(getActivity());
         phoneNumber = new ParcelablePhoneNumber(getArguments().getString(ADDRESS));
         String threadId = getArguments().getString(THREAD_ID);
-        threadController = new ThreadController(threadId, phoneNumber, ThreadFragment.this);
-        threadController.create(getActivity(), composeView);
-        ((MessagesActivity) getActivity()).customHeader(ThreadFragment.this);
 
+        draftRepository = new PreferenceStoreDraftRepository(getActivity());
         composureCallbacks = new StandardComposeCallbacks(getActivity(), phoneNumber, listener);
+        threadController = new ThreadController(threadId, phoneNumber, this);
+        threadController.create(getActivity(), composeView);
+        composeView.setText(retrieveDraft(phoneNumber));
 
         setHasOptionsMenu(true);
 
-        ThreadBinder.ResendCallback resendCallback = new ThreadBinder.ResendCallback() {
-            @Override
-            public void resend(SmsMessage message) {
-                composureCallbacks.onMessageComposed(message.getBody());
-                Intent deleteFailed = SmsAsyncService.getAsyncDeleteIntent(getActivity(), message);
-                getActivity().startService(deleteFailed);
-            }
-        };
+        ThreadBinder.ResendCallback resendCallback = new DeleteFailedResender(getActivity(), composureCallbacks);
         ThreadBinder threadBinder = new ThreadBinder(getListView(), getResources(), resendCallback);
         SourceBinderAdapter<SmsMessage> adapter = new SourceBinderAdapter<SmsMessage>(getActivity(), threadController.getSource(), threadBinder);
         setListAdapter(adapter);
 
-        composeView.setText(retrieveDraft(phoneNumber));
+        ((MessagesActivity) getActivity()).customHeader(this);
         setUpContactView(phoneNumber);
     }
 
@@ -137,13 +129,7 @@ public class ThreadFragment extends ListFragment implements
     }
 
     private String retrieveDraft(PhoneNumber phoneNumber) {
-        return new PreferenceStoreDraftRepository(getActivity()).getDraft(phoneNumber);
-    }
-
-    private void saveDraft() {
-        String text = composeView.getText();
-        InFlightSmsMessage message = new InFlightSmsMessage(phoneNumber, text, System.currentTimeMillis());
-        new SynchronousDatabaseWriter(getActivity()).storeDraft(message);
+        return draftRepository.getDraft(phoneNumber);
     }
 
     @Override
@@ -162,12 +148,7 @@ public class ThreadFragment extends ListFragment implements
     public void onStop() {
         super.onStop();
         threadController.stop();
-        saveDraft();
-    }
-
-    @Override
-    public void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
+        threadController.saveDraft(draftRepository, composeView.getText());
     }
 
     @Override

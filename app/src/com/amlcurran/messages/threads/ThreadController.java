@@ -18,11 +18,12 @@ package com.amlcurran.messages.threads;
 
 import android.app.Activity;
 
+import com.amlcurran.messages.core.data.DraftRepository;
+import com.amlcurran.messages.core.data.PhoneNumber;
 import com.amlcurran.messages.core.data.SmsMessage;
 import com.amlcurran.messages.core.events.Broadcast;
 import com.amlcurran.messages.core.events.EventSubscriber;
 import com.amlcurran.messages.core.loaders.ThreadListener;
-import com.amlcurran.messages.core.data.PhoneNumber;
 import com.amlcurran.messages.events.BroadcastEventBus;
 import com.amlcurran.messages.events.BroadcastEventSubscriber;
 import com.amlcurran.messages.loaders.MessagesLoader;
@@ -100,6 +101,10 @@ class ThreadController implements ThreadListener {
                 new Broadcast(BroadcastEventBus.BROADCAST_MESSAGE_RECEIVED, phoneNumber.flatten()),
                 new Broadcast(BroadcastEventBus.BROADCAST_MESSAGE_SENDING, phoneNumber.flatten()),
                 new Broadcast(BroadcastEventBus.BROADCAST_MESSAGE_DRAFT, phoneNumber.flatten()) };
+    }
+
+    void saveDraft(DraftRepository draftRepository, String text) {
+        draftRepository.storeDraft(phoneNumber, text);
     }
 
     public interface Callback {
