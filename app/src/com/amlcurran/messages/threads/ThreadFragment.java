@@ -55,7 +55,7 @@ public class ThreadFragment extends ListFragment implements
     private static final String ADDRESS = "address";
     private static final String CONTACT = "contact";
 
-    private StandardComposeCallbacks composureCallbacks;
+    private StandardComposeCallbacks composeCallbacks;
     private SmsComposeListener listener;
     private ParcelablePhoneNumber phoneNumber;
     private ComposeMessageView composeView;
@@ -85,7 +85,6 @@ public class ThreadFragment extends ListFragment implements
         listView.setDivider(null);
         listView.setLayoutTransition(new LayoutTransition());
         composeView = ((ComposeMessageView) view.findViewById(R.id.thread_compose_view));
-        composeView.setComposeListener(composureCallbacks);
         return view;
     }
 
@@ -97,14 +96,15 @@ public class ThreadFragment extends ListFragment implements
         String threadId = getArguments().getString(THREAD_ID);
 
         draftRepository = new PreferenceStoreDraftRepository(getActivity());
-        composureCallbacks = new StandardComposeCallbacks(getActivity(), phoneNumber, listener);
+        composeCallbacks = new StandardComposeCallbacks(getActivity(), phoneNumber, listener);
+        composeView.setComposeListener(composeCallbacks);
         threadController = new ThreadController(threadId, phoneNumber, this);
         threadController.create(getActivity(), composeView);
         composeView.setText(retrieveDraft(phoneNumber));
 
         setHasOptionsMenu(true);
 
-        ThreadBinder.ResendCallback resendCallback = new DeleteFailedResender(getActivity(), composureCallbacks);
+        ThreadBinder.ResendCallback resendCallback = new DeleteFailedResender(getActivity(), composeCallbacks);
         ThreadBinder threadBinder = new ThreadBinder(getListView(), getResources(), resendCallback);
         SourceBinderAdapter<SmsMessage> adapter = new SourceBinderAdapter<SmsMessage>(getActivity(), threadController.getSource(), threadBinder);
         setListAdapter(adapter);
