@@ -36,6 +36,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Future;
 
 public class ExecutorMessagesLoader implements MessagesLoader {
 
@@ -57,8 +58,8 @@ public class ExecutorMessagesLoader implements MessagesLoader {
         return context.getContentResolver();
     }
 
-    private void submit(final Callable task) {
-        executor.execute(new Runnable() {
+    private Task submit(final Callable task) {
+        Future result = executor.submit(new Runnable() {
             @Override
             public void run() {
                 try {
@@ -69,6 +70,7 @@ public class ExecutorMessagesLoader implements MessagesLoader {
                 }
             }
         });
+        return new FutureTask(result);
     }
 
     @Override
@@ -101,8 +103,8 @@ public class ExecutorMessagesLoader implements MessagesLoader {
     }
 
     @Override
-    public void loadPhoto(Contact contact, PhotoLoadListener photoLoadListener) {
-        submit(new PhotoLoadTask(getResolver(), context.getResources(), contact, photoLoadListener, cache, uiHandler));
+    public Task loadPhoto(Contact contact, PhotoLoadListener photoLoadListener) {
+        return submit(new PhotoLoadTask(getResolver(), context.getResources(), contact, photoLoadListener, cache, uiHandler));
     }
 
     @Override

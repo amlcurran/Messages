@@ -36,7 +36,7 @@ public interface MessagesLoader {
 
     void markThreadAsRead(String threadId, ConversationListChangeListener conversationListChangeListener);
 
-    void loadPhoto(Contact contact, PhotoLoadListener photoLoadListener);
+    Task loadPhoto(Contact contact, PhotoLoadListener photoLoadListener);
 
     void loadUnreadConversationList(ConversationListListener loadListener);
 

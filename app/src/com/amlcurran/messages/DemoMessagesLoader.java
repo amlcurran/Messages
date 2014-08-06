@@ -32,6 +32,7 @@ import com.amlcurran.messages.data.ParcelablePhoneNumber;
 import com.amlcurran.messages.loaders.MessagesLoader;
 import com.amlcurran.messages.loaders.OnContactQueryListener;
 import com.amlcurran.messages.loaders.OnThreadDeleteListener;
+import com.amlcurran.messages.loaders.Task;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -72,8 +73,8 @@ public class DemoMessagesLoader implements MessagesLoader {
     }
 
     @Override
-    public void loadPhoto(Contact contact, PhotoLoadListener photoLoadListener) {
-
+    public Task loadPhoto(Contact contact, PhotoLoadListener photoLoadListener) {
+        return null;
     }
 
     @Override

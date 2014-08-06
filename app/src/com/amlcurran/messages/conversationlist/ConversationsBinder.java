@@ -24,6 +24,7 @@ import android.text.style.TextAppearanceSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewPropertyAnimator;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -33,6 +34,7 @@ import com.amlcurran.messages.core.data.Contact;
 import com.amlcurran.messages.core.data.Conversation;
 import com.amlcurran.messages.core.data.DraftRepository;
 import com.amlcurran.messages.loaders.MessagesLoader;
+import com.amlcurran.messages.loaders.Task;
 import com.github.amlcurran.sourcebinder.SimpleBinder;
 
 public class ConversationsBinder extends SimpleBinder<Conversation> {
@@ -69,26 +71,29 @@ public class ConversationsBinder extends SimpleBinder<Conversation> {
 
     @Override
     public View bindView(View convertView, Conversation item, int position) {
-        TextView textView1 = getTextView(convertView, android.R.id.text1);
-        TextView textView2 = getTextView(convertView, android.R.id.text2);
-        ImageView imageView = (ImageView) convertView.findViewById(R.id.image);
+        ConversationViewHolder viewHolder = (ConversationViewHolder) convertView.getTag(R.id.tag_view_holder);
 
-        if (isNotSameItem(convertView, item)) {
-            loadContactPhoto(item, imageView);
-        }
+        stopLoadingCurrent(convertView);
+        loadContactPhoto(convertView, item, viewHolder.imageView);
 
-        textView1.setText(item.getContact().getDisplayName());
-        textView2.setText(getSummaryText(item));
+        viewHolder.nameField.setText(item.getContact().getDisplayName());
+        viewHolder.snippetField.setText(getSummaryText(item));
 
-        convertView.setTag(item);
         return convertView;
+    }
+
+    private void stopLoadingCurrent(View convertView) {
+        if (convertView.getTag(R.id.tag_load_task) != null) {
+            Task task = (Task) convertView.getTag(R.id.tag_load_task);
+            task.cancel();
+        }
     }
 
     private CharSequence getSummaryText(Conversation item) {
         if (showDraftAsSummary(item)) {
-            return constructDraftSummary(item);
+            return constructSummary(draftPreamble, draftRepository.getDraft(item.getAddress()));
         } else if (showAsFromMe(item)) {
-            return constructFromMeSummary(item);
+            return constructSummary(fromMePreamble, item.getSummaryText());
         }
         return item.getSummaryText();
     }
@@ -101,50 +106,31 @@ public class ConversationsBinder extends SimpleBinder<Conversation> {
         return draftRepository.hasDraft(item.getAddress()) && item.isRead();
     }
 
-    private CharSequence constructFromMeSummary(Conversation item) {
-        Truss truss = new Truss();
-        return truss.pushSpan(new TextAppearanceSpan(activity, R.style.Material_Body2))
-                .append(fromMePreamble)
+    private CharSequence constructSummary(String preamble, String text) {
+        return new Truss().pushSpan(new TextAppearanceSpan(activity, R.style.Material_Body2))
+                .append(preamble)
                 .popSpan()
                 .append(" — ")
-                .append(item.getSummaryText())
+                .append(text)
                 .build();
     }
 
-    private CharSequence constructDraftSummary(Conversation item) {
-        Truss truss = new Truss();
-        return truss.pushSpan(new TextAppearanceSpan(activity, R.style.Material_Body2))
-                .append(draftPreamble)
-                .popSpan()
-                .append(" — ")
-                .append(draftRepository.getDraft(item.getAddress()))
-                .build();
-    }
-
-    private static boolean isNotSameItem(View convertView, Conversation item) {
-        return convertView.getTag() != item;
-    }
-
-    private void loadContactPhoto(final Conversation item, final ImageView imageView) {
+    private void loadContactPhoto(View convertView, final Conversation item, final ImageView imageView) {
         Contact contact = item.getContact();
-        loader.loadPhoto(contact, new SettingPhotoLoadListener(imageView));
-    }
-
-    private void resetContactImage(ImageView imageView) {
-        imageView.setImageBitmap(null);
-        imageView.setAlpha(0f);
-    }
-
-    private TextView getTextView(View convertView, int text1) {
-        return (TextView) convertView.findViewById(text1);
+        Task task = loader.loadPhoto(contact, new SettingPhotoLoadListener(imageView));
+        convertView.setTag(R.id.tag_load_task, task);
     }
 
     @Override
     public View createView(Context context, int itemViewType, ViewGroup parent) {
         if (itemViewType == IS_READ) {
-            return LayoutInflater.from(context).inflate(R.layout.item_conversation_read, parent, false);
+            View view = LayoutInflater.from(context).inflate(R.layout.item_conversation_read, parent, false);
+            view.setTag(R.id.tag_view_holder , new ConversationViewHolder(view));
+            return view;
         } else {
-            return LayoutInflater.from(context).inflate(R.layout.item_conversation_unread, parent, false);
+            View view = LayoutInflater.from(context).inflate(R.layout.item_conversation_unread, parent, false);
+            view.setTag(R.id.tag_view_holder, new ConversationViewHolder(view));
+            return view;
         }
     }
 
@@ -159,10 +145,11 @@ public class ConversationsBinder extends SimpleBinder<Conversation> {
         @Override
         public void photoLoaded(final Bitmap photo) {
             imageView.setImageBitmap(photo);
-            imageView.setTranslationX(-animationLength);
-            imageView.animate()
+            ViewPropertyAnimator propertyAnimator = imageView.animate();
+            propertyAnimator
                     .translationXBy(animationLength)
-                    .alpha(1f).start();
+                    .alpha(1f);
+            imageView.setTag(propertyAnimator);
         }
 
         @Override
@@ -172,8 +159,32 @@ public class ConversationsBinder extends SimpleBinder<Conversation> {
 
         @Override
         public void beforePhotoLoad(Contact contact) {
+            if (imageView.getTag() != null) {
+                ((ViewPropertyAnimator) imageView.getTag()).cancel();
+            }
             resetContactImage(imageView);
         }
 
+        private void resetContactImage(ImageView imageView) {
+            imageView.setTranslationX(-animationLength);
+            imageView.setAlpha(0f);
+            imageView.setImageBitmap(null);
+        }
+
     }
+
+    private static class ConversationViewHolder {
+
+        public final TextView nameField;
+        public final TextView snippetField;
+        public final ImageView imageView;
+
+        public ConversationViewHolder(View view) {
+            nameField = ((TextView) view.findViewById(android.R.id.text1));
+            snippetField = ((TextView) view.findViewById(android.R.id.text2));
+            imageView = ((ImageView) view.findViewById(R.id.image));
+        }
+
+    }
+
 }

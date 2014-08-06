@@ -26,6 +26,7 @@ import android.graphics.RectF;
 import android.util.AttributeSet;
 import android.widget.ImageView;
 
+import com.amlcurran.messages.MessagesLog;
 import com.amlcurran.messages.R;
 
 public class CutImageView extends ImageView {
@@ -76,11 +77,13 @@ public class CutImageView extends ImageView {
         cookieCutter.updateCircleRect(circleRectF);
         cookieCutter.updateBorderRect(borderRectF);
         cookieCutter.updateViewBounds(getHeight(), getWidth());
+        MessagesLog.d(this, "onMeasure");
     }
 
     @Override
     public void setImageBitmap(Bitmap bm) {
         if (bm != null) {
+            MessagesLog.d(this, "setImageBitmap");
             cookieCutter.updateImage(bm);
         }
         super.setImageBitmap(bm);

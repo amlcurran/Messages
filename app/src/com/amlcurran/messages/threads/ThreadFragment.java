@@ -19,6 +19,7 @@ package com.amlcurran.messages.threads;
 import android.animation.LayoutTransition;
 import android.app.ListFragment;
 import android.content.Context;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -83,9 +84,16 @@ public class ThreadFragment extends ListFragment implements
         listView.setTranscriptMode(ListView.TRANSCRIPT_MODE_NORMAL);
         listView.setStackFromBottom(true);
         listView.setDivider(null);
-        listView.setLayoutTransition(new LayoutTransition());
+        listView.setLayoutTransition(createLayoutTransition(inflater.getContext().getResources()));
         composeView = ((ComposeMessageView) view.findViewById(R.id.thread_compose_view));
         return view;
+    }
+
+    private LayoutTransition createLayoutTransition(Resources resources) {
+        LayoutTransition transition = new LayoutTransition();
+        int shortDuration = resources.getInteger(android.R.integer.config_shortAnimTime);
+        transition.setDuration(shortDuration);
+        return transition;
     }
 
     @Override
@@ -109,6 +117,7 @@ public class ThreadFragment extends ListFragment implements
         SourceBinderAdapter<SmsMessage> adapter = new SourceBinderAdapter<SmsMessage>(getActivity(), threadController.getSource(), threadBinder);
         setListAdapter(adapter);
 
+        contactView = new ContactView(getActivity(), null);
         ((MessagesActivity) getActivity()).customHeader(this);
         setUpContactView(phoneNumber);
     }

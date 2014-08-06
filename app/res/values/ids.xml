@@ -17,4 +17,7 @@
 
 <resources>
     <item name="action_overflow" type="id" />
+    <item name="tag_view_holder" type="id"/>
+    <item name="tag_load_task" type="id"/>
+    <item name="tag_animator" type="id"/>
 </resources>
