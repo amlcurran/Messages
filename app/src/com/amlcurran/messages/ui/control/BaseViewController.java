@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.amlcurran.messages.ui;
+package com.amlcurran.messages.ui.control;
 
 import android.app.Activity;
 import android.view.View;
@@ -23,12 +23,12 @@ import android.view.animation.DecelerateInterpolator;
 import com.amlcurran.messages.R;
 
 public abstract class BaseViewController implements ViewController, View.OnClickListener {
-    protected final Callback callback;
+    protected final ViewCallback viewCallback;
     private View disabledBanner;
     private View newMessageButton;
 
-    public BaseViewController(Callback callback) {
-        this.callback = callback;
+    public BaseViewController(ViewCallback viewCallback) {
+        this.viewCallback = viewCallback;
     }
 
     protected void hideNewMessageButton() {
@@ -65,7 +65,7 @@ public abstract class BaseViewController implements ViewController, View.OnClick
     }
 
     public void onClick(View v) {
-        callback.defaultsBannerPressed();
+        viewCallback.defaultsBannerPressed();
     }
 
     private void initViewInternal(Activity activity) {
@@ -75,7 +75,7 @@ public abstract class BaseViewController implements ViewController, View.OnClick
         newMessageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                callback.newMessageButtonClicked();
+                viewCallback.newMessageButtonClicked();
             }
         });
         initView(activity);

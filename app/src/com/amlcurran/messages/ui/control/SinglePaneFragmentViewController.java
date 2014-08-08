@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.amlcurran.messages;
+package com.amlcurran.messages.ui.control;
 
 import android.app.Activity;
 import android.app.Fragment;
@@ -23,56 +23,66 @@ import android.app.FragmentTransaction;
 import android.content.Context;
 import android.view.MenuItem;
 
+import com.amlcurran.messages.ComposeNewFragment;
+import com.amlcurran.messages.R;
 import com.amlcurran.messages.conversationlist.ConversationListFragment;
 import com.amlcurran.messages.preferences.PreferencesFragment;
 import com.amlcurran.messages.ui.CustomHeaderFragment;
-import com.amlcurran.messages.ui.FragmentController;
 import com.amlcurran.messages.ui.ThemeHelper;
-import com.amlcurran.messages.ui.ViewController;
 
-public class SinglePaneFragmentController implements FragmentController {
+public class SinglePaneFragmentViewController extends BaseViewController implements FragmentController {
 
     private final FragmentManager fragmentManager;
-    private final ViewController viewController;
     private final Activity activity;
-    private final Callback callback;
+    private final FragmentCallback fragmentCallback;
 
-    public SinglePaneFragmentController(Activity activity, Callback callback, ViewController viewController) {
+    public SinglePaneFragmentViewController(Activity activity, FragmentCallback fragmentCallback, ViewCallback viewCallback) {
+        super(viewCallback);
         this.fragmentManager = activity.getFragmentManager();
-        this.viewController = viewController;
         this.activity = activity;
-        this.callback = callback;
-        bindBackstackListener(viewController, activity, callback);
+        this.fragmentCallback = fragmentCallback;
+        bindBackstackListener(activity, fragmentCallback);
     }
 
-    private void bindBackstackListener(final ViewController viewController, final Activity activity, final Callback callback) {
+    private void bindBackstackListener(final Activity activity, final FragmentCallback fragmentCallback) {
         activity.getFragmentManager().addOnBackStackChangedListener(new FragmentManager.OnBackStackChangedListener() {
             @Override
             public void onBackStackChanged() {
-                Fragment currentFragment = activity.getFragmentManager().findFragmentById(viewController.getSecondaryFrameId());
-                handleCustomHeader(currentFragment, activity, callback);
+                Fragment currentFragment = activity.getFragmentManager().findFragmentById(getSecondaryFrameId());
+                handleCustomHeader(currentFragment, activity, fragmentCallback);
                 // This is a hack to force the new messages button to show
                 if (currentFragment instanceof ConversationListFragment) {
-                    callback.insertedMaster();
+                    fragmentCallback.insertedMaster();
+                }
+                if (currentFragment instanceof CustomHeaderFragment) {
+                    viewCallback.secondaryVisible();
+                } else {
+                    viewCallback.secondaryHidden();
                 }
             }
         });
     }
 
-    private void handleCustomHeader(Fragment currentFragment, Activity activity, Callback callback) {
+    private void handleCustomHeader(Fragment currentFragment, Activity activity, FragmentCallback fragmentCallback) {
         if (currentFragment instanceof CustomHeaderFragment) {
             Context themedContext = ThemeHelper.getThemedContext(activity);
-            callback.addCustomHeader(((CustomHeaderFragment) currentFragment).getHeaderView(themedContext));
+            fragmentCallback.addCustomHeader(((CustomHeaderFragment) currentFragment).getHeaderView(themedContext));
         } else {
-            callback.removeCustomHeader();
+            fragmentCallback.removeCustomHeader();
         }
     }
 
     @Override
     public void loadConversationListFragment() {
-        createTransaction()
-                .replace(viewController.getMasterFrameId(), new ConversationListFragment())
-                .commit();
+        if (frameIsEmpty(getMasterFrameId())) {
+            createTransaction()
+                    .replace(getMasterFrameId(), new ConversationListFragment())
+                    .commit();
+        }
+    }
+
+    private boolean frameIsEmpty(int frameId) {
+        return fragmentManager.findFragmentById(frameId) == null;
     }
 
     private FragmentTransaction createTransaction() {
@@ -87,17 +97,17 @@ public class SinglePaneFragmentController implements FragmentController {
 
     private void replaceFragmentInternal(Fragment fragment) {
 
-        handleCustomHeader(fragment, activity, callback);
+        handleCustomHeader(fragment, activity, fragmentCallback);
 
         FragmentTransaction transaction = createTransaction()
-                .replace(viewController.getSecondaryFrameId(), fragment);
+                .replace(getSecondaryFrameId(), fragment);
 
-        if (viewController.shouldPlaceOnBackStack()) {
+        if (shouldPlaceOnBackStack()) {
             transaction.addToBackStack(null);
         }
 
         transaction.commit();
-        callback.insertedDetail();
+        fragmentCallback.insertedDetail();
     }
 
     @Override
@@ -123,5 +133,49 @@ public class SinglePaneFragmentController implements FragmentController {
     @Override
     public void attachedFragment(Fragment fragment) {
 
+    }
+
+    @Override
+    public boolean backPressed() {
+        return false;
+    }
+
+    @Override
+    public void hideSecondary() {
+        showNewMessageButton();
+    }
+
+    @Override
+    public void showSecondary() {
+        hideNewMessageButton();
+    }
+
+    @Override
+    protected int getLayout() {
+        return R.layout.activity_messages;
+    }
+
+    @Override
+    protected void initView(Activity activity) {
+    }
+
+    @Override
+    public int getMasterFrameId() {
+        return R.id.container;
+    }
+
+    @Override
+    public int getSecondaryFrameId() {
+        return R.id.container;
+    }
+
+    @Override
+    protected int showMessageButtonDuration() {
+        return 300;
+    }
+
+    @Override
+    public boolean shouldPlaceOnBackStack() {
+        return true;
     }
 }

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.amlcurran.messages.ui;
+package com.amlcurran.messages.ui.control;
 
 import android.app.Activity;
 
@@ -41,7 +41,7 @@ public interface ViewController {
 
     boolean shouldPlaceOnBackStack();
 
-    public interface Callback {
+    public interface ViewCallback {
         void secondaryVisible();
 
         void secondaryHidden();

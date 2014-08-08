@@ -28,10 +28,10 @@ import com.amlcurran.messages.conversationlist.ConversationListFragment;
 import com.amlcurran.messages.conversationlist.ConversationModalMarshall;
 import com.amlcurran.messages.core.data.Contact;
 import com.amlcurran.messages.core.data.Conversation;
+import com.amlcurran.messages.core.data.PhoneNumber;
 import com.amlcurran.messages.core.loaders.ConversationListChangeListener;
 import com.amlcurran.messages.data.ContactFactory;
 import com.amlcurran.messages.data.InFlightSmsMessage;
-import com.amlcurran.messages.core.data.PhoneNumber;
 import com.amlcurran.messages.events.EventBus;
 import com.amlcurran.messages.launch.IntentDataExtractor;
 import com.amlcurran.messages.launch.Launch;
@@ -50,10 +50,9 @@ import com.amlcurran.messages.reporting.StatReporter;
 import com.amlcurran.messages.telephony.DefaultAppChecker;
 import com.amlcurran.messages.threads.ThreadFragment;
 import com.amlcurran.messages.ui.CustomHeaderFragment;
-import com.amlcurran.messages.ui.FragmentController;
-import com.amlcurran.messages.ui.MasterDetailFragmentController;
-import com.amlcurran.messages.ui.SlidingPaneViewController;
-import com.amlcurran.messages.ui.ViewController;
+import com.amlcurran.messages.ui.control.FragmentController;
+import com.amlcurran.messages.ui.control.SinglePaneFragmentViewController;
+import com.amlcurran.messages.ui.control.ViewController;
 
 import java.util.List;
 
@@ -61,8 +60,8 @@ import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
 public class MessagesActivity extends Activity implements MessagesLoaderProvider,
         ConversationListFragment.Listener, SmsComposeListener,
-        DefaultAppChecker.Callback, SlidingPaneViewController.Callback, ConversationModalMarshall.Callback,
-        OnThreadDeleteListener, ConversationListChangeListener, FragmentController.Callback, MenuController.Callbacks {
+        DefaultAppChecker.Callback, ViewController.ViewCallback, ConversationModalMarshall.Callback,
+        OnThreadDeleteListener, ConversationListChangeListener, FragmentController.FragmentCallback, MenuController.Callbacks {
 
     private InUiNotifier toastInUiNotifier;
     private StatReporter statReporter;
@@ -82,8 +81,9 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        viewController      = new SlidingPaneViewController(this);
-        fragmentController  = new MasterDetailFragmentController(this, this, viewController);
+        SinglePaneFragmentViewController fragmentViewController = new SinglePaneFragmentViewController(this, this, this);
+        fragmentController  = fragmentViewController;
+        viewController      = fragmentViewController;
         toastInUiNotifier   = new InUiToastNotifier(this);
         blockingInUiNotifier= new BlockingInUiDialogNotifier(getFragmentManager());
         activityController  = new ActivityController(this, blockingInUiNotifier);

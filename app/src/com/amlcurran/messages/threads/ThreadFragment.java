@@ -188,7 +188,9 @@ public class ThreadFragment extends ListFragment implements
 
     @Override
     public View getHeaderView(Context context) {
-        contactView = new ContactView(context, null);
+        if (contactView == null) {
+            contactView = new ContactView(context, null);
+        }
         return contactView;
     }
 

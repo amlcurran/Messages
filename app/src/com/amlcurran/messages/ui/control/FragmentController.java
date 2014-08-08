@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.amlcurran.messages.ui;
+package com.amlcurran.messages.ui.control;
 
 import android.app.Fragment;
 import android.view.MenuItem;
@@ -35,7 +35,7 @@ public interface FragmentController {
 
     void attachedFragment(Fragment fragment);
 
-    public interface Callback {
+    public interface FragmentCallback {
         void insertedDetail();
 
         void insertedMaster();
