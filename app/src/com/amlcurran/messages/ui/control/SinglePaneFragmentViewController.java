@@ -142,12 +142,12 @@ public class SinglePaneFragmentViewController extends BaseViewController impleme
 
     @Override
     public void hideSecondary() {
-        showNewMessageButton();
+        newMessageButtonController.showNewMessageButton();
     }
 
     @Override
     public void showSecondary() {
-        hideNewMessageButton();
+        newMessageButtonController.hideNewMessageButton();
     }
 
     @Override
@@ -167,11 +167,6 @@ public class SinglePaneFragmentViewController extends BaseViewController impleme
     @Override
     public int getSecondaryFrameId() {
         return R.id.container;
-    }
-
-    @Override
-    protected int showMessageButtonDuration() {
-        return 300;
     }
 
     @Override

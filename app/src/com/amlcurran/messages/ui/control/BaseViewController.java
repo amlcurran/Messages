@@ -18,25 +18,17 @@ package com.amlcurran.messages.ui.control;
 
 import android.app.Activity;
 import android.view.View;
-import android.view.animation.DecelerateInterpolator;
 
 import com.amlcurran.messages.R;
 
 public abstract class BaseViewController implements ViewController, View.OnClickListener {
+
     protected final ViewCallback viewCallback;
+    protected NewMessageButtonController newMessageButtonController;
     private View disabledBanner;
-    private View newMessageButton;
 
     public BaseViewController(ViewCallback viewCallback) {
         this.viewCallback = viewCallback;
-    }
-
-    protected void hideNewMessageButton() {
-        newMessageButton.animate()
-                .translationYBy(newMessageButton.getMeasuredHeight())
-                .setInterpolator(new DecelerateInterpolator(2))
-                .setDuration(300)
-                .start();
     }
 
     @Override
@@ -71,13 +63,8 @@ public abstract class BaseViewController implements ViewController, View.OnClick
     private void initViewInternal(Activity activity) {
         disabledBanner = activity.findViewById(R.id.disabled_banner);
         disabledBanner.setOnClickListener(this);
-        newMessageButton = activity.findViewById(R.id.button_new_message);
-        newMessageButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                viewCallback.newMessageButtonClicked();
-            }
-        });
+        View newMessageButton = activity.findViewById(R.id.button_new_message);
+        newMessageButtonController = new NewMessageButtonController(newMessageButton, viewCallback);
         initView(activity);
     }
 
@@ -85,24 +72,12 @@ public abstract class BaseViewController implements ViewController, View.OnClick
 
     protected abstract void initView(Activity activity);
 
-    protected void showNewMessageButton() {
-        newMessageButton.animate()
-                .translationYBy(-newMessageButton.getMeasuredHeight())
-                .setInterpolator(new DecelerateInterpolator(2))
-                .setDuration(showMessageButtonDuration())
-                .start();
-    }
-
-    protected int showMessageButtonDuration() {
-        return 150;
-    }
-
     public void disableNewMessageButton() {
-        newMessageButton.setVisibility(View.GONE);
+        newMessageButtonController.disableNewMessageButton();
     }
 
     public void enableNewMessageButton() {
-        newMessageButton.setVisibility(View.VISIBLE);
+        newMessageButtonController.enableNewMessageButton();
     }
 
     @Override

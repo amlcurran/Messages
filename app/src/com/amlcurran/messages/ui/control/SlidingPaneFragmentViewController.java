@@ -158,7 +158,7 @@ public class SlidingPaneFragmentViewController extends BaseViewController implem
             public void onPanelOpened(View panel) {
                 if (isSecondaryOpen) {
                     viewCallback.secondaryHidden();
-                    showNewMessageButton();
+                    newMessageButtonController.showNewMessageButton();
                     isSecondaryOpen = false;
                 }
             }
@@ -167,7 +167,7 @@ public class SlidingPaneFragmentViewController extends BaseViewController implem
             public void onPanelClosed(View panel) {
                 if (!isSecondaryOpen) {
                     viewCallback.secondaryVisible();
-                    hideNewMessageButton();
+                    newMessageButtonController.hideNewMessageButton();
                     isSecondaryOpen = true;
                 }
             }
