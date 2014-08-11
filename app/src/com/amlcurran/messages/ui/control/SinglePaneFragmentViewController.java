@@ -53,6 +53,7 @@ public class SinglePaneFragmentViewController extends BaseViewController impleme
                 // This is a hack to force the new messages button to show
                 if (currentFragment instanceof ConversationListFragment) {
                     fragmentCallback.insertedMaster();
+                    newMessageButtonController.showNewMessageButton();
                 }
                 if (currentFragment instanceof CustomHeaderFragment) {
                     viewCallback.secondaryVisible();
