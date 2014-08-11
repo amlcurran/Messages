@@ -51,13 +51,8 @@ class ThreadBinder extends SimpleBinder<SmsMessage> {
     @Override
     public View bindView(View convertView, SmsMessage item, int position) {
 
-        date.setTime(item.getTimestamp());
-
         TextView bodyText = getTextView(convertView, android.R.id.text1);
         bodyText.setText(item.getBody());
-        if (!item.isSending()) {
-            getTextView(convertView, android.R.id.text2).setText(formatter.format(date));
-        }
 
         manipulateView(convertView, item);
 
@@ -66,17 +61,38 @@ class ThreadBinder extends SimpleBinder<SmsMessage> {
         return convertView;
     }
 
+    private boolean isFailed(SmsMessage item) {
+        return (item.getType() == SmsMessage.Type.DRAFT);
+    }
+
     private void manipulateView(View view, final SmsMessage smsMessage) {
-        if (smsMessage.getType() == SmsMessage.Type.FAILED) {
-            ImageView imageView = (ImageView) view.findViewById(R.id.failed_to_send_image);
-            imageView.setColorFilter(resources.getColor(R.color.theme_alt_color_2));
-            imageView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    resendCallback.resend(smsMessage);
-                }
-            });
+        switch (smsMessage.getType()) {
+
+            case FAILED:
+                manipulateFailedView(view, smsMessage);
+                break;
+
+            case INBOX:
+            case SENT:
+                addTimestampView(view, smsMessage);
+
         }
+    }
+
+    private void addTimestampView(View view, SmsMessage smsMessage) {
+        date.setTime(smsMessage.getTimestamp());
+        getTextView(view, android.R.id.text2).setText(formatter.format(date));
+    }
+
+    private void manipulateFailedView(View view, final SmsMessage smsMessage) {
+        ImageView imageView = (ImageView) view.findViewById(R.id.failed_to_send_image);
+        imageView.setColorFilter(resources.getColor(R.color.theme_alt_color_2));
+        imageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                resendCallback.resend(smsMessage);
+            }
+        });
     }
 
     @Override
