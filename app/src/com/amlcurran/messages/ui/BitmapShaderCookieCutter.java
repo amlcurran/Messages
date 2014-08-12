@@ -19,6 +19,7 @@ package com.amlcurran.messages.ui;
 import android.graphics.Bitmap;
 import android.graphics.BitmapShader;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.RectF;
 import android.graphics.Shader;
@@ -30,20 +31,19 @@ public class BitmapShaderCookieCutter implements CookieCutter {
     private final boolean drawOutline;
     private final RectF borderRect;
     private final RectF circleRect;
-    private final RectF scaledRect;
     private int viewHeight;
     private int viewWidth;
-    private int bitmapHeight;
-    private int bitmapWidth;
+    private Bitmap bitmap;
+    private boolean paintRequiresUpdate;
 
     public BitmapShaderCookieCutter(Paint borderPaint, boolean drawOutline) {
         this.paint = new Paint();
         this.paint.setAntiAlias(true);
+        this.paint.setColor(Color.WHITE);
         this.borderPaint = borderPaint;
         this.drawOutline = drawOutline;
         this.circleRect = new RectF();
         this.borderRect = new RectF();
-        this.scaledRect = new RectF();
     }
 
     @Override
@@ -58,36 +58,34 @@ public class BitmapShaderCookieCutter implements CookieCutter {
 
     @Override
     public void draw(Canvas canvas) {
-
-        float widthScale = viewWidth / ((float) bitmapHeight);
-        scaleRect(circleRect, widthScale);
-
-        int count = canvas.save();
-        canvas.scale(widthScale, widthScale);
         canvas.drawOval(circleRect, paint);
-        canvas.restoreToCount(count);
         if (drawOutline) {
             canvas.drawArc(borderRect, 0, 360, true, borderPaint);
         }
     }
 
-    private void scaleRect(RectF circleRect, float scale) {
-        scaledRect.set(circleRect.left, circleRect.top,
-                circleRect.width() * scale, circleRect.height() * scale);
-    }
-
     @Override
     public void updateImage(Bitmap bitmap) {
-        bitmapHeight = bitmap.getHeight();
-        bitmapWidth = bitmap.getWidth();
-        BitmapShader shader = new BitmapShader(bitmap, Shader.TileMode.CLAMP, Shader.TileMode.CLAMP);
-        paint.setShader(shader);
+        this.bitmap = bitmap;
+        this.paintRequiresUpdate = true;
     }
 
     @Override
     public void updateViewBounds(int height, int width) {
         viewHeight = height;
         viewWidth = width;
+    }
+
+    @Override
+    public void preDraw() {
+
+        if (paintRequiresUpdate && bitmap != null && viewWidth > 0 && viewHeight > 0) {
+            Bitmap scaledBitmap = Bitmap.createScaledBitmap(bitmap, viewWidth, viewHeight, true);
+            BitmapShader shader = new BitmapShader(scaledBitmap, Shader.TileMode.CLAMP, Shader.TileMode.CLAMP);
+            paint.setShader(shader);
+            paintRequiresUpdate = false;
+        }
+
     }
 
     /*

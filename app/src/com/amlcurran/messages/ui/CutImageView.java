@@ -24,6 +24,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.RectF;
 import android.util.AttributeSet;
+import android.view.ViewTreeObserver;
 import android.widget.ImageView;
 
 import com.amlcurran.messages.R;
@@ -63,7 +64,16 @@ public class CutImageView extends ImageView {
         borderPaint.setColor(Color.WHITE);
         borderPaint.setShadowLayer(borderWidth, 0, 0, Color.GRAY);
 
-        cookieCutter = new BitmapClipCookieCutter(this, paint, borderPaint, drawOutline);
+        cookieCutter = new BitmapShaderCookieCutter(borderPaint, drawOutline);
+
+        getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
+            @Override
+            public boolean onPreDraw() {
+                cookieCutter.updateViewBounds(getWidth(), getHeight());
+                cookieCutter.preDraw();
+                return true;
+            }
+        });
     }
 
     @Override

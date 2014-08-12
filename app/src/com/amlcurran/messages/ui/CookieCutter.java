@@ -31,4 +31,6 @@ public interface CookieCutter {
     void updateImage(Bitmap bitmap);
 
     void updateViewBounds(int height, int width);
+
+    void preDraw();
 }

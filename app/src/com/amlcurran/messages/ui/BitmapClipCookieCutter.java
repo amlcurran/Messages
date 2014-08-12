@@ -27,6 +27,8 @@ import android.graphics.RectF;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 
+import com.amlcurran.messages.MessagesLog;
+
 public class BitmapClipCookieCutter implements CookieCutter {
 
     private final CutImageView cutImageView;
@@ -36,6 +38,7 @@ public class BitmapClipCookieCutter implements CookieCutter {
     private RectF borderRectF;
     private RectF circleRectF;
     private Rect croppedRect;
+    private Bitmap rawBitmap;
 
     public BitmapClipCookieCutter(CutImageView cutImageView, Paint paint, Paint borderPaint, boolean drawOutline) {
         this.cutImageView = cutImageView;
@@ -47,6 +50,7 @@ public class BitmapClipCookieCutter implements CookieCutter {
 
     @Override
     public void draw(Canvas canvas) {
+        MessagesLog.d(hashCode(), hashCode() + " draw");
         Drawable drawable = cutImageView.getDrawable();
 
         if (drawable == null) {
@@ -71,11 +75,20 @@ public class BitmapClipCookieCutter implements CookieCutter {
 
     @Override
     public void updateImage(Bitmap bitmap) {
+        Bitmap previousBitmapReference = rawBitmap;
 
+        if (this.rawBitmap != null) {
+            bitmap.recycle();
+        }
     }
 
     @Override
     public void updateViewBounds(int height, int width) {
+
+    }
+
+    @Override
+    public void preDraw() {
 
     }
 
