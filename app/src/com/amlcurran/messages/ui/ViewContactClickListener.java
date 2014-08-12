@@ -33,6 +33,10 @@ public class ViewContactClickListener implements View.OnClickListener {
 
     @Override
     public void onClick(View v) {
-        callback.viewContact(contact.getNumber());
+        if (contact.isSaved()) {
+            callback.viewContact(contact);
+        } else {
+            callback.addContact(contact);
+        }
     }
 }

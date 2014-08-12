@@ -52,8 +52,6 @@
             android:layout_alignBaseline="@android:id/text1"
             android:layout_marginLeft="4dp" />
 
-
-
         </RelativeLayout>
 
 </LinearLayout>

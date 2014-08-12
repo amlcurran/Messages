@@ -38,7 +38,6 @@ import com.amlcurran.messages.launch.Launch;
 import com.amlcurran.messages.launch.LaunchAssistant;
 import com.amlcurran.messages.loaders.MessagesLoader;
 import com.amlcurran.messages.loaders.MessagesLoaderProvider;
-import com.amlcurran.messages.loaders.OnContactQueryListener;
 import com.amlcurran.messages.loaders.OnThreadDeleteListener;
 import com.amlcurran.messages.notifications.BlockingInUiDialogNotifier;
 import com.amlcurran.messages.notifications.BlockingInUiNotifier;
@@ -325,15 +324,9 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
     }
 
     @Override
-    public void viewContact(PhoneNumber address) {
+    public void viewContact(Contact contact) {
         statReporter.sendUiEvent("view_contact");
-        messagesLoader.queryContact(address, new OnContactQueryListener() {
-
-            @Override
-            public void contactLoaded(Contact contact) {
-                activityController.viewContact(ContactFactory.uriForContact(contact, getContentResolver()));
-            }
-        });
+        activityController.viewContact(ContactFactory.uriForContact(contact, getContentResolver()));
     }
 
     @Override
