@@ -81,15 +81,16 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         SinglePaneFragmentViewController fragmentViewController = new SinglePaneFragmentViewController(this, this, this);
-        fragmentController  = fragmentViewController;
-        viewController      = fragmentViewController;
-        toastInUiNotifier   = new InUiToastNotifier(this);
-        blockingInUiNotifier= new BlockingInUiDialogNotifier(getFragmentManager());
-        activityController  = new ActivityController(this, blockingInUiNotifier);
-        messagesLoader      = SingletonManager.getMessagesLoader(this);
-        statReporter        = SingletonManager.getStatsReporter(this);;
-        eventBus            = SingletonManager.getEventBus(this);
-        preferencesStore    = new PreferenceStore(this);
+        fragmentController = fragmentViewController;
+        viewController = fragmentViewController;
+        toastInUiNotifier = new InUiToastNotifier(this);
+        blockingInUiNotifier = new BlockingInUiDialogNotifier(getFragmentManager());
+        activityController = new ActivityController(this, blockingInUiNotifier);
+        messagesLoader = SingletonManager.getMessagesLoader(this);
+        statReporter = SingletonManager.getStatsReporter(this);
+        ;
+        eventBus = SingletonManager.getEventBus(this);
+        preferencesStore = new PreferenceStore(this);
         actionBarController = new HoloActionBarController(getActionBar());
 
         viewController.setContentView(this);
@@ -358,20 +359,9 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
     }
 
     @Override
-    public void threadDeleted(final List<Conversation> deletedConversations) {
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                String toast;
-                if (deletedConversations.size() == 1) {
-                    toast = getString(R.string.deleted_one_thread, deletedConversations.get(0).getContact().getDisplayName());
-                } else {
-                    toast = getString(R.string.deleted_many_threads, deletedConversations.size());
-                }
-                toastInUiNotifier.notify(toast);
-                eventBus.postListInvalidated();
-            }
-        });
+    public void threadDeleted(final List<Conversation> conversations) {
+        toastInUiNotifier.deletedConversations(conversations);
+        eventBus.postListInvalidated();
     }
 
     @Override

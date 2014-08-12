@@ -16,6 +16,12 @@
 
 package com.amlcurran.messages.notifications;
 
+import com.amlcurran.messages.core.data.Conversation;
+
+import java.util.List;
+
 public interface InUiNotifier {
     void notify(String message);
+
+    void deletedConversations(List<Conversation> conversations);
 }

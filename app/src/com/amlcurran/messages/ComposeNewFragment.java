@@ -141,20 +141,10 @@ public class ComposeNewFragment extends Fragment implements ComposeMessageView.C
 
             @Override
             public void contactListLoaded(final List<Contact> contacts) {
-                onUiThread(new Runnable() {
-
-                    @Override
-                    public void run() {
-                        contactSource.replace(contacts);
-                        recipientChooser.setContacts(contacts);
-                    }
-                });
+                contactSource.replace(contacts);
+                recipientChooser.setContacts(contacts);
             }
         });
-    }
-
-    private void onUiThread(Runnable runnable) {
-        getActivity().runOnUiThread(runnable);
     }
 
     @Override

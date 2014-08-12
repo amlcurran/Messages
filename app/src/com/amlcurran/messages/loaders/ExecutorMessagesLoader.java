@@ -124,7 +124,7 @@ public class ExecutorMessagesLoader implements MessagesLoader {
 
     @Override
     public void deleteThreads(List<Conversation> conversationList, OnThreadDeleteListener threadDeleteListener) {
-        submit(new DeleteThreadTask(getResolver(), conversationList, threadDeleteListener));
+        submit(new DeleteThreadTask(getResolver(), conversationList, threadDeleteListener, uiHandler));
     }
 
     @Override
@@ -134,7 +134,7 @@ public class ExecutorMessagesLoader implements MessagesLoader {
 
     @Override
     public void loadContacts(ContactListListener contactListListener) {
-        submit(new ContactsTask(getResolver(), contactListListener));
+        submit(new ContactsTask(getResolver(), contactListListener, uiHandler));
     }
 
 }

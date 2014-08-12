@@ -19,6 +19,11 @@ package com.amlcurran.messages.notifications;
 import android.content.Context;
 import android.widget.Toast;
 
+import com.amlcurran.messages.R;
+import com.amlcurran.messages.core.data.Conversation;
+
+import java.util.List;
+
 public class InUiToastNotifier implements InUiNotifier {
     private final Context context;
 
@@ -29,5 +34,16 @@ public class InUiToastNotifier implements InUiNotifier {
     @Override
     public void notify(String message) {
         Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void deletedConversations(List<Conversation> conversations) {
+        String toast;
+        if (conversations.size() == 1) {
+            toast = context.getString(R.string.deleted_one_thread, conversations.get(0).getContact().getDisplayName());
+        } else {
+            toast = context.getString(R.string.deleted_many_threads, conversations.size());
+        }
+        notify(toast);
     }
 }

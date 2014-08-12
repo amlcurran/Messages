@@ -17,6 +17,7 @@
 package com.amlcurran.messages.loaders;
 
 import android.content.ContentResolver;
+import android.os.Handler;
 import android.provider.Telephony;
 
 import com.amlcurran.messages.core.data.Conversation;
@@ -28,11 +29,13 @@ class DeleteThreadTask implements Callable<Object> {
     private final ContentResolver contentResolver;
     private final List<Conversation> conversationList;
     private final OnThreadDeleteListener threadDeleteListener;
+    private Handler uiHandler;
 
-    public DeleteThreadTask(ContentResolver contentResolver, List<Conversation> conversationList, OnThreadDeleteListener threadDeleteListener) {
+    public DeleteThreadTask(ContentResolver contentResolver, List<Conversation> conversationList, OnThreadDeleteListener threadDeleteListener, Handler uiHandler) {
         this.contentResolver = contentResolver;
         this.conversationList = conversationList;
         this.threadDeleteListener = threadDeleteListener;
+        this.uiHandler = uiHandler;
     }
 
     @Override
@@ -42,7 +45,12 @@ class DeleteThreadTask implements Callable<Object> {
             String[] args = new String[]{conversation.getThreadId()};
             contentResolver.delete(Telephony.Sms.CONTENT_URI, where, args);
         }
-        threadDeleteListener.threadDeleted(conversationList);
+        uiHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                threadDeleteListener.threadDeleted(conversationList);
+            }
+        });
         return null;
     }
 }

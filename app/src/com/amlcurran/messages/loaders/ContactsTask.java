@@ -18,6 +18,7 @@ package com.amlcurran.messages.loaders;
 
 import android.content.ContentResolver;
 import android.database.Cursor;
+import android.os.Handler;
 import android.provider.ContactsContract;
 
 import com.amlcurran.messages.core.loaders.ContactListListener;
@@ -31,18 +32,25 @@ import java.util.concurrent.Callable;
 class ContactsTask implements Callable {
     private final ContentResolver resolver;
     private final ContactListListener contactListListener;
+    private Handler uiHandler;
 
-    public ContactsTask(ContentResolver resolver, ContactListListener contactListListener) {
+    public ContactsTask(ContentResolver resolver, ContactListListener contactListListener, Handler uiHandler) {
         this.resolver = resolver;
         this.contactListListener = contactListListener;
+        this.uiHandler = uiHandler;
     }
 
     @Override
     public Object call() throws Exception {
         Cursor cursor = queryContacts();
-        List<Contact> contacts = listFromCursor(cursor);
+        final List<Contact> contacts = listFromCursor(cursor);
         cursor.close();
-        contactListListener.contactListLoaded(contacts);
+        uiHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                contactListListener.contactListLoaded(contacts);
+            }
+        });
         return null;
     }
 
