@@ -19,6 +19,8 @@ package com.amlcurran.messages.telephony;
 import android.content.Context;
 import android.provider.Telephony;
 
+import com.amlcurran.messages.BuildConfig;
+
 public class DefaultAppChecker {
 
     public interface Callback {
@@ -43,7 +45,7 @@ public class DefaultAppChecker {
     }
 
     private boolean isDefaultSmsApp() {
-        return Telephony.Sms.getDefaultSmsPackage(activity).equals(activity.getPackageName());
+        return Telephony.Sms.getDefaultSmsPackage(activity).equals(BuildConfig.PACKAGE_NAME);
     }
 
 }
