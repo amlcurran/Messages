@@ -79,7 +79,8 @@ public class SinglePaneFragmentViewController extends BaseViewController impleme
     @Override
     public void loadConversationListFragment() {
         if (frameIsEmpty(getMasterFrameId())) {
-            createTransaction()
+            fragmentManager.beginTransaction()
+                    .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
                     .replace(getMasterFrameId(), new ConversationListFragment())
                     .commit();
         }
@@ -89,29 +90,28 @@ public class SinglePaneFragmentViewController extends BaseViewController impleme
         return fragmentManager.findFragmentById(frameId) == null;
     }
 
-    private FragmentTransaction createTransaction() {
-        return fragmentManager.beginTransaction()
-                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
-    }
-
     @Override
     public void replaceFragment(Fragment fragment, boolean addToStack) {
         replaceFragmentInternal(fragment);
     }
 
     private void replaceFragmentInternal(Fragment fragment) {
+        buildReplaceFragmentTransaction(fragment)
+                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
+                .commit();
+        fragmentCallback.insertedDetail();
+    }
 
+    private FragmentTransaction buildReplaceFragmentTransaction(Fragment fragment) {
         handleCustomHeader(fragment, activity, fragmentCallback);
 
-        FragmentTransaction transaction = createTransaction()
+        FragmentTransaction transaction = fragmentManager.beginTransaction()
                 .replace(getSecondaryFrameId(), fragment);
 
         if (shouldPlaceOnBackStack()) {
             transaction.addToBackStack(null);
         }
-
-        transaction.commit();
-        fragmentCallback.insertedDetail();
+        return transaction;
     }
 
     @Override
@@ -126,7 +126,14 @@ public class SinglePaneFragmentViewController extends BaseViewController impleme
 
     @Override
     public void loadComposeNewFragment() {
-        replaceFragmentInternal(new ComposeNewFragment());
+        FragmentTransaction transaction = fragmentManager.beginTransaction()
+                .setCustomAnimations(R.animator.new_compose_in, R.animator.new_compose_out)
+                .replace(getSecondaryFrameId(), new ComposeNewFragment());
+
+        if (shouldPlaceOnBackStack()) {
+            transaction.addToBackStack(null);
+        }
+        transaction.commit();
     }
 
     @Override

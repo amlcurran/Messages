@@ -21,6 +21,7 @@ import android.app.Activity;
 import android.app.Fragment;
 import android.content.Context;
 import android.os.Bundle;
+import android.os.Handler;
 import android.telephony.PhoneNumberUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -141,8 +142,13 @@ public class ComposeNewFragment extends Fragment implements ComposeMessageView.C
 
             @Override
             public void contactListLoaded(final List<Contact> contacts) {
-                contactSource.replace(contacts);
-                recipientChooser.setContacts(contacts);
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        contactSource.replace(contacts);
+                        recipientChooser.setContacts(contacts);
+                    }
+                }, getResources().getInteger(android.R.integer.config_shortAnimTime) + 100);
             }
         });
     }
