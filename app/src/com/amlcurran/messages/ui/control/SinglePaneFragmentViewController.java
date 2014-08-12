@@ -54,6 +54,9 @@ public class SinglePaneFragmentViewController extends BaseViewController impleme
                 if (currentFragment instanceof ConversationListFragment) {
                     fragmentCallback.insertedMaster();
                     newMessageButtonController.showNewMessageButton();
+                } else {
+                    fragmentCallback.insertedDetail();
+                    newMessageButtonController.hideNewMessageButton();
                 }
                 if (currentFragment instanceof CustomHeaderFragment) {
                     viewCallback.secondaryVisible();
