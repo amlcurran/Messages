@@ -84,15 +84,10 @@ class ThreadBinder extends SimpleBinder<SmsMessage> {
         getTextView(view, android.R.id.text2).setText(formatter.format(date));
     }
 
-    private void manipulateFailedView(View view, final SmsMessage smsMessage) {
+    private void manipulateFailedView(View view, SmsMessage smsMessage) {
         ImageView imageView = (ImageView) view.findViewById(R.id.failed_to_send_image);
         imageView.setColorFilter(resources.getColor(R.color.theme_alt_color_2));
-        imageView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                resendCallback.resend(smsMessage);
-            }
-        });
+        imageView.setOnClickListener(new ResendClickListener(smsMessage));
     }
 
     @Override
@@ -141,4 +136,16 @@ class ThreadBinder extends SimpleBinder<SmsMessage> {
         void resend(SmsMessage message);
     }
 
+    private class ResendClickListener implements View.OnClickListener {
+        private final SmsMessage smsMessage;
+
+        public ResendClickListener(SmsMessage smsMessage) {
+            this.smsMessage = smsMessage;
+        }
+
+        @Override
+        public void onClick(View v) {
+            resendCallback.resend(smsMessage);
+        }
+    }
 }
