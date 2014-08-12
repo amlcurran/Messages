@@ -33,6 +33,7 @@ import com.amlcurran.messages.MessagesActivity;
 import com.amlcurran.messages.R;
 import com.amlcurran.messages.SingletonManager;
 import com.amlcurran.messages.SmsComposeListener;
+import com.amlcurran.messages.conversationlist.ConversationModalMarshall;
 import com.amlcurran.messages.core.data.Contact;
 import com.amlcurran.messages.core.data.DraftRepository;
 import com.amlcurran.messages.core.data.PhoneNumber;
@@ -129,12 +130,17 @@ public class ThreadFragment extends ListFragment implements
             messagesLoader.queryContact(phoneNumber, new OnContactQueryListener() {
                 @Override
                 public void contactLoaded(final Contact contact) {
-                    contactView.setContact(contact, messagesLoader);
+                    bindContactToView(contact, messagesLoader);
                 }
             });
         } else {
-            contactView.setContact(receivedContact, messagesLoader);
+            bindContactToView(receivedContact, messagesLoader);
         }
+    }
+
+    private void bindContactToView(Contact receivedContact, MessagesLoader messagesLoader) {
+        contactView.setContact(receivedContact, messagesLoader);
+        contactView.setClickToView(((ConversationModalMarshall.Callback) getActivity()), true);
     }
 
     private String retrieveDraft(PhoneNumber phoneNumber) {

@@ -25,6 +25,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.amlcurran.messages.R;
+import com.amlcurran.messages.conversationlist.ConversationModalMarshall;
 import com.amlcurran.messages.conversationlist.PhotoLoadListener;
 import com.amlcurran.messages.core.data.Contact;
 import com.amlcurran.messages.loaders.MessagesLoader;
@@ -91,4 +92,19 @@ public class ContactView extends LinearLayout {
         });
     }
 
+    public void setClickToView(ConversationModalMarshall.Callback callback, boolean clickToView) {
+        if (clickToView) {
+            enableClick(callback);
+        } else {
+            disableClick();
+        }
+    }
+
+    private void disableClick() {
+        setOnClickListener(null);
+    }
+
+    private void enableClick(ConversationModalMarshall.Callback callback) {
+        setOnClickListener(new ViewContactClickListener(contact, callback));
+    }
 }
