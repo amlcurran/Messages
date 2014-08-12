@@ -31,11 +31,11 @@
             android:summary="@string/pref_sum_notification"
             android:defaultValue="true" />
 
-        <CheckBoxPreference
-            android:key="persistent_notification"
-            android:title="@string/pref_title_persistent"
-            android:summary="@string/pref_sum_persistent"
-            android:defaultValue="false" />
+        <!--<CheckBoxPreference-->
+            <!--android:key="persistent_notification"-->
+            <!--android:title="@string/pref_title_persistent"-->
+            <!--android:summary="@string/pref_sum_persistent"-->
+            <!--android:defaultValue="false" />-->
 
         <RingtonePreference
             android:key="ringtone"
