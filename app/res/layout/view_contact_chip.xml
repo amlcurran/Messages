@@ -2,6 +2,7 @@
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
               xmlns:app="http://schemas.android.com/apk/res-auto"
+              xmlns:tools="http://schemas.android.com/tools"
               android:orientation="horizontal"
               android:layout_width="match_parent"
               android:layout_height="@dimen/contact_chip_height"
@@ -13,19 +14,40 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-        <TextView
-                android:layout_width="match_parent"
+        <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="fill_parent"
                 android:layout_height="match_parent"
-                android:id="@android:id/text1"
-                android:textSize="24sp"
-                android:fontFamily="sans-serif-condensed"
+                android:background="#22000000"
+                android:baselineAligned="true"
                 android:layout_marginLeft="24dp"
-                android:singleLine="true"
-                android:ellipsize="end"
-                android:paddingLeft="28dp"
-                android:gravity="center_vertical"
-                android:background="@color/theme_colour_40"
-                android:layout_alignParentEnd="true"/>
+                android:gravity="center_vertical">
+
+            <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@android:id/text1"
+                    android:singleLine="true"
+                    android:ellipsize="end"
+                    android:gravity="center_vertical"
+                    tools:text="Joe Bloggs"
+                    android:layout_alignParentEnd="true"
+                    style="@style/Material.Title"
+                    android:paddingStart="28dp"/>
+
+            <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    tools:text="+44780529255"
+                    android:id="@android:id/text2"
+                    android:visibility="visible"
+                    android:layout_centerVertical="true"
+                    android:layout_alignEnd="@android:id/text1"
+                    style="@style/Material.Body1"
+                    android:paddingStart="28dp"
+                    />
+
+        </LinearLayout>
 
         <view
                 android:layout_width="44dp"
@@ -33,13 +55,6 @@
                 class="com.amlcurran.messages.ui.CircularImageView"
                 app:drawOutline="false"
                 android:id="@+id/image"/>
-
-        <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@android:id/text2"
-                android:textSize="24sp"
-                android:visibility="gone"/>
 
         <ImageButton
                 android:layout_width="48dp"
@@ -50,6 +65,7 @@
                 android:layout_alignParentTop="true"
                 android:src="@drawable/ic_action_remove"
                 android:background="@drawable/selectable_background_messages"/>
+
     </RelativeLayout>
 
 </LinearLayout>
