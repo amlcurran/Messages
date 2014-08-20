@@ -4,7 +4,7 @@
               xmlns:app="http://schemas.android.com/apk/res-auto"
               xmlns:tools="http://schemas.android.com/tools"
               android:orientation="horizontal"
-              android:layout_width="match_parent"
+              android:layout_width="wrap_content"
               android:layout_height="@dimen/contact_chip_height"
               android:minWidth="@dimen/contact_chip_width"
               android:gravity="center_vertical">
@@ -31,7 +31,6 @@
                     android:ellipsize="end"
                     android:gravity="center_vertical"
                     tools:text="Joe Bloggs"
-                    android:layout_alignParentEnd="true"
                     style="@style/Material.Title"
                     android:paddingStart="28dp"/>
 
@@ -41,8 +40,6 @@
                     tools:text="+44780529255"
                     android:id="@android:id/text2"
                     android:visibility="visible"
-                    android:layout_centerVertical="true"
-                    android:layout_alignEnd="@android:id/text1"
                     style="@style/Material.Body1"
                     android:paddingStart="28dp"
                     />
