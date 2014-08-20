@@ -16,20 +16,15 @@
 
 package com.amlcurran.messages.conversationlist;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.res.Resources;
-import android.graphics.Bitmap;
-import android.text.style.TextAppearanceSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewPropertyAnimator;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.amlcurran.messages.R;
-import com.amlcurran.messages.bucket.Truss;
 import com.amlcurran.messages.core.data.Contact;
 import com.amlcurran.messages.core.data.Conversation;
 import com.amlcurran.messages.core.data.DraftRepository;
@@ -42,21 +37,19 @@ public class ConversationsBinder extends SimpleBinder<Conversation> {
     private static final int IS_UNREAD = 1;
     private static final int IS_READ = 0;
     private final float animationLength;
-    private final Activity activity;
     private final MessagesLoader loader;
     private final DraftRepository draftRepository;
     private final String draftPreamble;
-    private final int draftPreambleTextColor;
     private final String fromMePreamble;
+    private final TextFormatter textFormatter;
 
-    public ConversationsBinder(Activity activity, Resources resources, MessagesLoader loader, DraftRepository draftRepository) {
-        this.activity = activity;
+    public ConversationsBinder(TextFormatter textFormatter, Resources resources, MessagesLoader loader, DraftRepository draftRepository) {
         this.loader = loader;
         this.draftRepository = draftRepository;
         this.animationLength = resources.getDimension(R.dimen.photo_animation_length);
         this.draftPreamble = resources.getString(R.string.draft_preamble);
         this.fromMePreamble = resources.getString(R.string.from_me_preamble);
-        this.draftPreambleTextColor = resources.getColor(R.color.theme_colour);
+        this.textFormatter = textFormatter;
     }
 
     @Override
@@ -91,9 +84,9 @@ public class ConversationsBinder extends SimpleBinder<Conversation> {
 
     private CharSequence getSummaryText(Conversation item) {
         if (showDraftAsSummary(item)) {
-            return constructSummary(draftPreamble, draftRepository.getDraft(item.getAddress()));
+            return textFormatter.constructSummary(draftPreamble, draftRepository.getDraft(item.getAddress()));
         } else if (showAsFromMe(item)) {
-            return constructSummary(fromMePreamble, item.getSummaryText());
+            return textFormatter.constructSummary(fromMePreamble, item.getSummaryText());
         }
         return item.getSummaryText();
     }
@@ -106,71 +99,31 @@ public class ConversationsBinder extends SimpleBinder<Conversation> {
         return draftRepository.hasDraft(item.getAddress()) && item.isRead();
     }
 
-    private CharSequence constructSummary(String preamble, String text) {
-        return new Truss().pushSpan(new TextAppearanceSpan(activity, R.style.Material_Body2))
-                .append(preamble)
-                .popSpan()
-                .append(" — ")
-                .append(text)
-                .build();
-    }
-
     private void loadContactPhoto(View convertView, final Conversation item, final ImageView imageView) {
         Contact contact = item.getContact();
-        Task task = loader.loadPhoto(contact, new SettingPhotoLoadListener(imageView));
+        Task task = loader.loadPhoto(contact, new SettingPhotoLoadListener(imageView, animationLength));
         convertView.setTag(R.id.tag_load_task, task);
     }
 
     @Override
     public View createView(Context context, int itemViewType, ViewGroup parent) {
         if (itemViewType == IS_READ) {
-            View view = LayoutInflater.from(context).inflate(R.layout.item_conversation_read, parent, false);
-            view.setTag(R.id.tag_view_holder , new ConversationViewHolder(view));
-            return view;
+            return createReadView(context, parent);
         } else {
-            View view = LayoutInflater.from(context).inflate(R.layout.item_conversation_unread, parent, false);
-            view.setTag(R.id.tag_view_holder, new ConversationViewHolder(view));
-            return view;
+            return createUnreadView(context, parent);
         }
     }
 
-    private class SettingPhotoLoadListener implements PhotoLoadListener {
+    private View createUnreadView(Context context, ViewGroup parent) {
+        View view = LayoutInflater.from(context).inflate(R.layout.item_conversation_unread, parent, false);
+        view.setTag(R.id.tag_view_holder, new ConversationViewHolder(view));
+        return view;
+    }
 
-        private final ImageView imageView;
-
-        public SettingPhotoLoadListener(ImageView imageView) {
-            this.imageView = imageView;
-        }
-
-        @Override
-        public void photoLoaded(final Bitmap photo) {
-            imageView.setImageBitmap(photo);
-            ViewPropertyAnimator propertyAnimator = imageView.animate();
-            propertyAnimator
-                    .translationXBy(animationLength)
-                    .alpha(1f);
-            imageView.setTag(propertyAnimator);
-        }
-
-        @Override
-        public void photoLoadedFromCache(final Bitmap photo) {
-            imageView.setImageBitmap(photo);
-        }
-
-        @Override
-        public void beforePhotoLoad(Contact contact) {
-            if (imageView.getTag() != null) {
-                ((ViewPropertyAnimator) imageView.getTag()).cancel();
-            }
-            resetContactImage(imageView);
-        }
-
-        private void resetContactImage(ImageView imageView) {
-            imageView.setTranslationX(-animationLength);
-            imageView.setAlpha(0f);
-            imageView.setImageBitmap(null);
-        }
-
+    private View createReadView(Context context, ViewGroup parent) {
+        View view = LayoutInflater.from(context).inflate(R.layout.item_conversation_read, parent, false);
+        view.setTag(R.id.tag_view_holder , new ConversationViewHolder(view));
+        return view;
     }
 
     private static class ConversationViewHolder {
