@@ -57,6 +57,7 @@
             android:numColumns="2"
             android:layout_height="0dp"
             android:id="@+id/new_person_list"
+            android:background="@drawable/compose_shadow_background"
             android:layout_weight="1"/>
 
     <view
