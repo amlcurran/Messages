@@ -91,14 +91,22 @@ public class ComposeMessageView extends LinearLayout implements View.OnClickList
         sendButton.setEnabled(!TextUtils.isEmpty(s));
 
         SmsCounter.SmsCount smsDeets = smsCounter.getSmsDeets(s);
-        progress.setTotal(smsDeets.messageLength);
-        progress.setProgress(smsDeets.usedCharacters);
+        updateProgressBar(smsDeets);
+        updateRequiredSmsView(smsDeets);
+    }
+
+    private void updateRequiredSmsView(SmsCounter.SmsCount smsDeets) {
         if (smsDeets.numberOfRequiredSms > 1) {
             smsRequiredView.setText(Integer.toString(smsDeets.numberOfRequiredSms));
             smsRequiredView.setVisibility(VISIBLE);
         } else {
             smsRequiredView.setVisibility(GONE);
         }
+    }
+
+    private void updateProgressBar(SmsCounter.SmsCount smsDeets) {
+        progress.setTotalNoAnimation(smsDeets.messageLength);
+        progress.setProgress(smsDeets.usedCharacters);
     }
 
     @Override

@@ -88,6 +88,11 @@ public class BlockProgressBar extends View implements AnimatorAssistant.MessageS
         setAlpha(1f);
     }
 
+    public void setTotalNoAnimation(int total) {
+        state.total = total;
+        invalidate();
+    }
+
     class State {
 
         public float progress;
