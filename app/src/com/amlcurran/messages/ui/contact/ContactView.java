@@ -14,22 +14,11 @@
  * limitations under the License.
  */
 
-package com.amlcurran.messages.ui;
+package com.amlcurran.messages.ui.contact;
 
-import android.content.Context;
-import android.util.AttributeSet;
-import android.view.LayoutInflater;
+import com.amlcurran.messages.core.data.Contact;
+import com.amlcurran.messages.loaders.MessagesLoader;
 
-import com.amlcurran.messages.R;
-
-public class RoundContactView extends ContactView {
-
-    public RoundContactView(Context context, AttributeSet attrs) {
-        super(context, attrs);
-    }
-
-    @Override
-    protected void inflate(LayoutInflater inflater) {
-        inflater.inflate(R.layout.view_contact_round, this, true);
-    }
+public interface ContactView {
+    void setContact(Contact contact, MessagesLoader loader);
 }

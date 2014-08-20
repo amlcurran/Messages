@@ -44,8 +44,8 @@ import com.amlcurran.messages.loaders.MessagesLoader;
 import com.amlcurran.messages.loaders.OnContactQueryListener;
 import com.amlcurran.messages.preferences.PreferenceStoreDraftRepository;
 import com.amlcurran.messages.ui.ComposeMessageView;
-import com.amlcurran.messages.ui.ContactView;
 import com.amlcurran.messages.ui.CustomHeaderFragment;
+import com.amlcurran.messages.ui.contact.DefaultContactView;
 import com.espian.utils.ProviderHelper;
 import com.github.amlcurran.sourcebinder.Source;
 import com.github.amlcurran.sourcebinder.SourceBinderAdapter;
@@ -61,7 +61,7 @@ public class ThreadFragment extends ListFragment implements
     private SmsComposeListener listener;
     private ParcelablePhoneNumber phoneNumber;
     private ComposeMessageView composeView;
-    private ContactView contactView;
+    private DefaultContactView contactView;
     private ThreadController threadController;
     private DraftRepository draftRepository;
 
@@ -118,7 +118,7 @@ public class ThreadFragment extends ListFragment implements
         SourceBinderAdapter<SmsMessage> adapter = new SourceBinderAdapter<SmsMessage>(getActivity(), threadController.getSource(), threadBinder);
         setListAdapter(adapter);
 
-        contactView = new ContactView(getActivity(), null);
+        contactView = new DefaultContactView(getActivity(), null);
         ((MessagesActivity) getActivity()).customHeader(this);
         setUpContactView(phoneNumber);
     }
@@ -195,7 +195,7 @@ public class ThreadFragment extends ListFragment implements
     @Override
     public View getHeaderView(Context context) {
         if (contactView == null) {
-            contactView = new ContactView(context, null);
+            contactView = new DefaultContactView(context, null);
         }
         return contactView;
     }

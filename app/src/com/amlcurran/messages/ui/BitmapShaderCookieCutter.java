@@ -40,6 +40,7 @@ public class BitmapShaderCookieCutter implements CookieCutter {
         this.paint = new Paint();
         this.paint.setAntiAlias(true);
         this.paint.setColor(Color.WHITE);
+        this.paint.setAlpha(0);
         this.borderPaint = borderPaint;
         this.drawOutline = drawOutline;
         this.circleRect = new RectF();
@@ -78,10 +79,10 @@ public class BitmapShaderCookieCutter implements CookieCutter {
 
     @Override
     public void preDraw() {
-
         if (paintRequiresUpdate && bitmap != null && viewWidth > 0 && viewHeight > 0) {
             Bitmap scaledBitmap = Bitmap.createScaledBitmap(bitmap, viewWidth, viewHeight, true);
             BitmapShader shader = new BitmapShader(scaledBitmap, Shader.TileMode.CLAMP, Shader.TileMode.CLAMP);
+            paint.setAlpha(255);
             paint.setShader(shader);
             paintRequiresUpdate = false;
         }

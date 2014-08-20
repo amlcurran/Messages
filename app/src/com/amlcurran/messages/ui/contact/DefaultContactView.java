@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.amlcurran.messages.ui;
+package com.amlcurran.messages.ui.contact;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -29,8 +29,9 @@ import com.amlcurran.messages.conversationlist.ConversationModalMarshall;
 import com.amlcurran.messages.conversationlist.PhotoLoadListener;
 import com.amlcurran.messages.core.data.Contact;
 import com.amlcurran.messages.loaders.MessagesLoader;
+import com.amlcurran.messages.ui.ViewContactClickListener;
 
-public class ContactView extends LinearLayout {
+public class DefaultContactView extends LinearLayout implements ContactView {
 
     private final ImageView contactImageView;
     private final TextView nameTextField;
@@ -38,35 +39,29 @@ public class ContactView extends LinearLayout {
     private long contactId = -1;
     protected Contact contact;
 
-    public ContactView(Context context, AttributeSet attrs) {
+    public DefaultContactView(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
     }
 
-    public ContactView(Context context, AttributeSet attrs, int defStyle) {
+    public DefaultContactView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
         inflate(LayoutInflater.from(context));
-
         contactImageView = (ImageView) findViewById(R.id.image);
         nameTextField = (TextView) findViewById(android.R.id.text1);
         secondTextField = (TextView) findViewById(android.R.id.text2);
-
     }
 
     protected void inflate(LayoutInflater inflater) {
         inflater.inflate(R.layout.view_contact, this, true);
     }
 
+    @Override
     public void setContact(final Contact contact, MessagesLoader loader) {
         this.contact = contact;
         this.contactId = contact.getContactId();
-        post(new Runnable() {
-            @Override
-            public void run() {
-                nameTextField.setText(contact.getDisplayName());
-                secondTextField.setText(contact.getNumber().flatten());
-                contactImageView.setAlpha(0f);
-            }
-        });
+        nameTextField.setText(contact.getDisplayName());
+        secondTextField.setText(contact.getNumber().flatten());
+        contactImageView.setAlpha(0f);
         loader.loadPhoto(contact, new PhotoLoadListener() {
             @Override
             public void photoLoaded(Bitmap photo) {

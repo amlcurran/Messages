@@ -1,4 +1,4 @@
-package com.amlcurran.messages.ui;
+package com.amlcurran.messages.ui.contact;
 
 import android.content.Context;
 import android.util.AttributeSet;
@@ -8,7 +8,7 @@ import android.view.View;
 import com.amlcurran.messages.R;
 import com.amlcurran.messages.core.data.Contact;
 
-public class ContactChipView extends ContactView {
+public class ContactChipView extends DefaultContactView {
 
     private View removeButton;
     private RemoveListener removeListener = RemoveListener.NONE;
@@ -21,7 +21,7 @@ public class ContactChipView extends ContactView {
     protected void inflate(LayoutInflater inflater) {
         inflater.inflate(R.layout.view_contact_chip, this, true);
         removeButton = findViewById(R.id.chip_remove);
-        removeButton.setOnClickListener(new OnClickListener() {
+        removeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 removeListener.chipRemoveRequested(ContactChipView.this, contact);

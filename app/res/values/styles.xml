@@ -107,5 +107,5 @@
 
     <integer name="loading_scale_small">2</integer>
     <integer name="loading_scale_large">1</integer>
-    <integer name="conversation_preview_lines_unread">6</integer>
+    <integer name="conversation_preview_lines_unread">4</integer>
 </resources>
