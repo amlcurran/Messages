@@ -22,8 +22,8 @@ import android.view.MenuItem;
 import android.widget.AbsListView;
 
 import com.amlcurran.messages.R;
-import com.amlcurran.messages.core.data.Contact;
 import com.amlcurran.messages.core.data.Conversation;
+import com.amlcurran.messages.ui.contact.ContactClickListener;
 import com.espian.utils.ui.MenuFinder;
 import com.github.amlcurran.sourcebinder.Source;
 
@@ -111,14 +111,12 @@ public class ConversationModalMarshall implements AbsListView.MultiChoiceModeLis
         mode.invalidate();
     }
 
-    public interface Callback {
-        void viewContact(Contact contact);
+    public interface Callback extends ContactClickListener {
 
         void deleteThreads(List<Conversation> conversation);
 
         void markAsUnread(List<Conversation> threadId);
 
-        void addContact(Contact contact);
     }
 
 }

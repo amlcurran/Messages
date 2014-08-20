@@ -17,7 +17,6 @@
 package com.amlcurran.messages.ui.contact;
 
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.widget.ImageView;
@@ -26,9 +25,9 @@ import android.widget.TextView;
 
 import com.amlcurran.messages.R;
 import com.amlcurran.messages.conversationlist.ConversationModalMarshall;
-import com.amlcurran.messages.conversationlist.PhotoLoadListener;
 import com.amlcurran.messages.core.data.Contact;
 import com.amlcurran.messages.loaders.MessagesLoader;
+import com.amlcurran.messages.loaders.Task;
 import com.amlcurran.messages.ui.ViewContactClickListener;
 
 public class DefaultContactView extends LinearLayout implements ContactView {
@@ -36,8 +35,8 @@ public class DefaultContactView extends LinearLayout implements ContactView {
     private final ImageView contactImageView;
     private final TextView nameTextField;
     private final TextView secondTextField;
-    private long contactId = -1;
     protected Contact contact;
+    private Task currentTask;
 
     public DefaultContactView(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
@@ -47,6 +46,7 @@ public class DefaultContactView extends LinearLayout implements ContactView {
         super(context, attrs, defStyle);
         inflate(LayoutInflater.from(context));
         contactImageView = (ImageView) findViewById(R.id.image);
+        contactImageView.setAlpha(0f);
         nameTextField = (TextView) findViewById(android.R.id.text1);
         secondTextField = (TextView) findViewById(android.R.id.text2);
     }
@@ -57,34 +57,17 @@ public class DefaultContactView extends LinearLayout implements ContactView {
 
     @Override
     public void setContact(final Contact contact, MessagesLoader loader) {
+        cancelCurrentTask();
         this.contact = contact;
-        this.contactId = contact.getContactId();
         nameTextField.setText(contact.getDisplayName());
         secondTextField.setText(contact.getNumber().flatten());
-        contactImageView.setAlpha(0f);
-        loader.loadPhoto(contact, new PhotoLoadListener() {
-            @Override
-            public void photoLoaded(Bitmap photo) {
-                setPhoto(photo);
-            }
+        currentTask = loader.loadPhoto(contact, new AlphaInSettingListener(contactImageView));
+    }
 
-            @Override
-            public void photoLoadedFromCache(Bitmap photo) {
-                setPhoto(photo);
-            }
-
-            @Override
-            public void beforePhotoLoad(Contact contact) {
-
-            }
-
-            private void setPhoto(Bitmap photo) {
-                if (contactId == contact.getContactId() || contactId == -1) {
-                    contactImageView.setImageBitmap(photo);
-                    contactImageView.animate().alpha(1f).start();
-                }
-            }
-        });
+    private void cancelCurrentTask() {
+        if (currentTask != null) {
+            currentTask.cancel();
+        }
     }
 
     public void setClickToView(ConversationModalMarshall.Callback callback, boolean clickToView) {
@@ -99,7 +82,7 @@ public class DefaultContactView extends LinearLayout implements ContactView {
         setOnClickListener(null);
     }
 
-    private void enableClick(ConversationModalMarshall.Callback callback) {
+    private void enableClick(ContactClickListener callback) {
         setOnClickListener(new ViewContactClickListener(contact, callback));
     }
 }

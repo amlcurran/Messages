@@ -17,7 +17,6 @@
 package com.amlcurran.messages.ui.contact;
 
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.widget.ImageView;
@@ -25,7 +24,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.amlcurran.messages.R;
-import com.amlcurran.messages.conversationlist.PhotoLoadListener;
 import com.amlcurran.messages.core.data.Contact;
 import com.amlcurran.messages.loaders.MessagesLoader;
 import com.amlcurran.messages.loaders.Task;
@@ -63,32 +61,4 @@ public class RoundContactView extends LinearLayout implements ContactView {
         }
     }
 
-    private class AlphaInSettingListener implements PhotoLoadListener {
-
-        private final ImageView contactImageView;
-
-        public AlphaInSettingListener(ImageView contactImageView) {
-            this.contactImageView = contactImageView;
-        }
-
-        @Override
-        public void photoLoaded(Bitmap photo) {
-            setPhoto(photo);
-        }
-
-        @Override
-        public void photoLoadedFromCache(Bitmap photo) {
-            setPhoto(photo);
-        }
-
-        @Override
-        public void beforePhotoLoad(Contact contact) {
-            contactImageView.setAlpha(0f);
-        }
-
-        private void setPhoto(Bitmap photo) {
-            contactImageView.setImageBitmap(photo);
-            contactImageView.animate().alpha(1f).start();
-        }
-    }
 }

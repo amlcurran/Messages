@@ -44,7 +44,7 @@ public class CutImageView extends ImageView {
 
     public CutImageView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
-        setLayerType(LAYER_TYPE_SOFTWARE, null);
+        //setLayerType(LAYER_TYPE_SOFTWARE, null);
 
         TypedArray ta = context.obtainStyledAttributes(attrs, R.styleable.CutImageView);
         drawOutline = ta.getBoolean(R.styleable.CutImageView_drawOutline, true);
@@ -53,9 +53,6 @@ public class CutImageView extends ImageView {
 
         circleRectF = new RectF();
         borderRectF = new RectF();
-        Paint paint = new Paint();
-
-        setImageResource(R.drawable.ic_contact_picture_unknown);
 
         Paint borderPaint = new Paint();
         borderPaint.setStyle(Paint.Style.STROKE);
@@ -74,6 +71,9 @@ public class CutImageView extends ImageView {
                 return true;
             }
         });
+
+        //Bitmap defaultImage = ((BitmapDrawable) getResources().getDrawable(R.drawable.ic_contact_picture_unknown)).getBitmap();
+        //setImageBitmap(defaultImage);
     }
 
     @Override

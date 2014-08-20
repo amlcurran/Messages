@@ -14,29 +14,12 @@
  * limitations under the License.
  */
 
-package com.amlcurran.messages.ui;
-
-import android.view.View;
+package com.amlcurran.messages.ui.contact;
 
 import com.amlcurran.messages.core.data.Contact;
-import com.amlcurran.messages.ui.contact.ContactClickListener;
 
-public class ViewContactClickListener implements View.OnClickListener {
+public interface ContactClickListener {
+    void viewContact(Contact contact);
 
-    private final Contact contact;
-    private final ContactClickListener callback;
-
-    public ViewContactClickListener(Contact contact, ContactClickListener callback) {
-        this.contact = contact;
-        this.callback = callback;
-    }
-
-    @Override
-    public void onClick(View v) {
-        if (contact.isSaved()) {
-            callback.viewContact(contact);
-        } else {
-            callback.addContact(contact);
-        }
-    }
+    void addContact(Contact contact);
 }
