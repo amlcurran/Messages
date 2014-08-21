@@ -140,19 +140,7 @@ public class ComposeNewFragment extends Fragment implements ComposeMessageView.C
     }
 
     private void loadContacts() {
-        loader.loadContacts(new ContactListListener() {
-
-            @Override
-            public void contactListLoaded(final List<Contact> contacts) {
-                new Handler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        contactSource.replace(contacts);
-                        recipientChooser.setContacts(contacts);
-                    }
-                }, getResources().getInteger(android.R.integer.config_shortAnimTime) + 100);
-            }
-        });
+        loader.loadContacts(new DelayedDataLoader());
     }
 
     @Override
@@ -233,4 +221,25 @@ public class ComposeNewFragment extends Fragment implements ComposeMessageView.C
 
     }
 
+    private class ReplaceDataRunnable implements Runnable {
+        private final List<Contact> contacts;
+
+        public ReplaceDataRunnable(List<Contact> contacts) {
+            this.contacts = contacts;
+        }
+
+        @Override
+        public void run() {
+            contactSource.replace(contacts);
+            recipientChooser.setContacts(contacts);
+        }
+    }
+
+    private class DelayedDataLoader implements ContactListListener {
+
+        @Override
+        public void contactListLoaded(final List<Contact> contacts) {
+            new Handler().postDelayed(new ReplaceDataRunnable(contacts), getResources().getInteger(android.R.integer.config_shortAnimTime) + 100);
+        }
+    }
 }
