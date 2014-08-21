@@ -88,7 +88,6 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
         activityController = new ActivityController(this, blockingInUiNotifier);
         messagesLoader = SingletonManager.getMessagesLoader(this);
         statReporter = SingletonManager.getStatsReporter(this);
-        ;
         eventBus = SingletonManager.getEventBus(this);
         preferencesStore = new PreferenceStore(this);
         actionBarController = new HoloActionBarController(getActionBar());
@@ -267,8 +266,7 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
     public void onConversationSelected(Conversation conversation) {
         PhoneNumber address = conversation.getAddress();
         Bundle contactBundle = ContactFactory.smooshContact(conversation.getContact());
-        final ThreadFragment fragment = ThreadFragment.create(conversation.getThreadId(), address, contactBundle);
-
+        ThreadFragment fragment = ThreadFragment.create(conversation.getThreadId(), address, contactBundle);
         fragmentController.replaceFragment(fragment, false);
     }
 
@@ -281,6 +279,13 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
     public void callNumber(PhoneNumber phoneNumber) {
         statReporter.sendUiEvent("call_number");
         activityController.callNumber(phoneNumber);
+    }
+
+    @Override
+    public void displayThread(Contact contact, int threadId) {
+        Bundle contactBundle = ContactFactory.smooshContact(contact);
+        ThreadFragment fragment = ThreadFragment.create(String.valueOf(threadId), contact.getNumber(), contactBundle);
+        fragmentController.replaceFragment(fragment, false);
     }
 
     @Override

@@ -14,16 +14,12 @@
  * limitations under the License.
  */
 
-package com.amlcurran.messages;
+package com.amlcurran.messages.loaders;
 
 import com.amlcurran.messages.core.data.Contact;
-import com.amlcurran.messages.data.InFlightSmsMessage;
-import com.amlcurran.messages.core.data.PhoneNumber;
 
-public interface SmsComposeListener {
-    void sendSms(InFlightSmsMessage smsMessage);
+public interface HasConversationListener {
+    void noConversationForNumber();
 
-    void callNumber(PhoneNumber phoneNumber);
-
-    void displayThread(Contact contact, int threadId);
+    void hasConversation(Contact contact, int threadId);
 }

@@ -142,4 +142,9 @@ public class ExecutorMessagesLoader implements MessagesLoader {
         submit(new ContactsTask(getResolver(), contactListListener, uiHandler));
     }
 
+    @Override
+    public void getHasConversationWith(Contact contact, HasConversationListener hasConversationListener) {
+        submit(new HasConversationTask(getResolver(), hasConversationListener, contact, uiHandler));
+    }
+
 }

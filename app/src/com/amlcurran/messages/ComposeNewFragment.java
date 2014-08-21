@@ -35,6 +35,7 @@ import com.amlcurran.messages.core.data.Contact;
 import com.amlcurran.messages.core.loaders.ContactListListener;
 import com.amlcurran.messages.data.InFlightSmsMessage;
 import com.amlcurran.messages.data.ParcelablePhoneNumber;
+import com.amlcurran.messages.loaders.HasConversationListener;
 import com.amlcurran.messages.loaders.MessagesLoader;
 import com.amlcurran.messages.loaders.MessagesLoaderProvider;
 import com.amlcurran.messages.telephony.DefaultAppChecker;
@@ -190,6 +191,19 @@ public class ComposeNewFragment extends Fragment implements ComposeMessageView.C
 
     @Override
     public void recipientChosen(Contact contact) {
+        loader.getHasConversationWith(contact, new HasConversationListener() {
+
+            @Override
+            public void noConversationForNumber() {
+
+            }
+
+            @Override
+            public void hasConversation(Contact contact, int threadId) {
+                listener.displayThread(contact, threadId);
+            }
+        });
+
         contactChip.setVisibility(View.VISIBLE);
         contactChip.setContact(contact, SingletonManager.getMessagesLoader(getActivity()));
         pickPersonView.setText(contact.getNumber().flatten());

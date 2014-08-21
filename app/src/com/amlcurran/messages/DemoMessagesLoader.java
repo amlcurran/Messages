@@ -29,6 +29,7 @@ import com.amlcurran.messages.core.loaders.ContactListListener;
 import com.amlcurran.messages.core.loaders.ConversationListChangeListener;
 import com.amlcurran.messages.core.loaders.ThreadListener;
 import com.amlcurran.messages.data.ParcelablePhoneNumber;
+import com.amlcurran.messages.loaders.HasConversationListener;
 import com.amlcurran.messages.loaders.MessagesLoader;
 import com.amlcurran.messages.loaders.OnContactQueryListener;
 import com.amlcurran.messages.loaders.OnThreadDeleteListener;
@@ -104,6 +105,11 @@ public class DemoMessagesLoader implements MessagesLoader {
 
     @Override
     public void loadContacts(ContactListListener contactListListener) {
+
+    }
+
+    @Override
+    public void getHasConversationWith(Contact contact, HasConversationListener hasConversationListener) {
 
     }
 }

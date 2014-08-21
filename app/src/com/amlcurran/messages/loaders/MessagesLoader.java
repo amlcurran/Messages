@@ -49,4 +49,6 @@ public interface MessagesLoader {
     void markThreadAsUnread(List<Conversation> threadId, ConversationListChangeListener changeListener);
 
     void loadContacts(ContactListListener contactListListener);
+
+    void getHasConversationWith(Contact contact, HasConversationListener hasConversationListener);
 }
