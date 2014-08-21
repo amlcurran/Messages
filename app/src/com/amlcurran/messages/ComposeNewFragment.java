@@ -190,11 +190,14 @@ public class ComposeNewFragment extends Fragment implements ComposeMessageView.C
     }
 
     @Override
-    public void recipientChosen(Contact contact) {
+    public void recipientChosen(final Contact contact) {
         loader.getHasConversationWith(contact, new HasConversationListener() {
 
             @Override
             public void noConversationForNumber() {
+                contactChip.setVisibility(View.VISIBLE);
+                contactChip.setContact(contact, SingletonManager.getMessagesLoader(getActivity()));
+                pickPersonView.setText(contact.getNumber().flatten());
 
             }
 
@@ -203,10 +206,6 @@ public class ComposeNewFragment extends Fragment implements ComposeMessageView.C
                 listener.displayThread(contact, threadId);
             }
         });
-
-        contactChip.setVisibility(View.VISIBLE);
-        contactChip.setContact(contact, SingletonManager.getMessagesLoader(getActivity()));
-        pickPersonView.setText(contact.getNumber().flatten());
     }
 
     public String getPreparedAddress() {
