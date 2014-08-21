@@ -30,17 +30,17 @@ import com.amlcurran.messages.loaders.Task;
 
 public class RoundContactView extends LinearLayout implements ContactView {
 
-    private final TextView secondTextField;
-    private final TextView nameTextField;
     private final ImageView contactImageView;
+    private final ContactFormatter contactFormatter;
     private Task currentPhotoTask;
 
     public RoundContactView(Context context, AttributeSet attrs) {
         super(context, attrs);
         inflate(LayoutInflater.from(context));
-        nameTextField = ((TextView) findViewById(android.R.id.text1));
-        secondTextField = ((TextView) findViewById(android.R.id.text2));
+        TextView nameTextField = ((TextView) findViewById(android.R.id.text1));
+        TextView secondTextField = ((TextView) findViewById(android.R.id.text2));
         contactImageView = ((ImageView) findViewById(R.id.image));
+        contactFormatter = new TwoViewContactFormatter(nameTextField, secondTextField);
     }
 
     protected void inflate(LayoutInflater inflater) {
@@ -50,8 +50,7 @@ public class RoundContactView extends LinearLayout implements ContactView {
     @Override
     public void setContact(final Contact contact, MessagesLoader loader) {
         cancelCurrentTask();
-        nameTextField.setText(contact.getDisplayName());
-        secondTextField.setText(contact.getNumber().flatten());
+        contactFormatter.format(contact);
         currentPhotoTask = loader.loadPhoto(contact, new AlphaInSettingListener(contactImageView));
     }
 

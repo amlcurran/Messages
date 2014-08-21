@@ -35,6 +35,11 @@ public class BundleBuilder {
         return bundle;
     }
 
+    public BundleBuilder put(String key, int value) {
+        bundle.putInt(key, value);
+        return this;
+    }
+
     public BundleBuilder put(String key, long value) {
         bundle.putLong(key, value);
         return this;

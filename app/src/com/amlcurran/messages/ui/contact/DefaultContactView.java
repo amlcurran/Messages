@@ -33,8 +33,7 @@ import com.amlcurran.messages.ui.ViewContactClickListener;
 public class DefaultContactView extends LinearLayout implements ContactView {
 
     private final ImageView contactImageView;
-    private final TextView nameTextField;
-    private final TextView secondTextField;
+    private final TwoViewContactFormatter contactFormatter;
     protected Contact contact;
     private Task currentTask;
 
@@ -47,8 +46,9 @@ public class DefaultContactView extends LinearLayout implements ContactView {
         inflate(LayoutInflater.from(context));
         contactImageView = (ImageView) findViewById(R.id.image);
         contactImageView.setAlpha(0f);
-        nameTextField = (TextView) findViewById(android.R.id.text1);
-        secondTextField = (TextView) findViewById(android.R.id.text2);
+        TextView nameTextField = (TextView) findViewById(android.R.id.text1);
+        TextView secondTextField = (TextView) findViewById(android.R.id.text2);
+        contactFormatter = new TwoViewContactFormatter(nameTextField, secondTextField);
     }
 
     protected void inflate(LayoutInflater inflater) {
@@ -59,8 +59,7 @@ public class DefaultContactView extends LinearLayout implements ContactView {
     public void setContact(final Contact contact, MessagesLoader loader) {
         cancelCurrentTask();
         this.contact = contact;
-        nameTextField.setText(contact.getDisplayName());
-        secondTextField.setText(contact.getNumber().flatten());
+        contactFormatter.format(contact);
         currentTask = loader.loadPhoto(contact, new AlphaInSettingListener(contactImageView));
     }
 
