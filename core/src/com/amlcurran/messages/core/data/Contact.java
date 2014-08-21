@@ -19,6 +19,8 @@ package com.amlcurran.messages.core.data;
 public interface Contact {
     String getDisplayName();
 
+    int getPhoneNumberType();
+
     long getPhotoId();
 
     long getContactId();

@@ -25,13 +25,15 @@ public class SavedContact implements Contact {
     private final PhoneNumber address;
     private final long photoId;
     private final String lookupKey;
+    private final int phoneNumberType;
 
-    public SavedContact(long contactId, String name, PhoneNumber address, long photoId, String lookupKey) {
+    public SavedContact(long contactId, String name, PhoneNumber address, long photoId, String lookupKey, int phoneNumberType) {
         this.contactId = contactId;
         this.name = name;
         this.address = address;
         this.photoId = photoId;
         this.lookupKey = lookupKey;
+        this.phoneNumberType = phoneNumberType;
     }
 
     @Override
@@ -41,6 +43,11 @@ public class SavedContact implements Contact {
         } else {
             return address.flatten();
         }
+    }
+
+    @Override
+    public int getPhoneNumberType() {
+        return phoneNumberType;
     }
 
     @Override

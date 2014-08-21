@@ -34,13 +34,16 @@ public class ContactFactory {
             ContactsContract.Data.DISPLAY_NAME_PRIMARY,
             ContactsContract.Data.PHOTO_ID,
             ContactsContract.CommonDataKinds.Phone.NUMBER,
-            ContactsContract.Contacts.LOOKUP_KEY };
+            ContactsContract.Contacts.LOOKUP_KEY,
+            ContactsContract.CommonDataKinds.Phone.TYPE };
+
     public static final String SMOOSH_IS_SAVED = "saved";
     public static final String SMOOSH_NUMBER = "number";
     public static final String SMOOSH_LOOKUP_KEY = "lookupKey";
     public static final String SMOOSH_CONTACT_ID = "contactId";
     public static final String SMOOSH_PHOTO_ID = "photoId";
     public static final String SMOOSH_DISPLAY_NAME = "displayName";
+    private static final String SMOOSH_PHONE_TYPE = "phoneType";
 
     public static Contact fromCursor(Cursor peopleCursor) {
         String person = CursorHelper.asString(peopleCursor, ContactsContract.CommonDataKinds.Identity.DISPLAY_NAME_PRIMARY);
@@ -48,7 +51,8 @@ public class ContactFactory {
         long contactId = CursorHelper.asLong(peopleCursor, ContactsContract.Contacts._ID);
         String rawAddress = CursorHelper.asString(peopleCursor, ContactsContract.CommonDataKinds.Phone.NUMBER);
         String lookupKey = CursorHelper.asString(peopleCursor, ContactsContract.Contacts.LOOKUP_KEY);
-        return new SavedContact(contactId, person, new ParcelablePhoneNumber(rawAddress), photoId, lookupKey);
+        int phoneType = CursorHelper.asInt(peopleCursor, ContactsContract.CommonDataKinds.Phone.TYPE);
+        return new SavedContact(contactId, person, new ParcelablePhoneNumber(rawAddress), photoId, lookupKey, phoneType);
     }
 
     public static Contact fromAddress(String number) {
@@ -68,6 +72,7 @@ public class ContactFactory {
                 .put(SMOOSH_LOOKUP_KEY, contact.getLookupKey())
                 .put(SMOOSH_NUMBER, contact.getNumber().flatten())
                 .put(SMOOSH_IS_SAVED, contact.isSaved())
+                .put(SMOOSH_PHONE_TYPE, contact.getPhoneNumberType())
                 .build();
     }
 
@@ -81,7 +86,8 @@ public class ContactFactory {
             long contactId = bundle.getLong(SMOOSH_CONTACT_ID);
             String rawAddress = bundle.getString(SMOOSH_NUMBER);
             String lookupKey = bundle.getString(SMOOSH_LOOKUP_KEY);
-            return new SavedContact(contactId, person, new ParcelablePhoneNumber(rawAddress), photoId, lookupKey);
+            int phoneType = bundle.getInt(SMOOSH_PHONE_TYPE);
+            return new SavedContact(contactId, person, new ParcelablePhoneNumber(rawAddress), photoId, lookupKey, phoneType);
         } else {
             return new RawContact(new ParcelablePhoneNumber(bundle.getString(SMOOSH_NUMBER)));
         }

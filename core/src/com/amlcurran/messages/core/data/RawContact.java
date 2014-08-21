@@ -30,6 +30,11 @@ public class RawContact implements Contact {
     }
 
     @Override
+    public int getPhoneNumberType() {
+        return 0;
+    }
+
+    @Override
     public long getPhotoId() {
         return 0;
     }

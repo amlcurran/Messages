@@ -52,7 +52,7 @@ public class DemoMessagesLoader implements MessagesLoader {
         String[] contactNames = getStringArray(R.array.demo_contact_names);
         for (int i = 0; i < numbers.length; i++) {
             PhoneNumber number = new ParcelablePhoneNumber(numbers[i]);
-            Contact contact = new SavedContact(i, contactNames[i], number, i, String.valueOf(i));
+            Contact contact = new SavedContact(i, contactNames[i], number, i, String.valueOf(i), 0);
             Conversation conversation = new Conversation(number, bodies[i], String.valueOf(i), i != 4, contact, i == 2);
             fakeConversations.add(conversation);
         }
