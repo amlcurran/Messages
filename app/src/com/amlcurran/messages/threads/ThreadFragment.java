@@ -64,6 +64,7 @@ public class ThreadFragment extends ListFragment implements
     private DefaultContactView contactView;
     private ThreadController threadController;
     private DraftRepository draftRepository;
+    private ListView listView;
 
     public static ThreadFragment create(String threadId, PhoneNumber address, Bundle contactBundle) {
         Bundle bundle = new Bundle();
@@ -80,12 +81,13 @@ public class ThreadFragment extends ListFragment implements
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_thread, container, false);
-        ListView listView = (ListView) view.findViewById(android.R.id.list);
+        listView = (ListView) view.findViewById(android.R.id.list);
         listView.setOnScrollListener(new LegacyShadowingScrollListener());
         listView.setTranscriptMode(ListView.TRANSCRIPT_MODE_NORMAL);
         listView.setStackFromBottom(true);
         listView.setDivider(null);
-        listView.setLayoutTransition(createLayoutTransition(inflater.getContext().getResources()));
+        listView.setAlpha(0);
+        //listView.setLayoutTransition(createLayoutTransition(inflater.getContext().getResources()));
         composeView = ((ComposeMessageView) view.findViewById(R.id.thread_compose_view));
         return view;
     }
@@ -202,6 +204,10 @@ public class ThreadFragment extends ListFragment implements
 
     @Override
     public void dataLoaded(Source<SmsMessage> source) {
+        listView.animate()
+                .alpha(1)
+                .setDuration(getResources().getInteger(android.R.integer.config_shortAnimTime))
+                .start();
         scrollTo(source.getCount() - 1);
     }
 

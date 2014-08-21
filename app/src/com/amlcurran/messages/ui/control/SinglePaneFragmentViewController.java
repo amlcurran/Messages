@@ -97,7 +97,7 @@ public class SinglePaneFragmentViewController extends BaseViewController impleme
 
     private void replaceFragmentInternal(Fragment fragment) {
         buildReplaceFragmentTransaction(fragment)
-                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
+                .setCustomAnimations(R.animator.fade_in_quick, 0)
                 .commit();
         fragmentCallback.insertedDetail();
     }
