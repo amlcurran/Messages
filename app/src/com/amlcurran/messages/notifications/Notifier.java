@@ -27,6 +27,7 @@ import com.amlcurran.messages.core.conversationlist.ConversationListListener;
 import com.amlcurran.messages.core.data.Contact;
 import com.amlcurran.messages.core.data.Conversation;
 import com.amlcurran.messages.data.InFlightSmsMessage;
+import com.amlcurran.messages.loaders.MessagesLoader;
 import com.amlcurran.messages.preferences.PreferenceStore;
 
 import java.util.List;
@@ -38,59 +39,22 @@ public class Notifier {
     private static final int NOTIFICATION_MMS_ERROR = 66;
     public static final String ACTION_VIEW_CONVERSATION = "com.amlcurran.messages.notification.VIEW_CONVERSATION";
     private final NotificationManagerCompat notificationManager;
-    private final Context context;
     private final NotificationBuilder notificationBuilder;
+    private final MessagesLoader loader;
+    private final PreferenceStore preferenceStore;
 
     public Notifier(Context context) {
-        this.context = context;
+        this.preferenceStore = new PreferenceStore(context);
+        this.loader = SingletonManager.getMessagesLoader(context);
         this.notificationManager = NotificationManagerCompat.from(context);
         this.notificationBuilder = new NotificationBuilder(context, new PreferenceStore(context));
     }
 
     public void updateUnreadNotification(final boolean fromNewMessage) {
-        if (showNotifications(context)) {
-            SingletonManager.getMessagesLoader(context).loadUnreadConversationList(new ConversationListListener() {
-                @Override
-                public void onConversationListLoaded(final List<Conversation> conversations) {
-
-                    if (conversations.size() == 0) {
-                        clearNewMessagesNotification();
-                    } else if (conversations.size() == 1) {
-                        // Load the contact photo as well
-                        Conversation singleConvo = conversations.get(0);
-                        SingletonManager.getMessagesLoader(context).loadPhoto(singleConvo.getContact(), new PhotoLoadListener() {
-                            @Override
-                            public void photoLoaded(Bitmap photo) {
-                                postUnreadNotification(conversations, photo);
-                            }
-
-                            @Override
-                            public void photoLoadedFromCache(Bitmap photo) {
-                                postUnreadNotification(conversations, photo);
-                            }
-
-                            @Override
-                            public void beforePhotoLoad(Contact contact) {
-
-                            }
-                        });
-                    } else {
-                        postUnreadNotification(conversations, null);
-                    }
-                }
-
-                private void postUnreadNotification(List<Conversation> conversations, Bitmap photo) {
-                    List<Notification> notifications = notificationBuilder.buildUnreadNotification(conversations, photo, fromNewMessage);
-                    for (int i = 0; i < notifications.size(); i++) {
-                        notificationManager.notify(NOTIFICATION_UNREAD_MESSAGES + i, notifications.get(i));
-                    }
-                }
-            });
+        if (preferenceStore.showNotifications()) {
+            UnreadNotificationManager conversationListListener = new UnreadNotificationManager(fromNewMessage);
+            loader.loadUnreadConversationList(conversationListListener);
         }
-    }
-
-    private static boolean showNotifications(Context context) {
-        return new PreferenceStore(context).showNotifications();
     }
 
     public void clearNewMessagesNotification() {
@@ -98,7 +62,7 @@ public class Notifier {
     }
 
     public void showSendError(InFlightSmsMessage message) {
-        if (showNotifications(context)) {
+        if (preferenceStore.showNotifications()) {
             notificationManager.notify(NOTIFICATION_SEND_ERROR, notificationBuilder.buildFailureToSendNotification(message));
         }
     }
@@ -109,5 +73,61 @@ public class Notifier {
 
     public void clearFailureToSendNotification() {
         notificationManager.cancel(NOTIFICATION_SEND_ERROR);
+    }
+
+    private class UnreadNotificationManager implements ConversationListListener {
+
+        private final boolean fromNewMessage;
+
+        public UnreadNotificationManager(boolean fromNewMessage) {
+            this.fromNewMessage = fromNewMessage;
+        }
+
+        @Override
+        public void onConversationListLoaded(final List<Conversation> conversations) {
+
+            if (conversations.size() == 0) {
+                clearNewMessagesNotification();
+            } else if (conversations.size() == 1) {
+                // Load the contact photo as well
+                Conversation singleConvo = conversations.get(0);
+                loader.loadPhoto(singleConvo.getContact(), new PostUnreadWhenLoadedListener(conversations, fromNewMessage));
+            } else {
+                postUnreadNotification(conversations, null, fromNewMessage);
+            }
+        }
+
+        private class PostUnreadWhenLoadedListener implements PhotoLoadListener {
+            private final List<Conversation> conversations;
+            private final boolean fromNewMessage;
+
+            public PostUnreadWhenLoadedListener(List<Conversation> conversations, boolean fromNewMessage) {
+                this.conversations = conversations;
+                this.fromNewMessage = fromNewMessage;
+            }
+
+            @Override
+            public void photoLoaded(Bitmap photo) {
+                postUnreadNotification(conversations, photo, fromNewMessage);
+            }
+
+            @Override
+            public void photoLoadedFromCache(Bitmap photo) {
+                postUnreadNotification(conversations, photo, fromNewMessage);
+            }
+
+            @Override
+            public void beforePhotoLoad(Contact contact) {
+
+            }
+        }
+
+        private void postUnreadNotification(List<Conversation> conversations, Bitmap photo, boolean fromNewMessage) {
+            List<Notification> notifications = notificationBuilder.buildUnreadNotification(conversations, photo, fromNewMessage);
+            for (int i = 0; i < notifications.size(); i++) {
+                notificationManager.notify(NOTIFICATION_UNREAD_MESSAGES + i, notifications.get(i));
+            }
+        }
+
     }
 }
