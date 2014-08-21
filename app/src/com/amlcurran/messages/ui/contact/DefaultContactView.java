@@ -19,22 +19,18 @@ package com.amlcurran.messages.ui.contact;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import com.amlcurran.messages.R;
 import com.amlcurran.messages.conversationlist.ConversationModalMarshall;
 import com.amlcurran.messages.core.data.Contact;
 import com.amlcurran.messages.loaders.MessagesLoader;
-import com.amlcurran.messages.loaders.Task;
 
 public class DefaultContactView extends LinearLayout implements ContactView {
 
     private final ViewContactClickListener viewContactClickListener = new ViewContactClickListener();
     private final TwoViewContactFormatter contactFormatter;
-    private final AlphaInSettingListener photoLoadListener;
-    private Task currentTask;
+    private final EndToEndPhotoManager photoLoaderManager;
 
     public DefaultContactView(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
@@ -43,14 +39,8 @@ public class DefaultContactView extends LinearLayout implements ContactView {
     public DefaultContactView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
         inflate(LayoutInflater.from(context));
-
-        ImageView contactImageView = (ImageView) findViewById(R.id.image);
-        contactImageView.setAlpha(0f);
-        photoLoadListener = new AlphaInSettingListener(contactImageView);
-
-        TextView nameTextField = (TextView) findViewById(android.R.id.text1);
-        TextView secondTextField = (TextView) findViewById(android.R.id.text2);
-        contactFormatter = new TwoViewContactFormatter(nameTextField, secondTextField);
+        photoLoaderManager = new EndToEndPhotoManager(this);
+        contactFormatter = new TwoViewContactFormatter(this);
     }
 
     protected void inflate(LayoutInflater inflater) {
@@ -59,16 +49,10 @@ public class DefaultContactView extends LinearLayout implements ContactView {
 
     @Override
     public void setContact(final Contact contact, MessagesLoader loader) {
-        cancelCurrentTask();
+        photoLoaderManager.stopLoadingPhoto();
         viewContactClickListener.contact = contact;
         contactFormatter.format(contact);
-        currentTask = loader.loadPhoto(contact, photoLoadListener);
-    }
-
-    private void cancelCurrentTask() {
-        if (currentTask != null) {
-            currentTask.cancel();
-        }
+        photoLoaderManager.loadContactPhoto(contact, loader);
     }
 
     public void setClickToView(ConversationModalMarshall.Callback callback, boolean clickToView) {

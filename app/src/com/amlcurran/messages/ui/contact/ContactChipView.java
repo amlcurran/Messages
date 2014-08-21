@@ -4,21 +4,17 @@ import android.content.Context;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import com.amlcurran.messages.R;
 import com.amlcurran.messages.core.data.Contact;
 import com.amlcurran.messages.loaders.MessagesLoader;
-import com.amlcurran.messages.loaders.Task;
 
 public class ContactChipView extends LinearLayout implements ContactView {
 
     private final TwoViewContactFormatter contactFormatter;
     private final RemoveRequestClickListener removeRequestClickListener;
-    private final AlphaInSettingListener photoLoadListener;
-    private Task currentTask;
+    private final EndToEndPhotoManager photoLoaderManager;
 
     public ContactChipView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -28,27 +24,16 @@ public class ContactChipView extends LinearLayout implements ContactView {
         removeRequestClickListener = new RemoveRequestClickListener(this);
         removeButton.setOnClickListener(removeRequestClickListener);
 
-        ImageView contactImageView = (ImageView) findViewById(R.id.image);
-        contactImageView.setAlpha(0f);
-        photoLoadListener = new AlphaInSettingListener(contactImageView);
-
-        TextView nameTextField = (TextView) findViewById(android.R.id.text1);
-        TextView secondTextField = (TextView) findViewById(android.R.id.text2);
-        contactFormatter = new TwoViewContactFormatter(nameTextField, secondTextField);
+        photoLoaderManager = new EndToEndPhotoManager(this);
+        contactFormatter = new TwoViewContactFormatter(this);
     }
 
     @Override
     public void setContact(final Contact contact, MessagesLoader loader) {
-        cancelCurrentTask();
+        photoLoaderManager.stopLoadingPhoto();
         removeRequestClickListener.contact = contact;
         contactFormatter.format(contact);
-        currentTask = loader.loadPhoto(contact, photoLoadListener);
-    }
-
-    private void cancelCurrentTask() {
-        if (currentTask != null) {
-            currentTask.cancel();
-        }
+        photoLoaderManager.loadContactPhoto(contact, loader);
     }
 
     public void setRemoveListener(RemoveListener removeListener) {

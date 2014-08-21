@@ -16,24 +16,11 @@
 
 package com.amlcurran.messages.ui.contact;
 
-import android.view.ViewGroup;
-import android.widget.TextView;
-
 import com.amlcurran.messages.core.data.Contact;
+import com.amlcurran.messages.loaders.MessagesLoader;
 
-public class TwoViewContactFormatter implements ContactFormatter {
+public interface PhotoLoaderManager {
+    void loadContactPhoto(Contact contact, MessagesLoader loader);
 
-    private final TextView nameTextField;
-    private final TextView secondTextField;
-
-    public TwoViewContactFormatter(ViewGroup hostView) {
-        this.nameTextField = ((TextView) hostView.findViewById(android.R.id.text1));
-        this.secondTextField = ((TextView) hostView.findViewById(android.R.id.text2));
-    }
-
-    @Override
-    public void format(Contact contact) {
-        nameTextField.setText(contact.getDisplayName());
-        secondTextField.setText(contact.getNumber().flatten());
-    }
+    void stopLoadingPhoto();
 }

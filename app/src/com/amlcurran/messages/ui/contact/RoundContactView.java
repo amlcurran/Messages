@@ -19,31 +19,22 @@ package com.amlcurran.messages.ui.contact;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import com.amlcurran.messages.R;
 import com.amlcurran.messages.core.data.Contact;
 import com.amlcurran.messages.loaders.MessagesLoader;
-import com.amlcurran.messages.loaders.Task;
 
 public class RoundContactView extends LinearLayout implements ContactView {
 
     private final ContactFormatter contactFormatter;
-    private final AlphaInSettingListener photoLoadListener;
-    private Task currentPhotoTask;
+    private final PhotoLoaderManager photoLoaderManager;
 
     public RoundContactView(Context context, AttributeSet attrs) {
         super(context, attrs);
         inflate(LayoutInflater.from(context));
-
-        TextView nameTextField = ((TextView) findViewById(android.R.id.text1));
-        TextView secondTextField = ((TextView) findViewById(android.R.id.text2));
-        contactFormatter = new TwoViewContactFormatter(nameTextField, secondTextField);
-
-        ImageView contactImageView = ((ImageView) findViewById(R.id.image));
-        photoLoadListener = new AlphaInSettingListener(contactImageView);
+        photoLoaderManager = new EndToEndPhotoManager(this);
+        contactFormatter = new TwoViewContactFormatter(this);
     }
 
     protected void inflate(LayoutInflater inflater) {
@@ -52,15 +43,9 @@ public class RoundContactView extends LinearLayout implements ContactView {
 
     @Override
     public void setContact(final Contact contact, MessagesLoader loader) {
-        cancelCurrentTask();
+        photoLoaderManager.stopLoadingPhoto();
         contactFormatter.format(contact);
-        currentPhotoTask = loader.loadPhoto(contact, photoLoadListener);
-    }
-
-    private void cancelCurrentTask() {
-        if (currentPhotoTask != null) {
-            currentPhotoTask.cancel();
-        }
+        photoLoaderManager.loadContactPhoto(contact, loader);
     }
 
 }
