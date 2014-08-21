@@ -28,13 +28,12 @@ import com.amlcurran.messages.conversationlist.ConversationModalMarshall;
 import com.amlcurran.messages.core.data.Contact;
 import com.amlcurran.messages.loaders.MessagesLoader;
 import com.amlcurran.messages.loaders.Task;
-import com.amlcurran.messages.ui.ViewContactClickListener;
 
 public class DefaultContactView extends LinearLayout implements ContactView {
 
-    private final ImageView contactImageView;
+    private final ViewContactClickListener viewContactClickListener = new ViewContactClickListener();
     private final TwoViewContactFormatter contactFormatter;
-    protected Contact contact;
+    private final AlphaInSettingListener photoLoadListener;
     private Task currentTask;
 
     public DefaultContactView(Context context, AttributeSet attrs) {
@@ -44,8 +43,11 @@ public class DefaultContactView extends LinearLayout implements ContactView {
     public DefaultContactView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
         inflate(LayoutInflater.from(context));
-        contactImageView = (ImageView) findViewById(R.id.image);
+
+        ImageView contactImageView = (ImageView) findViewById(R.id.image);
         contactImageView.setAlpha(0f);
+        photoLoadListener = new AlphaInSettingListener(contactImageView);
+
         TextView nameTextField = (TextView) findViewById(android.R.id.text1);
         TextView secondTextField = (TextView) findViewById(android.R.id.text2);
         contactFormatter = new TwoViewContactFormatter(nameTextField, secondTextField);
@@ -58,9 +60,9 @@ public class DefaultContactView extends LinearLayout implements ContactView {
     @Override
     public void setContact(final Contact contact, MessagesLoader loader) {
         cancelCurrentTask();
-        this.contact = contact;
+        viewContactClickListener.contact = contact;
         contactFormatter.format(contact);
-        currentTask = loader.loadPhoto(contact, new AlphaInSettingListener(contactImageView));
+        currentTask = loader.loadPhoto(contact, photoLoadListener);
     }
 
     private void cancelCurrentTask() {
@@ -82,6 +84,7 @@ public class DefaultContactView extends LinearLayout implements ContactView {
     }
 
     private void enableClick(ContactClickListener callback) {
-        setOnClickListener(new ViewContactClickListener(contact, callback));
+        viewContactClickListener.callback = callback;
+        setOnClickListener(viewContactClickListener);
     }
 }

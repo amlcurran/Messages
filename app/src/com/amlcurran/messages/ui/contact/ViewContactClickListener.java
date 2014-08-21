@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.amlcurran.messages.ui;
+package com.amlcurran.messages.ui.contact;
 
 import android.view.View;
 
@@ -23,13 +23,8 @@ import com.amlcurran.messages.ui.contact.ContactClickListener;
 
 public class ViewContactClickListener implements View.OnClickListener {
 
-    private final Contact contact;
-    private final ContactClickListener callback;
-
-    public ViewContactClickListener(Contact contact, ContactClickListener callback) {
-        this.contact = contact;
-        this.callback = callback;
-    }
+    public Contact contact;
+    public ContactClickListener callback;
 
     @Override
     public void onClick(View v) {

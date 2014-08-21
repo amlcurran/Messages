@@ -16,24 +16,22 @@ import com.amlcurran.messages.loaders.Task;
 public class ContactChipView extends LinearLayout implements ContactView {
 
     private final TwoViewContactFormatter contactFormatter;
-    private final ImageView contactImageView;
-    private final View removeButton;
-    private RemoveListener removeListener = RemoveListener.NONE;
-    private Contact contact;
+    private final RemoveRequestClickListener removeRequestClickListener;
+    private final AlphaInSettingListener photoLoadListener;
     private Task currentTask;
 
     public ContactChipView(Context context, AttributeSet attrs) {
         super(context, attrs);
         LayoutInflater.from(context).inflate(R.layout.view_contact_chip, this, true);
-        removeButton = findViewById(R.id.chip_remove);
-        removeButton.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                removeListener.chipRemoveRequested(ContactChipView.this, contact);
-            }
-        });
-        contactImageView = (ImageView) findViewById(R.id.image);
+
+        View removeButton = findViewById(R.id.chip_remove);
+        removeRequestClickListener = new RemoveRequestClickListener(this);
+        removeButton.setOnClickListener(removeRequestClickListener);
+
+        ImageView contactImageView = (ImageView) findViewById(R.id.image);
         contactImageView.setAlpha(0f);
+        photoLoadListener = new AlphaInSettingListener(contactImageView);
+
         TextView nameTextField = (TextView) findViewById(android.R.id.text1);
         TextView secondTextField = (TextView) findViewById(android.R.id.text2);
         contactFormatter = new TwoViewContactFormatter(nameTextField, secondTextField);
@@ -42,9 +40,9 @@ public class ContactChipView extends LinearLayout implements ContactView {
     @Override
     public void setContact(final Contact contact, MessagesLoader loader) {
         cancelCurrentTask();
-        this.contact = contact;
+        removeRequestClickListener.contact = contact;
         contactFormatter.format(contact);
-        currentTask = loader.loadPhoto(contact, new AlphaInSettingListener(contactImageView));
+        currentTask = loader.loadPhoto(contact, photoLoadListener);
     }
 
     private void cancelCurrentTask() {
@@ -53,16 +51,8 @@ public class ContactChipView extends LinearLayout implements ContactView {
         }
     }
 
-    public void showRemoveButton() {
-        removeButton.setVisibility(VISIBLE);
-    }
-
-    public void hideRemoveButton() {
-        removeButton.setVisibility(GONE);
-    }
-
     public void setRemoveListener(RemoveListener removeListener) {
-        this.removeListener = removeListener;
+        removeRequestClickListener.removeListener = removeListener;
     }
 
     public interface RemoveListener {
@@ -77,5 +67,21 @@ public class ContactChipView extends LinearLayout implements ContactView {
         };
 
         void chipRemoveRequested(ContactChipView contactChipView, Contact contact);
+    }
+
+    private static class RemoveRequestClickListener implements OnClickListener {
+
+        private RemoveListener removeListener = RemoveListener.NONE;
+        private Contact contact;
+        private final ContactChipView contactChipView;
+
+        public RemoveRequestClickListener(ContactChipView contactChipView) {
+            this.contactChipView = contactChipView;
+        }
+
+        @Override
+        public void onClick(View v) {
+            removeListener.chipRemoveRequested(contactChipView, contact);
+        }
     }
 }
