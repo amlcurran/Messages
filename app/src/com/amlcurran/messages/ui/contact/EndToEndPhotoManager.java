@@ -25,7 +25,7 @@ import com.amlcurran.messages.core.data.Contact;
 import com.amlcurran.messages.loaders.MessagesLoader;
 import com.amlcurran.messages.loaders.Task;
 
-public class EndToEndPhotoManager implements PhotoLoaderManager {
+class EndToEndPhotoManager implements PhotoLoaderManager {
     private final PhotoLoadListener photoLoadListener;
     private Task currentPhotoTask;
 

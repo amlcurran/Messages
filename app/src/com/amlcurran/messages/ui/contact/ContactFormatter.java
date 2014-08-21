@@ -18,6 +18,6 @@ package com.amlcurran.messages.ui.contact;
 
 import com.amlcurran.messages.core.data.Contact;
 
-public interface ContactFormatter {
+interface ContactFormatter {
     void format(Contact contact);
 }

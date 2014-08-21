@@ -19,9 +19,8 @@ package com.amlcurran.messages.ui.contact;
 import android.view.View;
 
 import com.amlcurran.messages.core.data.Contact;
-import com.amlcurran.messages.ui.contact.ContactClickListener;
 
-public class ViewContactClickListener implements View.OnClickListener {
+class ViewContactClickListener implements View.OnClickListener {
 
     public Contact contact;
     public ContactClickListener callback;

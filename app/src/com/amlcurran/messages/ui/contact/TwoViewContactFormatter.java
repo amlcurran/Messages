@@ -21,7 +21,7 @@ import android.widget.TextView;
 
 import com.amlcurran.messages.core.data.Contact;
 
-public class TwoViewContactFormatter implements ContactFormatter {
+class TwoViewContactFormatter implements ContactFormatter {
 
     private final TextView nameTextField;
     private final TextView secondTextField;
