@@ -26,7 +26,6 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 
 import com.amlcurran.messages.R;
-import com.amlcurran.messages.SingletonManager;
 import com.amlcurran.messages.core.conversationlist.ConversationListListener;
 import com.amlcurran.messages.core.data.Conversation;
 import com.amlcurran.messages.core.data.Sort;
@@ -128,7 +127,7 @@ public class ConversationListFragment extends ListFragment implements Conversati
 
     @Override
     public void onConversationListLoaded(final List<Conversation> conversations) {
-        SingletonManager.getNotifier(getActivity()).updateUnreadNotification(false);
+        //SingletonManager.getNotifier(getActivity()).updateUnreadNotification(false);
         source.replace(conversations);
         hideLoadingUi();
     }

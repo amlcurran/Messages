@@ -60,7 +60,6 @@ public class MessagesApp extends Application implements BroadcastEventSubscriber
         Handler uiHandler = new Handler(getMainLooper());
 
         cache = new MemoryMessagesCache();
-        notifier = new Notifier(this);
         eventBus = new BroadcastEventBus(this);
 
         if (BuildConfig.FLAVOR.equals("demo")) {
@@ -69,6 +68,7 @@ public class MessagesApp extends Application implements BroadcastEventSubscriber
             loader = new ExecutorMessagesLoader(this, executor, cache, eventBus, uiHandler);
         }
 
+        notifier = new Notifier(this);
         subscriber = new BroadcastEventSubscriber(this, this);
         subscriber.startListening(
                 new Broadcast(BroadcastEventBus.BROADCAST_MESSAGE_SENT, null),
@@ -105,7 +105,7 @@ public class MessagesApp extends Application implements BroadcastEventSubscriber
     @Override
     public void onMessageReceived() {
         cache.invalidate();
-        loader.loadConversationList(null, new PreferenceStore(this).getConversationSort());
+        loader.loadConversationList(new UpdateNotificationListener(notifier), new PreferenceStore(this).getConversationSort());
     }
 
     private class PrimeLinkifyTask implements Callable<Object> {
