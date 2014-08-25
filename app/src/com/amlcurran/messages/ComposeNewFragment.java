@@ -191,7 +191,7 @@ public class ComposeNewFragment extends Fragment implements ComposeMessageView.C
 
             @Override
             public void hasConversation(Contact contact, int threadId) {
-                listener.displayThread(contact, threadId);
+                listener.displayThread(contact, threadId, composeView.getText());
             }
         });
     }

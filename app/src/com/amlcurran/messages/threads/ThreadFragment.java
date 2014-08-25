@@ -33,6 +33,7 @@ import com.amlcurran.messages.MessagesActivity;
 import com.amlcurran.messages.R;
 import com.amlcurran.messages.SingletonManager;
 import com.amlcurran.messages.SmsComposeListener;
+import com.amlcurran.messages.bucket.BundleBuilder;
 import com.amlcurran.messages.conversationlist.ConversationModalMarshall;
 import com.amlcurran.messages.core.data.Contact;
 import com.amlcurran.messages.core.data.DraftRepository;
@@ -56,6 +57,7 @@ public class ThreadFragment extends ListFragment implements
     private static final String THREAD_ID = "threadId";
     private static final String ADDRESS = "address";
     private static final String CONTACT = "contact";
+    private static final String COMPOSED_MESSAGE = "composed_message";
 
     private StandardComposeCallbacks composeCallbacks;
     private SmsComposeListener listener;
@@ -66,11 +68,13 @@ public class ThreadFragment extends ListFragment implements
     private DraftRepository draftRepository;
     private ListView listView;
 
-    public static ThreadFragment create(String threadId, PhoneNumber address, Bundle contactBundle) {
-        Bundle bundle = new Bundle();
-        bundle.putString(THREAD_ID, threadId);
-        bundle.putString(ADDRESS, address.flatten());
-        bundle.putBundle(CONTACT, contactBundle);
+    public static ThreadFragment create(String threadId, PhoneNumber address, Bundle contactBundle, String composedMessage) {
+        Bundle bundle = new BundleBuilder()
+                .put(THREAD_ID, threadId)
+                .put(ADDRESS, address.flatten())
+                .put(CONTACT, contactBundle)
+                .put(COMPOSED_MESSAGE, composedMessage)
+                .build();
 
         ThreadFragment fragment = new ThreadFragment();
         fragment.setArguments(bundle);
@@ -112,6 +116,9 @@ public class ThreadFragment extends ListFragment implements
         threadController = new ThreadController(threadId, phoneNumber, this);
         threadController.create(getActivity(), composeView);
         composeView.setText(retrieveDraft(phoneNumber));
+
+        String composedMessage = getArguments().getString(COMPOSED_MESSAGE);
+        composeView.setText(composedMessage);
 
         setHasOptionsMenu(true);
 

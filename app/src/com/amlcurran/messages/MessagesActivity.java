@@ -165,7 +165,7 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
 
     private void viewConversation(String threadId, PhoneNumber address) {
         fragmentController.loadConversationListFragment();
-        fragmentController.replaceFragment(ThreadFragment.create(threadId, address, null), false);
+        fragmentController.replaceFragment(ThreadFragment.create(threadId, address, null, null), false);
     }
 
     private void anonymousSendWithMessage(String message) {
@@ -266,7 +266,7 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
     public void onConversationSelected(Conversation conversation) {
         PhoneNumber address = conversation.getAddress();
         Bundle contactBundle = ContactFactory.smooshContact(conversation.getContact());
-        ThreadFragment fragment = ThreadFragment.create(conversation.getThreadId(), address, contactBundle);
+        ThreadFragment fragment = ThreadFragment.create(conversation.getThreadId(), address, contactBundle, null);
         fragmentController.replaceFragment(fragment, false);
     }
 
@@ -282,9 +282,9 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
     }
 
     @Override
-    public void displayThread(Contact contact, int threadId) {
+    public void displayThread(Contact contact, int threadId, String writtenMessage) {
         Bundle contactBundle = ContactFactory.smooshContact(contact);
-        ThreadFragment fragment = ThreadFragment.create(String.valueOf(threadId), contact.getNumber(), contactBundle);
+        ThreadFragment fragment = ThreadFragment.create(String.valueOf(threadId), contact.getNumber(), contactBundle, writtenMessage);
         fragmentController.replaceFragment(fragment, false);
     }
 

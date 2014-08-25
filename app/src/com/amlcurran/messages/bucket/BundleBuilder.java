@@ -49,4 +49,9 @@ public class BundleBuilder {
         bundle.putBoolean(key, value);
         return this;
     }
+
+    public BundleBuilder put(String key, Bundle value) {
+        bundle.putParcelable(key, value);
+        return this;
+    }
 }

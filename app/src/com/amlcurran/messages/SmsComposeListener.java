@@ -25,5 +25,5 @@ public interface SmsComposeListener {
 
     void callNumber(PhoneNumber phoneNumber);
 
-    void displayThread(Contact contact, int threadId);
+    void displayThread(Contact contact, int threadId, String writtenMessage);
 }
