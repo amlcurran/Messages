@@ -22,7 +22,6 @@ import android.view.LayoutInflater;
 import android.widget.LinearLayout;
 
 import com.amlcurran.messages.R;
-import com.amlcurran.messages.conversationlist.ConversationModalMarshall;
 import com.amlcurran.messages.core.data.Contact;
 import com.amlcurran.messages.loaders.MessagesLoader;
 
@@ -55,7 +54,7 @@ public class DefaultContactView extends LinearLayout implements ContactView {
         photoLoaderManager.loadContactPhoto(contact, loader);
     }
 
-    public void setClickToView(ConversationModalMarshall.Callback callback, boolean clickToView) {
+    public void setClickToView(ContactClickListener callback, boolean clickToView) {
         if (clickToView) {
             enableClick(callback);
         } else {

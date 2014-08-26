@@ -20,4 +20,8 @@ public class TextUtils {
     public static boolean isEmpty(CharSequence charSequence) {
         return charSequence == null || charSequence.equals("");
     }
+
+    public static boolean isNotEmpty(CharSequence charSequence) {
+        return !isEmpty(charSequence);
+    }
 }

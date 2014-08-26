@@ -34,7 +34,7 @@ import com.amlcurran.messages.R;
 import com.amlcurran.messages.SingletonManager;
 import com.amlcurran.messages.SmsComposeListener;
 import com.amlcurran.messages.bucket.BundleBuilder;
-import com.amlcurran.messages.conversationlist.ConversationModalMarshall;
+import com.amlcurran.messages.core.TextUtils;
 import com.amlcurran.messages.core.data.Contact;
 import com.amlcurran.messages.core.data.DraftRepository;
 import com.amlcurran.messages.core.data.PhoneNumber;
@@ -46,6 +46,7 @@ import com.amlcurran.messages.loaders.OnContactQueryListener;
 import com.amlcurran.messages.preferences.PreferenceStoreDraftRepository;
 import com.amlcurran.messages.ui.ComposeMessageView;
 import com.amlcurran.messages.ui.CustomHeaderFragment;
+import com.amlcurran.messages.ui.contact.ContactClickListener;
 import com.amlcurran.messages.ui.contact.DefaultContactView;
 import com.espian.utils.ProviderHelper;
 import com.github.amlcurran.sourcebinder.Source;
@@ -115,10 +116,8 @@ public class ThreadFragment extends ListFragment implements
         composeView.setComposeListener(composeCallbacks);
         threadController = new ThreadController(threadId, phoneNumber, this);
         threadController.create(getActivity(), composeView);
-        composeView.setText(retrieveDraft(phoneNumber));
 
-        String composedMessage = getArguments().getString(COMPOSED_MESSAGE);
-        composeView.setText(composedMessage);
+        prefillComposeView();
 
         setHasOptionsMenu(true);
 
@@ -130,6 +129,15 @@ public class ThreadFragment extends ListFragment implements
         contactView = new DefaultContactView(getActivity(), null);
         ((MessagesActivity) getActivity()).customHeader(this);
         setUpContactView(phoneNumber);
+    }
+
+    private void prefillComposeView() {
+        String composedMessage = getArguments().getString(COMPOSED_MESSAGE);
+        if (TextUtils.isNotEmpty(composedMessage)) {
+            composeView.setText(composedMessage);
+        } else {
+            composeView.setText(retrieveDraft(phoneNumber));
+        }
     }
 
     private void setUpContactView(PhoneNumber phoneNumber) {
@@ -149,7 +157,7 @@ public class ThreadFragment extends ListFragment implements
 
     private void bindContactToView(Contact receivedContact, MessagesLoader messagesLoader) {
         contactView.setContact(receivedContact, messagesLoader);
-        contactView.setClickToView(((ConversationModalMarshall.Callback) getActivity()), true);
+        contactView.setClickToView(((ContactClickListener) getActivity()), true);
     }
 
     private String retrieveDraft(PhoneNumber phoneNumber) {
