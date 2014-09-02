@@ -161,27 +161,27 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
 
     private void displayMmsError() {
         fragmentController.loadConversationListFragment();
-        fragmentController.replaceFragment(new MmsErrorFragment(), false);
+        fragmentController.replaceFragment(new MmsErrorFragment());
     }
 
     private void viewConversation(String threadId, PhoneNumber address) {
         fragmentController.loadConversationListFragment();
-        fragmentController.replaceFragment(ThreadFragment.create(threadId, address, null, null), false);
+        fragmentController.replaceFragment(ThreadFragment.create(threadId, address, null, null));
     }
 
     private void anonymousSendWithMessage(String message) {
         fragmentController.loadConversationListFragment();
-        fragmentController.replaceFragment(ComposeNewFragment.withMessage(message), false);
+        fragmentController.replaceFragment(ComposeNewFragment.withMessage(message));
     }
 
     private void sendTo(String sendAddress) {
         fragmentController.loadConversationListFragment();
-        fragmentController.replaceFragment(ComposeNewFragment.withAddress(sendAddress), false);
+        fragmentController.replaceFragment(ComposeNewFragment.withAddress(sendAddress));
     }
 
     private void anonymousSend() {
         fragmentController.loadConversationListFragment();
-        fragmentController.replaceFragment(new ComposeNewFragment(), false);
+        fragmentController.replaceFragment(new ComposeNewFragment());
     }
 
     private void firstStart() {
@@ -241,7 +241,7 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
 
     @Override
     public void showAbout() {
-        fragmentController.replaceFragment(new AboutFragment(), false);
+        fragmentController.replaceFragment(new AboutFragment());
     }
 
     @Override
@@ -261,7 +261,7 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
         PhoneNumber address = conversation.getAddress();
         Bundle contactBundle = ContactFactory.smooshContact(conversation.getContact());
         ThreadFragment fragment = ThreadFragment.create(conversation.getThreadId(), address, contactBundle, null);
-        fragmentController.replaceFragment(fragment, false);
+        fragmentController.replaceFragment(fragment);
     }
 
     @Override
@@ -279,7 +279,7 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
     public void displayThread(Contact contact, int threadId, String writtenMessage) {
         Bundle contactBundle = ContactFactory.smooshContact(contact);
         ThreadFragment fragment = ThreadFragment.create(String.valueOf(threadId), contact.getNumber(), contactBundle, writtenMessage);
-        fragmentController.replaceFragment(fragment, false);
+        fragmentController.replaceFragment(fragment);
     }
 
     @Override

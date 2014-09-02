@@ -22,7 +22,7 @@ import android.view.View;
 public interface FragmentController {
     void loadConversationListFragment();
 
-    void replaceFragment(Fragment fragment, boolean addToStack);
+    void replaceFragment(Fragment fragment);
 
     void loadEmptyFragment();
 

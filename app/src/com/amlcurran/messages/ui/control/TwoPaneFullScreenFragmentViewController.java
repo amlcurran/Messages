@@ -42,7 +42,7 @@ public class TwoPaneFullScreenFragmentViewController implements FragmentControll
         this.fragmentCallback = fragmentCallback;
     }
 
-    private void handleCustomHeader(Fragment currentFragment, Activity activity, FragmentCallback fragmentCallback) {
+    private void handleCustomHeader(Fragment currentFragment) {
         if (currentFragment instanceof CustomHeaderFragment) {
             Context themedContext = ThemeHelper.getThemedContext(activity);
             fragmentCallback.addCustomHeader(((CustomHeaderFragment) currentFragment).getHeaderView(themedContext));
@@ -66,23 +66,18 @@ public class TwoPaneFullScreenFragmentViewController implements FragmentControll
     }
 
     @Override
-    public void replaceFragment(Fragment fragment, boolean addToStack) {
+    public void replaceFragment(Fragment fragment) {
         replaceFragmentInternal(fragment);
     }
 
     private void replaceFragmentInternal(Fragment fragment) {
-        buildReplaceFragmentTransaction(fragment)
+        fragmentManager.beginTransaction()
+                .replace(getSecondaryFrameId(), fragment)
                 .setCustomAnimations(R.animator.fade_in_quick, 0)
                 .commit();
         fragmentCallback.insertedDetail();
         showSecondary();
-        handleCustomHeader(fragment, activity, fragmentCallback);
-    }
-
-    private FragmentTransaction buildReplaceFragmentTransaction(Fragment fragment) {
-        handleCustomHeader(fragment, activity, fragmentCallback);
-        return fragmentManager.beginTransaction()
-                .replace(getSecondaryFrameId(), fragment);
+        handleCustomHeader(fragment);
     }
 
     @Override
