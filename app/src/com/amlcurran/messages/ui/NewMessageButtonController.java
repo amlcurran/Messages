@@ -29,7 +29,7 @@ public class NewMessageButtonController {
         this.newMessageButton.setOnClickListener(new NewMessageClickListener(viewCallback));
     }
 
-    protected void hideNewMessageButton() {
+    public void hideNewMessageButton() {
         newMessageButton.animate()
                 .translationYBy(newMessageButton.getMeasuredHeight())
                 .setInterpolator(new DecelerateInterpolator(2))
@@ -37,7 +37,7 @@ public class NewMessageButtonController {
                 .start();
     }
 
-    protected void showNewMessageButton() {
+    public void showNewMessageButton() {
         newMessageButton.animate()
                 .translationYBy(-newMessageButton.getMeasuredHeight())
                 .setInterpolator(new DecelerateInterpolator(2))

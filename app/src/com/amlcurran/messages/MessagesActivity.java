@@ -365,12 +365,12 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
 
     @Override
     public void insertedDetail() {
-        newComposeController.disableNewMessageButton();
+        newComposeController.hideNewMessageButton();
     }
 
     @Override
     public void insertedMaster() {
-        newComposeController.enableNewMessageButton();
+        newComposeController.showNewMessageButton();
     }
 
     @Override
