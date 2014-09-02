@@ -56,6 +56,7 @@ public class TwoPaneFullScreenFragmentViewController extends BaseViewController 
                     fragmentCallback.insertedMaster();
                 } else {
                     fragmentCallback.insertedDetail();
+                    showSecondary();
                 }
                 if (currentFragment instanceof CustomHeaderFragment) {
                     viewCallback.secondaryVisible();
@@ -99,7 +100,7 @@ public class TwoPaneFullScreenFragmentViewController extends BaseViewController 
                 .setCustomAnimations(R.animator.fade_in_quick, 0)
                 .commit();
         fragmentCallback.insertedDetail();
-        viewCallback.secondaryVisible();
+        showSecondary();
         handleCustomHeader(fragment, activity, fragmentCallback);
     }
 
@@ -157,10 +158,10 @@ public class TwoPaneFullScreenFragmentViewController extends BaseViewController 
         viewCallback.secondaryHidden();
     }
 
-    @Override
-    public void showSecondary() {
+    private void showSecondary() {
         activity.findViewById(getSecondaryFrameId()).setVisibility(View.VISIBLE);
         activity.findViewById(getMasterFrameId()).setVisibility(View.GONE);
+        viewCallback.secondaryVisible();
     }
 
     @Override

@@ -23,8 +23,6 @@ public interface ViewController {
 
     void hideSecondary();
 
-    void showSecondary();
-
     void setContentView(Activity activity);
 
     int getMasterFrameId();
