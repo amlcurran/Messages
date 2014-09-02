@@ -14,10 +14,12 @@
  * limitations under the License.
  */
 
-package com.amlcurran.messages.ui.control;
+package com.amlcurran.messages.ui;
 
 import android.view.View;
 import android.view.animation.DecelerateInterpolator;
+
+import com.amlcurran.messages.ui.control.FragmentController;
 
 public class NewMessageButtonController {
     private final View newMessageButton;

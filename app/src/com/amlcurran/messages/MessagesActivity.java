@@ -50,7 +50,7 @@ import com.amlcurran.messages.telephony.DefaultAppChecker;
 import com.amlcurran.messages.threads.ThreadFragment;
 import com.amlcurran.messages.ui.CustomHeaderFragment;
 import com.amlcurran.messages.ui.control.FragmentController;
-import com.amlcurran.messages.ui.control.NewMessageButtonController;
+import com.amlcurran.messages.ui.NewMessageButtonController;
 import com.amlcurran.messages.ui.control.TwoPaneFullScreenFragmentViewController;
 
 import java.util.List;
