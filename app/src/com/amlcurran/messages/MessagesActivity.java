@@ -50,6 +50,7 @@ import com.amlcurran.messages.telephony.DefaultAppChecker;
 import com.amlcurran.messages.threads.ThreadFragment;
 import com.amlcurran.messages.ui.CustomHeaderFragment;
 import com.amlcurran.messages.ui.control.FragmentController;
+import com.amlcurran.messages.ui.control.NewMessageButtonController;
 import com.amlcurran.messages.ui.control.TwoPaneFullScreenFragmentViewController;
 import com.amlcurran.messages.ui.control.ViewController;
 
@@ -76,6 +77,8 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
     private BlockingInUiNotifier blockingInUiNotifier;
     private PreferenceStore preferencesStore;
     private HoloActionBarController actionBarController;
+    private DisabledBannerController disabledBannerController;
+    private NewMessageButtonController newComposeController;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -96,6 +99,8 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
 
         menuController = new MenuController(this, this);
         appChecker = new DefaultAppChecker(this, this);
+        disabledBannerController = new DisabledBannerController(this, this);
+        newComposeController = new NewMessageButtonController(findViewById(R.id.button_new_message), this);
 
         handleLaunch(savedInstanceState, getIntent(), preferencesStore);
     }
@@ -284,14 +289,14 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
 
     @Override
     public void isDefaultSmsApp() {
-        viewController.hideDisabledBanner();
-        viewController.enableNewMessageButton();
+        disabledBannerController.hideBanner();
+        newComposeController.enableNewMessageButton();
     }
 
     @Override
     public void isNotDefaultSmsApp() {
-        viewController.showDisabledBanner();
-        viewController.disableNewMessageButton();
+        disabledBannerController.showBanner();
+        newComposeController.disableNewMessageButton();
     }
 
     @Override
@@ -371,11 +376,13 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
     @Override
     public void insertedDetail() {
         viewController.showSecondary();
+        newComposeController.disableNewMessageButton();
     }
 
     @Override
     public void insertedMaster() {
         viewController.hideSecondary();
+        newComposeController.enableNewMessageButton();
     }
 
     @Override

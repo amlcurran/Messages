@@ -19,13 +19,9 @@ package com.amlcurran.messages.ui.control;
 import android.app.Activity;
 import android.view.View;
 
-import com.amlcurran.messages.R;
-
 public abstract class BaseViewController implements ViewController, View.OnClickListener {
 
     protected final ViewCallback viewCallback;
-    protected NewMessageButtonController newMessageButtonController;
-    private View disabledBanner;
 
     public BaseViewController(ViewCallback viewCallback) {
         this.viewCallback = viewCallback;
@@ -33,16 +29,6 @@ public abstract class BaseViewController implements ViewController, View.OnClick
 
     @Override
     public abstract boolean backPressed();
-
-    @Override
-    public void hideDisabledBanner() {
-        disabledBanner.setVisibility(View.GONE);
-    }
-
-    @Override
-    public void showDisabledBanner() {
-        disabledBanner.setVisibility(View.VISIBLE);
-    }
 
     @Override
     public abstract void hideSecondary();
@@ -61,24 +47,12 @@ public abstract class BaseViewController implements ViewController, View.OnClick
     }
 
     private void initViewInternal(Activity activity) {
-        disabledBanner = activity.findViewById(R.id.disabled_banner);
-        disabledBanner.setOnClickListener(this);
-        View newMessageButton = activity.findViewById(R.id.button_new_message);
-        newMessageButtonController = new NewMessageButtonController(newMessageButton, viewCallback);
         initView(activity);
     }
 
     protected abstract int getLayout();
 
     protected abstract void initView(Activity activity);
-
-    public void disableNewMessageButton() {
-        newMessageButtonController.disableNewMessageButton();
-    }
-
-    public void enableNewMessageButton() {
-        newMessageButtonController.enableNewMessageButton();
-    }
 
     @Override
     public abstract int getMasterFrameId();

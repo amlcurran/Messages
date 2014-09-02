@@ -53,10 +53,8 @@ public class SinglePaneFragmentViewController extends BaseViewController impleme
                 // This is a hack to force the new messages button to show
                 if (currentFragment instanceof ConversationListFragment) {
                     fragmentCallback.insertedMaster();
-                    newMessageButtonController.showNewMessageButton();
                 } else {
                     fragmentCallback.insertedDetail();
-                    newMessageButtonController.hideNewMessageButton();
                 }
                 if (currentFragment instanceof CustomHeaderFragment) {
                     viewCallback.secondaryVisible();
@@ -153,12 +151,10 @@ public class SinglePaneFragmentViewController extends BaseViewController impleme
 
     @Override
     public void hideSecondary() {
-        newMessageButtonController.showNewMessageButton();
     }
 
     @Override
     public void showSecondary() {
-        newMessageButtonController.hideNewMessageButton();
     }
 
     @Override

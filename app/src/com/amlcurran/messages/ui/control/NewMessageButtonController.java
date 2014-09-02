@@ -20,7 +20,7 @@ import android.view.View;
 import android.view.animation.DecelerateInterpolator;
 
 public class NewMessageButtonController {
-    View newMessageButton;
+    private final View newMessageButton;
 
     public NewMessageButtonController(View newMessageButton, final ViewController.ViewCallback viewCallback) {
         this.newMessageButton = newMessageButton;

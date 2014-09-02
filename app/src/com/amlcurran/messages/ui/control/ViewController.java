@@ -21,19 +21,11 @@ import android.app.Activity;
 public interface ViewController {
     boolean backPressed();
 
-    void hideDisabledBanner();
-
-    void showDisabledBanner();
-
     void hideSecondary();
 
     void showSecondary();
 
     void setContentView(Activity activity);
-
-    void disableNewMessageButton();
-
-    void enableNewMessageButton();
 
     int getMasterFrameId();
 

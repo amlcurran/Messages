@@ -54,10 +54,8 @@ public class TwoPaneFullScreenFragmentViewController extends BaseViewController 
                 // This is a hack to force the new messages button to show
                 if (currentFragment instanceof ConversationListFragment) {
                     fragmentCallback.insertedMaster();
-                    newMessageButtonController.showNewMessageButton();
                 } else {
                     fragmentCallback.insertedDetail();
-                    newMessageButtonController.hideNewMessageButton();
                 }
                 if (currentFragment instanceof CustomHeaderFragment) {
                     viewCallback.secondaryVisible();
@@ -155,7 +153,6 @@ public class TwoPaneFullScreenFragmentViewController extends BaseViewController 
     public void hideSecondary() {
         activity.findViewById(getSecondaryFrameId()).setVisibility(View.GONE);
         activity.findViewById(getMasterFrameId()).setVisibility(View.VISIBLE);
-        newMessageButtonController.showNewMessageButton();
         fragmentCallback.removeCustomHeader();
         viewCallback.secondaryHidden();
     }
@@ -164,7 +161,6 @@ public class TwoPaneFullScreenFragmentViewController extends BaseViewController 
     public void showSecondary() {
         activity.findViewById(getSecondaryFrameId()).setVisibility(View.VISIBLE);
         activity.findViewById(getMasterFrameId()).setVisibility(View.GONE);
-        newMessageButtonController.hideNewMessageButton();
     }
 
     @Override
