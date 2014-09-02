@@ -64,10 +64,6 @@ public class MenuController implements OnOptionsItemSelectedListener {
                 callbacks.showAbout();
                 return true;
 
-            case android.R.id.home:
-                callbacks.showConversationList();
-                return true;
-
         }
         return false;
     }
@@ -80,8 +76,6 @@ public class MenuController implements OnOptionsItemSelectedListener {
         void showSettings();
 
         void showAbout();
-
-        void showConversationList();
 
     }
 }

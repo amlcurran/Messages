@@ -245,12 +245,6 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
     }
 
     @Override
-    public void showConversationList() {
-        statReporter.sendUiEvent("home_button");
-        viewController.hideSecondary();
-    }
-
-    @Override
     public MessagesLoader getMessagesLoader() {
         return messagesLoader;
     }
