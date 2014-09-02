@@ -146,10 +146,6 @@ public class TwoPaneFullScreenFragmentViewController implements FragmentControll
         return false;
     }
 
-    public void setContentView(Activity activity) {
-        activity.setContentView(R.layout.activity_messages);
-    }
-
     @Override
     public int getLayoutResourceId() {
         return R.layout.activity_messages;
