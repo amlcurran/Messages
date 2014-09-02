@@ -81,14 +81,8 @@ public class TwoPaneFullScreenFragmentViewController implements FragmentControll
 
     private FragmentTransaction buildReplaceFragmentTransaction(Fragment fragment) {
         handleCustomHeader(fragment, activity, fragmentCallback);
-
-        FragmentTransaction transaction = fragmentManager.beginTransaction()
+        return fragmentManager.beginTransaction()
                 .replace(getSecondaryFrameId(), fragment);
-
-        if (shouldPlaceOnBackStack()) {
-            transaction.addToBackStack(null);
-        }
-        return transaction;
     }
 
     @Override
@@ -140,10 +134,6 @@ public class TwoPaneFullScreenFragmentViewController implements FragmentControll
 
     private int getSecondaryFrameId() {
         return R.id.secondary;
-    }
-
-    private boolean shouldPlaceOnBackStack() {
-        return false;
     }
 
     @Override
