@@ -20,14 +20,12 @@ import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
-import android.content.Context;
 import android.view.View;
 
 import com.amlcurran.messages.ComposeNewFragment;
 import com.amlcurran.messages.R;
 import com.amlcurran.messages.conversationlist.ConversationListFragment;
 import com.amlcurran.messages.ui.CustomHeaderFragment;
-import com.amlcurran.messages.ui.ThemeHelper;
 
 public class TwoPaneFullScreenFragmentViewController implements FragmentController {
 
@@ -41,15 +39,6 @@ public class TwoPaneFullScreenFragmentViewController implements FragmentControll
         this.fragmentCallback = fragmentCallback;
     }
 
-    private void handleCustomHeader(Fragment currentFragment) {
-        if (currentFragment instanceof CustomHeaderFragment) {
-            Context themedContext = ThemeHelper.getThemedContext(activity);
-            fragmentCallback.addCustomHeader(((CustomHeaderFragment) currentFragment).getHeaderView(themedContext));
-        } else {
-            fragmentCallback.removeCustomHeader();
-        }
-    }
-
     @Override
     public void loadConversationListFragment() {
         putFragment(new ConversationListFragment());
@@ -57,10 +46,14 @@ public class TwoPaneFullScreenFragmentViewController implements FragmentControll
 
     @Override
     public void putFragment(Fragment fragment) {
+        putFragmentInternal(fragment, R.animator.fade_in_quick);
+    }
+
+    private void putFragmentInternal(Fragment fragment, int inAnimation) {
         if (fragment instanceof Master) {
             insertMasterFragment(fragment);
         } else {
-            insertContentFragment(fragment);
+            insertContentFragmentInternal(fragment, inAnimation);
         }
         if (fragment instanceof CustomHeaderFragment) {
             fragmentCallback.addCustomHeader(((CustomHeaderFragment) fragment).getHeaderView(activity));
@@ -80,10 +73,10 @@ public class TwoPaneFullScreenFragmentViewController implements FragmentControll
         }
     }
 
-    private void insertContentFragment(Fragment fragment) {
+    private void insertContentFragmentInternal(Fragment fragment, int inAnimation) {
         fragmentManager.beginTransaction()
+                .setCustomAnimations(inAnimation, 0)
                 .replace(getSecondaryFrameId(), fragment)
-                .setCustomAnimations(R.animator.fade_in_quick, 0)
                 .commit();
         fragmentCallback.insertedDetail();
         showSecondary();
@@ -100,7 +93,7 @@ public class TwoPaneFullScreenFragmentViewController implements FragmentControll
 
     @Override
     public void loadComposeNewFragment() {
-        putFragment(new ComposeNewFragment());
+        putFragmentInternal(new ComposeNewFragment(), R.animator.new_compose_in);
     }
 
     @Override
@@ -111,11 +104,21 @@ public class TwoPaneFullScreenFragmentViewController implements FragmentControll
     @Override
     public boolean backPressed() {
         if (activity.findViewById(getSecondaryFrameId()).getVisibility() == View.VISIBLE) {
+            removeContent();
             hideSecondary();
             fragmentCallback.insertedMaster();
             return true;
         }
         return false;
+    }
+
+    private void removeContent() {
+        Fragment currentContent = fragmentManager.findFragmentById(getSecondaryFrameId());
+        if (currentContent != null) {
+            fragmentManager.beginTransaction()
+                    .remove(currentContent)
+                    .commit();
+        }
     }
 
     private void hideSecondary() {
