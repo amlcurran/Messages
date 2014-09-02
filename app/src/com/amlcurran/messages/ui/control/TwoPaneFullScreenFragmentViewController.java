@@ -62,6 +62,11 @@ public class TwoPaneFullScreenFragmentViewController implements FragmentControll
         } else {
             insertContentFragment(fragment);
         }
+        if (fragment instanceof CustomHeaderFragment) {
+            fragmentCallback.addCustomHeader(((CustomHeaderFragment) fragment).getHeaderView(activity));
+        } else {
+            fragmentCallback.removeCustomHeader();
+        }
     }
 
     private void insertMasterFragment(Fragment fragment) {

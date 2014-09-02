@@ -376,11 +376,13 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
     @Override
     public void removeCustomHeader() {
         actionBarController.removeHeader();
+        actionBarController.hideHeader();
     }
 
     @Override
     public void addCustomHeader(View headerView) {
         actionBarController.addHeader(headerView);
+        actionBarController.showHeader();
     }
 
     public void customHeader(CustomHeaderFragment customHeaderFragment) {
