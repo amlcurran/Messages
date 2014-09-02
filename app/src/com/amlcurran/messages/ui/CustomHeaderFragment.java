@@ -19,6 +19,6 @@ package com.amlcurran.messages.ui;
 import android.content.Context;
 import android.view.View;
 
-public interface CustomHeaderFragment {
-    View getHeaderView(Context context);
+public interface CustomHeaderFragment<T extends View> {
+    T getHeaderView(Context context);
 }

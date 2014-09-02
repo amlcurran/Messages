@@ -53,7 +53,7 @@ import com.github.amlcurran.sourcebinder.Source;
 import com.github.amlcurran.sourcebinder.SourceBinderAdapter;
 
 public class ThreadFragment extends ListFragment implements
-        CustomHeaderFragment, ThreadController.Callback {
+        CustomHeaderFragment<DefaultContactView>, ThreadController.Callback {
 
     private static final String THREAD_ID = "threadId";
     private static final String ADDRESS = "address";
@@ -126,7 +126,6 @@ public class ThreadFragment extends ListFragment implements
         SourceBinderAdapter<SmsMessage> adapter = new SourceBinderAdapter<SmsMessage>(getActivity(), threadController.getSource(), threadBinder);
         setListAdapter(adapter);
 
-        contactView = new DefaultContactView(getActivity(), null);
         ((MessagesActivity) getActivity()).customHeader(this);
         setUpContactView(phoneNumber);
     }
@@ -156,8 +155,8 @@ public class ThreadFragment extends ListFragment implements
     }
 
     private void bindContactToView(Contact receivedContact, MessagesLoader messagesLoader) {
-        contactView.setContact(receivedContact, messagesLoader);
-        contactView.setClickToView(((ContactClickListener) getActivity()), true);
+        getHeaderView(getActivity()).setContact(receivedContact, messagesLoader);
+        getHeaderView(getActivity()).setClickToView(((ContactClickListener) getActivity()), true);
     }
 
     private String retrieveDraft(PhoneNumber phoneNumber) {
@@ -210,7 +209,7 @@ public class ThreadFragment extends ListFragment implements
     }
 
     @Override
-    public View getHeaderView(Context context) {
+    public DefaultContactView getHeaderView(Context context) {
         if (contactView == null) {
             contactView = new DefaultContactView(context, null);
         }
