@@ -18,12 +18,12 @@ package com.amlcurran.messages;
 
 import android.view.View;
 
-import com.amlcurran.messages.ui.control.ViewController;
+import com.amlcurran.messages.ui.control.FragmentController;
 
 public class DisabledBannerController {
     private final View disabledBanner;
 
-    public DisabledBannerController(MessagesActivity messagesActivity, ViewController.ViewCallback viewCallback) {
+    public DisabledBannerController(MessagesActivity messagesActivity, FragmentController.FragmentCallback viewCallback) {
         disabledBanner = messagesActivity.findViewById(R.id.disabled_banner);
         disabledBanner.setOnClickListener(new ChangeDefaultMessagingApp(viewCallback));
     }
@@ -37,9 +37,9 @@ public class DisabledBannerController {
     }
 
     private class ChangeDefaultMessagingApp implements View.OnClickListener {
-        private final ViewController.ViewCallback viewCallback;
+        private final FragmentController.FragmentCallback viewCallback;
 
-        public ChangeDefaultMessagingApp(ViewController.ViewCallback viewCallback) {
+        public ChangeDefaultMessagingApp(FragmentController.FragmentCallback viewCallback) {
             this.viewCallback = viewCallback;
         }
 

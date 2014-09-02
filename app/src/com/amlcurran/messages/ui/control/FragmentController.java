@@ -16,6 +16,7 @@
 
 package com.amlcurran.messages.ui.control;
 
+import android.app.Activity;
 import android.app.Fragment;
 import android.view.MenuItem;
 import android.view.View;
@@ -35,6 +36,10 @@ public interface FragmentController {
 
     void attachedFragment(Fragment fragment);
 
+    boolean backPressed();
+
+    void setContentView(Activity activity);
+
     public interface FragmentCallback {
         void insertedDetail();
 
@@ -43,5 +48,15 @@ public interface FragmentController {
         void removeCustomHeader();
 
         void addCustomHeader(View headerView);
+
+        void secondaryVisible();
+
+        void secondaryHidden();
+
+        void defaultsBannerPressed();
+
+        void secondarySliding(float slideOffset);
+
+        void newMessageButtonClicked();
     }
 }

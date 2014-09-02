@@ -31,15 +31,13 @@ import com.amlcurran.messages.preferences.PreferencesFragment;
 import com.amlcurran.messages.ui.CustomHeaderFragment;
 import com.amlcurran.messages.ui.ThemeHelper;
 
-public class TwoPaneFullScreenFragmentViewController implements FragmentController, ViewController {
+public class TwoPaneFullScreenFragmentViewController implements FragmentController {
 
-    protected final ViewCallback viewCallback;
+    private final FragmentCallback fragmentCallback;
     private final FragmentManager fragmentManager;
     private final Activity activity;
-    private final FragmentCallback fragmentCallback;
 
-    public TwoPaneFullScreenFragmentViewController(Activity activity, FragmentCallback fragmentCallback, ViewCallback viewCallback) {
-        this.viewCallback = viewCallback;
+    public TwoPaneFullScreenFragmentViewController(Activity activity, FragmentCallback fragmentCallback) {
         this.fragmentManager = activity.getFragmentManager();
         this.activity = activity;
         this.fragmentCallback = fragmentCallback;
@@ -61,9 +59,9 @@ public class TwoPaneFullScreenFragmentViewController implements FragmentControll
                     showSecondary();
                 }
                 if (currentFragment instanceof CustomHeaderFragment) {
-                    viewCallback.secondaryVisible();
+                    fragmentCallback.secondaryVisible();
                 } else {
-                    viewCallback.secondaryHidden();
+                    fragmentCallback.secondaryHidden();
                 }
             }
         });
@@ -157,13 +155,13 @@ public class TwoPaneFullScreenFragmentViewController implements FragmentControll
         activity.findViewById(getSecondaryFrameId()).setVisibility(View.GONE);
         activity.findViewById(getMasterFrameId()).setVisibility(View.VISIBLE);
         fragmentCallback.removeCustomHeader();
-        viewCallback.secondaryHidden();
+        fragmentCallback.secondaryHidden();
     }
 
     private void showSecondary() {
         activity.findViewById(getSecondaryFrameId()).setVisibility(View.VISIBLE);
         activity.findViewById(getMasterFrameId()).setVisibility(View.GONE);
-        viewCallback.secondaryVisible();
+        fragmentCallback.secondaryVisible();
     }
 
     protected int getLayout() {

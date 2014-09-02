@@ -52,7 +52,6 @@ import com.amlcurran.messages.ui.CustomHeaderFragment;
 import com.amlcurran.messages.ui.control.FragmentController;
 import com.amlcurran.messages.ui.control.NewMessageButtonController;
 import com.amlcurran.messages.ui.control.TwoPaneFullScreenFragmentViewController;
-import com.amlcurran.messages.ui.control.ViewController;
 
 import java.util.List;
 
@@ -60,13 +59,13 @@ import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
 public class MessagesActivity extends Activity implements MessagesLoaderProvider,
         ConversationListFragment.Listener, SmsComposeListener,
-        DefaultAppChecker.Callback, ViewController.ViewCallback, ConversationModalMarshall.Callback,
+        DefaultAppChecker.Callback, ConversationModalMarshall.Callback,
         OnThreadDeleteListener, ConversationListChangeListener, FragmentController.FragmentCallback, MenuController.Callbacks {
 
     private InUiNotifier toastInUiNotifier;
     private StatReporter statReporter;
     private FragmentController fragmentController;
-    private ViewController viewController;
+    private FragmentController viewController;
     private ActivityController activityController;
     private MenuController menuController;
     private DefaultAppChecker appChecker;
@@ -83,7 +82,7 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        TwoPaneFullScreenFragmentViewController fragmentViewController = new TwoPaneFullScreenFragmentViewController(this, this, this);
+        TwoPaneFullScreenFragmentViewController fragmentViewController = new TwoPaneFullScreenFragmentViewController(this, this);
         fragmentController = fragmentViewController;
         viewController = fragmentViewController;
         toastInUiNotifier = new InUiToastNotifier(this);
@@ -299,31 +298,26 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
         newComposeController.disableNewMessageButton();
     }
 
-    @Override
     public void secondaryVisible() {
         isSecondaryVisible = true;
         menuController.update();
         actionBarController.showHeader();
     }
 
-    @Override
     public void secondaryHidden() {
         isSecondaryVisible = false;
         menuController.update();
         actionBarController.hideHeader();
     }
 
-    @Override
     public void secondarySliding(float slideOffset) {
         //actionBarController.secondaryVisibility(slideOffset);
     }
 
-    @Override
     public void defaultsBannerPressed() {
         activityController.switchSmsApp();
     }
 
-    @Override
     public void newMessageButtonClicked() {
         fragmentController.loadComposeNewFragment();
     }

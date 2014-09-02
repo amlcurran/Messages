@@ -22,7 +22,7 @@ import android.view.animation.DecelerateInterpolator;
 public class NewMessageButtonController {
     private final View newMessageButton;
 
-    public NewMessageButtonController(View newMessageButton, final ViewController.ViewCallback viewCallback) {
+    public NewMessageButtonController(View newMessageButton, final FragmentController.FragmentCallback viewCallback) {
         this.newMessageButton = newMessageButton;
         this.newMessageButton.setOnClickListener(new NewMessageClickListener(viewCallback));
     }
@@ -52,9 +52,9 @@ public class NewMessageButtonController {
     }
 
     private static class NewMessageClickListener implements View.OnClickListener {
-        private final ViewController.ViewCallback viewCallback;
+        private final FragmentController.FragmentCallback viewCallback;
 
-        public NewMessageClickListener(ViewController.ViewCallback viewCallback) {
+        public NewMessageClickListener(FragmentController.FragmentCallback viewCallback) {
             this.viewCallback = viewCallback;
         }
 
