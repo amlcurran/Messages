@@ -127,14 +127,7 @@ public class TwoPaneFullScreenFragmentViewController extends BaseViewController 
 
     @Override
     public void loadComposeNewFragment() {
-        FragmentTransaction transaction = fragmentManager.beginTransaction()
-                .setCustomAnimations(R.animator.new_compose_in, R.animator.new_compose_out)
-                .replace(getSecondaryFrameId(), new ComposeNewFragment());
-
-        if (shouldPlaceOnBackStack()) {
-            transaction.addToBackStack(null);
-        }
-        transaction.commit();
+        replaceFragmentInternal(new ComposeNewFragment());
     }
 
     @Override
