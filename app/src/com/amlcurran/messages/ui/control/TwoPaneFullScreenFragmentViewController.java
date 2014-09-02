@@ -31,14 +31,15 @@ import com.amlcurran.messages.preferences.PreferencesFragment;
 import com.amlcurran.messages.ui.CustomHeaderFragment;
 import com.amlcurran.messages.ui.ThemeHelper;
 
-public class TwoPaneFullScreenFragmentViewController extends BaseViewController implements FragmentController {
+public class TwoPaneFullScreenFragmentViewController implements FragmentController, ViewController {
 
+    protected final ViewCallback viewCallback;
     private final FragmentManager fragmentManager;
     private final Activity activity;
     private final FragmentCallback fragmentCallback;
 
     public TwoPaneFullScreenFragmentViewController(Activity activity, FragmentCallback fragmentCallback, ViewCallback viewCallback) {
-        super(viewCallback);
+        this.viewCallback = viewCallback;
         this.fragmentManager = activity.getFragmentManager();
         this.activity = activity;
         this.fragmentCallback = fragmentCallback;
@@ -165,7 +166,6 @@ public class TwoPaneFullScreenFragmentViewController extends BaseViewController 
         viewCallback.secondaryVisible();
     }
 
-    @Override
     protected int getLayout() {
         return R.layout.activity_messages;
     }
@@ -180,5 +180,10 @@ public class TwoPaneFullScreenFragmentViewController extends BaseViewController 
 
     private boolean shouldPlaceOnBackStack() {
         return false;
+    }
+
+    @Override
+    public void setContentView(Activity activity) {
+        activity.setContentView(getLayout());
     }
 }
