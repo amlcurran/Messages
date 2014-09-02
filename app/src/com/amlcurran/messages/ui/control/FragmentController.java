@@ -16,7 +16,6 @@
 
 package com.amlcurran.messages.ui.control;
 
-import android.app.Activity;
 import android.app.Fragment;
 import android.view.MenuItem;
 import android.view.View;
@@ -38,7 +37,7 @@ public interface FragmentController {
 
     boolean backPressed();
 
-    void setContentView(Activity activity);
+    int getLayoutResourceId();
 
     public interface FragmentCallback {
         void insertedDetail();

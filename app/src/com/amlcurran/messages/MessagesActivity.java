@@ -65,7 +65,6 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
     private InUiNotifier toastInUiNotifier;
     private StatReporter statReporter;
     private FragmentController fragmentController;
-    private FragmentController viewController;
     private ActivityController activityController;
     private MenuController menuController;
     private DefaultAppChecker appChecker;
@@ -82,9 +81,8 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        TwoPaneFullScreenFragmentViewController fragmentViewController = new TwoPaneFullScreenFragmentViewController(this, this);
+        FragmentController fragmentViewController = new TwoPaneFullScreenFragmentViewController(this, this);
         fragmentController = fragmentViewController;
-        viewController = fragmentViewController;
         toastInUiNotifier = new InUiToastNotifier(this);
         blockingInUiNotifier = new BlockingInUiDialogNotifier(getFragmentManager());
         activityController = new ActivityController(this, blockingInUiNotifier);
@@ -94,7 +92,7 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
         preferencesStore = new PreferenceStore(this);
         actionBarController = new HoloActionBarController(getActionBar());
 
-        viewController.setContentView(this);
+        setContentView(fragmentViewController.getLayoutResourceId());
 
         menuController = new MenuController(this, this);
         appChecker = new DefaultAppChecker(this, this);
@@ -255,7 +253,7 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
 
     @Override
     public void onBackPressed() {
-        if (!viewController.backPressed()) {
+        if (!fragmentController.backPressed()) {
             super.onBackPressed();
         }
     }

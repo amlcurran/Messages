@@ -164,10 +164,6 @@ public class TwoPaneFullScreenFragmentViewController implements FragmentControll
         fragmentCallback.secondaryVisible();
     }
 
-    protected int getLayout() {
-        return R.layout.activity_messages;
-    }
-
     private int getMasterFrameId() {
         return R.id.container;
     }
@@ -180,8 +176,12 @@ public class TwoPaneFullScreenFragmentViewController implements FragmentControll
         return false;
     }
 
-    @Override
     public void setContentView(Activity activity) {
-        activity.setContentView(getLayout());
+        activity.setContentView(R.layout.activity_messages);
+    }
+
+    @Override
+    public int getLayoutResourceId() {
+        return R.layout.activity_messages;
     }
 }
