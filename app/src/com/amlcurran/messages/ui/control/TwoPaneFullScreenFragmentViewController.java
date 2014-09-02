@@ -21,7 +21,6 @@ import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.Context;
-import android.view.MenuItem;
 import android.view.View;
 
 import com.amlcurran.messages.ComposeNewFragment;
@@ -41,30 +40,6 @@ public class TwoPaneFullScreenFragmentViewController implements FragmentControll
         this.fragmentManager = activity.getFragmentManager();
         this.activity = activity;
         this.fragmentCallback = fragmentCallback;
-        bindBackstackListener(activity, fragmentCallback);
-    }
-
-    private void bindBackstackListener(final Activity activity, final FragmentCallback fragmentCallback) {
-        activity.getFragmentManager().addOnBackStackChangedListener(new FragmentManager.OnBackStackChangedListener() {
-            @Override
-            public void onBackStackChanged() {
-                Fragment currentFragment = activity.getFragmentManager().findFragmentById(getSecondaryFrameId());
-                handleCustomHeader(currentFragment, activity, fragmentCallback);
-                // This is a hack to force the new messages button to show
-                if (currentFragment instanceof ConversationListFragment) {
-                    fragmentCallback.insertedMaster();
-                    hideSecondary();
-                } else {
-                    fragmentCallback.insertedDetail();
-                    showSecondary();
-                }
-                if (currentFragment instanceof CustomHeaderFragment) {
-                    fragmentCallback.secondaryVisible();
-                } else {
-                    fragmentCallback.secondaryHidden();
-                }
-            }
-        });
     }
 
     private void handleCustomHeader(Fragment currentFragment, Activity activity, FragmentCallback fragmentCallback) {
@@ -129,11 +104,6 @@ public class TwoPaneFullScreenFragmentViewController implements FragmentControll
     @Override
     public void loadComposeNewFragment() {
         replaceFragmentInternal(new ComposeNewFragment());
-    }
-
-    @Override
-    public boolean optionsItemSelected(MenuItem item) {
-        return false;
     }
 
     @Override

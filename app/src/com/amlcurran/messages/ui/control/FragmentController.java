@@ -17,7 +17,6 @@
 package com.amlcurran.messages.ui.control;
 
 import android.app.Fragment;
-import android.view.MenuItem;
 import android.view.View;
 
 public interface FragmentController {
@@ -30,8 +29,6 @@ public interface FragmentController {
     void showSettings();
 
     void loadComposeNewFragment();
-
-    boolean optionsItemSelected(MenuItem item);
 
     void attachedFragment(Fragment fragment);
 

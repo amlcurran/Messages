@@ -230,7 +230,6 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         return menuController.itemSelected(item.getItemId()) ||
-                fragmentController.optionsItemSelected(item) ||
                 super.onOptionsItemSelected(item);
     }
 
