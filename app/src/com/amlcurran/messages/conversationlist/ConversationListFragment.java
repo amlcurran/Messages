@@ -37,14 +37,14 @@ import com.amlcurran.messages.loaders.MessagesLoader;
 import com.amlcurran.messages.loaders.MessagesLoaderProvider;
 import com.amlcurran.messages.preferences.PreferenceStore;
 import com.amlcurran.messages.preferences.PreferenceStoreDraftRepository;
-import com.amlcurran.messages.ui.MasterFragment;
+import com.amlcurran.messages.ui.control.Master;
 import com.espian.utils.ProviderHelper;
 import com.github.amlcurran.sourcebinder.ArrayListSource;
 import com.github.amlcurran.sourcebinder.SourceBinderAdapter;
 
 import java.util.List;
 
-public class ConversationListFragment extends ListFragment implements ConversationListListener, AdapterView.OnItemClickListener, PreferenceListener.ChangeListener, BroadcastEventSubscriber.Listener, MasterFragment {
+public class ConversationListFragment extends ListFragment implements ConversationListListener, AdapterView.OnItemClickListener, PreferenceListener.ChangeListener, BroadcastEventSubscriber.Listener, Master {
 
     protected SourceBinderAdapter<Conversation> adapter;
     protected ArrayListSource<Conversation> source;

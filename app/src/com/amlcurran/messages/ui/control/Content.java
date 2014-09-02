@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.amlcurran.messages.ui;
+package com.amlcurran.messages.ui.control;
 
-public interface MasterFragment {
+public interface Content {
 }

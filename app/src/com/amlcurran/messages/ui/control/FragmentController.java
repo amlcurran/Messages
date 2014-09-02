@@ -22,11 +22,9 @@ import android.view.View;
 public interface FragmentController {
     void loadConversationListFragment();
 
+    void putFragment(Fragment fragment);
+
     void replaceFragment(Fragment fragment);
-
-    void loadEmptyFragment();
-
-    void showSettings();
 
     void loadComposeNewFragment();
 

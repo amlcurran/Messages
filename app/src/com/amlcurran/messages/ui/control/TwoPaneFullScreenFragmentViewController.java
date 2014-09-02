@@ -26,7 +26,6 @@ import android.view.View;
 import com.amlcurran.messages.ComposeNewFragment;
 import com.amlcurran.messages.R;
 import com.amlcurran.messages.conversationlist.ConversationListFragment;
-import com.amlcurran.messages.preferences.PreferencesFragment;
 import com.amlcurran.messages.ui.CustomHeaderFragment;
 import com.amlcurran.messages.ui.ThemeHelper;
 
@@ -53,12 +52,36 @@ public class TwoPaneFullScreenFragmentViewController implements FragmentControll
 
     @Override
     public void loadConversationListFragment() {
+        putFragment(new ConversationListFragment());
+    }
+
+    @Override
+    public void putFragment(Fragment fragment) {
+        if (fragment instanceof Master) {
+            insertMasterFragment(fragment);
+        } else {
+            insertContentFragment(fragment);
+        }
+    }
+
+    private void insertMasterFragment(Fragment fragment) {
         if (frameIsEmpty(getMasterFrameId())) {
             fragmentManager.beginTransaction()
                     .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
-                    .replace(getMasterFrameId(), new ConversationListFragment())
+                    .replace(getMasterFrameId(), fragment)
                     .commit();
+            fragmentCallback.insertedMaster();
+            hideSecondary();
         }
+    }
+
+    private void insertContentFragment(Fragment fragment) {
+        fragmentManager.beginTransaction()
+                .replace(getSecondaryFrameId(), fragment)
+                .setCustomAnimations(R.animator.fade_in_quick, 0)
+                .commit();
+        fragmentCallback.insertedDetail();
+        showSecondary();
     }
 
     private boolean frameIsEmpty(int frameId) {
@@ -67,32 +90,12 @@ public class TwoPaneFullScreenFragmentViewController implements FragmentControll
 
     @Override
     public void replaceFragment(Fragment fragment) {
-        replaceFragmentInternal(fragment);
-    }
-
-    private void replaceFragmentInternal(Fragment fragment) {
-        fragmentManager.beginTransaction()
-                .replace(getSecondaryFrameId(), fragment)
-                .setCustomAnimations(R.animator.fade_in_quick, 0)
-                .commit();
-        fragmentCallback.insertedDetail();
-        showSecondary();
-        handleCustomHeader(fragment);
-    }
-
-    @Override
-    public void loadEmptyFragment() {
-        // Don't do anything
-    }
-
-    @Override
-    public void showSettings() {
-        replaceFragmentInternal(new PreferencesFragment());
+        putFragment(fragment);
     }
 
     @Override
     public void loadComposeNewFragment() {
-        replaceFragmentInternal(new ComposeNewFragment());
+        putFragment(new ComposeNewFragment());
     }
 
     @Override

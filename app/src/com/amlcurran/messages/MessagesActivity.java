@@ -45,6 +45,7 @@ import com.amlcurran.messages.notifications.Dialog;
 import com.amlcurran.messages.notifications.InUiNotifier;
 import com.amlcurran.messages.notifications.InUiToastNotifier;
 import com.amlcurran.messages.preferences.PreferenceStore;
+import com.amlcurran.messages.preferences.PreferencesFragment;
 import com.amlcurran.messages.reporting.StatReporter;
 import com.amlcurran.messages.telephony.DefaultAppChecker;
 import com.amlcurran.messages.threads.ThreadFragment;
@@ -185,7 +186,6 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
     }
 
     private void firstStart() {
-        fragmentController.loadEmptyFragment();
         fragmentController.loadConversationListFragment();
     }
 
@@ -236,12 +236,12 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
     @Override
     public void showSettings() {
         statReporter.sendUiEvent("settings");
-        fragmentController.showSettings();
+        fragmentController.putFragment(new PreferencesFragment());
     }
 
     @Override
     public void showAbout() {
-        fragmentController.replaceFragment(new AboutFragment());
+        fragmentController.putFragment(new AboutFragment());
     }
 
     @Override
