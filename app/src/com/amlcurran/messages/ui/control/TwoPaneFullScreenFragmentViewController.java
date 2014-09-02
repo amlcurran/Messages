@@ -101,6 +101,8 @@ public class TwoPaneFullScreenFragmentViewController extends BaseViewController 
                 .setCustomAnimations(R.animator.fade_in_quick, 0)
                 .commit();
         fragmentCallback.insertedDetail();
+        viewCallback.secondaryVisible();
+        handleCustomHeader(fragment, activity, fragmentCallback);
     }
 
     private FragmentTransaction buildReplaceFragmentTransaction(Fragment fragment) {
@@ -143,7 +145,7 @@ public class TwoPaneFullScreenFragmentViewController extends BaseViewController 
     @Override
     public boolean backPressed() {
         if (activity.findViewById(getSecondaryFrameId()).getVisibility() == View.VISIBLE) {
-            hideSecondary();
+            fragmentCallback.insertedMaster();
             return true;
         }
         return false;
@@ -154,6 +156,8 @@ public class TwoPaneFullScreenFragmentViewController extends BaseViewController 
         activity.findViewById(getSecondaryFrameId()).setVisibility(View.GONE);
         activity.findViewById(getMasterFrameId()).setVisibility(View.VISIBLE);
         newMessageButtonController.showNewMessageButton();
+        fragmentCallback.removeCustomHeader();
+        viewCallback.secondaryHidden();
     }
 
     @Override
