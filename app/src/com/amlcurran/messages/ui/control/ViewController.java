@@ -21,8 +21,6 @@ import android.app.Activity;
 public interface ViewController {
     boolean backPressed();
 
-    void hideSecondary();
-
     void setContentView(Activity activity);
 
     int getMasterFrameId();

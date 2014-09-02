@@ -380,7 +380,6 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
 
     @Override
     public void insertedMaster() {
-        viewController.hideSecondary();
         newComposeController.enableNewMessageButton();
     }
 

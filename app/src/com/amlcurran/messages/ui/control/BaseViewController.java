@@ -31,9 +31,6 @@ public abstract class BaseViewController implements ViewController, View.OnClick
     public abstract boolean backPressed();
 
     @Override
-    public abstract void hideSecondary();
-
-    @Override
     public void setContentView(Activity activity) {
         activity.setContentView(getLayout());
         initViewInternal(activity);
