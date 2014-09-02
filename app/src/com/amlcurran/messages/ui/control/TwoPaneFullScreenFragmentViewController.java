@@ -170,10 +170,6 @@ public class TwoPaneFullScreenFragmentViewController extends BaseViewController 
         return R.layout.activity_messages;
     }
 
-    @Override
-    protected void initView(Activity activity) {
-    }
-
     private int getMasterFrameId() {
         return R.id.container;
     }

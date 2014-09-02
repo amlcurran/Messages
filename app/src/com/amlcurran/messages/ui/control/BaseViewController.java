@@ -17,9 +17,8 @@
 package com.amlcurran.messages.ui.control;
 
 import android.app.Activity;
-import android.view.View;
 
-public abstract class BaseViewController implements ViewController, View.OnClickListener {
+public abstract class BaseViewController implements ViewController {
 
     protected final ViewCallback viewCallback;
 
@@ -33,19 +32,8 @@ public abstract class BaseViewController implements ViewController, View.OnClick
     @Override
     public void setContentView(Activity activity) {
         activity.setContentView(getLayout());
-        initViewInternal(activity);
-    }
-
-    public void onClick(View v) {
-        viewCallback.defaultsBannerPressed();
-    }
-
-    private void initViewInternal(Activity activity) {
-        initView(activity);
     }
 
     protected abstract int getLayout();
-
-    protected abstract void initView(Activity activity);
 
 }
