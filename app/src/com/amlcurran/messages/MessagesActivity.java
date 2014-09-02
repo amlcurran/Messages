@@ -50,7 +50,7 @@ import com.amlcurran.messages.telephony.DefaultAppChecker;
 import com.amlcurran.messages.threads.ThreadFragment;
 import com.amlcurran.messages.ui.CustomHeaderFragment;
 import com.amlcurran.messages.ui.control.FragmentController;
-import com.amlcurran.messages.ui.control.SinglePaneFragmentViewController;
+import com.amlcurran.messages.ui.control.TwoPaneFullScreenFragmentViewController;
 import com.amlcurran.messages.ui.control.ViewController;
 
 import java.util.List;
@@ -80,7 +80,7 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        SinglePaneFragmentViewController fragmentViewController = new SinglePaneFragmentViewController(this, this, this);
+        TwoPaneFullScreenFragmentViewController fragmentViewController = new TwoPaneFullScreenFragmentViewController(this, this, this);
         fragmentController = fragmentViewController;
         viewController = fragmentViewController;
         toastInUiNotifier = new InUiToastNotifier(this);

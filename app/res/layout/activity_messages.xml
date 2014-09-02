@@ -23,18 +23,29 @@
                   android:orientation="vertical"
                   android:layout_height="match_parent">
 
+        <FrameLayout
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent">
+
             <FrameLayout
                     android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_weight="1"
-                    android:id="@+id/container" />
+                    android:layout_height="match_parent"
+                    android:id="@+id/container"/>
+
+            <FrameLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:id="@+id/secondary"
+                    android:visibility="gone">
+            </FrameLayout>
+        </FrameLayout>
 
         <include
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 layout="@layout/view_disabled_app"
                 android:layout_gravity="center_horizontal|bottom"
-                android:id="@+id/disabled_banner" />
+                android:id="@+id/disabled_banner"/>
 
     </LinearLayout>
 
@@ -46,5 +57,5 @@
             android:src="@drawable/ic_new_message_inverse"
             android:background="@null"
             android:layout_gravity="bottom|right"
-            android:padding="16dp" />
+            android:padding="16dp"/>
 </FrameLayout>
