@@ -81,8 +81,7 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        FragmentController fragmentViewController = new TwoPaneFullScreenFragmentViewController(this, this);
-        fragmentController = fragmentViewController;
+        fragmentController = new TwoPaneFullScreenFragmentViewController(this, this);
         toastInUiNotifier = new InUiToastNotifier(this);
         blockingInUiNotifier = new BlockingInUiDialogNotifier(getFragmentManager());
         activityController = new ActivityController(this, blockingInUiNotifier);
@@ -92,7 +91,7 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
         preferencesStore = new PreferenceStore(this);
         actionBarController = new HoloActionBarController(getActionBar());
 
-        setContentView(fragmentViewController.getLayoutResourceId());
+        setContentView(fragmentController.getLayoutResourceId());
 
         menuController = new MenuController(this, this);
         appChecker = new DefaultAppChecker(this, this);
