@@ -23,12 +23,6 @@ public interface ViewController {
 
     void setContentView(Activity activity);
 
-    int getMasterFrameId();
-
-    int getSecondaryFrameId();
-
-    boolean shouldPlaceOnBackStack();
-
     public interface ViewCallback {
         void secondaryVisible();
 

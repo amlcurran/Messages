@@ -48,12 +48,4 @@ public abstract class BaseViewController implements ViewController, View.OnClick
 
     protected abstract void initView(Activity activity);
 
-    @Override
-    public abstract int getMasterFrameId();
-
-    @Override
-    public abstract int getSecondaryFrameId();
-
-    @Override
-    public abstract boolean shouldPlaceOnBackStack();
 }

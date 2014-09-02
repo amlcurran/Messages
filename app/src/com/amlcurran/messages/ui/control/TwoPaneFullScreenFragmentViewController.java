@@ -174,18 +174,15 @@ public class TwoPaneFullScreenFragmentViewController extends BaseViewController 
     protected void initView(Activity activity) {
     }
 
-    @Override
-    public int getMasterFrameId() {
+    private int getMasterFrameId() {
         return R.id.container;
     }
 
-    @Override
-    public int getSecondaryFrameId() {
+    private int getSecondaryFrameId() {
         return R.id.secondary;
     }
 
-    @Override
-    public boolean shouldPlaceOnBackStack() {
+    private boolean shouldPlaceOnBackStack() {
         return false;
     }
 }
