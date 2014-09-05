@@ -2,7 +2,7 @@
 <resources>
 
     <string name="app_name">Messages</string>
-    <string name="version_name">alpha 1</string>
+    <string name="version_name">beta 1</string>
 
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
