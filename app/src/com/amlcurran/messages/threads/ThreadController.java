@@ -82,10 +82,6 @@ class ThreadController implements ThreadListener {
 
     @Override
     public void onThreadLoaded(List<SmsMessage> messageList) {
-        dataLoaded(messageList);
-    }
-
-    private void dataLoaded(List<SmsMessage> messageList) {
         source.replace(messageList);
         callback.dataLoaded(source);
         messageLoader.markThreadAsRead(threadId, null);

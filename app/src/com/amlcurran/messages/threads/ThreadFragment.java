@@ -216,11 +216,13 @@ public class ThreadFragment extends ListFragment implements
 
     @Override
     public void dataLoaded(Source<SmsMessage> source) {
-        listView.animate()
-                .alpha(1)
-                .setDuration(getResources().getInteger(android.R.integer.config_shortAnimTime))
-                .start();
-        scrollTo(source.getCount() - 1);
+        if (isAdded()) {
+            listView.animate()
+                    .alpha(1)
+                    .setDuration(getResources().getInteger(android.R.integer.config_shortAnimTime))
+                    .start();
+            scrollTo(source.getCount() - 1);
+        }
     }
 
 }
