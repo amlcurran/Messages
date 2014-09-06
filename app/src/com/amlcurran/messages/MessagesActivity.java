@@ -59,8 +59,7 @@ import java.util.List;
 import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
 public class MessagesActivity extends Activity implements MessagesLoaderProvider,
-        ConversationListFragment.Listener, SmsComposeListener,
-        DefaultAppChecker.Callback, ConversationModalMarshall.Callback,
+        ConversationListFragment.Listener, SmsComposeListener, ConversationModalMarshall.Callback,
         OnThreadDeleteListener, ConversationListChangeListener, FragmentController.FragmentCallback, MenuController.Callbacks {
 
     private InUiNotifier toastInUiNotifier;
@@ -95,9 +94,9 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
         setContentView(fragmentController.getLayoutResourceId());
 
         menuController = new MenuController(this, this);
-        appChecker = new DefaultAppChecker(this, this);
         disabledBannerController = new DisabledBannerController(this, new SwitchMessageAppCallback(activityController));
         newComposeController = new NewMessageButtonController(findViewById(R.id.button_new_message), new LoadNewComposeCallback(fragmentController));
+        appChecker = new DefaultAppChecker(this, new HideNewComposeAndShowBannerCallback(newComposeController, disabledBannerController));
 
         handleLaunch(savedInstanceState, getIntent(), preferencesStore);
     }
@@ -280,18 +279,6 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
         Bundle contactBundle = ContactFactory.smooshContact(contact);
         ThreadFragment fragment = ThreadFragment.create(String.valueOf(threadId), contact.getNumber(), contactBundle, writtenMessage);
         fragmentController.replaceFragment(fragment);
-    }
-
-    @Override
-    public void isDefaultSmsApp() {
-        disabledBannerController.hideBanner();
-        newComposeController.enableNewMessageButton();
-    }
-
-    @Override
-    public void isNotDefaultSmsApp() {
-        disabledBannerController.showBanner();
-        newComposeController.disableNewMessageButton();
     }
 
     @Override
