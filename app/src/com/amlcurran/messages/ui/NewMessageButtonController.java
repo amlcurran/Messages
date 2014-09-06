@@ -20,12 +20,12 @@ import android.view.View;
 import android.view.animation.DecelerateInterpolator;
 
 import com.amlcurran.messages.MessagesLog;
-import com.amlcurran.messages.ui.control.NewComposeCallback;
+import com.amlcurran.messages.ui.control.FragmentController;
 
 public class NewMessageButtonController {
     private final View newMessageButton;
 
-    public NewMessageButtonController(View newMessageButton, final NewComposeCallback viewCallback) {
+    public NewMessageButtonController(View newMessageButton, FragmentController viewCallback) {
         this.newMessageButton = newMessageButton;
         this.newMessageButton.setOnClickListener(new NewMessageClickListener(viewCallback));
     }
@@ -59,15 +59,15 @@ public class NewMessageButtonController {
     }
 
     private static class NewMessageClickListener implements View.OnClickListener {
-        private final NewComposeCallback viewCallback;
+        private final FragmentController fragmentController;
 
-        public NewMessageClickListener(NewComposeCallback viewCallback) {
-            this.viewCallback = viewCallback;
+        public NewMessageClickListener(FragmentController fragmentController) {
+            this.fragmentController = fragmentController;
         }
 
         @Override
         public void onClick(View v) {
-            viewCallback.newMessageButtonClicked();
+            fragmentController.loadComposeNewFragment();
         }
     }
 }

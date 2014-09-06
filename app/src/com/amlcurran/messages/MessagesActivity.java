@@ -48,8 +48,8 @@ import com.amlcurran.messages.preferences.PreferencesFragment;
 import com.amlcurran.messages.reporting.StatReporter;
 import com.amlcurran.messages.telephony.DefaultAppChecker;
 import com.amlcurran.messages.threads.ThreadFragment;
-import com.amlcurran.messages.ui.ActionBarHeaderCallback;
-import com.amlcurran.messages.ui.HoloActionBarController;
+import com.amlcurran.messages.ui.actionbar.ActionBarHeaderCallback;
+import com.amlcurran.messages.ui.actionbar.HoloActionBarController;
 import com.amlcurran.messages.ui.NewMessageButtonController;
 import com.amlcurran.messages.ui.control.FragmentController;
 import com.amlcurran.messages.ui.control.TwoPaneFullScreenFragmentViewController;
@@ -95,7 +95,7 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
 
         menuController = new MenuController(this, this);
         disabledBannerController = new DisabledBannerController(this, activityController);
-        newComposeController = new NewMessageButtonController(findViewById(R.id.button_new_message), new LoadNewComposeCallback(fragmentController));
+        newComposeController = new NewMessageButtonController(findViewById(R.id.button_new_message), fragmentController);
         appChecker = new DefaultAppChecker(this, new HideNewComposeAndShowBannerCallback(newComposeController, disabledBannerController));
 
         handleLaunch(savedInstanceState, getIntent(), preferencesStore);
