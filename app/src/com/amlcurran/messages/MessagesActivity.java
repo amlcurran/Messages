@@ -94,7 +94,7 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
         setContentView(fragmentController.getLayoutResourceId());
 
         menuController = new MenuController(this, this);
-        disabledBannerController = new DisabledBannerController(this, new SwitchMessageAppCallback(activityController));
+        disabledBannerController = new DisabledBannerController(this, activityController);
         newComposeController = new NewMessageButtonController(findViewById(R.id.button_new_message), new LoadNewComposeCallback(fragmentController));
         appChecker = new DefaultAppChecker(this, new HideNewComposeAndShowBannerCallback(newComposeController, disabledBannerController));
 
