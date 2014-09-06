@@ -17,7 +17,6 @@
 package com.amlcurran.messages.ui.control;
 
 import android.app.Fragment;
-import android.view.View;
 
 public interface FragmentController {
     void loadConversationListFragment();
@@ -34,14 +33,10 @@ public interface FragmentController {
 
     int getLayoutResourceId();
 
-    public interface FragmentCallback {
+    public interface FragmentCallback extends HeaderCreationCallback {
         void insertedDetail();
 
         void insertedMaster();
-
-        void removeCustomHeader();
-
-        void addCustomHeader(View headerView);
 
         void secondaryVisible();
 

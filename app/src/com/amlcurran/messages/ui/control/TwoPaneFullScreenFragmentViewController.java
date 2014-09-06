@@ -32,11 +32,13 @@ public class TwoPaneFullScreenFragmentViewController implements FragmentControll
     private final FragmentCallback fragmentCallback;
     private final FragmentManager fragmentManager;
     private final Activity activity;
+    private final HeaderCreationCallback headerCreationCallback;
 
     public TwoPaneFullScreenFragmentViewController(Activity activity, FragmentCallback fragmentCallback) {
         this.fragmentManager = activity.getFragmentManager();
         this.activity = activity;
         this.fragmentCallback = fragmentCallback;
+        this.headerCreationCallback = fragmentCallback;
     }
 
     @Override
@@ -56,9 +58,9 @@ public class TwoPaneFullScreenFragmentViewController implements FragmentControll
             insertContentFragmentInternal(fragment, inAnimation);
         }
         if (fragment instanceof CustomHeaderFragment) {
-            fragmentCallback.addCustomHeader(((CustomHeaderFragment) fragment).getHeaderView(activity));
+            headerCreationCallback.addCustomHeader(((CustomHeaderFragment) fragment).getHeaderView(activity));
         } else {
-            fragmentCallback.removeCustomHeader();
+            headerCreationCallback.removeCustomHeader();
         }
     }
 
@@ -124,7 +126,7 @@ public class TwoPaneFullScreenFragmentViewController implements FragmentControll
     private void hideSecondary() {
         activity.findViewById(getSecondaryFrameId()).setVisibility(View.GONE);
         activity.findViewById(getMasterFrameId()).setVisibility(View.VISIBLE);
-        fragmentCallback.removeCustomHeader();
+        headerCreationCallback.removeCustomHeader();
         fragmentCallback.secondaryHidden();
     }
 
