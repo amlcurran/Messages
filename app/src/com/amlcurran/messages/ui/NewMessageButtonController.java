@@ -19,6 +19,7 @@ package com.amlcurran.messages.ui;
 import android.view.View;
 import android.view.animation.DecelerateInterpolator;
 
+import com.amlcurran.messages.MessagesLog;
 import com.amlcurran.messages.ui.control.NewComposeCallback;
 
 public class NewMessageButtonController {
@@ -30,6 +31,7 @@ public class NewMessageButtonController {
     }
 
     public void hideNewMessageButton() {
+        MessagesLog.d(this, "hide");
         newMessageButton.animate()
                 .translationYBy(newMessageButton.getMeasuredHeight())
                 .setInterpolator(new DecelerateInterpolator(2))
@@ -38,6 +40,7 @@ public class NewMessageButtonController {
     }
 
     public void showNewMessageButton() {
+        MessagesLog.d(this, "show");
         newMessageButton.animate()
                 .translationYBy(-newMessageButton.getMeasuredHeight())
                 .setInterpolator(new DecelerateInterpolator(2))
@@ -46,10 +49,12 @@ public class NewMessageButtonController {
     }
 
     public void disableNewMessageButton() {
+        MessagesLog.d(this, "disable");
         newMessageButton.setVisibility(View.GONE);
     }
 
     public void enableNewMessageButton() {
+        MessagesLog.d(this, "enable");
         newMessageButton.setVisibility(View.VISIBLE);
     }
 
