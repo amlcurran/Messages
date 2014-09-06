@@ -26,5 +26,5 @@
                     android:valueTo="1.0"
                     android:duration="@android:integer/config_mediumAnimTime"
                     android:interpolator="@android:interpolator/decelerate_cubic"
-                    android:valueFrom="0.7" />
+                    android:valueFrom="0.0" />
 </set>
