@@ -33,7 +33,7 @@ public interface FragmentController {
 
     int getLayoutResourceId();
 
-    public interface FragmentCallback extends HeaderCreationCallback {
+    public interface FragmentCallback {
         void insertedDetail();
 
         void insertedMaster();

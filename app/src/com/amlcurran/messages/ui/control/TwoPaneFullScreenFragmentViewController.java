@@ -34,11 +34,11 @@ public class TwoPaneFullScreenFragmentViewController implements FragmentControll
     private final Activity activity;
     private final HeaderCreationCallback headerCreationCallback;
 
-    public TwoPaneFullScreenFragmentViewController(Activity activity, FragmentCallback fragmentCallback) {
+    public TwoPaneFullScreenFragmentViewController(Activity activity, FragmentCallback fragmentCallback, HeaderCreationCallback headerCreationCallback) {
         this.fragmentManager = activity.getFragmentManager();
         this.activity = activity;
         this.fragmentCallback = fragmentCallback;
-        this.headerCreationCallback = fragmentCallback;
+        this.headerCreationCallback = headerCreationCallback;
     }
 
     @Override

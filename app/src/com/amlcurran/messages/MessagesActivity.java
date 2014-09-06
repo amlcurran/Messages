@@ -22,7 +22,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 
 import com.amlcurran.messages.conversationlist.ConversationListFragment;
 import com.amlcurran.messages.conversationlist.ConversationModalMarshall;
@@ -49,9 +48,11 @@ import com.amlcurran.messages.preferences.PreferencesFragment;
 import com.amlcurran.messages.reporting.StatReporter;
 import com.amlcurran.messages.telephony.DefaultAppChecker;
 import com.amlcurran.messages.threads.ThreadFragment;
+import com.amlcurran.messages.ui.ActionBarHeaderCallback;
 import com.amlcurran.messages.ui.CustomHeaderFragment;
-import com.amlcurran.messages.ui.control.FragmentController;
+import com.amlcurran.messages.ui.HoloActionBarController;
 import com.amlcurran.messages.ui.NewMessageButtonController;
+import com.amlcurran.messages.ui.control.FragmentController;
 import com.amlcurran.messages.ui.control.TwoPaneFullScreenFragmentViewController;
 
 import java.util.List;
@@ -82,7 +83,8 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        fragmentController = new TwoPaneFullScreenFragmentViewController(this, this);
+        actionBarController = new HoloActionBarController(getActionBar());
+        fragmentController = new TwoPaneFullScreenFragmentViewController(this, this, new ActionBarHeaderCallback(actionBarController));
         toastInUiNotifier = new InUiToastNotifier(this);
         blockingInUiNotifier = new BlockingInUiDialogNotifier(getFragmentManager());
         activityController = new ActivityController(this, blockingInUiNotifier);
@@ -90,7 +92,6 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
         statReporter = SingletonManager.getStatsReporter(this);
         eventBus = SingletonManager.getEventBus(this);
         preferencesStore = new PreferenceStore(this);
-        actionBarController = new HoloActionBarController(getActionBar());
 
         setContentView(fragmentController.getLayoutResourceId());
 
@@ -294,12 +295,14 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
         newComposeController.disableNewMessageButton();
     }
 
+    @Override
     public void secondaryVisible() {
         isSecondaryVisible = true;
         menuController.update();
         actionBarController.showHeader();
     }
 
+    @Override
     public void secondaryHidden() {
         isSecondaryVisible = false;
         menuController.update();
@@ -371,18 +374,6 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
     @Override
     public void insertedMaster() {
         newComposeController.showNewMessageButton();
-    }
-
-    @Override
-    public void removeCustomHeader() {
-        actionBarController.removeHeader();
-        actionBarController.hideHeader();
-    }
-
-    @Override
-    public void addCustomHeader(View headerView) {
-        actionBarController.addHeader(headerView);
-        actionBarController.showHeader();
     }
 
     public void customHeader(CustomHeaderFragment customHeaderFragment) {
