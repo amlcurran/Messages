@@ -27,8 +27,6 @@ public interface FragmentController {
 
     void loadComposeNewFragment();
 
-    void attachedFragment(Fragment fragment);
-
     boolean backPressed();
 
     int getLayoutResourceId();

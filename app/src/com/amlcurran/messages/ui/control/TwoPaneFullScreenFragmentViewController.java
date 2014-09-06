@@ -99,11 +99,6 @@ public class TwoPaneFullScreenFragmentViewController implements FragmentControll
     }
 
     @Override
-    public void attachedFragment(Fragment fragment) {
-
-    }
-
-    @Override
     public boolean backPressed() {
         if (activity.findViewById(getSecondaryFrameId()).getVisibility() == View.VISIBLE) {
             removeContent();

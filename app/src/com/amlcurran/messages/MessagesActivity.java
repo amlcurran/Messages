@@ -49,7 +49,6 @@ import com.amlcurran.messages.reporting.StatReporter;
 import com.amlcurran.messages.telephony.DefaultAppChecker;
 import com.amlcurran.messages.threads.ThreadFragment;
 import com.amlcurran.messages.ui.ActionBarHeaderCallback;
-import com.amlcurran.messages.ui.CustomHeaderFragment;
 import com.amlcurran.messages.ui.HoloActionBarController;
 import com.amlcurran.messages.ui.NewMessageButtonController;
 import com.amlcurran.messages.ui.control.FragmentController;
@@ -376,7 +375,4 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
         newComposeController.showNewMessageButton();
     }
 
-    public void customHeader(CustomHeaderFragment customHeaderFragment) {
-        fragmentController.attachedFragment((android.app.Fragment) customHeaderFragment);
-    }
 }

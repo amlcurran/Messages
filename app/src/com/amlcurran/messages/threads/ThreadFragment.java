@@ -29,7 +29,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 
-import com.amlcurran.messages.MessagesActivity;
 import com.amlcurran.messages.R;
 import com.amlcurran.messages.SingletonManager;
 import com.amlcurran.messages.SmsComposeListener;
@@ -126,7 +125,6 @@ public class ThreadFragment extends ListFragment implements
         SourceBinderAdapter<SmsMessage> adapter = new SourceBinderAdapter<SmsMessage>(getActivity(), threadController.getSource(), threadBinder);
         setListAdapter(adapter);
 
-        ((MessagesActivity) getActivity()).customHeader(this);
         setUpContactView(phoneNumber);
     }
 
