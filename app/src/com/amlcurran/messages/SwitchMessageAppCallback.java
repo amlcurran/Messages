@@ -14,34 +14,19 @@
  * limitations under the License.
  */
 
-package com.amlcurran.messages.ui.control;
+package com.amlcurran.messages;
 
-import android.app.Fragment;
+import com.amlcurran.messages.ui.control.DefaultBannerCallback;
 
-public interface FragmentController {
-    void loadConversationListFragment();
+public class SwitchMessageAppCallback implements DefaultBannerCallback {
+    private final ActivityController activityController;
 
-    void putFragment(Fragment fragment);
+    public SwitchMessageAppCallback(ActivityController activityController) {
+        this.activityController = activityController;
+    }
 
-    void replaceFragment(Fragment fragment);
-
-    void loadComposeNewFragment();
-
-    boolean backPressed();
-
-    int getLayoutResourceId();
-
-    public interface FragmentCallback {
-        void insertedDetail();
-
-        void insertedMaster();
-
-        void secondaryVisible();
-
-        void secondaryHidden();
-
-        void secondarySliding(float slideOffset);
-
-        void newMessageButtonClicked();
+    @Override
+    public void defaultsBannerPressed() {
+        activityController.switchSmsApp();
     }
 }

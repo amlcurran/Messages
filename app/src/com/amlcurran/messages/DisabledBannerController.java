@@ -18,14 +18,14 @@ package com.amlcurran.messages;
 
 import android.view.View;
 
-import com.amlcurran.messages.ui.control.FragmentController;
+import com.amlcurran.messages.ui.control.DefaultBannerCallback;
 
 public class DisabledBannerController {
     private final View disabledBanner;
 
-    public DisabledBannerController(MessagesActivity messagesActivity, FragmentController.FragmentCallback viewCallback) {
+    public DisabledBannerController(MessagesActivity messagesActivity, DefaultBannerCallback defaultBannerCallback) {
         disabledBanner = messagesActivity.findViewById(R.id.disabled_banner);
-        disabledBanner.setOnClickListener(new ChangeDefaultMessagingApp(viewCallback));
+        disabledBanner.setOnClickListener(new ChangeDefaultMessagingApp(defaultBannerCallback));
     }
 
     public void hideBanner() {
@@ -37,9 +37,9 @@ public class DisabledBannerController {
     }
 
     private class ChangeDefaultMessagingApp implements View.OnClickListener {
-        private final FragmentController.FragmentCallback viewCallback;
+        private final DefaultBannerCallback viewCallback;
 
-        public ChangeDefaultMessagingApp(FragmentController.FragmentCallback viewCallback) {
+        public ChangeDefaultMessagingApp(DefaultBannerCallback viewCallback) {
             this.viewCallback = viewCallback;
         }
 

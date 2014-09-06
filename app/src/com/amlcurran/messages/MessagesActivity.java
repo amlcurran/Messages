@@ -96,7 +96,7 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
 
         menuController = new MenuController(this, this);
         appChecker = new DefaultAppChecker(this, this);
-        disabledBannerController = new DisabledBannerController(this, this);
+        disabledBannerController = new DisabledBannerController(this, new SwitchMessageAppCallback(activityController));
         newComposeController = new NewMessageButtonController(findViewById(R.id.button_new_message), this);
 
         handleLaunch(savedInstanceState, getIntent(), preferencesStore);
