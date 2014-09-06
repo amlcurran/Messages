@@ -97,7 +97,7 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
         menuController = new MenuController(this, this);
         appChecker = new DefaultAppChecker(this, this);
         disabledBannerController = new DisabledBannerController(this, new SwitchMessageAppCallback(activityController));
-        newComposeController = new NewMessageButtonController(findViewById(R.id.button_new_message), this);
+        newComposeController = new NewMessageButtonController(findViewById(R.id.button_new_message), new LoadNewComposeCallback(fragmentController));
 
         handleLaunch(savedInstanceState, getIntent(), preferencesStore);
     }
@@ -308,16 +308,9 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
         actionBarController.hideHeader();
     }
 
+    @Override
     public void secondarySliding(float slideOffset) {
         //actionBarController.secondaryVisibility(slideOffset);
-    }
-
-    public void defaultsBannerPressed() {
-        activityController.switchSmsApp();
-    }
-
-    public void newMessageButtonClicked() {
-        fragmentController.loadComposeNewFragment();
     }
 
     @Override

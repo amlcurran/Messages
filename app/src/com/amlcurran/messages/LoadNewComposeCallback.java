@@ -14,33 +14,20 @@
  * limitations under the License.
  */
 
-package com.amlcurran.messages.ui.control;
+package com.amlcurran.messages;
 
-import android.app.Fragment;
+import com.amlcurran.messages.ui.control.FragmentController;
+import com.amlcurran.messages.ui.control.NewComposeCallback;
 
-public interface FragmentController {
-    void loadConversationListFragment();
+public class LoadNewComposeCallback implements NewComposeCallback {
+    private final FragmentController fragmentController;
 
-    void putFragment(Fragment fragment);
+    public LoadNewComposeCallback(FragmentController fragmentController) {
+        this.fragmentController = fragmentController;
+    }
 
-    void replaceFragment(Fragment fragment);
-
-    void loadComposeNewFragment();
-
-    boolean backPressed();
-
-    int getLayoutResourceId();
-
-    public interface FragmentCallback {
-        void insertedDetail();
-
-        void insertedMaster();
-
-        void secondaryVisible();
-
-        void secondaryHidden();
-
-        void secondarySliding(float slideOffset);
-
+    @Override
+    public void newMessageButtonClicked() {
+        fragmentController.loadComposeNewFragment();
     }
 }

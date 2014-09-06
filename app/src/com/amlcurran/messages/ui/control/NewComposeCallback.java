@@ -16,31 +16,6 @@
 
 package com.amlcurran.messages.ui.control;
 
-import android.app.Fragment;
-
-public interface FragmentController {
-    void loadConversationListFragment();
-
-    void putFragment(Fragment fragment);
-
-    void replaceFragment(Fragment fragment);
-
-    void loadComposeNewFragment();
-
-    boolean backPressed();
-
-    int getLayoutResourceId();
-
-    public interface FragmentCallback {
-        void insertedDetail();
-
-        void insertedMaster();
-
-        void secondaryVisible();
-
-        void secondaryHidden();
-
-        void secondarySliding(float slideOffset);
-
-    }
+public interface NewComposeCallback {
+    void newMessageButtonClicked();
 }

@@ -19,12 +19,12 @@ package com.amlcurran.messages.ui;
 import android.view.View;
 import android.view.animation.DecelerateInterpolator;
 
-import com.amlcurran.messages.ui.control.FragmentController;
+import com.amlcurran.messages.ui.control.NewComposeCallback;
 
 public class NewMessageButtonController {
     private final View newMessageButton;
 
-    public NewMessageButtonController(View newMessageButton, final FragmentController.FragmentCallback viewCallback) {
+    public NewMessageButtonController(View newMessageButton, final NewComposeCallback viewCallback) {
         this.newMessageButton = newMessageButton;
         this.newMessageButton.setOnClickListener(new NewMessageClickListener(viewCallback));
     }
@@ -54,9 +54,9 @@ public class NewMessageButtonController {
     }
 
     private static class NewMessageClickListener implements View.OnClickListener {
-        private final FragmentController.FragmentCallback viewCallback;
+        private final NewComposeCallback viewCallback;
 
-        public NewMessageClickListener(FragmentController.FragmentCallback viewCallback) {
+        public NewMessageClickListener(NewComposeCallback viewCallback) {
             this.viewCallback = viewCallback;
         }
 
