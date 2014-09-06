@@ -82,21 +82,49 @@ public class AboutFragment extends Fragment {
 
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
-            View view = LayoutInflater.from(getContext()).inflate(R.layout.item_point, parent, false);
+            PointViewHolder viewHolder = PointViewHolder.fromView(convertView);
+
+            if (viewHolder == null) {
+                convertView = LayoutInflater.from(getContext()).inflate(R.layout.item_point, parent, false);
+                viewHolder = new PointViewHolder(convertView);
+            }
 
             final Point currentPoint = getItem(position);
-            ((TextView) view.findViewById(R.id.point_title)).setText(currentPoint.title);
-            ((TextView) view.findViewById(R.id.point_secondary)).setText(currentPoint.secondary);
+            viewHolder.title.setText(currentPoint.title);
+            viewHolder.secondary.setText(currentPoint.secondary);
 
-            view.setOnClickListener(new View.OnClickListener() {
+            viewHolder.view.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     launchUrl(currentPoint.url);
                 }
             });
 
-            return view;
+            return convertView;
         }
+
+    }
+
+    private static class PointViewHolder {
+
+        private final TextView title;
+        private final TextView secondary;
+        private final View view;
+
+        public PointViewHolder(View view) {
+            title = ((TextView) view.findViewById(R.id.point_title));
+            secondary = ((TextView) view.findViewById(R.id.point_secondary));
+            this.view = view;
+            this.view.setTag(this);
+        }
+
+        public static PointViewHolder fromView(View view) {
+            if (view == null || view.getTag() == null) {
+                return null;
+            }
+            return (PointViewHolder) view.getTag();
+        }
+
     }
 
     private void launchUrl(String url) {
