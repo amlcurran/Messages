@@ -11,8 +11,8 @@
     <color name="time_stamp_colour">#44000000</color>
     <color name="theme_alt_color_1">#E8A70C</color>
     <color name="theme_alt_color_1_60">#99E8A70C</color>
-    <color name="theme_alt_color_2">#B20000</color>
-    <color name="theme_alt_color_2_60">#99B20000</color>
+    <color name="theme_alt_color_2">#ffff7d00</color>
+    <color name="theme_alt_color_2_60">#99ff7d00</color>
     <color name="theme_alt_color_3">#260CE8</color>
     <color name="compose_view_background">#11000000</color>
     <color name="phone_type_label_bg">#33000000</color>
