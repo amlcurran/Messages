@@ -1,4 +1,4 @@
-package com.amlcurran.messages.ui;
+package com.amlcurran.messages.ui.actionbar;
 
 import android.app.ActionBar;
 import android.view.View;
