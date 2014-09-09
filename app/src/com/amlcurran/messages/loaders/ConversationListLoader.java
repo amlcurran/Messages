@@ -22,7 +22,6 @@ import android.net.Uri;
 import android.provider.ContactsContract;
 import android.provider.Telephony;
 
-import com.amlcurran.messages.core.conversationlist.ConversationListListener;
 import com.amlcurran.messages.core.data.Contact;
 import com.amlcurran.messages.core.data.Conversation;
 import com.amlcurran.messages.core.data.Sort;
@@ -35,16 +34,12 @@ import java.util.List;
 
 public class ConversationListLoader {
     private final ContentResolver contentResolver;
-    private final ConversationListListener loadListener;
     private final Sort sort;
-    private final MessagesCache cache;
     private final ConversationListHelper helper;
 
-    public ConversationListLoader(ContentResolver contentResolver, ConversationListListener loadListener, Sort sort, MessagesCache cache, ConversationListHelper helper) {
+    public ConversationListLoader(ContentResolver contentResolver, Sort sort, ConversationListHelper helper) {
         this.contentResolver = contentResolver;
-        this.loadListener = loadListener;
         this.sort = sort;
-        this.cache = cache;
         this.helper = helper;
     }
 

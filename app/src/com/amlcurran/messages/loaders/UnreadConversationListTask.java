@@ -40,7 +40,7 @@ class UnreadConversationListTask implements Callable<Object> {
         this.args = null;
         this.loadListener = loadListener;
         this.cache = MessagesCache.NO_CACHE;
-        conversationListLoader = new ConversationListLoader(contentResolver, loadListener, Sort.DEFAULT, cache, ConversationListHelperFactory.get());
+        conversationListLoader = new ConversationListLoader(contentResolver, Sort.DEFAULT, ConversationListHelperFactory.get());
     }
 
     @Override
