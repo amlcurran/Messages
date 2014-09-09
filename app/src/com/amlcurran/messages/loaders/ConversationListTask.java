@@ -17,42 +17,29 @@
 package com.amlcurran.messages.loaders;
 
 import android.content.ContentResolver;
-import android.database.Cursor;
-import android.net.Uri;
-import android.provider.ContactsContract;
-import android.provider.Telephony;
 
 import com.amlcurran.messages.core.conversationlist.ConversationListListener;
-import com.amlcurran.messages.core.data.Contact;
 import com.amlcurran.messages.core.data.Conversation;
 import com.amlcurran.messages.core.data.Sort;
-import com.amlcurran.messages.data.ContactFactory;
-import com.amlcurran.messages.loaders.fudges.ConversationListHelper;
 import com.amlcurran.messages.loaders.fudges.ConversationListHelperFactory;
-import com.github.amlcurran.sourcebinder.CursorHelper;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
 
 class ConversationListTask implements Callable<Object> {
 
-    private final ContentResolver contentResolver;
     private final String query;
     private final String[] args;
     private final ConversationListListener loadListener;
-    private final Sort sort;
     private final MessagesCache cache;
-    private final ConversationListHelper helper;
+    private final ConversationListLoader conversationListLoader;
 
     ConversationListTask(ContentResolver contentResolver, String query, String[] args, ConversationListListener loadListener, Sort sort, MessagesCache cache) {
-        this.contentResolver = contentResolver;
         this.query = query;
         this.args = args;
         this.loadListener = loadListener;
-        this.sort = sort;
         this.cache = cache;
-        helper = ConversationListHelperFactory.get();
+        conversationListLoader = new ConversationListLoader(contentResolver, loadListener, sort, cache, ConversationListHelperFactory.get());
     }
 
     public ConversationListTask(ContentResolver contentResolver, ConversationListListener loadListener, Sort sort, MessagesCache cache) {
@@ -61,59 +48,10 @@ class ConversationListTask implements Callable<Object> {
 
     @Override
     public Object call() throws Exception {
-        final List<Conversation> conversations = new ArrayList<Conversation>();
-
-        Cursor conversationsList = helper.queryConversationList(contentResolver, query, args, getSortString());
-
-        while (conversationsList.moveToNext()) {
-
-            String address = helper.getAddressFromRow(contentResolver, conversationsList);
-            Contact contact = getContact(contentResolver, address);
-
-            String body = CursorHelper.asString(conversationsList, helper.getSnippetCursorKey());
-            boolean isRead = "1".equals(CursorHelper.asString(conversationsList, Telephony.Sms.Inbox.READ));
-            String threadId = CursorHelper.asString(conversationsList, helper.getThreadIdCursorKey());
-            boolean lastFromMe = CursorHelper.asInt(conversationsList, Telephony.Sms.TYPE) != Telephony.Sms.MESSAGE_TYPE_INBOX;
-            Conversation conversation = new Conversation(contact.getNumber(), body, threadId, isRead, contact, lastFromMe);
-
-            if (conversation.getThreadId() != null) {
-                conversations.add(conversation);
-            }
-        }
-
-        conversationsList.close();
-
+        List<Conversation> conversations = conversationListLoader.loadList(query, args);
         cache.storeConversationList(conversations);
         loadListener.onConversationListLoaded(conversations);
         return null;
-    }
-
-    private Contact getContact(ContentResolver contentResolver, String address) {
-        Uri phoneLookupUri = createPhoneLookupUri(address);
-        Cursor peopleCursor = contentResolver.query(phoneLookupUri, ContactFactory.VALID_PROJECTION, null, null, null);
-
-        Contact contact;
-        if (peopleCursor.moveToFirst()) {
-            contact = ContactFactory.fromCursor(peopleCursor);
-        } else {
-            contact = ContactFactory.fromAddress(address);
-        }
-        peopleCursor.close();
-        return contact;
-    }
-
-    private static Uri createPhoneLookupUri(String phoneRaw) {
-        return Uri.withAppendedPath(ContactsContract.CommonDataKinds.Phone.CONTENT_FILTER_URI, Uri.encode(phoneRaw));
-    }
-
-    private String getSortString() {
-        String sortOrder;
-        if (sort == Sort.UNREAD) {
-            sortOrder = Telephony.Sms.READ + " ASC, " + Telephony.Sms.DEFAULT_SORT_ORDER;
-        } else {
-            sortOrder = Telephony.Sms.DEFAULT_SORT_ORDER;
-        }
-        return sortOrder;
     }
 
 }
