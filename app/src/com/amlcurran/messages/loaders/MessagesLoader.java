@@ -51,4 +51,6 @@ public interface MessagesLoader {
     void loadContacts(ContactListListener contactListListener);
 
     void getHasConversationWith(Contact contact, HasConversationListener hasConversationListener);
+
+    Task loadUnreadMessages(ThreadListener threadListener);
 }

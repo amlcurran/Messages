@@ -147,4 +147,9 @@ public class ExecutorMessagesLoader implements MessagesLoader {
         submit(new HasConversationTask(getResolver(), hasConversationListener, contact, uiHandler));
     }
 
+    @Override
+    public Task loadUnreadMessages(ThreadListener threadListener) {
+        return submit(new UnreadMessagesTask(getResolver(), threadListener, uiHandler));
+    }
+
 }

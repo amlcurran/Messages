@@ -112,4 +112,9 @@ public class DemoMessagesLoader implements MessagesLoader {
     public void getHasConversationWith(Contact contact, HasConversationListener hasConversationListener) {
 
     }
+
+    @Override
+    public Task loadUnreadMessages(ThreadListener threadListener) {
+        return null;
+    }
 }

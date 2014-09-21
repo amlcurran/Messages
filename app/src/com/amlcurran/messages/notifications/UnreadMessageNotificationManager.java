@@ -18,14 +18,36 @@ package com.amlcurran.messages.notifications;
 
 import android.content.Context;
 
+import com.amlcurran.messages.MessagesLog;
+import com.amlcurran.messages.core.data.SmsMessage;
+import com.amlcurran.messages.core.loaders.ThreadListener;
+import com.amlcurran.messages.loaders.MessagesLoader;
+import com.amlcurran.messages.loaders.Task;
+
+import java.util.List;
+
 public class UnreadMessageNotificationManager {
 
     private final Context context;
+    private final MessagesLoader loader;
 
-    public UnreadMessageNotificationManager(Context context) {
+    public UnreadMessageNotificationManager(Context context, MessagesLoader loader) {
         this.context = context;
+        this.loader = loader;
     }
 
+    public void update() {
+        Task getUnreadMessages = loader.loadUnreadMessages(new ThreadListener() {
 
+            @Override
+            public void onThreadLoaded(List<SmsMessage> messageList) {
+                for (SmsMessage message : messageList) {
+                    MessagesLog.d(UnreadMessageNotificationManager.this, MessagesLog.format(message));
+                }
+                MessagesLog.d(UnreadMessageNotificationManager.this, "Unread messages: " + messageList.size());
+            }
+
+        });
+    }
 
 }

@@ -20,6 +20,7 @@ import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.provider.Telephony;
 
+import com.amlcurran.messages.MessagesLog;
 import com.amlcurran.messages.events.EventBus;
 
 import java.util.ArrayList;
