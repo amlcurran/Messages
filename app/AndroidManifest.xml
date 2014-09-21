@@ -90,8 +90,6 @@
             </intent-filter>
         </receiver>
 
-        <activity android:name=".threads.ThreadActivity" />
-
     </application>
 
 </manifest>

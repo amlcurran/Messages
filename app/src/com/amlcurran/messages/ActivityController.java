@@ -40,7 +40,7 @@ public class ActivityController {
         this.blockingInUiNotifier = blockingInUiNotifier;
     }
 
-    public void callNumber(PhoneNumber phoneNumber) {
+    void callNumber(PhoneNumber phoneNumber) {
         Uri telUri = Uri.parse("tel:" + phoneNumber.flatten());
         Intent intent = new Intent(Intent.ACTION_CALL);
         intent.setData(telUri);

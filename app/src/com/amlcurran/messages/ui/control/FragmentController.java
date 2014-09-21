@@ -18,8 +18,6 @@ package com.amlcurran.messages.ui.control;
 
 import android.app.Fragment;
 
-import com.amlcurran.messages.core.data.Contact;
-
 public interface FragmentController {
     void loadConversationListFragment();
 
@@ -32,8 +30,6 @@ public interface FragmentController {
     boolean backPressed();
 
     int getLayoutResourceId();
-
-    void displayThread(String threadId, Contact contact, String writtenMessage);
 
     public interface FragmentCallback {
         void insertedDetail();

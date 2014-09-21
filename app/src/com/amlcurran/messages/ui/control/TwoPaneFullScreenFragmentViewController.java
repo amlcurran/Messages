@@ -20,14 +20,11 @@ import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
-import android.content.Intent;
 import android.view.View;
 
 import com.amlcurran.messages.ComposeNewFragment;
 import com.amlcurran.messages.R;
 import com.amlcurran.messages.conversationlist.ConversationListFragment;
-import com.amlcurran.messages.core.data.Contact;
-import com.amlcurran.messages.threads.ThreadActivity;
 import com.amlcurran.messages.ui.CustomHeaderFragment;
 
 public class TwoPaneFullScreenFragmentViewController implements FragmentController {
@@ -145,11 +142,5 @@ public class TwoPaneFullScreenFragmentViewController implements FragmentControll
     @Override
     public int getLayoutResourceId() {
         return R.layout.activity_messages;
-    }
-
-    @Override
-    public void displayThread(String threadId, Contact contact, String writtenMessage) {
-        Intent intent = ThreadActivity.intent(activity, threadId, contact, writtenMessage);
-        activity.startActivity(intent);
     }
 }
