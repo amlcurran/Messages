@@ -257,10 +257,7 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
 
     @Override
     public void onConversationSelected(Conversation conversation) {
-        PhoneNumber address = conversation.getAddress();
-        Bundle contactBundle = ContactFactory.smooshContact(conversation.getContact());
-        ThreadFragment fragment = ThreadFragment.create(conversation.getThreadId(), address, contactBundle, null);
-        fragmentController.replaceFragment(fragment);
+        fragmentController.displayThread(conversation.getThreadId(), conversation.getContact(), null);
     }
 
     @Override
@@ -276,9 +273,7 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
 
     @Override
     public void displayThread(Contact contact, int threadId, String writtenMessage) {
-        Bundle contactBundle = ContactFactory.smooshContact(contact);
-        ThreadFragment fragment = ThreadFragment.create(String.valueOf(threadId), contact.getNumber(), contactBundle, writtenMessage);
-        fragmentController.replaceFragment(fragment);
+        fragmentController.displayThread(String.valueOf(threadId), contact, writtenMessage);
     }
 
     @Override
