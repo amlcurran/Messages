@@ -14,17 +14,18 @@
  * limitations under the License.
  */
 
-package com.amlcurran.messages.telephony;
+package com.amlcurran.messages.notifications;
 
-import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.Intent;
 
-import com.amlcurran.messages.SingletonManager;
+public class UnreadMessageNotificationManager {
 
-public class MmsReceiver extends BroadcastReceiver {
-    @Override
-    public void onReceive(Context context, Intent intent) {
-        SingletonManager.getNotifier(context).showMmsError();
+    private final Context context;
+
+    public UnreadMessageNotificationManager(Context context) {
+        this.context = context;
     }
+
+
+
 }

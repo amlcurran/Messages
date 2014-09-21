@@ -20,13 +20,13 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 
-import com.amlcurran.messages.notifications.Notifier;
+import com.amlcurran.messages.SingletonManager;
 
 public class BootNotificationReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         if (Intent.ACTION_BOOT_COMPLETED.equals(intent.getAction())) {
-            new Notifier(context).updateUnreadNotification(false);
+            SingletonManager.getNotifier(context).updateUnreadNotification(false);
         }
     }
 }

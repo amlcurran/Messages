@@ -27,11 +27,10 @@ import android.telephony.SmsManager;
 
 import com.amlcurran.messages.MessagesLog;
 import com.amlcurran.messages.SingletonManager;
+import com.amlcurran.messages.core.data.PhoneNumber;
 import com.amlcurran.messages.data.InFlightSmsMessage;
 import com.amlcurran.messages.data.ParcelablePhoneNumber;
-import com.amlcurran.messages.core.data.PhoneNumber;
 import com.amlcurran.messages.events.BroadcastEventBus;
-import com.amlcurran.messages.notifications.Notifier;
 
 import java.util.ArrayList;
 
@@ -72,7 +71,7 @@ public class SmsSender extends IntentService {
         if (isSendRequest(intent)) {
 
             if (isFromFailure(intent)) {
-                new Notifier(this).clearFailureToSendNotification();
+                SingletonManager.getNotifier(this).clearFailureToSendNotification();
             }
 
             InFlightSmsMessage message;
