@@ -24,16 +24,21 @@ import com.amlcurran.messages.core.loaders.ThreadListener;
 import com.amlcurran.messages.loaders.MessagesLoader;
 import com.amlcurran.messages.loaders.Task;
 
+import java.util.ArrayList;
 import java.util.List;
+
+import static com.espian.utils.Verbose.not;
 
 public class UnreadMessageNotificationManager {
 
     private final Context context;
     private final MessagesLoader loader;
+    private final List<SmsMessage> unreadMessageList;
 
     public UnreadMessageNotificationManager(Context context, MessagesLoader loader) {
         this.context = context;
         this.loader = loader;
+        this.unreadMessageList = new ArrayList<SmsMessage>();
     }
 
     public void update() {
@@ -41,13 +46,26 @@ public class UnreadMessageNotificationManager {
 
             @Override
             public void onThreadLoaded(List<SmsMessage> messageList) {
-                for (SmsMessage message : messageList) {
+                List<SmsMessage> newMessages = getNewMessages(messageList);
+                unreadMessageList.clear();
+                unreadMessageList.addAll(messageList);
+                for (SmsMessage message : newMessages) {
                     MessagesLog.d(UnreadMessageNotificationManager.this, MessagesLog.format(message));
                 }
                 MessagesLog.d(UnreadMessageNotificationManager.this, "Unread messages: " + messageList.size());
             }
 
         });
+    }
+
+    private List<SmsMessage> getNewMessages(List<SmsMessage> messageList) {
+        List<SmsMessage> newMessages = new ArrayList<SmsMessage>();
+        for (SmsMessage message : messageList) {
+            if (not(unreadMessageList.contains(message))) {
+                newMessages.add(message);
+            }
+        }
+        return newMessages;
     }
 
 }
