@@ -21,11 +21,14 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.provider.ContactsContract;
 import android.provider.Telephony;
+import android.telephony.PhoneNumberUtils;
 
 import com.amlcurran.messages.core.data.Contact;
 import com.amlcurran.messages.core.data.Conversation;
+import com.amlcurran.messages.core.data.RawContact;
 import com.amlcurran.messages.core.data.Sort;
 import com.amlcurran.messages.data.ContactFactory;
+import com.amlcurran.messages.data.ParcelablePhoneNumber;
 import com.amlcurran.messages.loaders.fudges.ConversationListHelper;
 import com.github.amlcurran.sourcebinder.CursorHelper;
 
@@ -70,6 +73,12 @@ public class ConversationListLoader {
     }
     
     private Contact getContact(ContentResolver contentResolver, String address) {
+        // Deal with cases where the number isn't actually a number
+        if (!PhoneNumberUtils.isGlobalPhoneNumber(address)) {
+            return new RawContact(new ParcelablePhoneNumber(address));
+        }
+
+
         Uri phoneLookupUri = createPhoneLookupUri(address);
         Cursor peopleCursor = contentResolver.query(phoneLookupUri, ContactFactory.VALID_PROJECTION, null, null, null);
 
