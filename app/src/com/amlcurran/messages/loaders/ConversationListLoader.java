@@ -25,7 +25,7 @@ import android.telephony.PhoneNumberUtils;
 
 import com.amlcurran.messages.core.data.Contact;
 import com.amlcurran.messages.core.data.Conversation;
-import com.amlcurran.messages.core.data.RawContact;
+import com.amlcurran.messages.core.data.PhoneNumberOnlyContact;
 import com.amlcurran.messages.core.data.Sort;
 import com.amlcurran.messages.data.ContactFactory;
 import com.amlcurran.messages.data.ParcelablePhoneNumber;
@@ -75,7 +75,7 @@ public class ConversationListLoader {
     private Contact getContact(ContentResolver contentResolver, String address) {
         // Deal with cases where the number isn't actually a number
         if (!PhoneNumberUtils.isGlobalPhoneNumber(address)) {
-            return new RawContact(new ParcelablePhoneNumber(address));
+            return new PhoneNumberOnlyContact(new ParcelablePhoneNumber(address));
         }
 
 
