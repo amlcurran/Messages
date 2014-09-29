@@ -38,7 +38,7 @@ public class NotificationBuilder {
     private final NotificationIntentFactory notificationIntentFactory;
     private final StyledTextFactory styledTextFactory;
     private final NotificationActionBuilder actionBuilder;
-    private Context context;
+    private final Context context;
     private final PreferenceStore preferenceStore;
 
     public NotificationBuilder(Context context, PreferenceStore preferenceStore) {
@@ -73,12 +73,16 @@ public class NotificationBuilder {
         long timestampMillis = Calendar.getInstance().getTimeInMillis();
         CharSequence ticker = fromNewMessage ? styledTextFactory.buildTicker(conversations.get(0)) : styledTextFactory.buildListSummary(context, conversations);
         NotificationCompat.Action markReadAction = actionBuilder.buildMultipleMarkReadAction(conversations);
-        return getDefaultBuilder(fromNewMessage)
+
+        NotificationCompat.Builder defaultBuilder = getDefaultBuilder(fromNewMessage);
+        NotificationBinder notificationBinder = new NotificationBinder(defaultBuilder);
+        notificationBinder.setStyle(buildInboxStyle(conversations));
+
+        return notificationBinder.getBaseBuilder()
                 .addAction(markReadAction)
                 .setTicker(ticker)
                 .setGroup(UNREAD_MESSAGES)
                 .setGroupSummary(true)
-                .setStyle(buildInboxStyle(conversations))
                 .setContentText(styledTextFactory.buildSenderList(conversations))
                 .setContentTitle(styledTextFactory.buildListSummary(context, conversations))
                 .setWhen(timestampMillis)
@@ -109,7 +113,11 @@ public class NotificationBuilder {
             builder.addAction(linkAction);
         }
 
-        return builder
+        NotificationBinder binder = new NotificationBinder(builder);
+        binder.setStyle(buildBigStyle(conversation));
+        binder.setExtender(extender);
+
+        return binder.getBaseBuilder()
                 .addAction(singleUnreadAction)
                 .addAction(callAction)
                 .setTicker(tickerText)
@@ -117,9 +125,7 @@ public class NotificationBuilder {
                 .setLargeIcon(photo)
                 .setContentIntent(notificationIntentFactory.createViewConversationIntent(conversation))
                 .setContentText(conversation.getSummaryText())
-                .setStyle(buildBigStyle(conversation))
-                .setWhen(timestampMillis)
-                .extend(extender);
+                .setWhen(timestampMillis);
     }
 
     private static NotificationCompat.Style buildBigStyle(Conversation conversation) {
