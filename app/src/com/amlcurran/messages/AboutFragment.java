@@ -16,7 +16,7 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.List;
 
-public class AboutFragment extends Fragment {
+public class AboutFragment extends Fragment implements Entitled {
 
     private final List<Point> points = new ArrayList<Point>();
 
@@ -59,6 +59,11 @@ public class AboutFragment extends Fragment {
             e.printStackTrace();
         }
         return getString(R.string.version_name_label, versionName);
+    }
+
+    @Override
+    public int getTitleResource() {
+        return R.string.title_about;
     }
 
     private class Point {

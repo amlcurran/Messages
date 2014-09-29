@@ -36,9 +36,15 @@ public class SecondaryActivity extends Activity {
         setContentView(R.layout.activity_secondary);
 
         Fragment fragment = getDisplayFragment();
+        setTitleFromFragment(fragment);
         getFragmentManager().beginTransaction()
                 .add(R.id.content, fragment)
                 .commit();
+    }
+
+    private void setTitleFromFragment(Fragment fragment) {
+        int resId = ((Entitled) fragment).getTitleResource();
+        getActionBar().setTitle(resId);
     }
 
     private Fragment getDisplayFragment() {
