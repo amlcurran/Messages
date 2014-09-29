@@ -90,6 +90,8 @@
             </intent-filter>
         </receiver>
 
+        <activity android:name=".SecondaryActivity" />
+
     </application>
 
 </manifest>

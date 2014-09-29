@@ -79,10 +79,6 @@ public class ActivityController {
         activity.startActivity(viewIntent);
     }
 
-    public void showAbout() {
-        //activity.startActivity(new Intent(activity, AboutActivity.class));
-    }
-
     public void sendSms(InFlightSmsMessage message) {
         Intent intent = new Intent(activity, SmsSender.class);
         intent.setAction(SmsSender.ACTION_SEND_REQUEST);
