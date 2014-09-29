@@ -44,13 +44,12 @@ import com.amlcurran.messages.notifications.Dialog;
 import com.amlcurran.messages.notifications.InUiNotifier;
 import com.amlcurran.messages.notifications.InUiToastNotifier;
 import com.amlcurran.messages.preferences.PreferenceStore;
-import com.amlcurran.messages.preferences.PreferencesFragment;
 import com.amlcurran.messages.reporting.StatReporter;
 import com.amlcurran.messages.telephony.DefaultAppChecker;
 import com.amlcurran.messages.threads.ThreadFragment;
+import com.amlcurran.messages.ui.NewMessageButtonController;
 import com.amlcurran.messages.ui.actionbar.ActionBarHeaderCallback;
 import com.amlcurran.messages.ui.actionbar.HoloActionBarController;
-import com.amlcurran.messages.ui.NewMessageButtonController;
 import com.amlcurran.messages.ui.control.FragmentController;
 import com.amlcurran.messages.ui.control.TwoPaneFullScreenFragmentViewController;
 
@@ -235,12 +234,13 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
     @Override
     public void showSettings() {
         statReporter.sendUiEvent("settings");
-        fragmentController.putFragment(new PreferencesFragment());
+        startActivity(SecondaryActivity.preferences(this));
     }
 
     @Override
     public void showAbout() {
-        fragmentController.putFragment(new AboutFragment());
+        statReporter.sendUiEvent("about");
+        startActivity(SecondaryActivity.about(this));
     }
 
     @Override

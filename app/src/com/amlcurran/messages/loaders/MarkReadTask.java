@@ -41,8 +41,8 @@ class MarkReadTask implements Callable<Object> {
     @Override
     public Object call() throws Exception {
         for (String threadId : threadIds) {
-            String selection = String.format("%1$s=? AND %2$s=?", Telephony.Sms.THREAD_ID, Telephony.Sms.READ);
-            String[] args = new String[]{threadId, "0"};
+            String selection = String.format("%1$s=? AND (%2$s=? OR %3$s=?)", Telephony.Sms.THREAD_ID, Telephony.Sms.READ, Telephony.Sms.SEEN);
+            String[] args = new String[]{threadId, "0", "0"};
             contentResolver.update(Telephony.Sms.CONTENT_URI, createReadContentValues(), selection, args);
         }
         eventBus.postListInvalidated();
@@ -52,6 +52,7 @@ class MarkReadTask implements Callable<Object> {
     private ContentValues createReadContentValues() {
         ContentValues values = new ContentValues();
         values.put(Telephony.Sms.READ, "1");
+        values.put(Telephony.Sms.SEEN, "1");
         return values;
     }
 

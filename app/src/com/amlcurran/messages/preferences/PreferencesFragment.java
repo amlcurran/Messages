@@ -19,9 +19,10 @@ package com.amlcurran.messages.preferences;
 import android.os.Bundle;
 import android.preference.PreferenceFragment;
 
+import com.amlcurran.messages.Entitled;
 import com.amlcurran.messages.R;
 
-public class PreferencesFragment extends PreferenceFragment implements PreferenceStore.PreferenceChangedListener {
+public class PreferencesFragment extends PreferenceFragment implements PreferenceStore.PreferenceChangedListener, Entitled {
 
     private RingtoneHelper ringtoneHelper;
     private PreferenceStore preferencesStore;
@@ -54,5 +55,10 @@ public class PreferencesFragment extends PreferenceFragment implements Preferenc
         if (PreferenceStore.RINGTONE.equals(key)) {
             ringtoneHelper.setUpToneSummary();
         }
+    }
+
+    @Override
+    public int getTitleResource() {
+        return R.string.title_preferences;
     }
 }
