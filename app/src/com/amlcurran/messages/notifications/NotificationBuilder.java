@@ -38,7 +38,7 @@ public class NotificationBuilder {
     private final NotificationIntentFactory notificationIntentFactory;
     private final StyledTextFactory styledTextFactory;
     private final NotificationActionBuilder actionBuilder;
-    private Context context;
+    private final Context context;
     private final PreferenceStore preferenceStore;
 
     public NotificationBuilder(Context context, PreferenceStore preferenceStore) {
@@ -49,36 +49,48 @@ public class NotificationBuilder {
         this.actionBuilder = new NotificationActionBuilder(context);
     }
 
-    public List<Notification> buildUnreadNotification(List<Conversation> conversations, Bitmap photo, boolean fromNewMessage) {
+    public List<Notification> buildUnreadNotification(List<Conversation> conversations, Bitmap photo, boolean fromNewMessage, List<Conversation> newConversations) {
+        CharSequence ticker = tickerText(conversations, newConversations);
         if (conversations.size() == 1) {
-            NotificationCompat.Builder builder = buildSingleUnreadNotification(conversations.get(0), photo, fromNewMessage);
+            NotificationCompat.Builder builder = buildSingleUnreadNotification(conversations.get(0), photo, fromNewMessage, ticker);
             return Collections.singletonList(builder.build());
         } else {
-            return buildMultipleUnreadNotification(conversations, fromNewMessage);
+            return buildMultipleUnreadNotification(conversations, fromNewMessage, ticker);
         }
     }
 
-    private List<Notification> buildMultipleUnreadNotification(List<Conversation> conversations, boolean fromNewMessage) {
+    private CharSequence tickerText(List<Conversation> conversations, List<Conversation> newConversations) {
+        if (newConversations.size() == 1) {
+            return styledTextFactory.buildTicker(newConversations.get(0));
+        } else {
+            return styledTextFactory.buildListSummary(context, conversations);
+        }
+    }
+
+    private List<Notification> buildMultipleUnreadNotification(List<Conversation> conversations, boolean fromNewMessage, CharSequence ticker) {
         List<Notification> notifications = new ArrayList<Notification>();
-        notifications.add(buildMultipleSummaryNotification(conversations, fromNewMessage));
+        notifications.add(buildMultipleSummaryNotification(conversations, fromNewMessage, ticker));
         for (Conversation conversation : conversations) {
-            NotificationCompat.Builder builder = buildSingleUnreadNotification(conversation, null, fromNewMessage);
+            NotificationCompat.Builder builder = buildSingleUnreadNotification(conversation, null, fromNewMessage, ticker);
             builder.setGroup(UNREAD_MESSAGES);
             notifications.add(builder.build());
         }
         return notifications;
     }
 
-    private Notification buildMultipleSummaryNotification(List<Conversation> conversations, boolean fromNewMessage) {
+    private Notification buildMultipleSummaryNotification(List<Conversation> conversations, boolean fromNewMessage, CharSequence ticker) {
         long timestampMillis = Calendar.getInstance().getTimeInMillis();
-        CharSequence ticker = fromNewMessage ? styledTextFactory.buildTicker(conversations.get(0)) : styledTextFactory.buildListSummary(context, conversations);
         NotificationCompat.Action markReadAction = actionBuilder.buildMultipleMarkReadAction(conversations);
-        return getDefaultBuilder(fromNewMessage)
+
+        NotificationCompat.Builder defaultBuilder = getDefaultBuilder(fromNewMessage);
+        NotificationBinder notificationBinder = new NotificationBinder(defaultBuilder);
+        notificationBinder.setStyle(buildInboxStyle(conversations));
+
+        return notificationBinder.getBaseBuilder()
                 .addAction(markReadAction)
                 .setTicker(ticker)
                 .setGroup(UNREAD_MESSAGES)
                 .setGroupSummary(true)
-                .setStyle(buildInboxStyle(conversations))
                 .setContentText(styledTextFactory.buildSenderList(conversations))
                 .setContentTitle(styledTextFactory.buildListSummary(context, conversations))
                 .setWhen(timestampMillis)
@@ -93,9 +105,8 @@ public class NotificationBuilder {
         return inboxStyle;
     }
 
-    private NotificationCompat.Builder buildSingleUnreadNotification(Conversation conversation, Bitmap photo, boolean fromNewMessage) {
+    private NotificationCompat.Builder buildSingleUnreadNotification(Conversation conversation, Bitmap photo, boolean fromNewMessage, CharSequence ticker) {
         long timestampMillis = Calendar.getInstance().getTimeInMillis();
-        CharSequence tickerText = fromNewMessage ? styledTextFactory.buildTicker(conversation) : styledTextFactory.buildListSummary(context, Collections.singletonList(conversation));
         NotificationCompat.Action voiceInputAction = actionBuilder.buildReplyAction(conversation);
         NotificationCompat.Action singleUnreadAction = actionBuilder.buildSingleMarkReadAction(conversation);
         NotificationCompat.Action callAction = actionBuilder.call(conversation.getContact());
@@ -109,17 +120,19 @@ public class NotificationBuilder {
             builder.addAction(linkAction);
         }
 
-        return builder
+        NotificationBinder binder = new NotificationBinder(builder);
+        binder.setStyle(buildBigStyle(conversation));
+        binder.setExtender(extender);
+
+        return binder.getBaseBuilder()
                 .addAction(singleUnreadAction)
                 .addAction(callAction)
-                .setTicker(tickerText)
+                .setTicker(ticker)
                 .setContentTitle(conversation.getContact().getDisplayName())
                 .setLargeIcon(photo)
                 .setContentIntent(notificationIntentFactory.createViewConversationIntent(conversation))
                 .setContentText(conversation.getSummaryText())
-                .setStyle(buildBigStyle(conversation))
-                .setWhen(timestampMillis)
-                .extend(extender);
+                .setWhen(timestampMillis);
     }
 
     private static NotificationCompat.Style buildBigStyle(Conversation conversation) {

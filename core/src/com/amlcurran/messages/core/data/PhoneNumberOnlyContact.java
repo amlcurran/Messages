@@ -16,11 +16,11 @@
 
 package com.amlcurran.messages.core.data;
 
-public class RawContact implements Contact {
+public class PhoneNumberOnlyContact implements Contact {
 
     private final PhoneNumber address;
 
-    public RawContact(PhoneNumber address) {
+    public PhoneNumberOnlyContact(PhoneNumber address) {
         this.address = address;
     }
 

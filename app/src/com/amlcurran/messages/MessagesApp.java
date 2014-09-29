@@ -32,6 +32,7 @@ import com.amlcurran.messages.loaders.MemoryMessagesCache;
 import com.amlcurran.messages.loaders.MessagesCache;
 import com.amlcurran.messages.loaders.MessagesLoader;
 import com.amlcurran.messages.notifications.Notifier;
+import com.amlcurran.messages.notifications.UnreadMessageNotificationManager;
 import com.amlcurran.messages.preferences.PreferenceStore;
 import com.amlcurran.messages.reporting.NullStatReporter;
 import com.amlcurran.messages.reporting.StatReporter;
@@ -50,6 +51,7 @@ public class MessagesApp extends Application implements BroadcastEventSubscriber
     Notifier notifier;
     EventBus eventBus;
     StatReporter statsReporter;
+    private UnreadMessageNotificationManager unreadMessageNotificationManager;
 
     @Override
     public void onCreate() {
@@ -68,7 +70,8 @@ public class MessagesApp extends Application implements BroadcastEventSubscriber
             loader = new ExecutorMessagesLoader(this, executor, cache, eventBus, uiHandler);
         }
 
-        notifier = new Notifier(this);
+        unreadMessageNotificationManager = new UnreadMessageNotificationManager(this, loader);
+        notifier = new Notifier(this, unreadMessageNotificationManager);
         subscriber = new BroadcastEventSubscriber(this, this);
         subscriber.startListening(
                 new Broadcast(BroadcastEventBus.BROADCAST_MESSAGE_SENT, null),

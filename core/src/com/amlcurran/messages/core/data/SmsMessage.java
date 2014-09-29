@@ -64,4 +64,8 @@ public class SmsMessage {
         INBOX, SENDING, DRAFT, FAILED, UNKNOWN, SENT
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        return obj instanceof SmsMessage && id == ((SmsMessage) obj).id;
+    }
 }

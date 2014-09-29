@@ -24,7 +24,7 @@ import android.provider.ContactsContract;
 
 import com.amlcurran.messages.bucket.BundleBuilder;
 import com.amlcurran.messages.core.data.Contact;
-import com.amlcurran.messages.core.data.RawContact;
+import com.amlcurran.messages.core.data.PhoneNumberOnlyContact;
 import com.amlcurran.messages.core.data.SavedContact;
 import com.github.amlcurran.sourcebinder.CursorHelper;
 
@@ -56,7 +56,7 @@ public class ContactFactory {
     }
 
     public static Contact fromAddress(String number) {
-        return new RawContact(new ParcelablePhoneNumber(number));
+        return new PhoneNumberOnlyContact(new ParcelablePhoneNumber(number));
     }
 
     public static Uri uriForContact(Contact contact, ContentResolver contentResolver) {
@@ -89,7 +89,7 @@ public class ContactFactory {
             int phoneType = bundle.getInt(SMOOSH_PHONE_TYPE);
             return new SavedContact(contactId, person, new ParcelablePhoneNumber(rawAddress), photoId, lookupKey, phoneType);
         } else {
-            return new RawContact(new ParcelablePhoneNumber(bundle.getString(SMOOSH_NUMBER)));
+            return new PhoneNumberOnlyContact(new ParcelablePhoneNumber(bundle.getString(SMOOSH_NUMBER)));
         }
     }
 

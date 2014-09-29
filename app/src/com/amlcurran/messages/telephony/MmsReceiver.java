@@ -20,11 +20,11 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 
-import com.amlcurran.messages.notifications.Notifier;
+import com.amlcurran.messages.SingletonManager;
 
 public class MmsReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
-        new Notifier(context).showMmsError();
+        SingletonManager.getNotifier(context).showMmsError();
     }
 }
