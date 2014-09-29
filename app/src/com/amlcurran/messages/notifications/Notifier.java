@@ -30,7 +30,10 @@ import com.amlcurran.messages.data.InFlightSmsMessage;
 import com.amlcurran.messages.loaders.MessagesLoader;
 import com.amlcurran.messages.preferences.PreferenceStore;
 
+import java.util.ArrayList;
 import java.util.List;
+
+import static com.espian.utils.Verbose.not;
 
 public class Notifier {
 
@@ -43,6 +46,7 @@ public class Notifier {
     private final MessagesLoader loader;
     private final PreferenceStore preferenceStore;
     private final UnreadMessageNotificationManager unreadMessageNotificationManager;
+    private final ArrayList<Conversation> postedMessages;
 
     public Notifier(Context context, UnreadMessageNotificationManager unreadMessageNotificationManager) {
         this.unreadMessageNotificationManager = unreadMessageNotificationManager;
@@ -50,6 +54,7 @@ public class Notifier {
         this.loader = SingletonManager.getMessagesLoader(context);
         this.notificationManager = NotificationManagerCompat.from(context);
         this.notificationBuilder = new NotificationBuilder(context, new PreferenceStore(context));
+        this.postedMessages = new ArrayList<Conversation>();
     }
 
     public void updateUnreadNotification(final boolean fromNewMessage) {
@@ -94,29 +99,33 @@ public class Notifier {
             } else if (conversations.size() == 1) {
                 // Load the contact photo as well
                 Conversation singleConvo = conversations.get(0);
-                loader.loadPhoto(singleConvo.getContact(), new PostUnreadWhenLoadedListener(conversations, fromNewMessage));
+                List<Conversation> newConversations = getNewConversations(conversations);
+                loader.loadPhoto(singleConvo.getContact(), new PostUnreadWhenLoadedListener(conversations, fromNewMessage, newConversations));
             } else {
-                postUnreadNotification(conversations, null, fromNewMessage);
+                List<Conversation> newConversations = getNewConversations(conversations);
+                postUnreadNotification(conversations, null, fromNewMessage, newConversations);
             }
         }
 
         private class PostUnreadWhenLoadedListener implements PhotoLoadListener {
             private final List<Conversation> conversations;
             private final boolean fromNewMessage;
+            private final List<Conversation> newConversations;
 
-            public PostUnreadWhenLoadedListener(List<Conversation> conversations, boolean fromNewMessage) {
+            public PostUnreadWhenLoadedListener(List<Conversation> conversations, boolean fromNewMessage, List<Conversation> newConversations) {
                 this.conversations = conversations;
                 this.fromNewMessage = fromNewMessage;
+                this.newConversations = newConversations;
             }
 
             @Override
             public void photoLoaded(Bitmap photo) {
-                postUnreadNotification(conversations, photo, fromNewMessage);
+                postUnreadNotification(conversations, photo, fromNewMessage, newConversations);
             }
 
             @Override
             public void photoLoadedFromCache(Bitmap photo) {
-                postUnreadNotification(conversations, photo, fromNewMessage);
+                postUnreadNotification(conversations, photo, fromNewMessage, newConversations);
             }
 
             @Override
@@ -125,12 +134,23 @@ public class Notifier {
             }
         }
 
-        private void postUnreadNotification(List<Conversation> conversations, Bitmap photo, boolean fromNewMessage) {
-            List<Notification> notifications = notificationBuilder.buildUnreadNotification(conversations, photo, fromNewMessage);
+        private void postUnreadNotification(List<Conversation> conversations, Bitmap photo, boolean fromNewMessage, List<Conversation> newConversations) {
+            List<Notification> notifications = notificationBuilder.buildUnreadNotification(conversations, photo, fromNewMessage, newConversations);
             for (int i = 0; i < notifications.size(); i++) {
                 notificationManager.notify(NOTIFICATION_UNREAD_MESSAGES + i, notifications.get(i));
             }
         }
 
+    }
+
+    private List<Conversation> getNewConversations(List<Conversation> conversations) {
+        List<Conversation> newConversations = new ArrayList<Conversation>();
+        for (Conversation conversation : conversations) {
+            if (not(postedMessages.contains(conversation))) {
+                newConversations.add(conversation);
+                postedMessages.add(conversation);
+            }
+        }
+        return newConversations;
     }
 }
