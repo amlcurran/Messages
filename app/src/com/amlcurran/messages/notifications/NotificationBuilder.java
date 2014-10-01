@@ -62,6 +62,8 @@ public class NotificationBuilder {
     private CharSequence tickerText(List<Conversation> conversations, List<Conversation> newConversations) {
         if (newConversations.size() == 1) {
             return styledTextFactory.buildTicker(newConversations.get(0));
+        } else if (newConversations.size() == 0) {
+            return null;
         } else {
             return styledTextFactory.buildListSummary(context, conversations);
         }
