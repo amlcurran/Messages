@@ -46,7 +46,7 @@ public class Notifier {
     private final MessagesLoader loader;
     private final PreferenceStore preferenceStore;
     private final UnreadMessageNotificationManager unreadMessageNotificationManager;
-    private final ArrayList<Conversation> postedMessages;
+    private final ArrayList<Conversation> postedConversations;
 
     public Notifier(Context context, UnreadMessageNotificationManager unreadMessageNotificationManager) {
         this.unreadMessageNotificationManager = unreadMessageNotificationManager;
@@ -54,7 +54,7 @@ public class Notifier {
         this.loader = SingletonManager.getMessagesLoader(context);
         this.notificationManager = NotificationManagerCompat.from(context);
         this.notificationBuilder = new NotificationBuilder(context, new PreferenceStore(context));
-        this.postedMessages = new ArrayList<Conversation>();
+        this.postedConversations = new ArrayList<Conversation>();
     }
 
     public void updateUnreadNotification(final boolean fromNewMessage) {
@@ -93,7 +93,7 @@ public class Notifier {
 
         @Override
         public void onConversationListLoaded(final List<Conversation> conversations) {
-
+            updatePostedConversations(conversations);
             if (conversations.size() == 0) {
                 clearNewMessagesNotification();
             } else if (conversations.size() == 1) {
@@ -143,14 +143,25 @@ public class Notifier {
 
     }
 
-    private List<Conversation> getNewConversations(List<Conversation> conversations) {
-        List<Conversation> newConversations = new ArrayList<Conversation>();
-        for (Conversation conversation : conversations) {
-            if (not(postedMessages.contains(conversation))) {
-                newConversations.add(conversation);
-                postedMessages.add(conversation);
+    private List<Conversation> getNewConversations(List<Conversation> unreadConversations) {
+        List<Conversation> newUnreadConversations = new ArrayList<Conversation>();
+        for (Conversation conversation : unreadConversations) {
+            if (not(postedConversations.contains(conversation))) {
+                newUnreadConversations.add(conversation);
+                postedConversations.add(conversation);
             }
         }
-        return newConversations;
+        return newUnreadConversations;
+    }
+
+    private void updatePostedConversations(List<Conversation> unreadConversations) {
+        List<Conversation> newPostedConversations = new ArrayList<Conversation>();
+        for (Conversation postedConversation : postedConversations) {
+            if (unreadConversations.contains(postedConversation)) {
+                newPostedConversations.add(postedConversation);
+            }
+        }
+        postedConversations.clear();
+        postedConversations.addAll(newPostedConversations);
     }
 }
