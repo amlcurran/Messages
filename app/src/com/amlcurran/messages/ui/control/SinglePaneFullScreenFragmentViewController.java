@@ -57,11 +57,6 @@ public class SinglePaneFullScreenFragmentViewController implements FragmentContr
         } else {
             insertContentFragmentInternal(fragment, inAnimation);
         }
-        if (fragment instanceof CustomHeaderFragment) {
-            headerCreationCallback.addCustomHeader(((CustomHeaderFragment) fragment).getHeaderView(activity));
-        } else {
-            headerCreationCallback.removeCustomHeader();
-        }
     }
 
     private void insertMasterFragment(Fragment fragment) {
@@ -77,7 +72,6 @@ public class SinglePaneFullScreenFragmentViewController implements FragmentContr
     private void insertedMaster() {
         fragmentCallback.insertedMaster();
         fragmentCallback.secondaryHidden();
-        headerCreationCallback.removeCustomHeader();
     }
 
     private void insertContentFragmentInternal(Fragment fragment, int inAnimation) {
@@ -131,6 +125,11 @@ public class SinglePaneFullScreenFragmentViewController implements FragmentContr
                 insertedMaster();
             } else {
                 insertedContent();
+            }
+            if (fragment instanceof CustomHeaderFragment) {
+                headerCreationCallback.addCustomHeader(((CustomHeaderFragment) fragment).getHeaderView(activity));
+            } else {
+                headerCreationCallback.removeCustomHeader();
             }
         }
 
