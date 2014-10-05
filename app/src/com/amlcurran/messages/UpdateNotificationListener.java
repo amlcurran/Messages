@@ -31,6 +31,6 @@ public class UpdateNotificationListener implements ConversationListListener {
 
     @Override
     public void onConversationListLoaded(List<Conversation> conversations) {
-        notifier.updateUnreadNotification(false);
+        notifier.updateUnreadNotification();
     }
 }

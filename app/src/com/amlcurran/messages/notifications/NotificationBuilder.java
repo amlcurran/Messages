@@ -49,13 +49,14 @@ public class NotificationBuilder {
         this.actionBuilder = new NotificationActionBuilder(context);
     }
 
-    public List<Notification> buildUnreadNotification(List<Conversation> conversations, Bitmap photo, boolean fromNewMessage, List<Conversation> newConversations) {
+    public List<Notification> buildUnreadNotification(List<Conversation> conversations, Bitmap photo, List<Conversation> newConversations) {
         CharSequence ticker = tickerText(conversations, newConversations);
+        boolean hasNewConversations = newConversations.size() > 0;
         if (conversations.size() == 1) {
-            NotificationCompat.Builder builder = buildSingleUnreadNotification(conversations.get(0), photo, fromNewMessage, ticker);
+            NotificationCompat.Builder builder = buildSingleUnreadNotification(conversations.get(0), photo, hasNewConversations, ticker);
             return Collections.singletonList(builder.build());
         } else {
-            return buildMultipleUnreadNotification(conversations, fromNewMessage, ticker);
+            return buildMultipleUnreadNotification(conversations, hasNewConversations, ticker);
         }
     }
 
