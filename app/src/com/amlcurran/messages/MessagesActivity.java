@@ -51,7 +51,7 @@ import com.amlcurran.messages.ui.NewMessageButtonController;
 import com.amlcurran.messages.ui.actionbar.ActionBarHeaderCallback;
 import com.amlcurran.messages.ui.actionbar.HoloActionBarController;
 import com.amlcurran.messages.ui.control.FragmentController;
-import com.amlcurran.messages.ui.control.TwoPaneFullScreenFragmentViewController;
+import com.amlcurran.messages.ui.control.SinglePaneFullScreenFragmentViewController;
 
 import java.util.List;
 
@@ -81,7 +81,7 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         actionBarController = new HoloActionBarController(getActionBar());
-        fragmentController = new TwoPaneFullScreenFragmentViewController(this, this, new ActionBarHeaderCallback(actionBarController));
+        fragmentController = new SinglePaneFullScreenFragmentViewController(this, this, new ActionBarHeaderCallback(actionBarController));
         toastInUiNotifier = new InUiToastNotifier(this);
         blockingInUiNotifier = new BlockingInUiDialogNotifier(getFragmentManager());
         activityController = new ActivityController(this, blockingInUiNotifier);

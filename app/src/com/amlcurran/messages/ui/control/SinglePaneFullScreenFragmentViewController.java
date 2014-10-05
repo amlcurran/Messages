@@ -38,6 +38,7 @@ public class SinglePaneFullScreenFragmentViewController implements FragmentContr
         this.activity = activity;
         this.fragmentCallback = fragmentCallback;
         this.headerCreationCallback = headerCreationCallback;
+        this.fragmentManager.addOnBackStackChangedListener(new DefaultBackStackListener());
     }
 
     @Override
@@ -64,24 +65,33 @@ public class SinglePaneFullScreenFragmentViewController implements FragmentContr
     }
 
     private void insertMasterFragment(Fragment fragment) {
-        if (frameIsEmpty(getMasterFrameId())) {
+        if (frameIsEmpty(getFrameId())) {
             fragmentManager.beginTransaction()
                     .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
-                    .replace(getMasterFrameId(), fragment)
+                    .replace(getFrameId(), fragment)
                     .commit();
-            fragmentCallback.insertedMaster();
-            hideSecondary();
+            insertedMaster();
         }
+    }
+
+    private void insertedMaster() {
+        fragmentCallback.insertedMaster();
+        fragmentCallback.secondaryHidden();
+        headerCreationCallback.removeCustomHeader();
     }
 
     private void insertContentFragmentInternal(Fragment fragment, int inAnimation) {
         fragmentManager.beginTransaction()
                 .setCustomAnimations(inAnimation, 0)
-                .replace(getSecondaryFrameId(), fragment)
+                .replace(getFrameId(), fragment)
                 .addToBackStack(null)
                 .commit();
+        insertedContent();
+    }
+
+    private void insertedContent() {
         fragmentCallback.insertedDetail();
-        showSecondary();
+        fragmentCallback.secondaryVisible();
     }
 
     private boolean frameIsEmpty(int frameId) {
@@ -100,38 +110,29 @@ public class SinglePaneFullScreenFragmentViewController implements FragmentContr
 
     @Override
     public boolean backPressed() {
-        //if (activity.findViewById(getSecondaryFrameId()).getVisibility() == View.VISIBLE) {
-            //removeContent();
-//            hideSecondary();
-//            fragmentCallback.insertedMaster();
-//            return true;
-        //}
         return false;
     }
 
-    private void hideSecondary() {
-//        activity.findViewById(getSecondaryFrameId()).setVisibility(View.GONE);
-//        activity.findViewById(getMasterFrameId()).setVisibility(View.VISIBLE);
-        headerCreationCallback.removeCustomHeader();
-        fragmentCallback.secondaryHidden();
-    }
-
-    private void showSecondary() {
-//        activity.findViewById(getSecondaryFrameId()).setVisibility(View.VISIBLE);
-//        activity.findViewById(getMasterFrameId()).setVisibility(View.GONE);
-        fragmentCallback.secondaryVisible();
-    }
-
-    private int getMasterFrameId() {
-        return R.id.container;
-    }
-
-    private int getSecondaryFrameId() {
+    private int getFrameId() {
         return R.id.container;
     }
 
     @Override
     public int getLayoutResourceId() {
         return R.layout.activity_messages;
+    }
+
+    private class DefaultBackStackListener implements FragmentManager.OnBackStackChangedListener {
+
+        @Override
+        public void onBackStackChanged() {
+            Fragment fragment = fragmentManager.findFragmentById(getFrameId());
+            if (fragment instanceof Master) {
+                insertedMaster();
+            } else {
+                insertedContent();
+            }
+        }
+
     }
 }
