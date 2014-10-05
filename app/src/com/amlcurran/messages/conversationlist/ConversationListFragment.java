@@ -138,8 +138,10 @@ public class ConversationListFragment extends ListFragment implements Conversati
     }
 
     private void hideLoadingUi() {
-        getListView().setVisibility(View.VISIBLE);
-        emptyView.setVisibility(View.GONE);
+        if (getView() != null) {
+            getListView().setVisibility(View.VISIBLE);
+            emptyView.setVisibility(View.GONE);
+        }
     }
 
     @Override
