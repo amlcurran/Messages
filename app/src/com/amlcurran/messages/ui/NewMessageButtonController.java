@@ -35,7 +35,7 @@ public class NewMessageButtonController {
         newMessageButton.animate()
                 .translationYBy(newMessageButton.getMeasuredHeight())
                 .setInterpolator(new DecelerateInterpolator(2))
-                .setDuration(300)
+                .setDuration(150)
                 .start();
     }
 
