@@ -109,7 +109,6 @@ public class NotificationBuilder {
     }
 
     private NotificationCompat.Builder buildSingleUnreadNotification(Conversation conversation, Bitmap photo, boolean fromNewMessage, CharSequence ticker) {
-        long timestampMillis = Calendar.getInstance().getTimeInMillis();
         NotificationCompat.Action voiceInputAction = actionBuilder.buildReplyAction(conversation);
         NotificationCompat.Action singleUnreadAction = actionBuilder.buildSingleMarkReadAction(conversation);
         NotificationCompat.Action callAction = actionBuilder.call(conversation.getContact());
@@ -135,7 +134,7 @@ public class NotificationBuilder {
                 .setLargeIcon(photo)
                 .setContentIntent(notificationIntentFactory.createViewConversationIntent(conversation))
                 .setContentText(conversation.getSummaryText())
-                .setWhen(timestampMillis);
+                .setWhen(conversation.getTimeOfLastMessage().toMillis());
     }
 
     private static NotificationCompat.Style buildBigStyle(Conversation conversation) {

@@ -23,15 +23,17 @@ public class Conversation {
     private final String threadId;
     private final boolean isRead;
     private final Contact contact;
-    private boolean lastFromMe;
+    private final boolean lastFromMe;
+    private final Time time;
 
-    public Conversation(PhoneNumber address, String body, String threadId, boolean isRead, Contact contact, boolean lastFromMe) {
+    public Conversation(PhoneNumber address, String body, String threadId, boolean isRead, Contact contact, boolean lastFromMe, Time time) {
         this.address = address;
         this.body = body;
         this.threadId = threadId;
         this.isRead = isRead;
         this.contact = contact;
         this.lastFromMe = lastFromMe;
+        this.time = time;
     }
 
     public boolean isLastFromMe() {
@@ -71,5 +73,9 @@ public class Conversation {
 
     public Contact getContact() {
         return contact;
+    }
+
+    public Time getTimeOfLastMessage() {
+        return time;
     }
 }

@@ -27,6 +27,7 @@ import com.amlcurran.messages.core.data.Contact;
 import com.amlcurran.messages.core.data.Conversation;
 import com.amlcurran.messages.core.data.PhoneNumberOnlyContact;
 import com.amlcurran.messages.core.data.Sort;
+import com.amlcurran.messages.core.data.Time;
 import com.amlcurran.messages.data.ContactFactory;
 import com.amlcurran.messages.data.ParcelablePhoneNumber;
 import com.amlcurran.messages.loaders.fudges.ConversationListHelper;
@@ -60,7 +61,8 @@ public class ConversationListLoader {
             boolean isRead = "1".equals(CursorHelper.asString(conversationsList, Telephony.Sms.Inbox.READ));
             String threadId = CursorHelper.asString(conversationsList, helper.getThreadIdCursorKey());
             boolean lastFromMe = CursorHelper.asInt(conversationsList, Telephony.Sms.TYPE) != Telephony.Sms.MESSAGE_TYPE_INBOX;
-            Conversation conversation = new Conversation(contact.getNumber(), body, threadId, isRead, contact, lastFromMe);
+            long lastMessageTime = CursorHelper.asLong(conversationsList, Telephony.Sms.DATE_SENT);
+            Conversation conversation = new Conversation(contact.getNumber(), body, threadId, isRead, contact, lastFromMe, Time.fromMillis(lastMessageTime));
 
             if (conversation.getThreadId() != null) {
                 conversations.add(conversation);

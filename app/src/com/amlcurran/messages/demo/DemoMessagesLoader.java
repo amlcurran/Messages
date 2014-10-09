@@ -26,6 +26,7 @@ import com.amlcurran.messages.core.data.Conversation;
 import com.amlcurran.messages.core.data.PhoneNumber;
 import com.amlcurran.messages.core.data.SavedContact;
 import com.amlcurran.messages.core.data.Sort;
+import com.amlcurran.messages.core.data.Time;
 import com.amlcurran.messages.core.loaders.ContactListListener;
 import com.amlcurran.messages.core.loaders.ConversationListChangeListener;
 import com.amlcurran.messages.core.loaders.ThreadListener;
@@ -55,7 +56,7 @@ public class DemoMessagesLoader implements MessagesLoader {
         for (int i = 0; i < numbers.length; i++) {
             PhoneNumber number = new ParcelablePhoneNumber(numbers[i]);
             Contact contact = new SavedContact(i, contactNames[i], number, i, String.valueOf(i), 0);
-            Conversation conversation = new Conversation(number, bodies[i], String.valueOf(i), i != 4, contact, i == 2);
+            Conversation conversation = new Conversation(number, bodies[i], String.valueOf(i), i != 4, contact, i == 2, Time.fromMillis(0));
             fakeConversations.add(conversation);
         }
         loadListener.onConversationListLoaded(fakeConversations);
