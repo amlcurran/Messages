@@ -42,8 +42,6 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import uk.co.chrisjenx.calligraphy.CalligraphyConfig;
-
 public class MessagesApp extends Application implements BroadcastEventSubscriber.Listener {
 
     private BroadcastEventSubscriber subscriber;
@@ -57,7 +55,6 @@ public class MessagesApp extends Application implements BroadcastEventSubscriber
     @Override
     public void onCreate() {
         super.onCreate();
-        CalligraphyConfig.initDefault(R.attr.fontPath);
         PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
         ExecutorService executor = Executors.newCachedThreadPool();
         Handler uiHandler = new Handler(getMainLooper());

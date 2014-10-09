@@ -17,7 +17,6 @@
 package com.amlcurran.messages;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
@@ -54,8 +53,6 @@ import com.amlcurran.messages.ui.control.FragmentController;
 import com.amlcurran.messages.ui.control.SinglePaneFullScreenFragmentViewController;
 
 import java.util.List;
-
-import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
 public class MessagesActivity extends Activity implements MessagesLoaderProvider,
         ConversationListFragment.Listener, SmsComposeListener, ConversationModalMarshall.Callback,
@@ -151,11 +148,6 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
             }
         }, getString(R.string.alpha_title), getString(R.string.alpha_message),
                 new Dialog.Button("OK"));
-    }
-
-    @Override
-    protected void attachBaseContext(Context newBase) {
-        super.attachBaseContext(new CalligraphyContextWrapper(newBase));
     }
 
     private void displayMmsError() {
