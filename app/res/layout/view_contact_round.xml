@@ -23,7 +23,7 @@
     <view
         android:layout_width="96dp"
         android:layout_height="96dp"
-        class="com.amlcurran.messages.ui.CircularImageView"
+        class="com.amlcurran.messages.ui.image.CircularImageView"
         android:id="@+id/image"
         android:layout_gravity="center_horizontal" />
 

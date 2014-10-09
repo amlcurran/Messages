@@ -24,6 +24,7 @@ import android.text.SpannableStringBuilder;
 import android.text.util.Linkify;
 
 import com.amlcurran.messages.core.events.Broadcast;
+import com.amlcurran.messages.demo.DemoMessagesLoader;
 import com.amlcurran.messages.events.BroadcastEventBus;
 import com.amlcurran.messages.events.BroadcastEventSubscriber;
 import com.amlcurran.messages.events.EventBus;

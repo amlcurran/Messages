@@ -25,7 +25,7 @@
     <view
             android:layout_width="48dp"
             android:layout_height="match_parent"
-            class="com.amlcurran.messages.ui.CutImageView"
+            class="com.amlcurran.messages.ui.image.CutImageView"
             android:layout_marginRight="2dp"
             android:id="@+id/image"/>
 

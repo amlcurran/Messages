@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.amlcurran.messages.ui;
+package com.amlcurran.messages.ui.image;
 
 import android.content.Context;
 import android.graphics.RectF;
