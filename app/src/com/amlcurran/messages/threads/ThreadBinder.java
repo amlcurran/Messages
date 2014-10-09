@@ -27,18 +27,14 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.amlcurran.messages.R;
+import com.amlcurran.messages.core.analysis.SmsMessageAnalyser;
 import com.amlcurran.messages.core.data.SmsMessage;
 import com.github.amlcurran.sourcebinder.SimpleBinder;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
 class ThreadBinder extends SimpleBinder<SmsMessage> {
 
-    private final DateFormat formatter = new SimpleDateFormat("HH:mm dd-MMM-yy");
-    private final Date date = new Date();
     private final ListView listView;
+    private final SmsMessageAnalyser smsMessageAnalyser;
     private Resources resources;
     private ResendCallback resendCallback;
 
@@ -46,6 +42,7 @@ class ThreadBinder extends SimpleBinder<SmsMessage> {
         this.listView = listView;
         this.resources = resources;
         this.resendCallback = resendCallback;
+        this.smsMessageAnalyser = new SmsMessageAnalyser(new ResourcesDifferencesStringProvider(resources));
     }
 
     @Override
@@ -80,8 +77,7 @@ class ThreadBinder extends SimpleBinder<SmsMessage> {
     }
 
     private void addTimestampView(View view, SmsMessage smsMessage) {
-        date.setTime(smsMessage.getTimestamp().toMillis());
-        getTextView(view, android.R.id.text2).setText(formatter.format(date));
+        getTextView(view, android.R.id.text2).setText(smsMessageAnalyser.getDifferenceToNow(smsMessage.getTimestamp()));
     }
 
     private void manipulateFailedView(View view, SmsMessage smsMessage) {

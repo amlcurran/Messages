@@ -56,5 +56,11 @@
     <string name="failed_to_send_touch_to_resend">Failed to send. Touch icon to resend.</string>
     <string name="title_preferences">Settings</string>
     <string name="title_about">About</string>
+    <string name="millisDifference">%1$s milliseconds ago</string>
+    <string name="secondsDifference">%1$s seconds ago</string>
+    <string name="minutesDifference">%1$s minutes ago</string>
+    <string name="hoursDifference">%1$s hours ago</string>
+    <string name="underAMinuteAgo">Under a minute ago</string>
+    <string name="yesterday">Yesterday</string>
 
 </resources>
