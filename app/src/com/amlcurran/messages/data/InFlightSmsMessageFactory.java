@@ -57,8 +57,8 @@ public class InFlightSmsMessageFactory {
         ContentValues contentValues = new ContentValues();
         contentValues.put(Telephony.Sms.Inbox.BODY, smsMessage.getBody());
         contentValues.put(Telephony.Sms.Inbox.ADDRESS, smsMessage.getPhoneNumber().flatten());
-        contentValues.put(Telephony.Sms.Inbox.DATE, smsMessage.getTimestamp());
-        contentValues.put(Telephony.Sms.Inbox.DATE_SENT, smsMessage.getTimestamp());
+        contentValues.put(Telephony.Sms.Inbox.DATE, smsMessage.getTimestamp().toMillis());
+        contentValues.put(Telephony.Sms.Inbox.DATE_SENT, smsMessage.getTimestamp().toMillis());
         contentValues.put(Telephony.Sms.Inbox.TYPE, messageTypeSent);
         return contentValues;
     }

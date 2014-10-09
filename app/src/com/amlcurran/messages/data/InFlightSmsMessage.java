@@ -42,8 +42,8 @@ public class InFlightSmsMessage implements Parcelable {
         return body;
     }
 
-    public long getTimestamp() {
-        return timestamp.toMillis();
+    public Time getTimestamp() {
+        return timestamp;
     }
 
     public static final Creator<InFlightSmsMessage> CREATOR = new Creator<InFlightSmsMessage>() {
