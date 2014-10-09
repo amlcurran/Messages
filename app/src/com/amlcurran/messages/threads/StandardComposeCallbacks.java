@@ -20,6 +20,7 @@ import android.app.Activity;
 
 import com.amlcurran.messages.SmsComposeListener;
 import com.amlcurran.messages.core.data.PhoneNumber;
+import com.amlcurran.messages.core.data.Time;
 import com.amlcurran.messages.data.InFlightSmsMessage;
 import com.amlcurran.messages.telephony.SynchronousDatabaseWriter;
 import com.amlcurran.messages.ui.ComposeMessageView;
@@ -41,7 +42,7 @@ class StandardComposeCallbacks implements ComposeMessageView.ComposureCallbacks 
     public void onMessageComposed(CharSequence body) {
         String message = String.valueOf(body);
         long timestamp = Calendar.getInstance().getTimeInMillis();
-        InFlightSmsMessage smsMessage = new InFlightSmsMessage(phoneNumber, message, timestamp);
+        InFlightSmsMessage smsMessage = new InFlightSmsMessage(phoneNumber, message, Time.fromMillis(timestamp));
         listener.sendSms(smsMessage);
         new SynchronousDatabaseWriter(activity).clearDraft(phoneNumber);
     }

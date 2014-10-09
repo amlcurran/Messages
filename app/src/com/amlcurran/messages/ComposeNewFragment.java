@@ -32,6 +32,7 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import com.amlcurran.messages.core.data.Contact;
+import com.amlcurran.messages.core.data.Time;
 import com.amlcurran.messages.core.loaders.ContactListListener;
 import com.amlcurran.messages.data.InFlightSmsMessage;
 import com.amlcurran.messages.data.ParcelablePhoneNumber;
@@ -162,7 +163,7 @@ public class ComposeNewFragment extends Fragment implements ComposeMessageView.C
             ParcelablePhoneNumber phoneNumber = new ParcelablePhoneNumber(address);
             String message = String.valueOf(body);
             long timestamp = Calendar.getInstance().getTimeInMillis();
-            InFlightSmsMessage smsMessage = new InFlightSmsMessage(phoneNumber, message, timestamp);
+            InFlightSmsMessage smsMessage = new InFlightSmsMessage(phoneNumber, message, Time.fromMillis(timestamp));
             listener.sendSms(smsMessage);
         } else {
             Toast.makeText(getActivity(), "Enter a valid recipient", Toast.LENGTH_SHORT).show();

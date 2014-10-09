@@ -20,11 +20,11 @@ public class SmsMessage {
 
     private final String address;
     private final String body;
-    private final long timestamp;
-    private Type type;
+    private final Time timestamp;
+    private final Type type;
     private final long id;
 
-    public SmsMessage(long id, String address, String body, long timestamp, Type type) {
+    public SmsMessage(long id, String address, String body, Time timestamp, Type type) {
         this.id = id;
         this.address = address;
         this.body = body;
@@ -45,7 +45,7 @@ public class SmsMessage {
     }
 
     public long getTimestamp() {
-        return timestamp;
+        return timestamp.toMillis();
     }
 
     public boolean isFromMe() {

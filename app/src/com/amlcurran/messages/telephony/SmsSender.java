@@ -28,6 +28,7 @@ import android.telephony.SmsManager;
 import com.amlcurran.messages.MessagesLog;
 import com.amlcurran.messages.SingletonManager;
 import com.amlcurran.messages.core.data.PhoneNumber;
+import com.amlcurran.messages.core.data.Time;
 import com.amlcurran.messages.data.InFlightSmsMessage;
 import com.amlcurran.messages.data.ParcelablePhoneNumber;
 import com.amlcurran.messages.events.BroadcastEventBus;
@@ -118,7 +119,7 @@ public class SmsSender extends IntentService {
     private InFlightSmsMessage extractInFlightFromWear(Intent intent) {
         String address = intent.getStringExtra(EXTRA_NUMBER);
         CharSequence input = getMessageText(intent);
-        return new InFlightSmsMessage(new ParcelablePhoneNumber(address), String.valueOf(input), System.currentTimeMillis());
+        return new InFlightSmsMessage(new ParcelablePhoneNumber(address), String.valueOf(input), Time.fromMillis(System.currentTimeMillis()));
     }
 
     private CharSequence getMessageText(Intent intent) {

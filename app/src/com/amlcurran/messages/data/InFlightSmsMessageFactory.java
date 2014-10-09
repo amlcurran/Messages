@@ -21,6 +21,7 @@ import android.database.Cursor;
 import android.provider.Telephony;
 
 import com.amlcurran.messages.core.data.SmsMessage;
+import com.amlcurran.messages.core.data.Time;
 import com.github.amlcurran.sourcebinder.CursorHelper;
 
 public class InFlightSmsMessageFactory {
@@ -32,7 +33,7 @@ public class InFlightSmsMessageFactory {
         ParcelablePhoneNumber phoneNumber = new ParcelablePhoneNumber(messages[0].getDisplayOriginatingAddress());
         String body = createBody(messages);
         long timestamp = messages[0].getTimestampMillis();
-        return new InFlightSmsMessage(phoneNumber, body, timestamp);
+        return new InFlightSmsMessage(phoneNumber, body, Time.fromMillis(timestamp));
     }
 
     public static SmsMessage fromCursor(Cursor cursor) {
@@ -41,7 +42,7 @@ public class InFlightSmsMessageFactory {
         int messageType = CursorHelper.asInt(cursor, Telephony.Sms.TYPE);
         String address = CursorHelper.asString(cursor, Telephony.Sms.ADDRESS);
         long id = CursorHelper.asLong(cursor, Telephony.Sms._ID);
-        return new SmsMessage(id, address, body, timestamp, fromApi(messageType));
+        return new SmsMessage(id, address, body, Time.fromMillis(timestamp), fromApi(messageType));
     }
 
     private static String createBody(android.telephony.SmsMessage[] messages) {

@@ -20,14 +20,15 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.amlcurran.messages.core.data.PhoneNumber;
+import com.amlcurran.messages.core.data.Time;
 
 public class InFlightSmsMessage implements Parcelable {
 
     private final ParcelablePhoneNumber phoneNumber;
     private final String body;
-    private final long timestamp;
+    private final Time timestamp;
 
-    public InFlightSmsMessage(PhoneNumber phoneNumber, String message, long timestamp) {
+    public InFlightSmsMessage(PhoneNumber phoneNumber, String message, Time timestamp) {
         this.phoneNumber = new ParcelablePhoneNumber(phoneNumber.flatten());
         this.body = message;
         this.timestamp = timestamp;
@@ -42,13 +43,16 @@ public class InFlightSmsMessage implements Parcelable {
     }
 
     public long getTimestamp() {
-        return timestamp;
+        return timestamp.toMillis();
     }
 
     public static final Creator<InFlightSmsMessage> CREATOR = new Creator<InFlightSmsMessage>() {
 
         public InFlightSmsMessage createFromParcel(Parcel in) {
-            return new InFlightSmsMessage(((ParcelablePhoneNumber) in.readParcelable(getClass().getClassLoader())), in.readString(), in.readLong());
+            ParcelablePhoneNumber phoneNumber1 = in.readParcelable(getClass().getClassLoader());
+            String message = in.readString();
+            Time time = Time.fromMillis(in.readLong());
+            return new InFlightSmsMessage(phoneNumber1, message, time);
         }
 
         public InFlightSmsMessage[] newArray(int size) {
@@ -65,6 +69,6 @@ public class InFlightSmsMessage implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeParcelable(phoneNumber, 0);
         dest.writeString(body);
-        dest.writeLong(timestamp);
+        dest.writeLong(timestamp.toMillis());
     }
 }
