@@ -80,7 +80,7 @@ class ThreadBinder extends SimpleBinder<SmsMessage> {
     }
 
     private void addTimestampView(View view, SmsMessage smsMessage) {
-        date.setTime(smsMessage.getTimestamp());
+        date.setTime(smsMessage.getTimestamp().toMillis());
         getTextView(view, android.R.id.text2).setText(formatter.format(date));
     }
 

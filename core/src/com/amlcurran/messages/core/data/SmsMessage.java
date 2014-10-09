@@ -44,8 +44,8 @@ public class SmsMessage {
         return body;
     }
 
-    public long getTimestamp() {
-        return timestamp.toMillis();
+    public Time getTimestamp() {
+        return timestamp;
     }
 
     public boolean isFromMe() {
