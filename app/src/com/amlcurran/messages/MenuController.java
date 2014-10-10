@@ -20,6 +20,7 @@ import android.app.Activity;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.amlcurran.messages.transition.TransitionManager;
 import com.amlcurran.messages.ui.OnOptionsItemSelectedListener;
 import com.espian.utils.ui.MenuFinder;
 
@@ -27,11 +28,11 @@ import static com.espian.utils.Verbose.not;
 
 public class MenuController implements OnOptionsItemSelectedListener {
     private final Activity activity;
-    private final Callbacks callbacks;
+    private final TransitionManager transitionManager;
 
-    public MenuController(Activity activity, Callbacks callbacks) {
+    public MenuController(Activity activity, TransitionManager transitionManager) {
         this.activity = activity;
-        this.callbacks = callbacks;
+        this.transitionManager = transitionManager;
     }
 
     public boolean create(Menu menu) {
@@ -57,11 +58,11 @@ public class MenuController implements OnOptionsItemSelectedListener {
         switch (item) {
 
             case R.id.action_settings:
-                callbacks.showSettings();
+                transitionManager.toPreferences();
                 return true;
 
             case R.id.action_about:
-                callbacks.showAbout();
+                transitionManager.toAbout();
                 return true;
 
         }
@@ -72,10 +73,4 @@ public class MenuController implements OnOptionsItemSelectedListener {
         activity.invalidateOptionsMenu();
     }
 
-    public static interface Callbacks {
-        void showSettings();
-
-        void showAbout();
-
-    }
 }

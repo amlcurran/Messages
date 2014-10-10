@@ -21,25 +21,31 @@ import android.content.ContentResolver;
 import com.amlcurran.messages.core.data.Contact;
 import com.amlcurran.messages.core.data.PhoneNumber;
 import com.amlcurran.messages.data.ContactFactory;
+import com.amlcurran.messages.reporting.StatReporter;
 
 public class ExternalEventManager {
     private final ActivityController activityController;
     private final ContentResolver contentResolver;
+    private final StatReporter statReporter;
 
-    public ExternalEventManager(ActivityController activityController, ContentResolver contentResolver) {
+    public ExternalEventManager(ActivityController activityController, ContentResolver contentResolver, StatReporter statReporter) {
         this.activityController = activityController;
         this.contentResolver = contentResolver;
+        this.statReporter = statReporter;
     }
 
     public void viewContact(Contact contact) {
+        statReporter.sendUiEvent("view_contact");
         activityController.viewContact(ContactFactory.uriForContact(contact, contentResolver));
     }
 
     public void addContact(Contact contact) {
+        statReporter.sendUiEvent("add_contact");
         activityController.addContact(contact.getNumber());
     }
 
     public void callNumber(PhoneNumber phoneNumber) {
+        statReporter.sendUiEvent("call_number");
         activityController.callNumber(phoneNumber);
     }
 

@@ -55,7 +55,7 @@ import java.util.List;
 
 public class MessagesActivity extends Activity implements MessagesLoaderProvider,
         SmsComposeListener, ConversationModalMarshall.Callback,
-        OnThreadDeleteListener, ConversationListChangeListener, FragmentController.FragmentCallback, MenuController.Callbacks,
+        OnThreadDeleteListener, ConversationListChangeListener, FragmentController.FragmentCallback,
         TransitionManager.Provider {
 
     private InUiNotifier toastInUiNotifier;
@@ -87,12 +87,12 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
 
         FragmentController fragmentController = new SinglePaneFullScreenFragmentViewController(this, this, new ActionBarHeaderCallback(actionBarController));
         ActivityController activityController = new ActivityController(this, blockingInUiNotifier);
-        transitionManager = new TransitionManager(fragmentController, activityController);
-        externalEventManager = new ExternalEventManager(activityController, getContentResolver());
+        transitionManager = new TransitionManager(fragmentController, activityController, statReporter);
+        externalEventManager = new ExternalEventManager(activityController, getContentResolver(), statReporter);
 
         setContentView(transitionManager.getView());
 
-        menuController = new MenuController(this, this);
+        menuController = new MenuController(this, transitionManager);
         disabledBannerController = new DisabledBannerController(this, externalEventManager);
         newComposeController = new NewMessageButtonController(findViewById(R.id.button_new_message), transitionManager);
         appChecker = new DefaultAppChecker(this, new HideNewComposeAndShowBannerCallback(newComposeController, disabledBannerController));
@@ -150,9 +150,6 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
     @Override
     protected void onResume() {
         super.onResume();
-        if (!preferencesStore.isNotificationPersistent()) {
-            SingletonManager.getNotifier(this).clearNewMessagesNotification();
-        }
         appChecker.checkSmsApp();
     }
 
@@ -175,18 +172,6 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
     }
 
     @Override
-    public void showSettings() {
-        statReporter.sendUiEvent("settings");
-        transitionManager.toPreferences();
-    }
-
-    @Override
-    public void showAbout() {
-        statReporter.sendUiEvent("about");
-        transitionManager.toAbout();
-    }
-
-    @Override
     public MessagesLoader getMessagesLoader() {
         return messagesLoader;
     }
@@ -205,7 +190,6 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
 
     @Override
     public void callNumber(PhoneNumber phoneNumber) {
-        statReporter.sendUiEvent("call_number");
         externalEventManager.callNumber(phoneNumber);
     }
 
@@ -230,7 +214,6 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
 
     @Override
     public void viewContact(Contact contact) {
-        statReporter.sendUiEvent("view_contact");
         externalEventManager.viewContact(contact);
     }
 
@@ -260,7 +243,6 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
 
     @Override
     public void addContact(Contact contact) {
-        statReporter.sendUiEvent("add_contact");
         externalEventManager.addContact(contact);
     }
 

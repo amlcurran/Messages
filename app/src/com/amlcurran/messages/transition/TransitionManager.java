@@ -17,22 +17,27 @@
 package com.amlcurran.messages.transition;
 
 import com.amlcurran.messages.ActivityController;
+import com.amlcurran.messages.reporting.StatReporter;
 import com.amlcurran.messages.ui.control.FragmentController;
 
 public class TransitionManager {
     private final FragmentController fragmentController;
     private final ActivityController activityController;
+    private final StatReporter statReporter;
 
-    public TransitionManager(FragmentController fragmentController, ActivityController activityController) {
+    public TransitionManager(FragmentController fragmentController, ActivityController activityController, StatReporter statReporter) {
         this.fragmentController = fragmentController;
         this.activityController = activityController;
+        this.statReporter = statReporter;
     }
 
     public void toAbout() {
+        statReporter.sendUiEvent("about");
         activityController.showAbout();
     }
 
     public void toPreferences() {
+        statReporter.sendUiEvent("preferences");
         activityController.showPreferences();
     }
 
