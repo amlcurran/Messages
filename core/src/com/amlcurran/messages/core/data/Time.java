@@ -37,4 +37,8 @@ public class Time {
     public static Time fromDateTime(DateTime dateTime) {
         return new Time(dateTime.getMillis());
     }
+
+    public boolean isLaterThan(Time latest) {
+        return millis > latest.millis;
+    }
 }

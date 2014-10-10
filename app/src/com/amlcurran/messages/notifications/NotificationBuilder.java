@@ -24,11 +24,11 @@ import android.support.v4.app.NotificationCompat;
 import com.amlcurran.messages.R;
 import com.amlcurran.messages.analysis.MessageAnalyser;
 import com.amlcurran.messages.core.data.Conversation;
+import com.amlcurran.messages.core.data.Time;
 import com.amlcurran.messages.data.InFlightSmsMessage;
 import com.amlcurran.messages.preferences.PreferenceStore;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Collections;
 import java.util.List;
 
@@ -82,7 +82,7 @@ public class NotificationBuilder {
     }
 
     private Notification buildMultipleSummaryNotification(List<Conversation> conversations, boolean fromNewMessage, CharSequence ticker) {
-        long timestampMillis = Calendar.getInstance().getTimeInMillis();
+        Time latestMessageTime = getLatestMessageTime(conversations);
         NotificationCompat.Action markReadAction = actionBuilder.buildMultipleMarkReadAction(conversations);
 
         NotificationCompat.Builder defaultBuilder = getDefaultBuilder(fromNewMessage);
@@ -96,8 +96,18 @@ public class NotificationBuilder {
                 .setGroupSummary(true)
                 .setContentText(styledTextFactory.buildSenderList(conversations))
                 .setContentTitle(styledTextFactory.buildListSummary(context, conversations))
-                .setWhen(timestampMillis)
+                .setWhen(latestMessageTime.toMillis())
                 .build();
+    }
+
+    private static Time getLatestMessageTime(List<Conversation> conversations) {
+        Time latest = Time.fromMillis(0);
+        for (Conversation conversation : conversations) {
+            if (conversation.getTimeOfLastMessage().isLaterThan(latest)) {
+                latest = conversation.getTimeOfLastMessage();
+            }
+        }
+        return latest;
     }
 
     private NotificationCompat.Style buildInboxStyle(List<Conversation> conversations) {
