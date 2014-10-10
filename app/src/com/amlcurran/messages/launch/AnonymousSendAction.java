@@ -16,7 +16,7 @@
 
 package com.amlcurran.messages.launch;
 
-import com.amlcurran.messages.TransitionManager;
+import com.amlcurran.messages.transition.TransitionManager;
 
 class AnonymousSendAction implements LaunchAction {
 

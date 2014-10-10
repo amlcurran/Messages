@@ -16,7 +16,7 @@
 
 package com.amlcurran.messages.launch;
 
-import com.amlcurran.messages.TransitionManager;
+import com.amlcurran.messages.transition.TransitionManager;
 
 public interface LaunchAction {
     void perform(TransitionManager transitionManager, IntentDataExtractor intentDataExtractor);

@@ -14,13 +14,24 @@
  * limitations under the License.
  */
 
-package com.amlcurran.messages.launch;
+package com.amlcurran.messages.transition;
 
-import com.amlcurran.messages.transition.TransitionManager;
+import com.amlcurran.messages.core.data.Contact;
+import com.amlcurran.messages.core.data.PhoneNumber;
 
-class SmsMessageAction implements LaunchAction {
-    @Override
-    public void perform(TransitionManager transitionManager, IntentDataExtractor intentDataExtractor) {
-        transitionManager.to().newComposeWithMessage(intentDataExtractor.getMessage());
-    }
+public interface TransitionAnchor {
+
+    TransitionManager newCompose();
+
+    TransitionManager thread(Contact contact, String threadId, String writtenMessage);
+
+    TransitionManager thread(PhoneNumber number, String threadId);
+
+    TransitionManager conversationList();
+
+    TransitionManager newComposeWithMessage(String message);
+
+    TransitionManager newComposeWithNumber(String sendAddress);
+
+    TransitionManager mmsError();
 }

@@ -45,6 +45,7 @@ import com.amlcurran.messages.preferences.PreferenceStore;
 import com.amlcurran.messages.reporting.StatReporter;
 import com.amlcurran.messages.telephony.DefaultAppChecker;
 import com.amlcurran.messages.telephony.SmsSender;
+import com.amlcurran.messages.transition.TransitionManager;
 import com.amlcurran.messages.ui.NewMessageButtonController;
 import com.amlcurran.messages.ui.actionbar.ActionBarHeaderCallback;
 import com.amlcurran.messages.ui.actionbar.HoloActionBarController;
