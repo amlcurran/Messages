@@ -34,6 +34,7 @@ import android.widget.Toast;
 import com.amlcurran.messages.R;
 import com.amlcurran.messages.SingletonManager;
 import com.amlcurran.messages.SmsComposeListener;
+import com.amlcurran.messages.ThreadDisplayer;
 import com.amlcurran.messages.core.data.Contact;
 import com.amlcurran.messages.core.data.Time;
 import com.amlcurran.messages.core.loaders.ContactListListener;
@@ -69,6 +70,7 @@ public class ComposeNewFragment extends Fragment implements ComposeMessageView.C
     private MessagesLoader loader;
     private RecipientChooser recipientChooser;
     private ContactChipView contactChip;
+    private ThreadDisplayer threadDisplayer;
 
     public static ComposeNewFragment withAddress(String sendAddress) {
         ComposeNewFragment newFragment = new ComposeNewFragment();
@@ -151,6 +153,7 @@ public class ComposeNewFragment extends Fragment implements ComposeMessageView.C
     public void onAttach(Activity activity) {
         super.onAttach(activity);
         listener = new ProviderHelper<SmsComposeListener>(SmsComposeListener.class).get(activity);
+        threadDisplayer = new ProviderHelper<ThreadDisplayer>(ThreadDisplayer.class).get(activity);
     }
 
     @Override
@@ -195,7 +198,7 @@ public class ComposeNewFragment extends Fragment implements ComposeMessageView.C
 
             @Override
             public void hasConversation(Contact contact, int threadId) {
-                listener.displayThread(contact, threadId, composeView.getText());
+                threadDisplayer.displayThread(contact, threadId, composeView.getText());
             }
         });
     }

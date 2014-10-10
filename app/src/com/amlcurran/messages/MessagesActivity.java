@@ -55,7 +55,7 @@ import com.amlcurran.messages.ui.control.SinglePaneFullScreenFragmentViewControl
 import java.util.List;
 
 public class MessagesActivity extends Activity implements MessagesLoaderProvider,
-        ConversationListFragment.Listener, SmsComposeListener, ConversationModalMarshall.Callback,
+        ConversationListFragment.Listener, SmsComposeListener, ThreadDisplayer, ConversationModalMarshall.Callback,
         OnThreadDeleteListener, ConversationListChangeListener, FragmentController.FragmentCallback, MenuController.Callbacks {
 
     private InUiNotifier toastInUiNotifier;
@@ -200,6 +200,7 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
 
     @Override
     public void onConversationSelected(Conversation conversation) {
+        statReporter.sendUiEvent("display_thread");
         transitionManager.to().thread(conversation.getContact(), conversation.getThreadId(), null);
     }
 
@@ -216,6 +217,7 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
 
     @Override
     public void displayThread(Contact contact, int threadId, String writtenMessage) {
+        statReporter.sendUiEvent("display_thread");
         transitionManager.to().thread(contact, String.valueOf(threadId), writtenMessage);
     }
 
@@ -246,6 +248,7 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
 
     @Override
     public void deleteThreads(final List<Conversation> conversationList) {
+        statReporter.sendUiEvent("delete_threads");
         Dialog.Button no = new Dialog.Button("No");
         Dialog.Button yes = new Dialog.Button("Yes");
         blockingInUiNotifier.show(new BlockingInUiNotifier.Callbacks() {
@@ -269,6 +272,7 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
 
     @Override
     public void addContact(Contact contact) {
+        statReporter.sendUiEvent("add_contact");
         externalEventManager.addContact(contact);
     }
 

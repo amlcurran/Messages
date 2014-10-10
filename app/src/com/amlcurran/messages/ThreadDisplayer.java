@@ -16,12 +16,8 @@
 
 package com.amlcurran.messages;
 
-import com.amlcurran.messages.core.data.PhoneNumber;
-import com.amlcurran.messages.data.InFlightSmsMessage;
+import com.amlcurran.messages.core.data.Contact;
 
-public interface SmsComposeListener {
-    void sendSms(InFlightSmsMessage smsMessage);
-
-    void callNumber(PhoneNumber phoneNumber);
-
+public interface ThreadDisplayer {
+    void displayThread(Contact contact, int threadId, String writtenMessage);
 }
