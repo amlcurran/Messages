@@ -19,6 +19,7 @@ package com.amlcurran.messages.telephony;
 import android.app.Activity;
 import android.app.IntentService;
 import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -39,12 +40,12 @@ public class SmsSender extends IntentService {
 
     public static final String TAG = SmsSender.class.getSimpleName();
 
-    public static final String EXTRA_MESSAGE = "message";
     public static final String ACTION_SEND_REQUEST = "send_request";
     public static final String ACTION_MESSAGE_SENT = "message_send";
     public static final int IS_FROM_FAILURE = 1;
+    private static final String EXTRA_MESSAGE = "message";
     private static final String EXTRA_OUTBOX_URI = "outbox_uri";
-    public static final String EXTRA_FROM_FAILURE = "from_failure";
+    private static final String EXTRA_FROM_FAILURE = "from_failure";
     public static final String FROM_WEAR = "wear";
     public static final String EXTRA_NUMBER = "number";
     public static final String EXTRA_VOICE_REPLY = "voice_reply";
@@ -194,5 +195,20 @@ public class SmsSender extends IntentService {
 
     private boolean isSendRequest(Intent intent) {
         return intent.getAction().equals(ACTION_SEND_REQUEST);
+    }
+
+    public static Intent sendMessageIntent(Context context, InFlightSmsMessage smsMessage) {
+        Intent intent = new Intent(context, SmsSender.class);
+        intent.setAction(SmsSender.ACTION_SEND_REQUEST);
+        intent.putExtra(SmsSender.EXTRA_MESSAGE, smsMessage);
+        return intent;
+    }
+
+    public static Intent resendMessageIntent(Context context, InFlightSmsMessage smsMessage) {
+        Intent intent = new Intent(context, SmsSender.class);
+        intent.setAction(SmsSender.ACTION_SEND_REQUEST);
+        intent.putExtra(SmsSender.EXTRA_FROM_FAILURE, SmsSender.IS_FROM_FAILURE);
+        intent.putExtra(SmsSender.EXTRA_MESSAGE, smsMessage);
+        return intent;
     }
 }

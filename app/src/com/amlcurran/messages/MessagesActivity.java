@@ -28,7 +28,6 @@ import com.amlcurran.messages.core.data.Contact;
 import com.amlcurran.messages.core.data.Conversation;
 import com.amlcurran.messages.core.data.PhoneNumber;
 import com.amlcurran.messages.core.loaders.ConversationListChangeListener;
-import com.amlcurran.messages.data.ContactFactory;
 import com.amlcurran.messages.data.InFlightSmsMessage;
 import com.amlcurran.messages.events.EventBus;
 import com.amlcurran.messages.launch.IntentDataExtractor;
@@ -45,6 +44,7 @@ import com.amlcurran.messages.notifications.InUiToastNotifier;
 import com.amlcurran.messages.preferences.PreferenceStore;
 import com.amlcurran.messages.reporting.StatReporter;
 import com.amlcurran.messages.telephony.DefaultAppChecker;
+import com.amlcurran.messages.telephony.SmsSender;
 import com.amlcurran.messages.threads.ThreadFragment;
 import com.amlcurran.messages.ui.NewMessageButtonController;
 import com.amlcurran.messages.ui.actionbar.ActionBarHeaderCallback;
@@ -73,6 +73,7 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
     private HoloActionBarController actionBarController;
     private DisabledBannerController disabledBannerController;
     private NewMessageButtonController newComposeController;
+    private TransitionManager transitionManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,6 +87,8 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
         statReporter = SingletonManager.getStatsReporter(this);
         eventBus = SingletonManager.getEventBus(this);
         preferencesStore = new PreferenceStore(this);
+
+        transitionManager = new TransitionManager(fragmentController, activityController, getContentResolver());
 
         setContentView(fragmentController.getLayoutResourceId());
 
@@ -249,28 +252,23 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
 
     @Override
     public void onConversationSelected(Conversation conversation) {
-        PhoneNumber address = conversation.getAddress();
-        Bundle contactBundle = ContactFactory.smooshContact(conversation.getContact());
-        ThreadFragment fragment = ThreadFragment.create(conversation.getThreadId(), address, contactBundle, null);
-        fragmentController.replaceFragment(fragment);
+        transitionManager.toThread(conversation.getContact(), conversation.getThreadId(), null);
     }
 
     @Override
     public void sendSms(InFlightSmsMessage smsMessage) {
-        activityController.sendSms(smsMessage);
+        startService(SmsSender.sendMessageIntent(this, smsMessage));
     }
 
     @Override
     public void callNumber(PhoneNumber phoneNumber) {
         statReporter.sendUiEvent("call_number");
-        activityController.callNumber(phoneNumber);
+        transitionManager.callNumber(phoneNumber);
     }
 
     @Override
     public void displayThread(Contact contact, int threadId, String writtenMessage) {
-        Bundle contactBundle = ContactFactory.smooshContact(contact);
-        ThreadFragment fragment = ThreadFragment.create(String.valueOf(threadId), contact.getNumber(), contactBundle, writtenMessage);
-        fragmentController.replaceFragment(fragment);
+        transitionManager.toThread(contact, String.valueOf(threadId), writtenMessage);
     }
 
     @Override
@@ -295,7 +293,7 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
     @Override
     public void viewContact(Contact contact) {
         statReporter.sendUiEvent("view_contact");
-        activityController.viewContact(ContactFactory.uriForContact(contact, getContentResolver()));
+        transitionManager.viewContact(contact);
     }
 
     @Override
@@ -323,7 +321,7 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
 
     @Override
     public void addContact(Contact contact) {
-        activityController.addContact(contact.getNumber());
+        transitionManager.addContact(contact);
     }
 
     @Override

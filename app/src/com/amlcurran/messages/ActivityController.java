@@ -23,11 +23,9 @@ import android.provider.ContactsContract;
 import android.provider.Telephony;
 import android.telephony.PhoneNumberUtils;
 
-import com.amlcurran.messages.data.InFlightSmsMessage;
 import com.amlcurran.messages.core.data.PhoneNumber;
 import com.amlcurran.messages.notifications.BlockingInUiNotifier;
 import com.amlcurran.messages.notifications.Dialog;
-import com.amlcurran.messages.telephony.SmsSender;
 
 public class ActivityController {
 
@@ -77,13 +75,6 @@ public class ActivityController {
         Intent viewIntent = new Intent(Intent.ACTION_VIEW);
         viewIntent.setData(contactUri);
         activity.startActivity(viewIntent);
-    }
-
-    public void sendSms(InFlightSmsMessage message) {
-        Intent intent = new Intent(activity, SmsSender.class);
-        intent.setAction(SmsSender.ACTION_SEND_REQUEST);
-        intent.putExtra(SmsSender.EXTRA_MESSAGE, message);
-        activity.startService(intent);
     }
 
     public void addContact(PhoneNumber number) {
