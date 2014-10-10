@@ -72,6 +72,7 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
     private DisabledBannerController disabledBannerController;
     private NewMessageButtonController newComposeController;
     private TransitionManager transitionManager;
+    private ExternalEventManager externalEventManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,7 +87,8 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
 
         FragmentController fragmentController = new SinglePaneFullScreenFragmentViewController(this, this, new ActionBarHeaderCallback(actionBarController));
         ActivityController activityController = new ActivityController(this, blockingInUiNotifier);
-        transitionManager = new TransitionManager(fragmentController, activityController, getContentResolver());
+        transitionManager = new TransitionManager(fragmentController, activityController);
+        externalEventManager = new ExternalEventManager(activityController, getContentResolver());
 
         setContentView(transitionManager.getView());
 
@@ -206,7 +208,7 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
     @Override
     public void callNumber(PhoneNumber phoneNumber) {
         statReporter.sendUiEvent("call_number");
-        transitionManager.callNumber(phoneNumber);
+        externalEventManager.callNumber(phoneNumber);
     }
 
     @Override
@@ -236,7 +238,7 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
     @Override
     public void viewContact(Contact contact) {
         statReporter.sendUiEvent("view_contact");
-        transitionManager.viewContact(contact);
+        externalEventManager.viewContact(contact);
     }
 
     @Override
@@ -264,7 +266,7 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
 
     @Override
     public void addContact(Contact contact) {
-        transitionManager.addContact(contact);
+        externalEventManager.addContact(contact);
     }
 
     @Override

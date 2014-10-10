@@ -16,35 +16,16 @@
 
 package com.amlcurran.messages.transition;
 
-import android.content.ContentResolver;
-
 import com.amlcurran.messages.ActivityController;
-import com.amlcurran.messages.core.data.Contact;
-import com.amlcurran.messages.core.data.PhoneNumber;
-import com.amlcurran.messages.data.ContactFactory;
 import com.amlcurran.messages.ui.control.FragmentController;
 
 public class TransitionManager {
     private final FragmentController fragmentController;
     private final ActivityController activityController;
-    private final ContentResolver contentResolver;
 
-    public TransitionManager(FragmentController fragmentController, ActivityController activityController, ContentResolver contentResolver) {
+    public TransitionManager(FragmentController fragmentController, ActivityController activityController) {
         this.fragmentController = fragmentController;
         this.activityController = activityController;
-        this.contentResolver = contentResolver;
-    }
-
-    public void callNumber(PhoneNumber phoneNumber) {
-        activityController.callNumber(phoneNumber);
-    }
-
-    public void viewContact(Contact contact) {
-        activityController.viewContact(ContactFactory.uriForContact(contact, contentResolver));
-    }
-
-    public void addContact(Contact contact) {
-        activityController.addContact(contact.getNumber());
     }
 
     public void toAbout() {
