@@ -16,6 +16,8 @@
 
 package com.amlcurran.messages.core.data;
 
+import org.joda.time.DateTime;
+
 public class Time {
 
     private final long millis;
@@ -32,4 +34,7 @@ public class Time {
         return new Time(millis);
     }
 
+    public static Time fromDateTime(DateTime dateTime) {
+        return new Time(dateTime.getMillis());
+    }
 }

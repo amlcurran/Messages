@@ -18,6 +18,8 @@ package com.amlcurran.messages.core.analysis;
 
 import com.amlcurran.messages.core.data.Time;
 
+import org.joda.time.DateTime;
+
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -28,17 +30,18 @@ public class SmsMessageAnalyser {
     private static final int ONE_HOUR_IN_MINS = 60;
     private static final int MAX_HOURS_TO_SHOW = 6;
     private final DifferenceStringProvider differencesStringProvider;
-    private final DateFormat formatter = new SimpleDateFormat("HH:mm dd-MMM-yy");
+    private final DateFormat fullFormatter = new SimpleDateFormat("HH:mm dd-MMM-yy");
+    private final DateFormat timeFormatter = new SimpleDateFormat("HH:mm");
     private final Date date = new Date();
 
     public SmsMessageAnalyser(DifferenceStringProvider differencesStringProvider) {
         this.differencesStringProvider = differencesStringProvider;
     }
 
-    private boolean isYesterday(Time time) {
-        Time now = Time.fromMillis(System.currentTimeMillis());
-        date.setTime(now.toMillis());
-        return false;
+    boolean isYesterday(Time time) {
+        DateTime then = new DateTime(time.toMillis());
+        DateTime startOfToday = new DateTime().withTimeAtStartOfDay();
+        return then.withTimeAtStartOfDay().plusDays(1).equals(startOfToday);
     }
 
     public String getDifferenceToNow(Time time) {
@@ -50,10 +53,10 @@ public class SmsMessageAnalyser {
                 long hoursDifference = minutesDifference / ONE_HOUR_IN_MINS;
                 if (hoursDifference > MAX_HOURS_TO_SHOW) {
                     if (isYesterday(time)) {
-                        return differencesStringProvider.yesterday();
+                        return differencesStringProvider.yesterday(timeFormatter.format(time.toMillis()));
                     }
                     date.setTime(time.toMillis());
-                    return formatter.format(date);
+                    return fullFormatter.format(date);
                 } else {
                     return differencesStringProvider.hoursDifference(hoursDifference);
                 }

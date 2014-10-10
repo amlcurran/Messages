@@ -61,6 +61,6 @@
     <string name="minutesDifference">%1$s minutes ago</string>
     <string name="hoursDifference">%1$s hours ago</string>
     <string name="underAMinuteAgo">Under a minute ago</string>
-    <string name="yesterday">Yesterday</string>
+    <string name="yesterday">Yesterday, %1$s</string>
 
 </resources>

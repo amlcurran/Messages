@@ -44,7 +44,7 @@ public class ResourcesDifferencesStringProvider implements DifferenceStringProvi
     }
 
     @Override
-    public String yesterday() {
-        return resources.getString(R.string.yesterday);
+    public String yesterday(String time) {
+        return resources.getString(R.string.yesterday, time);
     }
 }

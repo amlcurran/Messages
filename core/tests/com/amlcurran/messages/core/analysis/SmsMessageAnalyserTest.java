@@ -18,6 +18,7 @@ package com.amlcurran.messages.core.analysis;
 
 import com.amlcurran.messages.core.data.Time;
 
+import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -68,6 +69,27 @@ public class SmsMessageAnalyserTest {
         assertEquals("Didn't use the minutes callback", hours, hoursDifference_param);
     }
 
+    @Test
+    public void testThisTimeADayAgo_IsYesterday() {
+        DateTime twentyFourHoursAgo = new DateTime().minusDays(1);
+
+        assertTrue("24 hours ago should be yesterday", smsMessageAnalyser.isYesterday(Time.fromDateTime(twentyFourHoursAgo)));
+    }
+
+    @Test
+    public void test23h59mOneDayAgo_IsYesterday() {
+        DateTime yesterday2359 = new DateTime().withTimeAtStartOfDay().minusMinutes(1);
+
+        assertTrue("23:59 a day ago should be yesterday", smsMessageAnalyser.isYesterday(Time.fromDateTime(yesterday2359)));
+    }
+
+    @Test
+    public void test0h01mOneDayAgo_IsYesterday() {
+        DateTime yesterday0001 = new DateTime().minusDays(1).withTimeAtStartOfDay().plusMinutes(1);
+
+        assertTrue("00:01 a day ago should be yesterday", smsMessageAnalyser.isYesterday(Time.fromDateTime(yesterday0001)));
+    }
+
     private Time nowMinusMillis(int millis) {
         long systemTime = System.currentTimeMillis();
         return Time.fromMillis(systemTime - millis);
@@ -93,7 +115,7 @@ public class SmsMessageAnalyserTest {
         }
 
         @Override
-        public String yesterday() {
+        public String yesterday(String time) {
             return null;
         }
     }

@@ -24,5 +24,5 @@ public interface DifferenceStringProvider {
 
     String underAMinute();
 
-    String yesterday();
+    String yesterday(String time);
 }
