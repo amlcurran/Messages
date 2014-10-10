@@ -35,4 +35,9 @@ public class LoggingStatReporter implements StatReporter {
     public void activityStop(Activity activity) {
         MessagesLog.d(activity, "Log activity stop");
     }
+
+    @Override
+    public void sendEvent(String label) {
+        MessagesLog.d(this, "MILESTONE EVENT : " + label);
+    }
 }

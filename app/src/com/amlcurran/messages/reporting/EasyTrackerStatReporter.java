@@ -43,4 +43,9 @@ public class EasyTrackerStatReporter implements StatReporter{
     public void activityStop(Activity activity) {
         tracker.activityStart(activity);
     }
+
+    @Override
+    public void sendEvent(String label) {
+        tracker.send(MapBuilder.createEvent("milestone", "trigger", label, null).build());
+    }
 }

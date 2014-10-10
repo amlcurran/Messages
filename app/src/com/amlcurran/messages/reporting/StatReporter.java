@@ -20,6 +20,10 @@ import android.app.Activity;
 
 public interface StatReporter {
     void sendUiEvent(String label);
+
     void activityStart(Activity activity);
+
     void activityStop(Activity activity);
+
+    void sendEvent(String label);
 }

@@ -107,8 +107,11 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
         launchAction.perform(transitionManager, intentDataExtractor);
 
         if (launchHelper.isFirstEverStart(preferencesStore)) {
-           preferencesStore.storeHasShownAlphaMessage();
-           showFirstDialog();
+            preferencesStore.storeHasShownAlphaMessage();
+            statReporter.sendEvent("first_ever_start");
+            showFirstDialog();
+        } else {
+            statReporter.sendEvent("not_new_start");
         }
     }
 
