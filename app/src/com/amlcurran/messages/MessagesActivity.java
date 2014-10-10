@@ -22,7 +22,6 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import com.amlcurran.messages.conversationlist.ConversationListFragment;
 import com.amlcurran.messages.conversationlist.ConversationModalMarshall;
 import com.amlcurran.messages.core.data.Contact;
 import com.amlcurran.messages.core.data.Conversation;
@@ -55,7 +54,7 @@ import com.amlcurran.messages.ui.control.SinglePaneFullScreenFragmentViewControl
 import java.util.List;
 
 public class MessagesActivity extends Activity implements MessagesLoaderProvider,
-        ConversationListFragment.Listener, SmsComposeListener, ThreadDisplayer, ConversationModalMarshall.Callback,
+        SmsComposeListener, ThreadDisplayer, ConversationModalMarshall.Callback,
         OnThreadDeleteListener, ConversationListChangeListener, FragmentController.FragmentCallback, MenuController.Callbacks {
 
     private InUiNotifier toastInUiNotifier;
@@ -196,12 +195,6 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
         if (!transitionManager.backPressed()) {
             super.onBackPressed();
         }
-    }
-
-    @Override
-    public void onConversationSelected(Conversation conversation) {
-        statReporter.sendUiEvent("display_thread");
-        transitionManager.to().thread(conversation.getContact(), conversation.getThreadId(), null);
     }
 
     @Override

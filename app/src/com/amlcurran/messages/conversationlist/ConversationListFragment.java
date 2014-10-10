@@ -26,6 +26,7 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 
 import com.amlcurran.messages.R;
+import com.amlcurran.messages.ThreadDisplayer;
 import com.amlcurran.messages.core.conversationlist.ConversationListListener;
 import com.amlcurran.messages.core.data.Conversation;
 import com.amlcurran.messages.core.data.Sort;
@@ -48,12 +49,12 @@ public class ConversationListFragment extends ListFragment implements Conversati
 
     protected SourceBinderAdapter<Conversation> adapter;
     protected ArrayListSource<Conversation> source;
-    private Listener listener;
     private View emptyView;
     private ConversationModalMarshall.Callback modalCallback;
     private PreferenceListener preferenceListener;
     private MessagesLoader messageLoader;
     private EventSubscriber messageReceiver;
+    private ThreadDisplayer threadDisplayer;
 
     public ConversationListFragment() {
     }
@@ -101,7 +102,7 @@ public class ConversationListFragment extends ListFragment implements Conversati
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
-        listener = new ProviderHelper<Listener>(Listener.class).get(activity);
+        threadDisplayer = new ProviderHelper<ThreadDisplayer>(ThreadDisplayer.class).get(activity);
         modalCallback = new ProviderHelper<ConversationModalMarshall.Callback>(ConversationModalMarshall.Callback.class).get(activity);
     }
 
@@ -122,7 +123,8 @@ public class ConversationListFragment extends ListFragment implements Conversati
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        listener.onConversationSelected(source.getAtPosition(position));
+        Conversation conversation = source.getAtPosition(position);
+        threadDisplayer.displayThread(conversation.getContact(), Integer.parseInt(conversation.getThreadId()), null);
     }
 
     @Override
@@ -152,10 +154,6 @@ public class ConversationListFragment extends ListFragment implements Conversati
     @Override
     public void onMessageReceived() {
         loadData(messageLoader, true);
-    }
-
-    public interface Listener {
-        void onConversationSelected(Conversation conversation);
     }
 
 }
