@@ -54,8 +54,9 @@ import com.amlcurran.messages.ui.control.SinglePaneFullScreenFragmentViewControl
 import java.util.List;
 
 public class MessagesActivity extends Activity implements MessagesLoaderProvider,
-        SmsComposeListener, ThreadDisplayer, ConversationModalMarshall.Callback,
-        OnThreadDeleteListener, ConversationListChangeListener, FragmentController.FragmentCallback, MenuController.Callbacks {
+        SmsComposeListener, ConversationModalMarshall.Callback,
+        OnThreadDeleteListener, ConversationListChangeListener, FragmentController.FragmentCallback, MenuController.Callbacks,
+        TransitionManager.Provider {
 
     private InUiNotifier toastInUiNotifier;
     private StatReporter statReporter;
@@ -209,12 +210,6 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
     }
 
     @Override
-    public void displayThread(Contact contact, int threadId, String writtenMessage) {
-        statReporter.sendUiEvent("display_thread");
-        transitionManager.to().thread(contact, String.valueOf(threadId), writtenMessage);
-    }
-
-    @Override
     public void secondaryVisible() {
         isSecondaryVisible = true;
         menuController.update();
@@ -290,4 +285,8 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
         newComposeController.showNewMessageButton();
     }
 
+    @Override
+    public TransitionManager getTransitionManager() {
+        return transitionManager;
+    }
 }

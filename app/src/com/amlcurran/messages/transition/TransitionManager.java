@@ -52,4 +52,7 @@ public class TransitionManager {
         return new FragmentTransitionAnchor(this, fragmentController);
     }
 
+    public interface Provider {
+        TransitionManager getTransitionManager();
+    }
 }

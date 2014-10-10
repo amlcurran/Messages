@@ -26,7 +26,6 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 
 import com.amlcurran.messages.R;
-import com.amlcurran.messages.ThreadDisplayer;
 import com.amlcurran.messages.core.conversationlist.ConversationListListener;
 import com.amlcurran.messages.core.data.Conversation;
 import com.amlcurran.messages.core.data.Sort;
@@ -38,6 +37,7 @@ import com.amlcurran.messages.loaders.MessagesLoader;
 import com.amlcurran.messages.loaders.MessagesLoaderProvider;
 import com.amlcurran.messages.preferences.PreferenceStore;
 import com.amlcurran.messages.preferences.PreferenceStoreDraftRepository;
+import com.amlcurran.messages.transition.TransitionManager;
 import com.amlcurran.messages.ui.control.Master;
 import com.espian.utils.ProviderHelper;
 import com.github.amlcurran.sourcebinder.ArrayListSource;
@@ -54,7 +54,7 @@ public class ConversationListFragment extends ListFragment implements Conversati
     private PreferenceListener preferenceListener;
     private MessagesLoader messageLoader;
     private EventSubscriber messageReceiver;
-    private ThreadDisplayer threadDisplayer;
+    private TransitionManager transitionManager;
 
     public ConversationListFragment() {
     }
@@ -102,7 +102,7 @@ public class ConversationListFragment extends ListFragment implements Conversati
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
-        threadDisplayer = new ProviderHelper<ThreadDisplayer>(ThreadDisplayer.class).get(activity);
+        transitionManager = ((TransitionManager.Provider) activity).getTransitionManager();
         modalCallback = new ProviderHelper<ConversationModalMarshall.Callback>(ConversationModalMarshall.Callback.class).get(activity);
     }
 
@@ -124,7 +124,7 @@ public class ConversationListFragment extends ListFragment implements Conversati
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         Conversation conversation = source.getAtPosition(position);
-        threadDisplayer.displayThread(conversation.getContact(), Integer.parseInt(conversation.getThreadId()), null);
+        transitionManager.to().thread(conversation.getContact(), conversation.getThreadId(), null);
     }
 
     @Override

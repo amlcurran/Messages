@@ -34,7 +34,6 @@ import android.widget.Toast;
 import com.amlcurran.messages.R;
 import com.amlcurran.messages.SingletonManager;
 import com.amlcurran.messages.SmsComposeListener;
-import com.amlcurran.messages.ThreadDisplayer;
 import com.amlcurran.messages.core.data.Contact;
 import com.amlcurran.messages.core.data.Time;
 import com.amlcurran.messages.core.loaders.ContactListListener;
@@ -44,6 +43,7 @@ import com.amlcurran.messages.loaders.HasConversationListener;
 import com.amlcurran.messages.loaders.MessagesLoader;
 import com.amlcurran.messages.loaders.MessagesLoaderProvider;
 import com.amlcurran.messages.telephony.DefaultAppChecker;
+import com.amlcurran.messages.transition.TransitionManager;
 import com.amlcurran.messages.ui.ComposeMessageView;
 import com.amlcurran.messages.ui.contact.ContactChipView;
 import com.amlcurran.messages.ui.contact.ContactView;
@@ -70,7 +70,7 @@ public class ComposeNewFragment extends Fragment implements ComposeMessageView.C
     private MessagesLoader loader;
     private RecipientChooser recipientChooser;
     private ContactChipView contactChip;
-    private ThreadDisplayer threadDisplayer;
+    private TransitionManager transitionManager;
 
     public static ComposeNewFragment withAddress(String sendAddress) {
         ComposeNewFragment newFragment = new ComposeNewFragment();
@@ -153,7 +153,7 @@ public class ComposeNewFragment extends Fragment implements ComposeMessageView.C
     public void onAttach(Activity activity) {
         super.onAttach(activity);
         listener = new ProviderHelper<SmsComposeListener>(SmsComposeListener.class).get(activity);
-        threadDisplayer = new ProviderHelper<ThreadDisplayer>(ThreadDisplayer.class).get(activity);
+        transitionManager = ((TransitionManager.Provider) activity).getTransitionManager();
     }
 
     @Override
@@ -198,7 +198,7 @@ public class ComposeNewFragment extends Fragment implements ComposeMessageView.C
 
             @Override
             public void hasConversation(Contact contact, int threadId) {
-                threadDisplayer.displayThread(contact, threadId, composeView.getText());
+                transitionManager.to().thread(contact, String.valueOf(threadId), composeView.getText());
             }
         });
     }
