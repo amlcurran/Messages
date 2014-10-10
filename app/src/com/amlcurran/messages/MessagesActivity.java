@@ -93,7 +93,7 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
         setContentView(transitionManager.getView());
 
         menuController = new MenuController(this, this);
-        disabledBannerController = new DisabledBannerController(this, activityController);
+        disabledBannerController = new DisabledBannerController(this, externalEventManager);
         newComposeController = new NewMessageButtonController(findViewById(R.id.button_new_message), transitionManager);
         appChecker = new DefaultAppChecker(this, new HideNewComposeAndShowBannerCallback(newComposeController, disabledBannerController));
 
@@ -103,8 +103,8 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
     private void handleLaunch(Bundle savedInstanceState, Intent intent, PreferenceStore preferencesStore) {
         LaunchAction launchAction = launchHelper.getLaunchType(savedInstanceState, intent, preferencesStore);
         IntentDataExtractor intentDataExtractor = new IntentDataExtractor(intent);
-        TransitionManager manager = transitionManager.startAt().conversationList();
-        launchAction.perform(manager, intentDataExtractor);
+        transitionManager.startAt().conversationList();
+        launchAction.perform(transitionManager, intentDataExtractor);
 
         if (launchHelper.isFirstEverStart(preferencesStore)) {
            preferencesStore.storeHasShownAlphaMessage();

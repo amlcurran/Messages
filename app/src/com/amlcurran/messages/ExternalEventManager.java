@@ -42,4 +42,8 @@ public class ExternalEventManager {
     public void callNumber(PhoneNumber phoneNumber) {
         activityController.callNumber(phoneNumber);
     }
+
+    public void switchSmsApp() {
+        activityController.switchSmsApp();
+    }
 }

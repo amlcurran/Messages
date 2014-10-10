@@ -21,7 +21,7 @@ import android.view.View;
 public class DisabledBannerController {
     private final View disabledBanner;
 
-    public DisabledBannerController(MessagesActivity messagesActivity, ActivityController activityController) {
+    public DisabledBannerController(MessagesActivity messagesActivity, ExternalEventManager activityController) {
         disabledBanner = messagesActivity.findViewById(R.id.disabled_banner);
         disabledBanner.setOnClickListener(new ChangeDefaultMessagingApp(activityController));
     }
@@ -35,15 +35,15 @@ public class DisabledBannerController {
     }
 
     private class ChangeDefaultMessagingApp implements View.OnClickListener {
-        private final ActivityController activityController;
+        private final ExternalEventManager externalEventManager;
 
-        public ChangeDefaultMessagingApp(ActivityController activityController) {
-            this.activityController = activityController;
+        public ChangeDefaultMessagingApp(ExternalEventManager externalEventManager) {
+            this.externalEventManager = externalEventManager;
         }
 
         @Override
         public void onClick(View v) {
-            activityController.switchSmsApp();
+            externalEventManager.switchSmsApp();
         }
     }
 }
