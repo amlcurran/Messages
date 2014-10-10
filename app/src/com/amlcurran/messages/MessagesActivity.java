@@ -61,7 +61,6 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
     private InUiNotifier toastInUiNotifier;
     private StatReporter statReporter;
     private FragmentController fragmentController;
-    private ActivityController activityController;
     private MenuController menuController;
     private DefaultAppChecker appChecker;
     private EventBus eventBus;
@@ -82,12 +81,12 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
         fragmentController = new SinglePaneFullScreenFragmentViewController(this, this, new ActionBarHeaderCallback(actionBarController));
         toastInUiNotifier = new InUiToastNotifier(this);
         blockingInUiNotifier = new BlockingInUiDialogNotifier(getFragmentManager());
-        activityController = new ActivityController(this, blockingInUiNotifier);
         messagesLoader = SingletonManager.getMessagesLoader(this);
         statReporter = SingletonManager.getStatsReporter(this);
         eventBus = SingletonManager.getEventBus(this);
         preferencesStore = new PreferenceStore(this);
 
+        ActivityController activityController = new ActivityController(this, blockingInUiNotifier);
         transitionManager = new TransitionManager(fragmentController, activityController, getContentResolver());
 
         setContentView(fragmentController.getLayoutResourceId());
@@ -229,13 +228,13 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
     @Override
     public void showSettings() {
         statReporter.sendUiEvent("settings");
-        startActivity(SecondaryActivity.preferences(this));
+        transitionManager.toPreferences();
     }
 
     @Override
     public void showAbout() {
         statReporter.sendUiEvent("about");
-        startActivity(SecondaryActivity.about(this));
+        transitionManager.toAbout();
     }
 
     @Override

@@ -53,4 +53,12 @@ public class TransitionManager {
     public void addContact(Contact contact) {
         activityController.addContact(contact.getNumber());
     }
+
+    public void toAbout() {
+        activityController.showAbout();
+    }
+
+    public void toPreferences() {
+        activityController.showPreferences();
+    }
 }

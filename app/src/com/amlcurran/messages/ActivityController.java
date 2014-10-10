@@ -83,4 +83,12 @@ public class ActivityController {
         intent.putExtra(ContactsContract.Intents.Insert.PHONE, PhoneNumberUtils.stripSeparators(number.flatten()));
         activity.startActivityForResult(intent, SAVE_CONTACT);
     }
+
+    public void showAbout() {
+        activity.startActivity(SecondaryActivity.about(activity));
+    }
+
+    public void showPreferences() {
+        activity.startActivity(SecondaryActivity.preferences(activity));
+    }
 }
