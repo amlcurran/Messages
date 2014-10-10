@@ -50,11 +50,11 @@ public class TransitionManager {
     }
 
     public TransitionAnchor to() {
-        return new FragmentTransitionAnchor(this, fragmentController);
+        return new FragmentTransitionAnchor(this, fragmentController, statReporter);
     }
 
     public TransitionAnchor startAt() {
-        return new FragmentTransitionAnchor(this, fragmentController);
+        return new FragmentTransitionAnchor(this, fragmentController, statReporter);
     }
 
     public interface Provider {

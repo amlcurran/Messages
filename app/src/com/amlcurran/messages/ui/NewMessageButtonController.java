@@ -19,14 +19,15 @@ package com.amlcurran.messages.ui;
 import android.view.View;
 import android.view.animation.DecelerateInterpolator;
 
+import com.amlcurran.messages.reporting.StatReporter;
 import com.amlcurran.messages.transition.TransitionManager;
 
 public class NewMessageButtonController {
     private final View newMessageButton;
 
-    public NewMessageButtonController(View newMessageButton, TransitionManager transitionManager) {
+    public NewMessageButtonController(View newMessageButton, TransitionManager transitionManager, StatReporter statReporter) {
         this.newMessageButton = newMessageButton;
-        this.newMessageButton.setOnClickListener(new NewMessageClickListener(transitionManager));
+        this.newMessageButton.setOnClickListener(new NewMessageClickListener(transitionManager, statReporter));
     }
 
     public void hideNewMessageButton() {
@@ -61,13 +62,16 @@ public class NewMessageButtonController {
 
     private static class NewMessageClickListener implements View.OnClickListener {
         private final TransitionManager transitionManager;
+        private final StatReporter statReporter;
 
-        public NewMessageClickListener(TransitionManager transitionManager) {
+        public NewMessageClickListener(TransitionManager transitionManager, StatReporter statReporter) {
             this.transitionManager = transitionManager;
+            this.statReporter = statReporter;
         }
 
         @Override
         public void onClick(View v) {
+            statReporter.sendUiEvent("new_compose_fab");
             transitionManager.to().newCompose();
         }
     }

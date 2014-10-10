@@ -23,6 +23,7 @@ import com.amlcurran.messages.MmsErrorFragment;
 import com.amlcurran.messages.core.data.Contact;
 import com.amlcurran.messages.core.data.PhoneNumber;
 import com.amlcurran.messages.data.ContactFactory;
+import com.amlcurran.messages.reporting.StatReporter;
 import com.amlcurran.messages.threads.ThreadFragment;
 import com.amlcurran.messages.ui.control.FragmentController;
 
@@ -30,10 +31,12 @@ class FragmentTransitionAnchor implements TransitionAnchor {
 
     private final TransitionManager transitionManager;
     private final FragmentController fragmentController;
+    private final StatReporter statReporter;
 
-    public FragmentTransitionAnchor(TransitionManager transitionManager, FragmentController fragmentController) {
+    public FragmentTransitionAnchor(TransitionManager transitionManager, FragmentController fragmentController, StatReporter statReporter) {
         this.transitionManager = transitionManager;
         this.fragmentController = fragmentController;
+        this.statReporter = statReporter;
     }
 
     @Override
@@ -78,6 +81,7 @@ class FragmentTransitionAnchor implements TransitionAnchor {
     @Override
     public TransitionManager mmsError() {
         fragmentController.replaceFragment(new MmsErrorFragment());
+        statReporter.sendEvent("mms_error_view");
         return transitionManager;
     }
 }
