@@ -198,17 +198,15 @@ public class SmsSender extends IntentService {
     }
 
     public static Intent sendMessageIntent(Context context, InFlightSmsMessage smsMessage) {
-        Intent intent = new Intent(context, SmsSender.class);
-        intent.setAction(SmsSender.ACTION_SEND_REQUEST);
-        intent.putExtra(SmsSender.EXTRA_MESSAGE, smsMessage);
-        return intent;
+        Intent sendMessageIntent = new Intent(context, SmsSender.class);
+        sendMessageIntent.setAction(SmsSender.ACTION_SEND_REQUEST);
+        sendMessageIntent.putExtra(SmsSender.EXTRA_MESSAGE, smsMessage);
+        return sendMessageIntent;
     }
 
     public static Intent resendMessageIntent(Context context, InFlightSmsMessage smsMessage) {
-        Intent intent = new Intent(context, SmsSender.class);
-        intent.setAction(SmsSender.ACTION_SEND_REQUEST);
-        intent.putExtra(SmsSender.EXTRA_FROM_FAILURE, SmsSender.IS_FROM_FAILURE);
-        intent.putExtra(SmsSender.EXTRA_MESSAGE, smsMessage);
-        return intent;
+        Intent resendMessageIntent = sendMessageIntent(context, smsMessage);
+        resendMessageIntent.putExtra(SmsSender.EXTRA_FROM_FAILURE, SmsSender.IS_FROM_FAILURE);
+        return resendMessageIntent;
     }
 }
