@@ -36,17 +36,6 @@ public class TransitionManager {
         this.contentResolver = contentResolver;
     }
 
-    public void thread(Contact contact, String threadId, String writtenMessage) {
-        Bundle contactBundle = ContactFactory.smooshContact(contact);
-        ThreadFragment fragment = ThreadFragment.create(threadId, contact.getNumber(), contactBundle, writtenMessage);
-        fragmentController.replaceFragment(fragment);
-    }
-
-    public void thread(PhoneNumber number, String threadId) {
-        ThreadFragment fragment = ThreadFragment.create(threadId, number, null, null);
-        fragmentController.replaceFragment(fragment);
-    }
-
     public void callNumber(PhoneNumber phoneNumber) {
         activityController.callNumber(phoneNumber);
     }
@@ -67,44 +56,89 @@ public class TransitionManager {
         activityController.showPreferences();
     }
 
-    public void newCompose() {
-        fragmentController.loadComposeNewFragment();
-    }
-
     public int getView() {
         return fragmentController.getLayoutResourceId();
-    }
-
-    public TransitionManager conversationList() {
-        fragmentController.loadConversationListFragment();
-        return this;
-    }
-
-    public void newComposeWithMessage(String message) {
-        fragmentController.replaceFragment(ComposeNewFragment.withMessage(message));
-    }
-
-    public void newComposeWithNumber(String sendAddress) {
-        fragmentController.replaceFragment(ComposeNewFragment.withAddress(sendAddress));
-    }
-
-    public void mmsError() {
-        fragmentController.replaceFragment(new MmsErrorFragment());
     }
 
     public boolean backPressed() {
         return fragmentController.backPressed();
     }
 
-    public TransitionManager thenTo() {
-        return this;
+    public TransitionAnchor thenTo() {
+        return new DefaultTransitionAnchor();
     }
 
-    public TransitionManager to() {
-        return this;
+    public TransitionAnchor to() {
+        return new DefaultTransitionAnchor();
     }
 
-    public TransitionManager startAt() {
-        return this;
+    public TransitionAnchor startAt() {
+        return new DefaultTransitionAnchor();
     }
+
+    public interface TransitionAnchor {
+
+        TransitionManager newCompose();
+
+        TransitionManager thread(Contact contact, String threadId, String writtenMessage);
+
+        TransitionManager thread(PhoneNumber number, String threadId);
+
+        TransitionManager conversationList();
+
+        TransitionManager newComposeWithMessage(String message);
+
+        TransitionManager newComposeWithNumber(String sendAddress);
+
+        TransitionManager mmsError();
+    }
+
+    public class DefaultTransitionAnchor implements TransitionAnchor {
+
+        @Override
+        public TransitionManager newCompose() {
+            fragmentController.loadComposeNewFragment();
+            return TransitionManager.this;
+        }
+
+        @Override
+        public TransitionManager thread(Contact contact, String threadId, String writtenMessage) {
+            Bundle contactBundle = ContactFactory.smooshContact(contact);
+            ThreadFragment fragment = ThreadFragment.create(threadId, contact.getNumber(), contactBundle, writtenMessage);
+            fragmentController.replaceFragment(fragment);
+            return TransitionManager.this;
+        }
+
+        @Override
+        public TransitionManager thread(PhoneNumber number, String threadId) {
+            ThreadFragment fragment = ThreadFragment.create(threadId, number, null, null);
+            fragmentController.replaceFragment(fragment);
+            return TransitionManager.this;
+        }
+
+        @Override
+        public TransitionManager conversationList() {
+            fragmentController.loadConversationListFragment();
+            return TransitionManager.this;
+        }
+
+        @Override
+        public TransitionManager newComposeWithMessage(String message) {
+            fragmentController.replaceFragment(ComposeNewFragment.withMessage(message));
+            return TransitionManager.this;
+        }
+
+        @Override
+        public TransitionManager newComposeWithNumber(String sendAddress) {
+            fragmentController.replaceFragment(ComposeNewFragment.withAddress(sendAddress));
+            return TransitionManager.this;
+        }
+
+        @Override
+        public TransitionManager mmsError() {
+            fragmentController.replaceFragment(new MmsErrorFragment());
+            return TransitionManager.this;
+        }
+    }
+
 }
