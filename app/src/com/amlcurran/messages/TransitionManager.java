@@ -36,13 +36,13 @@ public class TransitionManager {
         this.contentResolver = contentResolver;
     }
 
-    public void toThread(Contact contact, String threadId, String writtenMessage) {
+    public void thread(Contact contact, String threadId, String writtenMessage) {
         Bundle contactBundle = ContactFactory.smooshContact(contact);
         ThreadFragment fragment = ThreadFragment.create(threadId, contact.getNumber(), contactBundle, writtenMessage);
         fragmentController.replaceFragment(fragment);
     }
 
-    public void toThread(PhoneNumber number, String threadId) {
+    public void thread(PhoneNumber number, String threadId) {
         ThreadFragment fragment = ThreadFragment.create(threadId, number, null, null);
         fragmentController.replaceFragment(fragment);
     }
@@ -67,7 +67,7 @@ public class TransitionManager {
         activityController.showPreferences();
     }
 
-    public void toNewCompose() {
+    public void newCompose() {
         fragmentController.loadComposeNewFragment();
     }
 
@@ -75,24 +75,36 @@ public class TransitionManager {
         return fragmentController.getLayoutResourceId();
     }
 
-    public TransitionManager toConversationList() {
+    public TransitionManager conversationList() {
         fragmentController.loadConversationListFragment();
         return this;
     }
 
-    public void toNewComposeWithMessage(String message) {
+    public void newComposeWithMessage(String message) {
         fragmentController.replaceFragment(ComposeNewFragment.withMessage(message));
     }
 
-    public void toNewComposeWithNumber(String sendAddress) {
+    public void newComposeWithNumber(String sendAddress) {
         fragmentController.replaceFragment(ComposeNewFragment.withAddress(sendAddress));
     }
 
-    public void toMmsError() {
+    public void mmsError() {
         fragmentController.replaceFragment(new MmsErrorFragment());
     }
 
     public boolean backPressed() {
         return fragmentController.backPressed();
+    }
+
+    public TransitionManager thenTo() {
+        return this;
+    }
+
+    public TransitionManager to() {
+        return this;
+    }
+
+    public TransitionManager startAt() {
+        return this;
     }
 }

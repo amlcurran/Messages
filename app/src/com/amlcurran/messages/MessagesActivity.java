@@ -151,32 +151,32 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
     }
 
     private void displayMmsError() {
-        transitionManager.toConversationList()
-                .toMmsError();
+        transitionManager.startAt().conversationList()
+                .thenTo().mmsError();
     }
 
     private void viewConversation(String threadId, PhoneNumber address) {
-        transitionManager.toConversationList()
-                .toThread(address, threadId);
+        transitionManager.startAt().conversationList()
+                .thenTo().thread(address, threadId);
     }
 
     private void anonymousSendWithMessage(String message) {
-        transitionManager.toConversationList()
-                .toNewComposeWithMessage(message);
+        transitionManager.startAt().conversationList()
+                .thenTo().newComposeWithMessage(message);
     }
 
     private void sendTo(String sendAddress) {
-        transitionManager.toConversationList()
-                .toNewComposeWithNumber(sendAddress);
+        transitionManager.startAt().conversationList()
+                .thenTo().newComposeWithNumber(sendAddress);
     }
 
     private void anonymousSend() {
-        transitionManager.toConversationList()
-                .toNewCompose();
+        transitionManager.startAt().conversationList()
+                .thenTo().newCompose();
     }
 
     private void firstStart() {
-        transitionManager.toConversationList();
+        transitionManager.startAt().conversationList();
     }
 
     @Override
@@ -249,7 +249,7 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
 
     @Override
     public void onConversationSelected(Conversation conversation) {
-        transitionManager.toThread(conversation.getContact(), conversation.getThreadId(), null);
+        transitionManager.to().thread(conversation.getContact(), conversation.getThreadId(), null);
     }
 
     @Override
@@ -265,7 +265,7 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
 
     @Override
     public void displayThread(Contact contact, int threadId, String writtenMessage) {
-        transitionManager.toThread(contact, String.valueOf(threadId), writtenMessage);
+        transitionManager.to().thread(contact, String.valueOf(threadId), writtenMessage);
     }
 
     @Override
