@@ -68,7 +68,7 @@ public class NewMessageButtonController {
 
         @Override
         public void onClick(View v) {
-            transitionManager.newCompose();
+            transitionManager.to().newCompose();
         }
     }
 }

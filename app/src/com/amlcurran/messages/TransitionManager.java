@@ -64,10 +64,6 @@ public class TransitionManager {
         return fragmentController.backPressed();
     }
 
-    public TransitionAnchor thenTo() {
-        return new DefaultTransitionAnchor();
-    }
-
     public TransitionAnchor to() {
         return new DefaultTransitionAnchor();
     }
