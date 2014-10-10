@@ -90,6 +90,13 @@ public class SmsMessageAnalyserTest {
         assertTrue("00:01 a day ago should be yesterday", smsMessageAnalyser.isYesterday(Time.fromDateTime(yesterday0001)));
     }
 
+    @Test
+    public void test00h01mToday_IsToday() {
+        DateTime today0001 = new DateTime().withTimeAtStartOfDay().plusMinutes(1);
+
+        assertTrue("00:01 today should be today", smsMessageAnalyser.isToday(Time.fromDateTime(today0001)));
+    }
+
     private Time nowMinusMillis(int millis) {
         long systemTime = System.currentTimeMillis();
         return Time.fromMillis(systemTime - millis);

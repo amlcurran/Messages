@@ -51,14 +51,13 @@ public class SmsMessageAnalyser {
             long minutesDifference = secondsDifference / ONE_MINUTE_IN_SECS;
             if (minutesDifference > ONE_HOUR_IN_MINS) {
                 long hoursDifference = minutesDifference / ONE_HOUR_IN_MINS;
-                if (hoursDifference > MAX_HOURS_TO_SHOW) {
-                    if (isYesterday(time)) {
-                        return differencesStringProvider.yesterday(timeFormatter.format(time.toMillis()));
-                    }
+                if (isToday(time)) {
+                    return differencesStringProvider.hoursDifference(hoursDifference);
+                } else if (isYesterday(time)) {
+                    return differencesStringProvider.yesterday(timeFormatter.format(time.toMillis()));
+                } else {
                     date.setTime(time.toMillis());
                     return fullFormatter.format(date);
-                } else {
-                    return differencesStringProvider.hoursDifference(hoursDifference);
                 }
             } else {
                 return differencesStringProvider.minutesDifference(minutesDifference);
@@ -66,5 +65,11 @@ public class SmsMessageAnalyser {
         } else {
             return differencesStringProvider.underAMinute();
         }
+    }
+
+    boolean isToday(Time time) {
+        DateTime then = new DateTime(time.toMillis());
+        DateTime startOfToday = new DateTime().withTimeAtStartOfDay();
+        return then.withTimeAtStartOfDay().equals(startOfToday);
     }
 }
