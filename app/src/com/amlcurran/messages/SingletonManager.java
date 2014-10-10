@@ -21,16 +21,11 @@ import android.content.Context;
 import com.amlcurran.messages.events.EventBus;
 import com.amlcurran.messages.loaders.MessagesLoader;
 import com.amlcurran.messages.notifications.Notifier;
-import com.amlcurran.messages.reporting.StatReporter;
 
 public class SingletonManager {
 
     private static MessagesApp getMessagesApp(Context context) {
         return (MessagesApp) context.getApplicationContext();
-    }
-
-    public static StatReporter getStatsReporter(Context context) {
-        return getMessagesApp(context).statsReporter;
     }
 
     public static EventBus getEventBus(Context context) {

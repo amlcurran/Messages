@@ -26,7 +26,7 @@ import com.amlcurran.messages.analysis.MessageAnalyser;
 import com.amlcurran.messages.core.data.Conversation;
 import com.amlcurran.messages.core.data.Time;
 import com.amlcurran.messages.data.InFlightSmsMessage;
-import com.amlcurran.messages.preferences.PreferenceStore;
+import com.amlcurran.messages.preferences.SharedPreferenceStore;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -39,9 +39,9 @@ public class NotificationBuilder {
     private final StyledTextFactory styledTextFactory;
     private final NotificationActionBuilder actionBuilder;
     private final Context context;
-    private final PreferenceStore preferenceStore;
+    private final SharedPreferenceStore preferenceStore;
 
-    public NotificationBuilder(Context context, PreferenceStore preferenceStore) {
+    public NotificationBuilder(Context context, SharedPreferenceStore preferenceStore) {
         this.context = context;
         this.preferenceStore = preferenceStore;
         this.notificationIntentFactory = new NotificationIntentFactory(context);

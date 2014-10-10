@@ -22,15 +22,15 @@ import android.preference.PreferenceFragment;
 import com.amlcurran.messages.Entitled;
 import com.amlcurran.messages.R;
 
-public class PreferencesFragment extends PreferenceFragment implements PreferenceStore.PreferenceChangedListener, Entitled {
+public class PreferencesFragment extends PreferenceFragment implements SharedPreferenceStore.PreferenceChangedListener, Entitled {
 
     private RingtoneHelper ringtoneHelper;
-    private PreferenceStore preferencesStore;
+    private SharedPreferenceStore preferencesStore;
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        preferencesStore = new PreferenceStore(getActivity());
+        preferencesStore = new SharedPreferenceStore(getActivity());
         ringtoneHelper = new RingtoneHelper(this, preferencesStore);
 
         addPreferencesFromResource(R.xml.preferences);
@@ -52,7 +52,7 @@ public class PreferencesFragment extends PreferenceFragment implements Preferenc
 
     @Override
     public void preferenceChanged(String key) {
-        if (PreferenceStore.RINGTONE.equals(key)) {
+        if (SharedPreferenceStore.RINGTONE.equals(key)) {
             ringtoneHelper.setUpToneSummary();
         }
     }

@@ -14,29 +14,40 @@
  * limitations under the License.
  */
 
-package com.amlcurran.messages.reporting;
+package com.amlcurran.messages.core.reporting;
 
-import com.amlcurran.messages.MessagesLog;
-import com.amlcurran.messages.core.reporting.StatReporter;
+import com.amlcurran.messages.core.preferences.PreferenceStore;
 
-public class LoggingStatReporter implements StatReporter {
+public class UserPreferenceWrappingStatReporter implements StatReporter {
+    private final StatReporter statReporter;
+    private final PreferenceStore preferenceStore;
+
+    public UserPreferenceWrappingStatReporter(StatReporter statReporter, PreferenceStore preferenceStore) {
+        this.statReporter = statReporter;
+        this.preferenceStore = preferenceStore;
+    }
+
     @Override
     public void sendUiEvent(String label) {
-        MessagesLog.d(this, "UI EVENT : " + label);
+        if (preferenceStore.shouldSendStats()) {
+            statReporter.sendUiEvent(label);
+        }
     }
 
     @Override
     public void start() {
-
+        statReporter.start();
     }
 
     @Override
     public void stop() {
-
+        statReporter.stop();
     }
 
     @Override
     public void sendEvent(String label) {
-        MessagesLog.d(this, "MILESTONE EVENT : " + label);
+        if (preferenceStore.shouldSendStats()) {
+            statReporter.sendEvent(label);
+        }
     }
 }

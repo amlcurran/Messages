@@ -34,11 +34,7 @@ import com.amlcurran.messages.loaders.MessagesCache;
 import com.amlcurran.messages.loaders.MessagesLoader;
 import com.amlcurran.messages.notifications.Notifier;
 import com.amlcurran.messages.notifications.UnreadMessageNotificationManager;
-import com.amlcurran.messages.preferences.PreferenceStore;
-import com.amlcurran.messages.reporting.EasyTrackerStatReporter;
-import com.amlcurran.messages.reporting.LoggingStatReporter;
-import com.amlcurran.messages.reporting.StatReporter;
-import com.google.analytics.tracking.android.EasyTracker;
+import com.amlcurran.messages.preferences.SharedPreferenceStore;
 
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
@@ -51,7 +47,6 @@ public class MessagesApp extends Application implements BroadcastEventSubscriber
     MessagesLoader loader;
     Notifier notifier;
     EventBus eventBus;
-    StatReporter statsReporter;
     private UnreadMessageNotificationManager unreadMessageNotificationManager;
 
     @Override
@@ -77,7 +72,6 @@ public class MessagesApp extends Application implements BroadcastEventSubscriber
                 new Broadcast(BroadcastEventBus.BROADCAST_MESSAGE_SENT, null),
                 new Broadcast(BroadcastEventBus.BROADCAST_MESSAGE_RECEIVED, null),
                 new Broadcast(BroadcastEventBus.BROADCAST_LIST_INVALIDATED, null));
-        statsReporter = createStatReporter();
         primeZygote(executor);
 
         if (BuildConfig.DEBUG) {
@@ -91,14 +85,6 @@ public class MessagesApp extends Application implements BroadcastEventSubscriber
                     .build());
         }
 
-    }
-
-    private StatReporter createStatReporter() {
-        if (BuildConfig.DEBUG) {
-            return new LoggingStatReporter();
-        } else {
-            return new EasyTrackerStatReporter(EasyTracker.getInstance(this));
-        }
     }
 
     private void primeZygote(ExecutorService executor) {
@@ -116,7 +102,7 @@ public class MessagesApp extends Application implements BroadcastEventSubscriber
     @Override
     public void onMessageReceived() {
         cache.invalidate();
-        loader.loadConversationList(new UpdateNotificationListener(notifier), new PreferenceStore(this).getConversationSort());
+        loader.loadConversationList(new UpdateNotificationListener(notifier), new SharedPreferenceStore(this).getConversationSort());
     }
 
     private class PrimeLinkifyTask implements Callable<Object> {

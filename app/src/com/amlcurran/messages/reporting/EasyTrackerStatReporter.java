@@ -16,16 +16,18 @@
 
 package com.amlcurran.messages.reporting;
 
-import android.app.Activity;
-
+import com.amlcurran.messages.MessagesActivity;
+import com.amlcurran.messages.core.reporting.StatReporter;
 import com.google.analytics.tracking.android.EasyTracker;
 import com.google.analytics.tracking.android.MapBuilder;
 
-public class EasyTrackerStatReporter implements StatReporter{
+public class EasyTrackerStatReporter implements StatReporter {
 
+    private final MessagesActivity messagesActivity;
     private final EasyTracker tracker;
 
-    public EasyTrackerStatReporter(EasyTracker tracker) {
+    public EasyTrackerStatReporter(MessagesActivity messagesActivity, EasyTracker tracker) {
+        this.messagesActivity = messagesActivity;
         this.tracker = tracker;
     }
 
@@ -35,13 +37,13 @@ public class EasyTrackerStatReporter implements StatReporter{
     }
 
     @Override
-    public void activityStart(Activity activity) {
-        tracker.activityStart(activity);
+    public void start() {
+        tracker.activityStart(messagesActivity);
     }
 
     @Override
-    public void activityStop(Activity activity) {
-        tracker.activityStart(activity);
+    public void stop() {
+        tracker.activityStop(messagesActivity);
     }
 
     @Override

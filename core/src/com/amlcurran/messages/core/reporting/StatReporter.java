@@ -14,29 +14,14 @@
  * limitations under the License.
  */
 
-package com.amlcurran.messages.reporting;
+package com.amlcurran.messages.core.reporting;
 
-import com.amlcurran.messages.MessagesLog;
-import com.amlcurran.messages.core.reporting.StatReporter;
+public interface StatReporter {
+    void sendUiEvent(String label);
 
-public class LoggingStatReporter implements StatReporter {
-    @Override
-    public void sendUiEvent(String label) {
-        MessagesLog.d(this, "UI EVENT : " + label);
-    }
+    void start();
 
-    @Override
-    public void start() {
+    void stop();
 
-    }
-
-    @Override
-    public void stop() {
-
-    }
-
-    @Override
-    public void sendEvent(String label) {
-        MessagesLog.d(this, "MILESTONE EVENT : " + label);
-    }
+    void sendEvent(String label);
 }

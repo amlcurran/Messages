@@ -27,6 +27,7 @@ import com.amlcurran.messages.core.data.Contact;
 import com.amlcurran.messages.core.data.Conversation;
 import com.amlcurran.messages.core.data.PhoneNumber;
 import com.amlcurran.messages.core.loaders.ConversationListChangeListener;
+import com.amlcurran.messages.core.reporting.UserPreferenceWrappingStatReporter;
 import com.amlcurran.messages.data.InFlightSmsMessage;
 import com.amlcurran.messages.events.EventBus;
 import com.amlcurran.messages.launch.IntentDataExtractor;
@@ -40,8 +41,10 @@ import com.amlcurran.messages.notifications.BlockingInUiNotifier;
 import com.amlcurran.messages.notifications.Dialog;
 import com.amlcurran.messages.notifications.InUiNotifier;
 import com.amlcurran.messages.notifications.InUiToastNotifier;
-import com.amlcurran.messages.preferences.PreferenceStore;
-import com.amlcurran.messages.reporting.StatReporter;
+import com.amlcurran.messages.core.reporting.StatReporter;
+import com.amlcurran.messages.preferences.SharedPreferenceStore;
+import com.amlcurran.messages.reporting.EasyTrackerStatReporter;
+import com.amlcurran.messages.reporting.LoggingStatReporter;
 import com.amlcurran.messages.telephony.DefaultAppChecker;
 import com.amlcurran.messages.telephony.SmsSender;
 import com.amlcurran.messages.transition.TransitionManager;
@@ -50,6 +53,7 @@ import com.amlcurran.messages.ui.actionbar.ActionBarHeaderCallback;
 import com.amlcurran.messages.ui.actionbar.HoloActionBarController;
 import com.amlcurran.messages.ui.control.FragmentController;
 import com.amlcurran.messages.ui.control.SinglePaneFullScreenFragmentViewController;
+import com.google.analytics.tracking.android.EasyTracker;
 
 import java.util.List;
 
@@ -67,7 +71,7 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
     private boolean isSecondaryVisible;
     private MessagesLoader messagesLoader;
     private BlockingInUiNotifier blockingInUiNotifier;
-    private PreferenceStore preferencesStore;
+    private SharedPreferenceStore preferencesStore;
     private HoloActionBarController actionBarController;
     private DisabledBannerController disabledBannerController;
     private NewMessageButtonController newComposeController;
@@ -81,9 +85,9 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
         toastInUiNotifier = new InUiToastNotifier(this);
         blockingInUiNotifier = new BlockingInUiDialogNotifier(getFragmentManager());
         messagesLoader = SingletonManager.getMessagesLoader(this);
-        statReporter = SingletonManager.getStatsReporter(this);
+        preferencesStore = new SharedPreferenceStore(this);
+        statReporter = createStatReporter();
         eventBus = SingletonManager.getEventBus(this);
-        preferencesStore = new PreferenceStore(this);
 
         FragmentController fragmentController = new SinglePaneFullScreenFragmentViewController(this, this, new ActionBarHeaderCallback(actionBarController));
         ActivityController activityController = new ActivityController(this, blockingInUiNotifier);
@@ -100,7 +104,17 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
         handleLaunch(savedInstanceState, getIntent(), preferencesStore);
     }
 
-    private void handleLaunch(Bundle savedInstanceState, Intent intent, PreferenceStore preferencesStore) {
+    private StatReporter createStatReporter() {
+        StatReporter reporter;
+        if (BuildConfig.DEBUG) {
+            reporter = new LoggingStatReporter();
+        } else {
+            reporter = new EasyTrackerStatReporter(this, EasyTracker.getInstance(this));
+        }
+        return new UserPreferenceWrappingStatReporter(reporter, preferencesStore);
+    }
+
+    private void handleLaunch(Bundle savedInstanceState, Intent intent, SharedPreferenceStore preferencesStore) {
         LaunchAction launchAction = launchHelper.getLaunchType(savedInstanceState, intent, preferencesStore);
         IntentDataExtractor intentDataExtractor = new IntentDataExtractor(intent);
         transitionManager.startAt().conversationList();
@@ -138,13 +152,13 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
     @Override
     protected void onStart() {
         super.onStart();
-        statReporter.activityStart(this);
+        statReporter.start();
     }
 
     @Override
     protected void onStop() {
         super.onStop();
-        statReporter.activityStop(this);
+        statReporter.stop();
     }
 
     @Override

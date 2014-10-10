@@ -24,9 +24,9 @@ import com.amlcurran.messages.R;
 
 public class RingtoneHelper {
     private final PreferencesFragment preferencesFragment;
-    private final PreferenceStore preferencesStore;
+    private final SharedPreferenceStore preferencesStore;
 
-    public RingtoneHelper(PreferencesFragment preferencesFragment, PreferenceStore preferencesStore) {
+    public RingtoneHelper(PreferencesFragment preferencesFragment, SharedPreferenceStore preferencesStore) {
         this.preferencesFragment = preferencesFragment;
         this.preferencesStore = preferencesStore;
     }
@@ -42,7 +42,7 @@ public class RingtoneHelper {
             summary = preferencesFragment.getString(R.string.default_str);
         }
 
-        preferencesFragment.findPreference(PreferenceStore.RINGTONE).setSummary(summary);
+        preferencesFragment.findPreference(SharedPreferenceStore.RINGTONE).setSummary(summary);
     }
 
     Ringtone getCurrentRingtone(Uri ringtoneUri) {

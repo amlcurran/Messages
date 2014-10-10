@@ -28,7 +28,7 @@ import com.amlcurran.messages.core.data.Contact;
 import com.amlcurran.messages.core.data.Conversation;
 import com.amlcurran.messages.data.InFlightSmsMessage;
 import com.amlcurran.messages.loaders.MessagesLoader;
-import com.amlcurran.messages.preferences.PreferenceStore;
+import com.amlcurran.messages.preferences.SharedPreferenceStore;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,16 +44,16 @@ public class Notifier {
     private final NotificationManagerCompat notificationManager;
     private final NotificationBuilder notificationBuilder;
     private final MessagesLoader loader;
-    private final PreferenceStore preferenceStore;
+    private final SharedPreferenceStore preferenceStore;
     private final UnreadMessageNotificationManager unreadMessageNotificationManager;
     private final ArrayList<Conversation> postedConversations;
 
     public Notifier(Context context, UnreadMessageNotificationManager unreadMessageNotificationManager) {
         this.unreadMessageNotificationManager = unreadMessageNotificationManager;
-        this.preferenceStore = new PreferenceStore(context);
+        this.preferenceStore = new SharedPreferenceStore(context);
         this.loader = SingletonManager.getMessagesLoader(context);
         this.notificationManager = NotificationManagerCompat.from(context);
-        this.notificationBuilder = new NotificationBuilder(context, new PreferenceStore(context));
+        this.notificationBuilder = new NotificationBuilder(context, new SharedPreferenceStore(context));
         this.postedConversations = new ArrayList<Conversation>();
     }
 

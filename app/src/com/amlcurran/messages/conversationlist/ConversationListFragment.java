@@ -35,8 +35,8 @@ import com.amlcurran.messages.events.BroadcastEventBus;
 import com.amlcurran.messages.events.BroadcastEventSubscriber;
 import com.amlcurran.messages.loaders.MessagesLoader;
 import com.amlcurran.messages.loaders.MessagesLoaderProvider;
-import com.amlcurran.messages.preferences.PreferenceStore;
 import com.amlcurran.messages.preferences.PreferenceStoreDraftRepository;
+import com.amlcurran.messages.preferences.SharedPreferenceStore;
 import com.amlcurran.messages.transition.TransitionManager;
 import com.amlcurran.messages.ui.control.Master;
 import com.espian.utils.ProviderHelper;
@@ -118,7 +118,7 @@ public class ConversationListFragment extends ListFragment implements Conversati
     }
 
     private Sort getSort() {
-        return new PreferenceStore(getActivity()).getConversationSort();
+        return new SharedPreferenceStore(getActivity()).getConversationSort();
     }
 
     @Override

@@ -23,22 +23,24 @@ import android.preference.PreferenceManager;
 
 import com.amlcurran.messages.core.TextUtils;
 import com.amlcurran.messages.core.data.Sort;
+import com.amlcurran.messages.core.preferences.PreferenceStore;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class PreferenceStore {
+public class SharedPreferenceStore implements PreferenceStore {
 
     static final String UNREAD_PRIORITY = "unread_priority";
     static final String RINGTONE = "ringtone";
     static final String NOTIFICATIONS = "notifications";
     static final String SHOWN_ALPHA_MESSAGE = "alpha_message";
     public static final String PERSISTENT_NOTIFICATION = "persistent_notification";
+    private static final String SEND_STATS = "send_stats";
     private final SharedPreferences preferences;
     private final List<PreferenceChangedListener> changedListenerList = new ArrayList<PreferenceChangedListener>();
     private final PreferenceStoreDraftRepository draftRepository;
 
-    public PreferenceStore(Context context) {
+    public SharedPreferenceStore(Context context) {
         preferences = PreferenceManager.getDefaultSharedPreferences(context);
         draftRepository = new PreferenceStoreDraftRepository(context);
     }
@@ -105,6 +107,11 @@ public class PreferenceStore {
 
     public boolean isNotificationPersistent() {
         return preferences.getBoolean(PERSISTENT_NOTIFICATION, false);
+    }
+
+    @Override
+    public boolean shouldSendStats() {
+        return preferences.getBoolean(SEND_STATS, true);
     }
 
     public interface PreferenceChangedListener {

@@ -14,16 +14,8 @@
  * limitations under the License.
  */
 
-package com.amlcurran.messages.reporting;
+package com.amlcurran.messages.core.preferences;
 
-import android.app.Activity;
-
-public interface StatReporter {
-    void sendUiEvent(String label);
-
-    void activityStart(Activity activity);
-
-    void activityStop(Activity activity);
-
-    void sendEvent(String label);
+public interface PreferenceStore {
+    boolean shouldSendStats();
 }

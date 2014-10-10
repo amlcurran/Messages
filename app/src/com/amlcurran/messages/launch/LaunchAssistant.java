@@ -20,7 +20,8 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import com.amlcurran.messages.notifications.Notifier;
-import com.amlcurran.messages.preferences.PreferenceStore;
+import com.amlcurran.messages.core.preferences.PreferenceStore;
+import com.amlcurran.messages.preferences.SharedPreferenceStore;
 
 public class LaunchAssistant {
 
@@ -60,7 +61,7 @@ public class LaunchAssistant {
         return intent.getData() != null && intent.getData().getScheme().equals(sms);
     }
 
-    public boolean isFirstEverStart(PreferenceStore preferencesStore) {
+    public boolean isFirstEverStart(SharedPreferenceStore preferencesStore) {
         return preferencesStore.hasNotShownAlphaMessage();
     }
 }

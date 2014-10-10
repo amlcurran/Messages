@@ -23,7 +23,7 @@ import com.amlcurran.messages.MmsErrorFragment;
 import com.amlcurran.messages.core.data.Contact;
 import com.amlcurran.messages.core.data.PhoneNumber;
 import com.amlcurran.messages.data.ContactFactory;
-import com.amlcurran.messages.reporting.StatReporter;
+import com.amlcurran.messages.core.reporting.StatReporter;
 import com.amlcurran.messages.threads.ThreadFragment;
 import com.amlcurran.messages.ui.control.FragmentController;
 
