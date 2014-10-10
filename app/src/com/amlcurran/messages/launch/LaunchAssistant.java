@@ -27,39 +27,29 @@ public class LaunchAssistant {
     public static final String EXTRA_THREAD_ID = "thread_id";
     public static final String EXTRA_ADDRESS = "address";
 
-    public Launch getLaunchType(Bundle savedInstanceState, Intent intent, PreferenceStore preferencesStore) {
-
-        if (preferencesStore.hasNotShownAlphaMessage()) {
-            preferencesStore.storeHasShownAlphaMessage();
-            return Launch.SHOW_ALPHA_MESSAGE;
-        }
+    public LaunchAction getLaunchType(Bundle savedInstanceState, Intent intent, PreferenceStore preferencesStore) {
 
         if (schemeIs(intent, "sms")) {
-            return Launch.SEND_ANONYMOUS;
+            return new AnonymousSendAction();
         }
 
         if (schemeIs(intent, "smsto")) {
-            return Launch.SEND_TO;
+            return new SendToAddressAction();
         }
 
         if (schemeIs(intent, "mms") || schemeIs(intent, "mmsto")) {
-            return Launch.MMS_TO;
+            return new MmsRedirectAction();
         }
 
         if (actionIs(intent, Notifier.ACTION_VIEW_CONVERSATION)) {
-            return Launch.VIEW_CONVERSATION;
+            return new ViewConversationAction();
         }
 
         if (actionIs(intent, Intent.ACTION_SEND)) {
-            return Launch.SHARE_TO;
+            return new SmsMessageAction();
         }
 
-        // if the saved instance state is null, its a first start
-        if (savedInstanceState == null) {
-            return Launch.FIRST_START;
-        }
-
-        return Launch.OTHER;
+        return new NoAction();
     }
 
     private static boolean actionIs(Intent intent, String action) {
@@ -68,5 +58,9 @@ public class LaunchAssistant {
 
     private static boolean schemeIs(Intent intent, String sms) {
         return intent.getData() != null && intent.getData().getScheme().equals(sms);
+    }
+
+    public boolean isFirstEverStart(PreferenceStore preferencesStore) {
+        return preferencesStore.hasNotShownAlphaMessage();
     }
 }

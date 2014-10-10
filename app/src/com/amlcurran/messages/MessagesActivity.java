@@ -31,7 +31,7 @@ import com.amlcurran.messages.core.loaders.ConversationListChangeListener;
 import com.amlcurran.messages.data.InFlightSmsMessage;
 import com.amlcurran.messages.events.EventBus;
 import com.amlcurran.messages.launch.IntentDataExtractor;
-import com.amlcurran.messages.launch.Launch;
+import com.amlcurran.messages.launch.LaunchAction;
 import com.amlcurran.messages.launch.LaunchAssistant;
 import com.amlcurran.messages.loaders.MessagesLoader;
 import com.amlcurran.messages.loaders.MessagesLoaderProvider;
@@ -98,40 +98,14 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
     }
 
     private void handleLaunch(Bundle savedInstanceState, Intent intent, PreferenceStore preferencesStore) {
-        Launch launch = launchHelper.getLaunchType(savedInstanceState, intent, preferencesStore);
+        LaunchAction launchAction = launchHelper.getLaunchType(savedInstanceState, intent, preferencesStore);
         IntentDataExtractor intentDataExtractor = new IntentDataExtractor(intent);
+        TransitionManager manager = transitionManager.startAt().conversationList();
+        launchAction.perform(manager, intentDataExtractor);
 
-        switch (launch) {
-
-            case FIRST_START:
-                firstStart();
-                break;
-
-            case SEND_ANONYMOUS:
-                anonymousSend();
-                break;
-
-            case SEND_TO:
-                sendTo(intentDataExtractor.getAddressFromUri());
-                break;
-
-            case SHARE_TO:
-                anonymousSendWithMessage(intentDataExtractor.getMessage());
-                break;
-
-            case VIEW_CONVERSATION:
-                viewConversation(intentDataExtractor.getThreadId(), intentDataExtractor.getAddress());
-                break;
-
-            case MMS_TO:
-                displayMmsError();
-                break;
-
-            case SHOW_ALPHA_MESSAGE:
-                firstStart();
-                showFirstDialog();
-                break;
-
+        if (launchHelper.isFirstEverStart(preferencesStore)) {
+           preferencesStore.storeHasShownAlphaMessage();
+           showFirstDialog();
         }
     }
 
@@ -148,35 +122,6 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
             }
         }, getString(R.string.alpha_title), getString(R.string.alpha_message),
                 new Dialog.Button("OK"));
-    }
-
-    private void displayMmsError() {
-        transitionManager.startAt().conversationList()
-                .thenTo().mmsError();
-    }
-
-    private void viewConversation(String threadId, PhoneNumber address) {
-        transitionManager.startAt().conversationList()
-                .thenTo().thread(address, threadId);
-    }
-
-    private void anonymousSendWithMessage(String message) {
-        transitionManager.startAt().conversationList()
-                .thenTo().newComposeWithMessage(message);
-    }
-
-    private void sendTo(String sendAddress) {
-        transitionManager.startAt().conversationList()
-                .thenTo().newComposeWithNumber(sendAddress);
-    }
-
-    private void anonymousSend() {
-        transitionManager.startAt().conversationList()
-                .thenTo().newCompose();
-    }
-
-    private void firstStart() {
-        transitionManager.startAt().conversationList();
     }
 
     @Override
