@@ -60,7 +60,16 @@
     <string name="secondsDifference">%1$s seconds ago</string>
     <string name="minutesDifference">%1$s minutes ago</string>
     <string name="hoursDifference">%1$s hours ago</string>
-    <string name="underAMinuteAgo">Under a minute ago</string>
+    <string name="underAMinuteAgo">Just now</string>
     <string name="yesterday">Yesterday, %1$s</string>
 
+    <plurals name="minutesDifference">
+        <item quantity="one">%1$s minute ago</item>
+        <item quantity="other">%1$s minutes ago</item>
+    </plurals>
+
+    <plurals name="hoursDifference">
+        <item quantity="one">%1$s hour ago</item>
+        <item quantity="other">%1$s hours ago</item>
+    </plurals>
 </resources>

@@ -30,12 +30,12 @@ public class ResourcesDifferencesStringProvider implements DifferenceStringProvi
 
     @Override
     public String hoursDifference(long hoursDifference) {
-        return resources.getString(R.string.hoursDifference, hoursDifference);
+        return resources.getQuantityString(R.plurals.hoursDifference, (int) hoursDifference, hoursDifference);
     }
 
     @Override
     public String minutesDifference(long minutesDifference) {
-        return resources.getString(R.string.minutesDifference, minutesDifference);
+        return resources.getQuantityString(R.plurals.minutesDifference, (int) minutesDifference, minutesDifference);
     }
 
     @Override
