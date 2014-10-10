@@ -42,6 +42,11 @@ public class TransitionManager {
         fragmentController.replaceFragment(fragment);
     }
 
+    public void toThread(PhoneNumber number, String threadId) {
+        ThreadFragment fragment = ThreadFragment.create(threadId, number, null, null);
+        fragmentController.replaceFragment(fragment);
+    }
+
     public void callNumber(PhoneNumber phoneNumber) {
         activityController.callNumber(phoneNumber);
     }
@@ -60,5 +65,34 @@ public class TransitionManager {
 
     public void toPreferences() {
         activityController.showPreferences();
+    }
+
+    public void toNewCompose() {
+        fragmentController.loadComposeNewFragment();
+    }
+
+    public int getView() {
+        return fragmentController.getLayoutResourceId();
+    }
+
+    public TransitionManager toConversationList() {
+        fragmentController.loadConversationListFragment();
+        return this;
+    }
+
+    public void toNewComposeWithMessage(String message) {
+        fragmentController.replaceFragment(ComposeNewFragment.withMessage(message));
+    }
+
+    public void toNewComposeWithNumber(String sendAddress) {
+        fragmentController.replaceFragment(ComposeNewFragment.withAddress(sendAddress));
+    }
+
+    public void toMmsError() {
+        fragmentController.replaceFragment(new MmsErrorFragment());
+    }
+
+    public boolean backPressed() {
+        return fragmentController.backPressed();
     }
 }

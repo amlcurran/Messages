@@ -45,7 +45,6 @@ import com.amlcurran.messages.preferences.PreferenceStore;
 import com.amlcurran.messages.reporting.StatReporter;
 import com.amlcurran.messages.telephony.DefaultAppChecker;
 import com.amlcurran.messages.telephony.SmsSender;
-import com.amlcurran.messages.threads.ThreadFragment;
 import com.amlcurran.messages.ui.NewMessageButtonController;
 import com.amlcurran.messages.ui.actionbar.ActionBarHeaderCallback;
 import com.amlcurran.messages.ui.actionbar.HoloActionBarController;
@@ -60,7 +59,6 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
 
     private InUiNotifier toastInUiNotifier;
     private StatReporter statReporter;
-    private FragmentController fragmentController;
     private MenuController menuController;
     private DefaultAppChecker appChecker;
     private EventBus eventBus;
@@ -78,7 +76,6 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         actionBarController = new HoloActionBarController(getActionBar());
-        fragmentController = new SinglePaneFullScreenFragmentViewController(this, this, new ActionBarHeaderCallback(actionBarController));
         toastInUiNotifier = new InUiToastNotifier(this);
         blockingInUiNotifier = new BlockingInUiDialogNotifier(getFragmentManager());
         messagesLoader = SingletonManager.getMessagesLoader(this);
@@ -86,14 +83,15 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
         eventBus = SingletonManager.getEventBus(this);
         preferencesStore = new PreferenceStore(this);
 
+        FragmentController fragmentController = new SinglePaneFullScreenFragmentViewController(this, this, new ActionBarHeaderCallback(actionBarController));
         ActivityController activityController = new ActivityController(this, blockingInUiNotifier);
         transitionManager = new TransitionManager(fragmentController, activityController, getContentResolver());
 
-        setContentView(fragmentController.getLayoutResourceId());
+        setContentView(transitionManager.getView());
 
         menuController = new MenuController(this, this);
         disabledBannerController = new DisabledBannerController(this, activityController);
-        newComposeController = new NewMessageButtonController(findViewById(R.id.button_new_message), fragmentController);
+        newComposeController = new NewMessageButtonController(findViewById(R.id.button_new_message), transitionManager);
         appChecker = new DefaultAppChecker(this, new HideNewComposeAndShowBannerCallback(newComposeController, disabledBannerController));
 
         handleLaunch(savedInstanceState, getIntent(), preferencesStore);
@@ -153,32 +151,32 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
     }
 
     private void displayMmsError() {
-        fragmentController.loadConversationListFragment();
-        fragmentController.replaceFragment(new MmsErrorFragment());
+        transitionManager.toConversationList()
+                .toMmsError();
     }
 
     private void viewConversation(String threadId, PhoneNumber address) {
-        fragmentController.loadConversationListFragment();
-        fragmentController.replaceFragment(ThreadFragment.create(threadId, address, null, null));
+        transitionManager.toConversationList()
+                .toThread(address, threadId);
     }
 
     private void anonymousSendWithMessage(String message) {
-        fragmentController.loadConversationListFragment();
-        fragmentController.replaceFragment(ComposeNewFragment.withMessage(message));
+        transitionManager.toConversationList()
+                .toNewComposeWithMessage(message);
     }
 
     private void sendTo(String sendAddress) {
-        fragmentController.loadConversationListFragment();
-        fragmentController.replaceFragment(ComposeNewFragment.withAddress(sendAddress));
+        transitionManager.toConversationList()
+                .toNewComposeWithNumber(sendAddress);
     }
 
     private void anonymousSend() {
-        fragmentController.loadConversationListFragment();
-        fragmentController.replaceFragment(new ComposeNewFragment());
+        transitionManager.toConversationList()
+                .toNewCompose();
     }
 
     private void firstStart() {
-        fragmentController.loadConversationListFragment();
+        transitionManager.toConversationList();
     }
 
     @Override
@@ -244,7 +242,7 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
 
     @Override
     public void onBackPressed() {
-        if (!fragmentController.backPressed()) {
+        if (!transitionManager.backPressed()) {
             super.onBackPressed();
         }
     }
