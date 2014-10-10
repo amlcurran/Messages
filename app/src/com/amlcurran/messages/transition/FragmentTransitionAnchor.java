@@ -18,7 +18,7 @@ package com.amlcurran.messages.transition;
 
 import android.os.Bundle;
 
-import com.amlcurran.messages.ComposeNewFragment;
+import com.amlcurran.messages.newcompose.ComposeNewFragment;
 import com.amlcurran.messages.MmsErrorFragment;
 import com.amlcurran.messages.core.data.Contact;
 import com.amlcurran.messages.core.data.PhoneNumber;

@@ -21,7 +21,7 @@ import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 
-import com.amlcurran.messages.ComposeNewFragment;
+import com.amlcurran.messages.newcompose.ComposeNewFragment;
 import com.amlcurran.messages.R;
 import com.amlcurran.messages.conversationlist.ConversationListFragment;
 import com.amlcurran.messages.ui.CustomHeaderFragment;

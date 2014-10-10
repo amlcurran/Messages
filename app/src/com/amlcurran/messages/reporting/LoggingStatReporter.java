@@ -18,19 +18,21 @@ package com.amlcurran.messages.reporting;
 
 import android.app.Activity;
 
-public class NullStatReporter implements StatReporter {
+import com.amlcurran.messages.MessagesLog;
+
+public class LoggingStatReporter implements StatReporter {
     @Override
     public void sendUiEvent(String label) {
-
+        MessagesLog.d(this, "UI EVENT : " + label);
     }
 
     @Override
     public void activityStart(Activity activity) {
-
+        MessagesLog.d(activity, "Log activity start");
     }
 
     @Override
     public void activityStop(Activity activity) {
-
+        MessagesLog.d(activity, "Log activity stop");
     }
 }

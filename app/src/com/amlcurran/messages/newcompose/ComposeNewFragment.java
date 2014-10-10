@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.amlcurran.messages;
+package com.amlcurran.messages.newcompose;
 
 import android.animation.LayoutTransition;
 import android.app.Activity;
@@ -31,6 +31,9 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.amlcurran.messages.R;
+import com.amlcurran.messages.SingletonManager;
+import com.amlcurran.messages.SmsComposeListener;
 import com.amlcurran.messages.core.data.Contact;
 import com.amlcurran.messages.core.data.Time;
 import com.amlcurran.messages.core.loaders.ContactListListener;

@@ -35,8 +35,10 @@ import com.amlcurran.messages.loaders.MessagesLoader;
 import com.amlcurran.messages.notifications.Notifier;
 import com.amlcurran.messages.notifications.UnreadMessageNotificationManager;
 import com.amlcurran.messages.preferences.PreferenceStore;
-import com.amlcurran.messages.reporting.NullStatReporter;
+import com.amlcurran.messages.reporting.EasyTrackerStatReporter;
+import com.amlcurran.messages.reporting.LoggingStatReporter;
 import com.amlcurran.messages.reporting.StatReporter;
+import com.google.analytics.tracking.android.EasyTracker;
 
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
@@ -75,7 +77,7 @@ public class MessagesApp extends Application implements BroadcastEventSubscriber
                 new Broadcast(BroadcastEventBus.BROADCAST_MESSAGE_SENT, null),
                 new Broadcast(BroadcastEventBus.BROADCAST_MESSAGE_RECEIVED, null),
                 new Broadcast(BroadcastEventBus.BROADCAST_LIST_INVALIDATED, null));
-        statsReporter = new NullStatReporter();
+        statsReporter = createStatReporter();
         primeZygote(executor);
 
         if (BuildConfig.DEBUG) {
@@ -89,6 +91,14 @@ public class MessagesApp extends Application implements BroadcastEventSubscriber
                     .build());
         }
 
+    }
+
+    private StatReporter createStatReporter() {
+        if (BuildConfig.DEBUG) {
+            return new LoggingStatReporter();
+        } else {
+            return new EasyTrackerStatReporter(EasyTracker.getInstance(this));
+        }
     }
 
     private void primeZygote(ExecutorService executor) {
