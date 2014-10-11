@@ -33,7 +33,7 @@ import com.github.amlcurran.sourcebinder.ArrayListSource;
 
 import java.util.List;
 
-public class ConversationListViewController implements ConversationListListener, BroadcastEventSubscriber.Listener, PreferenceListener.ChangeListener, ConversationListView.ConversationSelectedListener {
+class ConversationListViewController implements ConversationListListener, BroadcastEventSubscriber.Listener, PreferenceListener.ChangeListener, ConversationListView.ConversationSelectedListener {
     private final ConversationListView conversationListView;
     private final MessagesLoader messageLoader;
     private final TransitionManager transitionManager;

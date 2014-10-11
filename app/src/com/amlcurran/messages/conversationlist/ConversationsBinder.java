@@ -32,7 +32,7 @@ import com.amlcurran.messages.loaders.MessagesLoader;
 import com.amlcurran.messages.loaders.Task;
 import com.github.amlcurran.sourcebinder.SimpleBinder;
 
-public class ConversationsBinder extends SimpleBinder<Conversation> {
+class ConversationsBinder extends SimpleBinder<Conversation> {
 
     private static final int IS_UNREAD = 1;
     private static final int IS_READ = 0;

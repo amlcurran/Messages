@@ -16,7 +16,7 @@
 
 package com.amlcurran.messages.conversationlist;
 
-public interface ConversationListView {
+interface ConversationListView {
     void hideLoadingUi();
 
     void showLoadingUi();
