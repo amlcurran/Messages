@@ -17,15 +17,12 @@
 package com.amlcurran.messages.transition;
 
 import com.amlcurran.messages.core.data.Contact;
-import com.amlcurran.messages.core.data.PhoneNumber;
 
 public interface TransitionAnchor {
 
     TransitionManager newCompose();
 
     TransitionManager thread(Contact contact, String threadId, String writtenMessage);
-
-    TransitionManager thread(PhoneNumber number, String threadId);
 
     TransitionManager conversationList();
 

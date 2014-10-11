@@ -66,4 +66,5 @@ dependencies {
     compile 'com.android.support:support-v4:20.0.0'
     compile 'com.github.amlcurran.sourcebinder:library:1.0.0-SNAPSHOT@aar'
     compile project(':core')
+    compile 'com.android.support:support-annotations:20.0.0'
 }

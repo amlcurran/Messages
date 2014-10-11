@@ -16,11 +16,14 @@
 
 package com.amlcurran.messages.launch;
 
+import com.amlcurran.messages.core.data.Contact;
+import com.amlcurran.messages.core.data.PhoneNumberOnlyContact;
 import com.amlcurran.messages.transition.TransitionManager;
 
 class ViewConversationAction implements LaunchAction {
     @Override
     public void perform(TransitionManager transitionManager, IntentDataExtractor intentDataExtractor) {
-        transitionManager.to().thread(intentDataExtractor.getAddress(), intentDataExtractor.getThreadId());
+        Contact contact = new PhoneNumberOnlyContact(intentDataExtractor.getAddress());
+        transitionManager.to().thread(contact, intentDataExtractor.getThreadId(), null);
     }
 }

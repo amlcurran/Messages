@@ -19,6 +19,7 @@ package com.amlcurran.messages.threads;
 import android.app.ListFragment;
 import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -37,7 +38,6 @@ import com.amlcurran.messages.core.data.DraftRepository;
 import com.amlcurran.messages.core.data.PhoneNumber;
 import com.amlcurran.messages.core.data.SmsMessage;
 import com.amlcurran.messages.data.ContactFactory;
-import com.amlcurran.messages.data.ParcelablePhoneNumber;
 import com.amlcurran.messages.loaders.MessagesLoader;
 import com.amlcurran.messages.preferences.PreferenceStoreDraftRepository;
 import com.amlcurran.messages.ui.ComposeMessageView;
@@ -51,23 +51,21 @@ public class ThreadFragment extends ListFragment implements
         CustomHeaderFragment<DefaultContactView>, ThreadController.Callback, ThreadView {
 
     private static final String THREAD_ID = "threadId";
-    private static final String ADDRESS = "address";
     private static final String CONTACT = "contact";
     private static final String COMPOSED_MESSAGE = "composed_message";
 
     private StandardComposeCallbacks composeCallbacks;
     private SmsComposeListener listener;
-    private ParcelablePhoneNumber phoneNumber;
     private ComposeMessageView composeView;
     private DefaultContactView contactView;
     private ThreadController threadController;
     private DraftRepository draftRepository;
     private ListView listView;
+    private Contact contact;
 
-    public static ThreadFragment create(String threadId, PhoneNumber address, Bundle contactBundle, String composedMessage) {
+    public static ThreadFragment create(String threadId, @NonNull Bundle contactBundle, String composedMessage) {
         Bundle bundle = new BundleBuilder()
                 .put(THREAD_ID, threadId)
-                .put(ADDRESS, address.flatten())
                 .put(CONTACT, contactBundle)
                 .put(COMPOSED_MESSAGE, composedMessage)
                 .build();
@@ -95,14 +93,13 @@ public class ThreadFragment extends ListFragment implements
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         listener = new ProviderHelper<SmsComposeListener>(SmsComposeListener.class).get(getActivity());
-        phoneNumber = new ParcelablePhoneNumber(getArguments().getString(ADDRESS));
-        Contact contact = ContactFactory.desmooshContact(getArguments().getBundle(CONTACT));
+        contact = ContactFactory.desmooshContact(getArguments().getBundle(CONTACT));
         String threadId = getArguments().getString(THREAD_ID);
 
         draftRepository = new PreferenceStoreDraftRepository(getActivity());
-        composeCallbacks = new StandardComposeCallbacks(getActivity(), phoneNumber, listener);
+        composeCallbacks = new StandardComposeCallbacks(getActivity(), contact.getNumber(), listener);
         composeView.setComposeListener(composeCallbacks);
-        threadController = new ThreadController(threadId, phoneNumber, this);
+        threadController = new ThreadController(threadId, contact.getNumber(), this);
         threadController.create(getActivity(), composeView);
 
         prefillComposeView();
@@ -122,7 +119,7 @@ public class ThreadFragment extends ListFragment implements
         if (TextUtils.isNotEmpty(composedMessage)) {
             composeView.setText(composedMessage);
         } else {
-            composeView.setText(retrieveDraft(phoneNumber));
+            composeView.setText(retrieveDraft(contact.getNumber()));
         }
     }
 
@@ -164,7 +161,7 @@ public class ThreadFragment extends ListFragment implements
         switch (item.getItemId()) {
 
             case R.id.menu_call:
-                listener.callNumber(phoneNumber);
+                listener.callNumber(contact.getNumber());
                 return true;
 
         }
