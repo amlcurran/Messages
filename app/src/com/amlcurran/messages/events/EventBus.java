@@ -20,6 +20,15 @@ import com.amlcurran.messages.data.InFlightSmsMessage;
 import com.amlcurran.messages.core.data.PhoneNumber;
 
 public interface EventBus {
+
+    public static final String BASE_BROADCAST = "com.amlcurran.messages";
+    public static final String BROADCAST_MESSAGE_SENT = BASE_BROADCAST + ".broadcast_message_sent";
+    public static final String BROADCAST_LIST_INVALIDATED = BASE_BROADCAST + ".BROADCAST_LIST_INVALIDATED";
+    public static final String BROADCAST_MESSAGE_RECEIVED = BASE_BROADCAST + ".broadcast_message_received";
+    public static final String BROADCAST_MESSAGE_SENDING = BASE_BROADCAST + ".broadcast_message_sending";
+    public static final String BROADCAST_LIST_LOADED = BASE_BROADCAST + ".LIST_LOADED";
+    public static final String BROADCAST_MESSAGE_DRAFT = BASE_BROADCAST + ".broadcast_message_drafted";
+
     void postListInvalidated();
 
     void postMessageSent(PhoneNumber phoneNumber);

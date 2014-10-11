@@ -16,6 +16,10 @@
 
 package com.amlcurran.messages.core.preferences;
 
+import com.amlcurran.messages.core.data.Sort;
+
 public interface PreferenceStore {
     boolean shouldSendStats();
+
+    Sort getConversationSort();
 }

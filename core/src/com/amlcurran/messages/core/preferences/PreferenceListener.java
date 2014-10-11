@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.amlcurran.messages.preferences;
+package com.amlcurran.messages.core.preferences;
 
 public interface PreferenceListener {
     void startListening(ChangeListener listener);

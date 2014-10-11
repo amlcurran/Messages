@@ -21,27 +21,26 @@ import com.amlcurran.messages.core.conversationlist.ConversationListView;
 import com.amlcurran.messages.core.data.Conversation;
 import com.amlcurran.messages.core.data.Sort;
 import com.amlcurran.messages.core.events.Broadcast;
-import com.amlcurran.messages.events.BroadcastEventBus;
-import com.amlcurran.messages.events.BroadcastEventSubscriber;
+import com.amlcurran.messages.core.events.EventSubscriber;
+import com.amlcurran.messages.core.preferences.PreferenceListener;
+import com.amlcurran.messages.core.preferences.PreferenceStore;
+import com.amlcurran.messages.events.EventBus;
 import com.amlcurran.messages.loaders.MessagesLoader;
-import com.amlcurran.messages.preferences.PreferenceListener;
-import com.amlcurran.messages.preferences.SharedPreferenceListener;
-import com.amlcurran.messages.preferences.SharedPreferenceStore;
 import com.amlcurran.messages.transition.TransitionManager;
 import com.github.amlcurran.sourcebinder.ArrayListSource;
 
 import java.util.List;
 
-class ConversationListViewController implements ConversationListListener, BroadcastEventSubscriber.Listener, SharedPreferenceListener.ChangeListener, ConversationListView.ConversationSelectedListener {
+class ConversationListViewController implements ConversationListListener, EventSubscriber.Listener, PreferenceListener.ChangeListener, ConversationListView.ConversationSelectedListener {
     private final ConversationListView conversationListView;
     private final MessagesLoader messageLoader;
     private final TransitionManager transitionManager;
     private final PreferenceListener preferenceListener;
     private final ArrayListSource<Conversation> source;
-    private final BroadcastEventSubscriber messageReceiver;
-    private final SharedPreferenceStore preferenceStore;
+    private final EventSubscriber messageReceiver;
+    private final PreferenceStore preferenceStore;
 
-    public ConversationListViewController(ConversationListView conversationListView, MessagesLoader messageLoader, TransitionManager transitionManager, PreferenceListener preferenceListener, ArrayListSource<Conversation> source, BroadcastEventSubscriber messageReceiver, SharedPreferenceStore preferenceStore) {
+    public ConversationListViewController(ConversationListView conversationListView, MessagesLoader messageLoader, TransitionManager transitionManager, PreferenceListener preferenceListener, ArrayListSource<Conversation> source, EventSubscriber messageReceiver, PreferenceStore preferenceStore) {
         this.conversationListView = conversationListView;
         this.messageLoader = messageLoader;
         this.transitionManager = transitionManager;
@@ -65,7 +64,7 @@ class ConversationListViewController implements ConversationListListener, Broadc
     }
 
     public Broadcast[] getActions() {
-        return new Broadcast[]{new Broadcast(BroadcastEventBus.BROADCAST_LIST_LOADED, null)};
+        return new Broadcast[]{new Broadcast(EventBus.BROADCAST_LIST_LOADED, null)};
     }
 
     public void loadData(MessagesLoader loader, boolean isRefresh) {

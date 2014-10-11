@@ -20,6 +20,8 @@ import android.app.Activity;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
+import com.amlcurran.messages.core.preferences.PreferenceListener;
+
 public class SharedPreferenceListener implements PreferenceListener {
     private final Activity activity;
     private final String[] keys;

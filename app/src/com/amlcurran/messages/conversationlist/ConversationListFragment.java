@@ -30,7 +30,7 @@ import com.amlcurran.messages.core.data.Conversation;
 import com.amlcurran.messages.events.BroadcastEventSubscriber;
 import com.amlcurran.messages.loaders.MessagesLoader;
 import com.amlcurran.messages.loaders.MessagesLoaderProvider;
-import com.amlcurran.messages.preferences.PreferenceListener;
+import com.amlcurran.messages.core.preferences.PreferenceListener;
 import com.amlcurran.messages.preferences.PreferenceStoreDraftRepository;
 import com.amlcurran.messages.preferences.SharedPreferenceListener;
 import com.amlcurran.messages.preferences.SharedPreferenceStore;
