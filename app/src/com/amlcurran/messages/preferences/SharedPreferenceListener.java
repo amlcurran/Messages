@@ -14,29 +14,32 @@
  * limitations under the License.
  */
 
-package com.amlcurran.messages.conversationlist;
+package com.amlcurran.messages.preferences;
 
 import android.app.Activity;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
-public class PreferenceListener {
+public class SharedPreferenceListener implements PreferenceListener {
     private final Activity activity;
-    private final ChangeListener changeListener;
     private final String[] keys;
+    private ChangeListener changeListener;
 
-    public PreferenceListener(Activity activity, ChangeListener changeListener, String... keys) {
+    public SharedPreferenceListener(Activity activity, String... keys) {
         this.activity = activity;
-        this.changeListener = changeListener;
         this.keys = keys;
     }
 
-    public void startListening() {
+    @Override
+    public void startListening(ChangeListener listener) {
+        changeListener = listener;
         PreferenceManager.getDefaultSharedPreferences(activity)
                 .registerOnSharedPreferenceChangeListener(onChangeListener);
     }
 
+    @Override
     public void stopListening() {
+        changeListener = null;
         PreferenceManager.getDefaultSharedPreferences(activity)
                 .unregisterOnSharedPreferenceChangeListener(onChangeListener);
     }
@@ -51,9 +54,5 @@ public class PreferenceListener {
             }
         }
     };
-
-    public interface ChangeListener {
-        void preferenceChanged(String requestKey);
-    }
 
 }

@@ -32,23 +32,24 @@ public class BroadcastEventSubscriber extends BroadcastReceiver implements Event
 
     private final ArrayList<Broadcast> listeningBroadcasts;
     private final Context context;
-    private final Listener listener;
+    private Listener listener;
 
-    public BroadcastEventSubscriber(Context context, Listener listener) {
+    public BroadcastEventSubscriber(Context context) {
         this.context = context;
-        this.listener = listener;
         this.listeningBroadcasts = new ArrayList<Broadcast>();
     }
 
     @Override
-    public void startListening(Broadcast... broadcasts) {
+    public void startListening(Listener listener, Broadcast... broadcasts) {
         Collections.addAll(listeningBroadcasts, broadcasts);
+        this.listener = listener;
         LocalBroadcastManager.getInstance(context).registerReceiver(this, buildMessageFilter(broadcasts));
     }
 
     @Override
     public void stopListening() {
         listeningBroadcasts.clear();
+        this.listener = null;
         LocalBroadcastManager.getInstance(context).unregisterReceiver(this);
     }
 
@@ -84,10 +85,6 @@ public class BroadcastEventSubscriber extends BroadcastReceiver implements Event
             filter.addAction(broadcast.getAction());
         }
         return filter;
-    }
-
-    public interface Listener {
-        void onMessageReceived();
     }
 
 }

@@ -53,12 +53,7 @@ class ThreadController implements ThreadListener {
 
     void create(Activity activity, DefaultAppChecker.Callback callback1) {
         messageLoader = new ProviderHelper<MessagesLoaderProvider>(MessagesLoaderProvider.class).get(activity).getMessagesLoader();
-        messageReceiver = new BroadcastEventSubscriber(activity, new BroadcastEventSubscriber.Listener() {
-            @Override
-            public void onMessageReceived() {
-                loadData(messageLoader, true);
-            }
-        });
+        messageReceiver = new BroadcastEventSubscriber(activity);
         source = new ArrayListSource<SmsMessage>();
         defaultChecker = new DefaultAppChecker(activity, callback1);
     }
@@ -69,7 +64,7 @@ class ThreadController implements ThreadListener {
 
     void start() {
         loadData(messageLoader, false);
-        messageReceiver.startListening(getBroadcastsToListenTo());
+        messageReceiver.startListening(, getBroadcastsToListenTo());
     }
 
     void stop() {

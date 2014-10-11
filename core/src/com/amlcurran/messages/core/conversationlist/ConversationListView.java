@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package com.amlcurran.messages.conversationlist;
+package com.amlcurran.messages.core.conversationlist;
 
-interface ConversationListView {
+public interface ConversationListView {
     void hideLoadingUi();
 
     void showLoadingUi();

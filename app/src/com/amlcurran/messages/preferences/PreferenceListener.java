@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-package com.amlcurran.messages.core.events;
+package com.amlcurran.messages.preferences;
 
-public interface EventSubscriber {
-    void startListening(Listener listener, Broadcast[] broadcasts);
+public interface PreferenceListener {
+    void startListening(ChangeListener listener);
 
     void stopListening();
 
-    public interface Listener {
-        void onMessageReceived();
+    public interface ChangeListener {
+        void preferenceChanged(String requestKey);
     }
 }

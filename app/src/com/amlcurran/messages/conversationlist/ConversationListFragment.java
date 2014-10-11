@@ -25,10 +25,16 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 
 import com.amlcurran.messages.R;
+import com.amlcurran.messages.core.conversationlist.ConversationListView;
 import com.amlcurran.messages.core.data.Conversation;
+import com.amlcurran.messages.events.BroadcastEventSubscriber;
 import com.amlcurran.messages.loaders.MessagesLoader;
 import com.amlcurran.messages.loaders.MessagesLoaderProvider;
+import com.amlcurran.messages.preferences.PreferenceListener;
 import com.amlcurran.messages.preferences.PreferenceStoreDraftRepository;
+import com.amlcurran.messages.preferences.SharedPreferenceListener;
+import com.amlcurran.messages.preferences.SharedPreferenceStore;
+import com.amlcurran.messages.transition.TransitionManager;
 import com.amlcurran.messages.ui.control.Master;
 import com.espian.utils.ProviderHelper;
 import com.github.amlcurran.sourcebinder.ArrayListSource;
@@ -55,9 +61,13 @@ public class ConversationListFragment extends ListFragment implements Conversati
         super.onActivityCreated(savedInstanceState);
 
         ArrayListSource<Conversation> source = new ArrayListSource<Conversation>();
-        MessagesLoader messageLoader = new ProviderHelper<MessagesLoaderProvider>(MessagesLoaderProvider.class).get(getActivity()).getMessagesLoader();
         ConversationModalMarshall.Callback modalCallback = (ConversationModalMarshall.Callback) getActivity();
-        conversationController = new ConversationListViewController(this, getActivity(), source);
+        MessagesLoader messageLoader = new ProviderHelper<MessagesLoaderProvider>(MessagesLoaderProvider.class).get(getActivity()).getMessagesLoader();
+        TransitionManager transitionManager = ((TransitionManager.Provider) getActivity()).getTransitionManager();
+        PreferenceListener preferenceListener = new SharedPreferenceListener(getActivity(), "unread_priority");
+        BroadcastEventSubscriber messageReceiver = new BroadcastEventSubscriber(getActivity());
+        SharedPreferenceStore preferenceStore = new SharedPreferenceStore(getActivity());
+        conversationController = new ConversationListViewController(this, messageLoader, transitionManager, preferenceListener, source, messageReceiver, preferenceStore);
 
         TextFormatter textFormatter = new TextFormatter(getActivity());
         ConversationsBinder binder = new ConversationsBinder(textFormatter, getResources(), messageLoader, new PreferenceStoreDraftRepository(getActivity()));
