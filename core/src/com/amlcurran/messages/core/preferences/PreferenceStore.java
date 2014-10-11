@@ -18,8 +18,24 @@ package com.amlcurran.messages.core.preferences;
 
 import com.amlcurran.messages.core.data.Sort;
 
+import java.net.URI;
+
 public interface PreferenceStore {
+    URI getRingtoneUri();
+
+    boolean showNotifications();
+
+    boolean hasNotShownAlphaMessage();
+
+    void storeHasShownAlphaMessage();
+
+    boolean isNotificationPersistent();
+
     boolean shouldSendStats();
 
     Sort getConversationSort();
+
+    public interface PreferenceChangedListener {
+        void preferenceChanged(String key);
+    }
 }

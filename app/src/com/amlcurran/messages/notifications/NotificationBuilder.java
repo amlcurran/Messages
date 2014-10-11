@@ -19,14 +19,15 @@ package com.amlcurran.messages.notifications;
 import android.app.Notification;
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.support.v4.app.NotificationCompat;
 
 import com.amlcurran.messages.R;
 import com.amlcurran.messages.analysis.MessageAnalyser;
 import com.amlcurran.messages.core.data.Conversation;
 import com.amlcurran.messages.core.data.Time;
+import com.amlcurran.messages.core.preferences.PreferenceStore;
 import com.amlcurran.messages.data.InFlightSmsMessage;
-import com.amlcurran.messages.preferences.SharedPreferenceStore;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -39,9 +40,9 @@ public class NotificationBuilder {
     private final StyledTextFactory styledTextFactory;
     private final NotificationActionBuilder actionBuilder;
     private final Context context;
-    private final SharedPreferenceStore preferenceStore;
+    private final PreferenceStore preferenceStore;
 
-    public NotificationBuilder(Context context, SharedPreferenceStore preferenceStore) {
+    public NotificationBuilder(Context context, PreferenceStore preferenceStore) {
         this.context = context;
         this.preferenceStore = preferenceStore;
         this.notificationIntentFactory = new NotificationIntentFactory(context);
@@ -165,7 +166,7 @@ public class NotificationBuilder {
                 .setDefaults(Notification.DEFAULT_LIGHTS);
 
         if (shouldSoundAndVibrate) {
-            builder.setSound(preferenceStore.getRingtoneUri());
+            builder.setSound(Uri.parse(preferenceStore.getRingtoneUri().toString()));
             builder.setVibrate(VIBRATE_PATTERN);
         }
 

@@ -22,6 +22,8 @@ import android.net.Uri;
 
 import com.amlcurran.messages.R;
 
+import java.net.URI;
+
 public class RingtoneHelper {
     private final PreferencesFragment preferencesFragment;
     private final SharedPreferenceStore preferencesStore;
@@ -32,11 +34,12 @@ public class RingtoneHelper {
     }
 
     void setUpToneSummary() {
-        Uri ringtoneUri = preferencesStore.getRingtoneUri();
+        URI ringtoneUri = preferencesStore.getRingtoneUri();
 
         String summary;
         if (ringtoneUri != null) {
-            Ringtone current = getCurrentRingtone(ringtoneUri);
+            Uri androidUri = Uri.parse(ringtoneUri.toString());
+            Ringtone current = getCurrentRingtone(androidUri);
             summary = current.getTitle(preferencesFragment.getActivity());
         } else {
             summary = preferencesFragment.getString(R.string.default_str);

@@ -27,6 +27,8 @@ import com.amlcurran.messages.core.data.Contact;
 import com.amlcurran.messages.core.data.Conversation;
 import com.amlcurran.messages.core.data.PhoneNumber;
 import com.amlcurran.messages.core.loaders.ConversationListChangeListener;
+import com.amlcurran.messages.core.preferences.PreferenceStore;
+import com.amlcurran.messages.core.reporting.StatReporter;
 import com.amlcurran.messages.core.reporting.UserPreferenceWrappingStatReporter;
 import com.amlcurran.messages.data.InFlightSmsMessage;
 import com.amlcurran.messages.events.EventBus;
@@ -41,7 +43,6 @@ import com.amlcurran.messages.notifications.BlockingInUiNotifier;
 import com.amlcurran.messages.notifications.Dialog;
 import com.amlcurran.messages.notifications.InUiNotifier;
 import com.amlcurran.messages.notifications.InUiToastNotifier;
-import com.amlcurran.messages.core.reporting.StatReporter;
 import com.amlcurran.messages.preferences.SharedPreferenceStore;
 import com.amlcurran.messages.reporting.EasyTrackerStatReporter;
 import com.amlcurran.messages.reporting.LoggingStatReporter;
@@ -71,7 +72,7 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
     private boolean isSecondaryVisible;
     private MessagesLoader messagesLoader;
     private BlockingInUiNotifier blockingInUiNotifier;
-    private SharedPreferenceStore preferencesStore;
+    private PreferenceStore preferencesStore;
     private HoloActionBarController actionBarController;
     private DisabledBannerController disabledBannerController;
     private NewMessageButtonController newComposeController;
@@ -101,7 +102,7 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
         newComposeController = new NewMessageButtonController(findViewById(R.id.button_new_message), transitionManager, statReporter);
         appChecker = new DefaultAppChecker(this, new HideNewComposeAndShowBannerCallback(newComposeController, disabledBannerController));
 
-        handleLaunch(savedInstanceState, getIntent(), preferencesStore);
+        handleLaunch(getIntent(), preferencesStore);
     }
 
     private StatReporter createStatReporter() {
@@ -114,8 +115,8 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
         return new UserPreferenceWrappingStatReporter(reporter, preferencesStore);
     }
 
-    private void handleLaunch(Bundle savedInstanceState, Intent intent, SharedPreferenceStore preferencesStore) {
-        LaunchAction launchAction = launchHelper.getLaunchType(savedInstanceState, intent, preferencesStore);
+    private void handleLaunch(Intent intent, PreferenceStore preferencesStore) {
+        LaunchAction launchAction = launchHelper.getLaunchType(intent);
         IntentDataExtractor intentDataExtractor = new IntentDataExtractor(intent);
         transitionManager.startAt().conversationList();
         launchAction.perform(transitionManager, intentDataExtractor);
@@ -146,7 +147,7 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
 
     @Override
     protected void onNewIntent(Intent intent) {
-        handleLaunch(null, intent, preferencesStore);
+        handleLaunch(intent, preferencesStore);
     }
 
     @Override

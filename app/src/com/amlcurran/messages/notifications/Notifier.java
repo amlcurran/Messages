@@ -26,6 +26,7 @@ import com.amlcurran.messages.conversationlist.PhotoLoadListener;
 import com.amlcurran.messages.core.conversationlist.ConversationListListener;
 import com.amlcurran.messages.core.data.Contact;
 import com.amlcurran.messages.core.data.Conversation;
+import com.amlcurran.messages.core.preferences.PreferenceStore;
 import com.amlcurran.messages.data.InFlightSmsMessage;
 import com.amlcurran.messages.loaders.MessagesLoader;
 import com.amlcurran.messages.preferences.SharedPreferenceStore;
@@ -44,7 +45,7 @@ public class Notifier {
     private final NotificationManagerCompat notificationManager;
     private final NotificationBuilder notificationBuilder;
     private final MessagesLoader loader;
-    private final SharedPreferenceStore preferenceStore;
+    private final PreferenceStore preferenceStore;
     private final UnreadMessageNotificationManager unreadMessageNotificationManager;
     private final ArrayList<Conversation> postedConversations;
 

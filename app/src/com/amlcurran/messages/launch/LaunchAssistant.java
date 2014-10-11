@@ -17,18 +17,16 @@
 package com.amlcurran.messages.launch;
 
 import android.content.Intent;
-import android.os.Bundle;
 
-import com.amlcurran.messages.notifications.Notifier;
 import com.amlcurran.messages.core.preferences.PreferenceStore;
-import com.amlcurran.messages.preferences.SharedPreferenceStore;
+import com.amlcurran.messages.notifications.Notifier;
 
 public class LaunchAssistant {
 
     public static final String EXTRA_THREAD_ID = "thread_id";
     public static final String EXTRA_ADDRESS = "address";
 
-    public LaunchAction getLaunchType(Bundle savedInstanceState, Intent intent, PreferenceStore preferencesStore) {
+    public LaunchAction getLaunchType(Intent intent) {
 
         if (schemeIs(intent, "sms")) {
             return new AnonymousSendAction();
@@ -61,7 +59,7 @@ public class LaunchAssistant {
         return intent.getData() != null && intent.getData().getScheme().equals(sms);
     }
 
-    public boolean isFirstEverStart(SharedPreferenceStore preferencesStore) {
+    public boolean isFirstEverStart(PreferenceStore preferencesStore) {
         return preferencesStore.hasNotShownAlphaMessage();
     }
 }

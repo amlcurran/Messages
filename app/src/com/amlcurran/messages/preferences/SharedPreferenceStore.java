@@ -18,13 +18,13 @@ package com.amlcurran.messages.preferences;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.net.Uri;
 import android.preference.PreferenceManager;
 
 import com.amlcurran.messages.core.TextUtils;
 import com.amlcurran.messages.core.data.Sort;
 import com.amlcurran.messages.core.preferences.PreferenceStore;
 
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -38,23 +38,24 @@ public class SharedPreferenceStore implements PreferenceStore {
     private static final String SEND_STATS = "send_stats";
     private final SharedPreferences preferences;
     private final List<PreferenceChangedListener> changedListenerList = new ArrayList<PreferenceChangedListener>();
-    private final PreferenceStoreDraftRepository draftRepository;
 
     public SharedPreferenceStore(Context context) {
         preferences = PreferenceManager.getDefaultSharedPreferences(context);
-        draftRepository = new PreferenceStoreDraftRepository(context);
     }
 
+    @Override
     public Sort getConversationSort() {
         boolean sort = preferences.getBoolean(UNREAD_PRIORITY, false);
         return sort ? Sort.UNREAD : Sort.DEFAULT;
     }
 
-    public Uri getRingtoneUri() {
+    @Override
+    public URI getRingtoneUri() {
         String ringtone = preferences.getString(RINGTONE, null);
-        return TextUtils.isEmpty(ringtone) ? null : Uri.parse(ringtone);
+        return TextUtils.isEmpty(ringtone) ? null : URI.create(ringtone);
     }
 
+    @Override
     public boolean showNotifications() {
         return preferences.getBoolean(NOTIFICATIONS, true);
     }
@@ -95,16 +96,19 @@ public class SharedPreferenceStore implements PreferenceStore {
         }
     }
 
+    @Override
     public boolean hasNotShownAlphaMessage() {
         return preferences.getBoolean(SHOWN_ALPHA_MESSAGE, true);
     }
 
+    @Override
     public void storeHasShownAlphaMessage() {
         preferences.edit()
                 .putBoolean(SHOWN_ALPHA_MESSAGE, false)
                 .apply();
     }
 
+    @Override
     public boolean isNotificationPersistent() {
         return preferences.getBoolean(PERSISTENT_NOTIFICATION, false);
     }
@@ -112,10 +116,6 @@ public class SharedPreferenceStore implements PreferenceStore {
     @Override
     public boolean shouldSendStats() {
         return preferences.getBoolean(SEND_STATS, true);
-    }
-
-    public interface PreferenceChangedListener {
-        void preferenceChanged(String key);
     }
 
 }
