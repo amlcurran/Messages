@@ -18,11 +18,13 @@ package com.amlcurran.messages.threads;
 
 import android.app.Activity;
 
+import com.amlcurran.messages.core.data.Contact;
 import com.amlcurran.messages.core.data.DraftRepository;
 import com.amlcurran.messages.core.data.PhoneNumber;
 import com.amlcurran.messages.core.data.SmsMessage;
 import com.amlcurran.messages.core.events.Broadcast;
 import com.amlcurran.messages.core.events.EventSubscriber;
+import com.amlcurran.messages.core.loaders.OnContactQueryListener;
 import com.amlcurran.messages.core.loaders.ThreadListener;
 import com.amlcurran.messages.events.BroadcastEventBus;
 import com.amlcurran.messages.events.BroadcastEventSubscriber;
@@ -31,7 +33,6 @@ import com.amlcurran.messages.loaders.MessagesLoaderProvider;
 import com.amlcurran.messages.telephony.DefaultAppChecker;
 import com.espian.utils.ProviderHelper;
 import com.github.amlcurran.sourcebinder.ArrayListSource;
-import com.github.amlcurran.sourcebinder.Source;
 
 import java.util.List;
 
@@ -83,7 +84,7 @@ class ThreadController implements ThreadListener {
     @Override
     public void onThreadLoaded(List<SmsMessage> messageList) {
         source.replace(messageList);
-        callback.dataLoaded(source);
+        callback.showThreadList(source.getCount());
         messageLoader.markThreadAsRead(threadId, null);
     }
 
@@ -96,14 +97,29 @@ class ThreadController implements ThreadListener {
                 new Broadcast(BroadcastEventBus.BROADCAST_MESSAGE_SENT, phoneNumber.flatten()),
                 new Broadcast(BroadcastEventBus.BROADCAST_MESSAGE_RECEIVED, phoneNumber.flatten()),
                 new Broadcast(BroadcastEventBus.BROADCAST_MESSAGE_SENDING, phoneNumber.flatten()),
-                new Broadcast(BroadcastEventBus.BROADCAST_MESSAGE_DRAFT, phoneNumber.flatten()) };
+                new Broadcast(BroadcastEventBus.BROADCAST_MESSAGE_DRAFT, phoneNumber.flatten())};
     }
 
     void saveDraft(DraftRepository draftRepository, String text) {
         draftRepository.storeDraft(phoneNumber, text);
     }
 
+    public void setUpContactView(Contact contact) {
+        if (contact == null) {
+            messageLoader.queryContact(phoneNumber, new OnContactQueryListener() {
+                @Override
+                public void contactLoaded(Contact contact) {
+                    callback.bindContactToHeader(contact);
+                }
+            });
+        } else {
+            callback.bindContactToHeader(contact);
+        }
+    }
+
     public interface Callback {
-        void dataLoaded(Source<SmsMessage> source);
+        void showThreadList(int count);
+
+        void bindContactToHeader(Contact contact);
     }
 }

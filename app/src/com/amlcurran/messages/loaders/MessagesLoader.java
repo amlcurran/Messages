@@ -24,6 +24,7 @@ import com.amlcurran.messages.core.conversationlist.ConversationListListener;
 import com.amlcurran.messages.conversationlist.PhotoLoadListener;
 import com.amlcurran.messages.core.data.Conversation;
 import com.amlcurran.messages.core.loaders.ConversationListChangeListener;
+import com.amlcurran.messages.core.loaders.OnContactQueryListener;
 import com.amlcurran.messages.core.loaders.ThreadListener;
 
 import java.util.List;

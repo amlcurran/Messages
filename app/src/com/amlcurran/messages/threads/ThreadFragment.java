@@ -16,10 +16,8 @@
 
 package com.amlcurran.messages.threads;
 
-import android.animation.LayoutTransition;
 import android.app.ListFragment;
 import android.content.Context;
-import android.content.res.Resources;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -41,18 +39,16 @@ import com.amlcurran.messages.core.data.SmsMessage;
 import com.amlcurran.messages.data.ContactFactory;
 import com.amlcurran.messages.data.ParcelablePhoneNumber;
 import com.amlcurran.messages.loaders.MessagesLoader;
-import com.amlcurran.messages.loaders.OnContactQueryListener;
 import com.amlcurran.messages.preferences.PreferenceStoreDraftRepository;
 import com.amlcurran.messages.ui.ComposeMessageView;
 import com.amlcurran.messages.ui.CustomHeaderFragment;
 import com.amlcurran.messages.ui.contact.ContactClickListener;
 import com.amlcurran.messages.ui.contact.DefaultContactView;
 import com.espian.utils.ProviderHelper;
-import com.github.amlcurran.sourcebinder.Source;
 import com.github.amlcurran.sourcebinder.SourceBinderAdapter;
 
 public class ThreadFragment extends ListFragment implements
-        CustomHeaderFragment<DefaultContactView>, ThreadController.Callback {
+        CustomHeaderFragment<DefaultContactView>, ThreadController.Callback, ThreadView {
 
     private static final String THREAD_ID = "threadId";
     private static final String ADDRESS = "address";
@@ -91,16 +87,8 @@ public class ThreadFragment extends ListFragment implements
         listView.setStackFromBottom(true);
         listView.setDivider(null);
         listView.setAlpha(0);
-        //listView.setLayoutTransition(createLayoutTransition(inflater.getContext().getResources()));
         composeView = ((ComposeMessageView) view.findViewById(R.id.thread_compose_view));
         return view;
-    }
-
-    private LayoutTransition createLayoutTransition(Resources resources) {
-        LayoutTransition transition = new LayoutTransition();
-        int shortDuration = resources.getInteger(android.R.integer.config_shortAnimTime);
-        transition.setDuration(shortDuration);
-        return transition;
     }
 
     @Override
@@ -108,6 +96,7 @@ public class ThreadFragment extends ListFragment implements
         super.onActivityCreated(savedInstanceState);
         listener = new ProviderHelper<SmsComposeListener>(SmsComposeListener.class).get(getActivity());
         phoneNumber = new ParcelablePhoneNumber(getArguments().getString(ADDRESS));
+        Contact contact = ContactFactory.desmooshContact(getArguments().getBundle(CONTACT));
         String threadId = getArguments().getString(THREAD_ID);
 
         draftRepository = new PreferenceStoreDraftRepository(getActivity());
@@ -125,7 +114,7 @@ public class ThreadFragment extends ListFragment implements
         SourceBinderAdapter<SmsMessage> adapter = new SourceBinderAdapter<SmsMessage>(getActivity(), threadController.getSource(), threadBinder);
         setListAdapter(adapter);
 
-        setUpContactView(phoneNumber);
+        threadController.setUpContactView(contact);
     }
 
     private void prefillComposeView() {
@@ -134,21 +123,6 @@ public class ThreadFragment extends ListFragment implements
             composeView.setText(composedMessage);
         } else {
             composeView.setText(retrieveDraft(phoneNumber));
-        }
-    }
-
-    private void setUpContactView(PhoneNumber phoneNumber) {
-        Contact receivedContact = ContactFactory.desmooshContact(getArguments().getBundle(CONTACT));
-        final MessagesLoader messagesLoader = SingletonManager.getMessagesLoader(getActivity());
-        if (receivedContact == null) {
-            messagesLoader.queryContact(phoneNumber, new OnContactQueryListener() {
-                @Override
-                public void contactLoaded(final Contact contact) {
-                    bindContactToView(contact, messagesLoader);
-                }
-            });
-        } else {
-            bindContactToView(receivedContact, messagesLoader);
         }
     }
 
@@ -215,14 +189,19 @@ public class ThreadFragment extends ListFragment implements
     }
 
     @Override
-    public void dataLoaded(Source<SmsMessage> source) {
+    public void showThreadList(int count) {
         if (isAdded()) {
             listView.animate()
                     .alpha(1)
                     .setDuration(getResources().getInteger(android.R.integer.config_shortAnimTime))
                     .start();
-            scrollTo(source.getCount() - 1);
+            scrollTo(count - 1);
         }
+    }
+
+    @Override
+    public void bindContactToHeader(Contact contact) {
+        bindContactToView(contact, SingletonManager.getMessagesLoader(getActivity()));
     }
 
 }

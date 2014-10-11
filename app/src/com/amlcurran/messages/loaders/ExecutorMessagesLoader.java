@@ -29,6 +29,7 @@ import com.amlcurran.messages.core.data.PhoneNumber;
 import com.amlcurran.messages.core.data.Sort;
 import com.amlcurran.messages.core.loaders.ContactListListener;
 import com.amlcurran.messages.core.loaders.ConversationListChangeListener;
+import com.amlcurran.messages.core.loaders.OnContactQueryListener;
 import com.amlcurran.messages.core.loaders.ThreadListener;
 import com.amlcurran.messages.core.events.EventBus;
 
