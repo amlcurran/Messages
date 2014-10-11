@@ -28,12 +28,11 @@ public class SmsMessageAnalyser {
 
     private static final int ONE_MINUTE_IN_SECS = 60;
     private static final int ONE_HOUR_IN_MINS = 60;
-    private static final int MAX_HOURS_TO_SHOW = 6;
     private final DifferenceStringProvider differencesStringProvider;
     private final DateFormat fullFormatter = new SimpleDateFormat("HH:mm dd-MMM-yy");
     private final DateFormat timeFormatter = new SimpleDateFormat("HH:mm");
     private final Date date = new Date();
-    private final DateTime then = new DateTime();
+    private DateTime then;
     private final DateTime startOfToday;
 
     public SmsMessageAnalyser(DifferenceStringProvider differencesStringProvider) {
@@ -42,7 +41,7 @@ public class SmsMessageAnalyser {
     }
 
     boolean isYesterday(Time time) {
-        then.withMillis(time.toMillis());
+        then = new DateTime(time.toMillis());
         return then.withTimeAtStartOfDay().plusDays(1).equals(startOfToday);
     }
 

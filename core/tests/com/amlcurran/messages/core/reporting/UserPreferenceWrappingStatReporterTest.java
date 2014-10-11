@@ -16,9 +16,12 @@
 
 package com.amlcurran.messages.core.reporting;
 
+import com.amlcurran.messages.core.data.Sort;
 import com.amlcurran.messages.core.preferences.PreferenceStore;
 
 import org.junit.Test;
+
+import java.net.URI;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -71,16 +74,76 @@ public class UserPreferenceWrappingStatReporterTest {
     private class SendStatsPreferenceStore implements PreferenceStore {
 
         @Override
+        public URI getRingtoneUri() {
+            return null;
+        }
+
+        @Override
+        public boolean showNotifications() {
+            return false;
+        }
+
+        @Override
+        public boolean hasNotShownAlphaMessage() {
+            return false;
+        }
+
+        @Override
+        public void storeHasShownAlphaMessage() {
+
+        }
+
+        @Override
+        public boolean isNotificationPersistent() {
+            return false;
+        }
+
+        @Override
         public boolean shouldSendStats() {
             return true;
+        }
+
+        @Override
+        public Sort getConversationSort() {
+            return null;
         }
     }
 
     private class DontSendStatsPreferenceStore implements PreferenceStore {
 
         @Override
+        public URI getRingtoneUri() {
+            return null;
+        }
+
+        @Override
+        public boolean showNotifications() {
+            return false;
+        }
+
+        @Override
+        public boolean hasNotShownAlphaMessage() {
+            return false;
+        }
+
+        @Override
+        public void storeHasShownAlphaMessage() {
+
+        }
+
+        @Override
+        public boolean isNotificationPersistent() {
+            return false;
+        }
+
+        @Override
         public boolean shouldSendStats() {
             return false;
+        }
+
+        @Override
+        public Sort getConversationSort() {
+            return null;
         }
     }
 
