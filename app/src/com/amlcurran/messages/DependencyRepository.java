@@ -14,33 +14,12 @@
  * limitations under the License.
  */
 
-package com.amlcurran.messages.core.preferences;
+package com.amlcurran.messages;
 
-import com.amlcurran.messages.core.data.Sort;
+import com.amlcurran.messages.core.data.DraftRepository;
+import com.amlcurran.messages.core.preferences.PreferenceStore;
+import com.amlcurran.messages.loaders.MessagesLoaderProvider;
 
-import java.net.URI;
-
-public interface PreferenceStore {
-    URI getRingtoneUri();
-
-    boolean showNotifications();
-
-    boolean hasNotShownAlphaMessage();
-
-    void storeHasShownAlphaMessage();
-
-    boolean isNotificationPersistent();
-
-    boolean shouldSendStats();
-
-    Sort getConversationSort();
-
-    public interface PreferenceChangedListener {
-        void preferenceChanged(String key);
-    }
-
-    public interface Provider {
-        PreferenceStore getPreferenceStore();
-    }
-
+public interface DependencyRepository extends ExternalEventManager.Provider,
+        MessagesLoaderProvider, PreferenceStore.Provider, DraftRepository.Provider {
 }

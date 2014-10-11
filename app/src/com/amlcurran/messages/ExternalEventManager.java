@@ -52,4 +52,8 @@ public class ExternalEventManager {
     public void switchSmsApp() {
         activityController.switchSmsApp();
     }
+
+    public interface Provider {
+        ExternalEventManager getExternalEventManager();
+    }
 }

@@ -24,4 +24,8 @@ public interface DraftRepository {
     void clearDraft(PhoneNumber address);
 
     boolean hasDraft(PhoneNumber address);
+
+    public interface Provider {
+        DraftRepository getDraftRepository();
+    }
 }

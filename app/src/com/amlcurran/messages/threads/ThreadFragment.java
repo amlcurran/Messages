@@ -28,19 +28,16 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 
+import com.amlcurran.messages.DependencyRepository;
 import com.amlcurran.messages.R;
 import com.amlcurran.messages.SingletonManager;
 import com.amlcurran.messages.SmsComposeListener;
 import com.amlcurran.messages.bucket.BundleBuilder;
 import com.amlcurran.messages.core.data.Contact;
-import com.amlcurran.messages.core.data.DraftRepository;
 import com.amlcurran.messages.core.data.SmsMessage;
 import com.amlcurran.messages.core.events.EventSubscriber;
 import com.amlcurran.messages.data.ContactFactory;
 import com.amlcurran.messages.events.BroadcastEventSubscriber;
-import com.amlcurran.messages.loaders.MessagesLoader;
-import com.amlcurran.messages.loaders.MessagesLoaderProvider;
-import com.amlcurran.messages.preferences.PreferenceStoreDraftRepository;
 import com.amlcurran.messages.telephony.DefaultAppChecker;
 import com.amlcurran.messages.ui.ComposeMessageView;
 import com.amlcurran.messages.ui.CustomHeaderFragment;
@@ -56,14 +53,10 @@ public class ThreadFragment extends ListFragment implements
     private static final String CONTACT = "contact";
     private static final String COMPOSED_MESSAGE = "composed_message";
 
-    private StandardComposeCallbacks composeCallbacks;
-    private SmsComposeListener listener;
     private ComposeMessageView composeView;
     private DefaultContactView contactView;
     private ThreadController threadController;
-    private DraftRepository draftRepository;
     private ListView listView;
-    private Contact contact;
 
     public static ThreadFragment create(String threadId, @NonNull Bundle contactBundle, String composedMessage) {
         Bundle bundle = new BundleBuilder()
@@ -94,18 +87,18 @@ public class ThreadFragment extends ListFragment implements
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        listener = new ProviderHelper<SmsComposeListener>(SmsComposeListener.class).get(getActivity());
-        contact = ContactFactory.desmooshContact(getArguments().getBundle(CONTACT));
+        Contact contact = ContactFactory.desmooshContact(getArguments().getBundle(CONTACT));
         String threadId = getArguments().getString(THREAD_ID);
 
-        MessagesLoader messageLoader = ((MessagesLoaderProvider) getActivity()).getMessagesLoader();
+        DependencyRepository dependencyRepository = ((DependencyRepository) getActivity());
         EventSubscriber messageReceiver = new BroadcastEventSubscriber(getActivity());
         DefaultAppChecker defaultChecker = new DefaultAppChecker(getActivity());
 
-        draftRepository = new PreferenceStoreDraftRepository(getActivity());
-        composeCallbacks = new StandardComposeCallbacks(getActivity(), contact.getNumber(), listener);
+        threadController = new ThreadController(threadId, contact, getArguments().getString(COMPOSED_MESSAGE), this, messageReceiver, defaultChecker, dependencyRepository);
+
+        SmsComposeListener listener = new ProviderHelper<SmsComposeListener>(SmsComposeListener.class).get(getActivity());
+        StandardComposeCallbacks composeCallbacks = new StandardComposeCallbacks(getActivity(), contact.getNumber(), listener);
         composeView.setComposeListener(composeCallbacks);
-        threadController = new ThreadController(threadId, contact, getArguments().getString(COMPOSED_MESSAGE), this, messageLoader, messageReceiver, defaultChecker, draftRepository);
 
         setHasOptionsMenu(true);
 
@@ -134,14 +127,7 @@ public class ThreadFragment extends ListFragment implements
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-
-            case R.id.menu_call:
-                listener.callNumber(contact.getNumber());
-                return true;
-
-        }
-        return super.onOptionsItemSelected(item);
+        return threadController.menuItemClicked(item) || super.onOptionsItemSelected(item);
     }
 
     private void scrollTo(final int position) {

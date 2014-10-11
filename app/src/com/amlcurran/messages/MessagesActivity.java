@@ -25,24 +25,24 @@ import android.view.MenuItem;
 import com.amlcurran.messages.conversationlist.ConversationModalMarshall;
 import com.amlcurran.messages.core.data.Contact;
 import com.amlcurran.messages.core.data.Conversation;
-import com.amlcurran.messages.core.data.PhoneNumber;
+import com.amlcurran.messages.core.data.DraftRepository;
+import com.amlcurran.messages.core.events.EventBus;
 import com.amlcurran.messages.core.loaders.ConversationListChangeListener;
 import com.amlcurran.messages.core.preferences.PreferenceStore;
 import com.amlcurran.messages.core.reporting.StatReporter;
 import com.amlcurran.messages.core.reporting.UserPreferenceWrappingStatReporter;
 import com.amlcurran.messages.data.InFlightSmsMessage;
-import com.amlcurran.messages.core.events.EventBus;
 import com.amlcurran.messages.launch.IntentDataExtractor;
 import com.amlcurran.messages.launch.LaunchAction;
 import com.amlcurran.messages.launch.LaunchAssistant;
 import com.amlcurran.messages.loaders.MessagesLoader;
-import com.amlcurran.messages.loaders.MessagesLoaderProvider;
 import com.amlcurran.messages.loaders.OnThreadDeleteListener;
 import com.amlcurran.messages.notifications.BlockingInUiDialogNotifier;
 import com.amlcurran.messages.notifications.BlockingInUiNotifier;
 import com.amlcurran.messages.notifications.Dialog;
 import com.amlcurran.messages.notifications.InUiNotifier;
 import com.amlcurran.messages.notifications.InUiToastNotifier;
+import com.amlcurran.messages.preferences.PreferenceStoreDraftRepository;
 import com.amlcurran.messages.preferences.SharedPreferenceStore;
 import com.amlcurran.messages.reporting.EasyTrackerStatReporter;
 import com.amlcurran.messages.reporting.LoggingStatReporter;
@@ -58,10 +58,10 @@ import com.google.analytics.tracking.android.EasyTracker;
 
 import java.util.List;
 
-public class MessagesActivity extends Activity implements MessagesLoaderProvider,
+public class MessagesActivity extends Activity implements
         SmsComposeListener, ConversationModalMarshall.Callback,
         OnThreadDeleteListener, ConversationListChangeListener, FragmentController.FragmentCallback,
-        TransitionManager.Provider {
+        TransitionManager.Provider, DependencyRepository {
 
     private InUiNotifier toastInUiNotifier;
     private StatReporter statReporter;
@@ -78,6 +78,7 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
     private NewMessageButtonController newComposeController;
     private TransitionManager transitionManager;
     private ExternalEventManager externalEventManager;
+    private DraftRepository draftRepository;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -89,6 +90,7 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
         preferencesStore = new SharedPreferenceStore(this);
         statReporter = createStatReporter();
         eventBus = SingletonManager.getEventBus(this);
+        draftRepository = new PreferenceStoreDraftRepository(this);
 
         FragmentController fragmentController = new SinglePaneFullScreenFragmentViewController(this, this, new ActionBarHeaderCallback(actionBarController));
         ActivityController activityController = new ActivityController(this, blockingInUiNotifier);
@@ -204,11 +206,6 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
     }
 
     @Override
-    public void callNumber(PhoneNumber phoneNumber) {
-        externalEventManager.callNumber(phoneNumber);
-    }
-
-    @Override
     public void secondaryVisible() {
         isSecondaryVisible = true;
         menuController.update();
@@ -285,5 +282,20 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
     @Override
     public TransitionManager getTransitionManager() {
         return transitionManager;
+    }
+
+    @Override
+    public ExternalEventManager getExternalEventManager() {
+        return externalEventManager;
+    }
+
+    @Override
+    public PreferenceStore getPreferenceStore() {
+        return preferencesStore;
+    }
+
+    @Override
+    public DraftRepository getDraftRepository() {
+        return draftRepository;
     }
 }

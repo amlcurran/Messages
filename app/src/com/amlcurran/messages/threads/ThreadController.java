@@ -16,6 +16,11 @@
 
 package com.amlcurran.messages.threads;
 
+import android.view.MenuItem;
+
+import com.amlcurran.messages.DependencyRepository;
+import com.amlcurran.messages.ExternalEventManager;
+import com.amlcurran.messages.R;
 import com.amlcurran.messages.core.TextUtils;
 import com.amlcurran.messages.core.data.Contact;
 import com.amlcurran.messages.core.data.DraftRepository;
@@ -41,16 +46,18 @@ class ThreadController implements ThreadListener {
     private final EventSubscriber messageReceiver;
     private final DefaultAppChecker defaultChecker;
     private final DraftRepository draftRepository;
+    private final ExternalEventManager externalEventManager;
     private final MessagesLoader messageLoader;
 
-    public ThreadController(String threadId, Contact contact, String composedMessage, ThreadView threadView, MessagesLoader messageLoader, EventSubscriber messageReceiver, DefaultAppChecker defaultChecker, DraftRepository draftRepository) {
+    public ThreadController(String threadId, Contact contact, String composedMessage, ThreadView threadView, EventSubscriber messageReceiver, DefaultAppChecker defaultChecker, DependencyRepository dependencyRepository) {
         this.threadId = threadId;
         this.contact = contact;
         this.threadView = threadView;
-        this.messageLoader = messageLoader;
+        this.messageLoader = dependencyRepository.getMessagesLoader();
         this.messageReceiver = messageReceiver;
         this.defaultChecker = defaultChecker;
-        this.draftRepository = draftRepository;
+        this.draftRepository = dependencyRepository.getDraftRepository();
+        this.externalEventManager = dependencyRepository.getExternalEventManager();
         this.source = new ArrayListSource<SmsMessage>();
         retrieveDraft(composedMessage);
     }
@@ -106,6 +113,14 @@ class ThreadController implements ThreadListener {
         } else {
             threadView.bindContactToHeader(contact);
         }
+    }
+
+    public boolean menuItemClicked(MenuItem item) {
+        if (item.getItemId() == R.id.menu_call) {
+            externalEventManager.callNumber(contact.getNumber());
+            return true;
+        }
+        return false;
     }
 
     public interface ThreadView extends DefaultAppChecker.Callback {
