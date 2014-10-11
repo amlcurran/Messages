@@ -18,8 +18,9 @@ package com.amlcurran.messages;
 
 import com.amlcurran.messages.core.data.DraftRepository;
 import com.amlcurran.messages.core.preferences.PreferenceStore;
-import com.amlcurran.messages.loaders.MessagesLoaderProvider;
+import com.amlcurran.messages.loaders.MessagesLoader;
+import com.amlcurran.messages.transition.TransitionManager;
 
 public interface DependencyRepository extends ExternalEventManager.Provider,
-        MessagesLoaderProvider, PreferenceStore.Provider, DraftRepository.Provider {
+        MessagesLoader.Provider, PreferenceStore.Provider, DraftRepository.Provider, TransitionManager.Provider {
 }

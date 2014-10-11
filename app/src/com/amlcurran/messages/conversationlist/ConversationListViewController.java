@@ -16,6 +16,7 @@
 
 package com.amlcurran.messages.conversationlist;
 
+import com.amlcurran.messages.DependencyRepository;
 import com.amlcurran.messages.core.conversationlist.ConversationListListener;
 import com.amlcurran.messages.core.conversationlist.ConversationListView;
 import com.amlcurran.messages.core.data.Conversation;
@@ -39,14 +40,14 @@ class ConversationListViewController implements ConversationListListener, EventS
     private final EventSubscriber messageReceiver;
     private final PreferenceStore preferenceStore;
 
-    public ConversationListViewController(ConversationListView conversationListView, MessagesLoader messageLoader, TransitionManager transitionManager, PreferenceListener preferenceListener, ArrayListSource<Conversation> source, EventSubscriber messageReceiver, PreferenceStore preferenceStore) {
+    public ConversationListViewController(ConversationListView conversationListView, PreferenceListener preferenceListener, ArrayListSource<Conversation> source, EventSubscriber messageReceiver, DependencyRepository dependencyRepository) {
         this.conversationListView = conversationListView;
-        this.messageLoader = messageLoader;
-        this.transitionManager = transitionManager;
+        this.messageLoader = dependencyRepository.getMessagesLoader();
+        this.transitionManager = dependencyRepository.getTransitionManager();
         this.preferenceListener = preferenceListener;
         this.source = source;
         this.messageReceiver = messageReceiver;
-        this.preferenceStore = preferenceStore;
+        this.preferenceStore = dependencyRepository.getPreferenceStore();
     }
 
     public void start() {

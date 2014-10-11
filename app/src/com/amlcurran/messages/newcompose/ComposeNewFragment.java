@@ -41,7 +41,6 @@ import com.amlcurran.messages.data.InFlightSmsMessage;
 import com.amlcurran.messages.data.ParcelablePhoneNumber;
 import com.amlcurran.messages.loaders.HasConversationListener;
 import com.amlcurran.messages.loaders.MessagesLoader;
-import com.amlcurran.messages.loaders.MessagesLoaderProvider;
 import com.amlcurran.messages.telephony.DefaultAppChecker;
 import com.amlcurran.messages.transition.TransitionManager;
 import com.amlcurran.messages.ui.ComposeMessageView;
@@ -113,7 +112,7 @@ public class ComposeNewFragment extends Fragment implements ComposeMessageView.C
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         defaultAppChecker = new DefaultAppChecker(getActivity());
-        loader = new ProviderHelper<MessagesLoaderProvider>(MessagesLoaderProvider.class).get(getActivity()).getMessagesLoader();
+        loader = new ProviderHelper<MessagesLoader.Provider>(MessagesLoader.Provider.class).get(getActivity()).getMessagesLoader();
         contactSource = new ArrayListSource<Contact>();
 
         adapter = new SourceBinderAdapter<Contact>(getActivity(), contactSource, new ContactBinder());

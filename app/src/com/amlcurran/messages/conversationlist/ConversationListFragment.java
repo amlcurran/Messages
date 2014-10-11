@@ -24,17 +24,15 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
+import com.amlcurran.messages.DependencyRepository;
 import com.amlcurran.messages.R;
 import com.amlcurran.messages.core.conversationlist.ConversationListView;
 import com.amlcurran.messages.core.data.Conversation;
+import com.amlcurran.messages.core.events.EventSubscriber;
+import com.amlcurran.messages.core.preferences.PreferenceListener;
 import com.amlcurran.messages.events.BroadcastEventSubscriber;
 import com.amlcurran.messages.loaders.MessagesLoader;
-import com.amlcurran.messages.loaders.MessagesLoaderProvider;
-import com.amlcurran.messages.core.preferences.PreferenceListener;
-import com.amlcurran.messages.preferences.PreferenceStoreDraftRepository;
 import com.amlcurran.messages.preferences.SharedPreferenceListener;
-import com.amlcurran.messages.preferences.SharedPreferenceStore;
-import com.amlcurran.messages.transition.TransitionManager;
 import com.amlcurran.messages.ui.control.Master;
 import com.espian.utils.ProviderHelper;
 import com.github.amlcurran.sourcebinder.ArrayListSource;
@@ -62,15 +60,14 @@ public class ConversationListFragment extends ListFragment implements Conversati
 
         ArrayListSource<Conversation> source = new ArrayListSource<Conversation>();
         ConversationModalMarshall.Callback modalCallback = (ConversationModalMarshall.Callback) getActivity();
-        MessagesLoader messageLoader = new ProviderHelper<MessagesLoaderProvider>(MessagesLoaderProvider.class).get(getActivity()).getMessagesLoader();
-        TransitionManager transitionManager = ((TransitionManager.Provider) getActivity()).getTransitionManager();
+        MessagesLoader messageLoader = new ProviderHelper<MessagesLoader.Provider>(MessagesLoader.Provider.class).get(getActivity()).getMessagesLoader();
         PreferenceListener preferenceListener = new SharedPreferenceListener(getActivity(), "unread_priority");
-        BroadcastEventSubscriber messageReceiver = new BroadcastEventSubscriber(getActivity());
-        SharedPreferenceStore preferenceStore = new SharedPreferenceStore(getActivity());
-        conversationController = new ConversationListViewController(this, messageLoader, transitionManager, preferenceListener, source, messageReceiver, preferenceStore);
+        EventSubscriber messageReceiver = new BroadcastEventSubscriber(getActivity());
+        DependencyRepository dependencyRepository = (DependencyRepository) getActivity();
+        conversationController = new ConversationListViewController(this, preferenceListener, source, messageReceiver, dependencyRepository);
 
         TextFormatter textFormatter = new TextFormatter(getActivity());
-        ConversationsBinder binder = new ConversationsBinder(textFormatter, getResources(), messageLoader, new PreferenceStoreDraftRepository(getActivity()));
+        ConversationsBinder binder = new ConversationsBinder(textFormatter, getResources(), messageLoader, dependencyRepository.getDraftRepository());
         SourceBinderAdapter adapter = new SourceBinderAdapter<Conversation>(getActivity(), source, binder);
         setListAdapter(adapter);
         getListView().setChoiceMode(ListView.CHOICE_MODE_MULTIPLE_MODAL);
