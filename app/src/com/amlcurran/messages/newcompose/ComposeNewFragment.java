@@ -18,7 +18,6 @@ package com.amlcurran.messages.newcompose;
 
 import android.animation.LayoutTransition;
 import android.app.Fragment;
-import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
 import android.telephony.PhoneNumberUtils;
@@ -43,11 +42,8 @@ import com.amlcurran.messages.loaders.MessagesLoader;
 import com.amlcurran.messages.telephony.DefaultAppChecker;
 import com.amlcurran.messages.ui.ComposeMessageView;
 import com.amlcurran.messages.ui.contact.ContactChipView;
-import com.amlcurran.messages.ui.contact.ContactView;
-import com.amlcurran.messages.ui.contact.RoundContactView;
 import com.espian.utils.ProviderHelper;
 import com.github.amlcurran.sourcebinder.ArrayListSource;
-import com.github.amlcurran.sourcebinder.SimpleBinder;
 import com.github.amlcurran.sourcebinder.SourceBinderAdapter;
 
 import java.util.Calendar;
@@ -117,7 +113,7 @@ public class ComposeNewFragment extends Fragment implements ComposeMessageView.C
         loader = new ProviderHelper<MessagesLoader.Provider>(MessagesLoader.Provider.class).get(getActivity()).getMessagesLoader();
         contactSource = new ArrayListSource<Contact>();
 
-        adapter = new SourceBinderAdapter<Contact>(getActivity(), contactSource, new ContactBinder());
+        adapter = new SourceBinderAdapter<Contact>(getActivity(), contactSource, new ContactBinder(loader));
         recipientChooser = new RecipientChooser(composeNewController);
 
         personListView.setAdapter(adapter);
@@ -198,21 +194,6 @@ public class ComposeNewFragment extends Fragment implements ComposeMessageView.C
     @Override
     public String getComposedMessage() {
         return composeView.getText();
-    }
-
-    private class ContactBinder extends SimpleBinder<Contact> {
-
-        @Override
-        public View bindView(View convertView, Contact item, int position) {
-            ((ContactView) convertView).setContact(item, loader);
-            return convertView;
-        }
-
-        @Override
-        public View createView(Context context, int itemViewType, ViewGroup parent) {
-            return new RoundContactView(context, null);
-        }
-
     }
 
     private class ReplaceDataRunnable implements Runnable {
