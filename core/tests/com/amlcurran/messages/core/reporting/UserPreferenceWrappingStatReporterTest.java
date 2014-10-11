@@ -38,7 +38,7 @@ public class UserPreferenceWrappingStatReporterTest {
 
 
     @Test
-    public void whenUsersDiableStatReporting_StatsAreNotReported() {
+    public void whenUsersDisableStatReporting_StatsAreNotReported() {
         UserPreferenceWrappingStatReporter statReporter = new UserPreferenceWrappingStatReporter(new FakeStatReporter(), new DontSendStatsPreferenceStore());
 
         statReporter.sendUiEvent("event");

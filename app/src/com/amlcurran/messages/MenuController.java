@@ -26,7 +26,7 @@ import com.espian.utils.ui.MenuFinder;
 
 import static com.espian.utils.Verbose.not;
 
-public class MenuController implements OnOptionsItemSelectedListener {
+class MenuController implements OnOptionsItemSelectedListener {
     private final Activity activity;
     private final TransitionManager transitionManager;
 
