@@ -16,7 +16,6 @@
 
 package com.amlcurran.messages.conversationlist;
 
-import android.app.Activity;
 import android.app.ListFragment;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -26,35 +25,20 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 
 import com.amlcurran.messages.R;
-import com.amlcurran.messages.core.conversationlist.ConversationListListener;
 import com.amlcurran.messages.core.data.Conversation;
-import com.amlcurran.messages.core.data.Sort;
-import com.amlcurran.messages.core.events.Broadcast;
-import com.amlcurran.messages.core.events.EventSubscriber;
-import com.amlcurran.messages.events.BroadcastEventBus;
-import com.amlcurran.messages.events.BroadcastEventSubscriber;
 import com.amlcurran.messages.loaders.MessagesLoader;
 import com.amlcurran.messages.loaders.MessagesLoaderProvider;
 import com.amlcurran.messages.preferences.PreferenceStoreDraftRepository;
-import com.amlcurran.messages.preferences.SharedPreferenceStore;
-import com.amlcurran.messages.transition.TransitionManager;
 import com.amlcurran.messages.ui.control.Master;
 import com.espian.utils.ProviderHelper;
 import com.github.amlcurran.sourcebinder.ArrayListSource;
 import com.github.amlcurran.sourcebinder.SourceBinderAdapter;
 
-import java.util.List;
+public class ConversationListFragment extends ListFragment implements ConversationListView, Master {
 
-public class ConversationListFragment extends ListFragment implements ConversationListListener, AdapterView.OnItemClickListener, PreferenceListener.ChangeListener, BroadcastEventSubscriber.Listener, Master {
-
-    protected SourceBinderAdapter<Conversation> adapter;
-    protected ArrayListSource<Conversation> source;
     private View emptyView;
-    private ConversationModalMarshall.Callback modalCallback;
-    private PreferenceListener preferenceListener;
-    private MessagesLoader messageLoader;
-    private EventSubscriber messageReceiver;
-    private TransitionManager transitionManager;
+    private ConversationListViewController conversationController;
+    private ConversationSelectedListener conversationSelectedListener;
 
     public ConversationListFragment() {
     }
@@ -69,91 +53,57 @@ public class ConversationListFragment extends ListFragment implements Conversati
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        messageLoader = new ProviderHelper<MessagesLoaderProvider>(MessagesLoaderProvider.class).get(getActivity()).getMessagesLoader();
-        messageReceiver = new BroadcastEventSubscriber(getActivity(), this);
 
-        preferenceListener = new PreferenceListener(getActivity(), this, "unread_priority");
-        source = new ArrayListSource<Conversation>();
+        ArrayListSource<Conversation> source = new ArrayListSource<Conversation>();
+        MessagesLoader messageLoader = new ProviderHelper<MessagesLoaderProvider>(MessagesLoaderProvider.class).get(getActivity()).getMessagesLoader();
+        ConversationModalMarshall.Callback modalCallback = (ConversationModalMarshall.Callback) getActivity();
+        conversationController = new ConversationListViewController(this, getActivity(), source);
+
         TextFormatter textFormatter = new TextFormatter(getActivity());
         ConversationsBinder binder = new ConversationsBinder(textFormatter, getResources(), messageLoader, new PreferenceStoreDraftRepository(getActivity()));
-        adapter = new SourceBinderAdapter<Conversation>(getActivity(), source, binder);
+        SourceBinderAdapter adapter = new SourceBinderAdapter<Conversation>(getActivity(), source, binder);
         setListAdapter(adapter);
         getListView().setChoiceMode(ListView.CHOICE_MODE_MULTIPLE_MODAL);
         getListView().setDivider(null);
-        getListView().setOnItemClickListener(this);
+        getListView().setOnItemClickListener(new NotifyControllerClickListener());
         getListView().setMultiChoiceModeListener(new ConversationModalMarshall(source, modalCallback));
     }
 
     @Override
     public void onStart() {
         super.onStart();
-        messageReceiver.startListening(getActions());
-        preferenceListener.startListening();
-        loadData(messageLoader, false);
+        conversationController.start();
     }
 
     @Override
     public void onStop() {
         super.onStop();
-        preferenceListener.stopListening();
-        messageReceiver.stopListening();
+        conversationController.stop();
     }
 
     @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-        transitionManager = ((TransitionManager.Provider) activity).getTransitionManager();
-        modalCallback = new ProviderHelper<ConversationModalMarshall.Callback>(ConversationModalMarshall.Callback.class).get(activity);
-    }
-
-    public Broadcast[] getActions() {
-        return new Broadcast[]{new Broadcast(BroadcastEventBus.BROADCAST_LIST_LOADED, null)};
-    }
-
-    public void loadData(MessagesLoader loader, boolean isRefresh) {
-        if (!isRefresh) {
-            showLoadingUi();
-        }
-        loader.loadConversationList(this, getSort());
-    }
-
-    private Sort getSort() {
-        return new SharedPreferenceStore(getActivity()).getConversationSort();
-    }
-
-    @Override
-    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        Conversation conversation = source.getAtPosition(position);
-        transitionManager.to().thread(conversation.getContact(), conversation.getThreadId(), null);
-    }
-
-    @Override
-    public void onConversationListLoaded(final List<Conversation> conversations) {
-        //SingletonManager.getNotifier(getActivity()).updateUnreadNotification(false);
-        source.replace(conversations);
-        hideLoadingUi();
-    }
-
-    private void showLoadingUi() {
+    public void showLoadingUi() {
         getListView().setVisibility(View.GONE);
         emptyView.setVisibility(View.VISIBLE);
     }
 
-    private void hideLoadingUi() {
+    @Override
+    public void setConversationSelectedListener(ConversationSelectedListener conversationSelectedListener) {
+        this.conversationSelectedListener = conversationSelectedListener;
+    }
+
+    @Override
+    public void hideLoadingUi() {
         if (getView() != null) {
             getListView().setVisibility(View.VISIBLE);
             emptyView.setVisibility(View.GONE);
         }
     }
 
-    @Override
-    public void preferenceChanged(String requestKey) {
-        onMessageReceived();
+    private class NotifyControllerClickListener implements android.widget.AdapterView.OnItemClickListener {
+        @Override
+        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            conversationSelectedListener.selectedPosition(position);
+        }
     }
-
-    @Override
-    public void onMessageReceived() {
-        loadData(messageLoader, true);
-    }
-
 }
