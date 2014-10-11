@@ -18,7 +18,7 @@ package com.amlcurran.messages;
 
 import android.content.Context;
 
-import com.amlcurran.messages.events.EventBus;
+import com.amlcurran.messages.core.events.EventBus;
 import com.amlcurran.messages.loaders.MessagesLoader;
 import com.amlcurran.messages.notifications.Notifier;
 

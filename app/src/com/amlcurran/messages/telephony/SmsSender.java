@@ -30,6 +30,7 @@ import com.amlcurran.messages.MessagesLog;
 import com.amlcurran.messages.SingletonManager;
 import com.amlcurran.messages.core.data.PhoneNumber;
 import com.amlcurran.messages.core.data.Time;
+import com.amlcurran.messages.core.events.EventBus;
 import com.amlcurran.messages.data.InFlightSmsMessage;
 import com.amlcurran.messages.data.ParcelablePhoneNumber;
 import com.amlcurran.messages.events.BroadcastEventBus;
@@ -52,7 +53,7 @@ public class SmsSender extends IntentService {
 
     private final SmsManager smsManager;
     private final SmsDatabaseWriter smsDatabaseWriter;
-    private final BroadcastEventBus eventBus;
+    private final EventBus eventBus;
 
     public SmsSender() {
         super(TAG);
@@ -167,7 +168,7 @@ public class SmsSender extends IntentService {
 
             @Override
             public void written(Uri inserted) {
-                eventBus.postMessageSending(message);
+                eventBus.postMessageSending(message.getPhoneNumber());
                 ArrayList<PendingIntent> messageSendIntents = getMessageSendIntents(message, inserted);
                 smsManager.sendMultipartTextMessage(message.getPhoneNumber().flatten(), null, smsManager.divideMessage(message.getBody()), messageSendIntents, null);
             }

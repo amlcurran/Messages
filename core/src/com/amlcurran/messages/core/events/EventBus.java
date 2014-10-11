@@ -14,9 +14,8 @@
  * limitations under the License.
  */
 
-package com.amlcurran.messages.events;
+package com.amlcurran.messages.core.events;
 
-import com.amlcurran.messages.data.InFlightSmsMessage;
 import com.amlcurran.messages.core.data.PhoneNumber;
 
 public interface EventBus {
@@ -35,7 +34,7 @@ public interface EventBus {
 
     void postMessageReceived(PhoneNumber phoneNumber);
 
-    void postMessageSending(InFlightSmsMessage message);
+    void postMessageSending(PhoneNumber recipient);
 
     void postListLoaded();
 

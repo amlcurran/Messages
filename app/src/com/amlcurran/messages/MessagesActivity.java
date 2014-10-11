@@ -31,7 +31,7 @@ import com.amlcurran.messages.core.preferences.PreferenceStore;
 import com.amlcurran.messages.core.reporting.StatReporter;
 import com.amlcurran.messages.core.reporting.UserPreferenceWrappingStatReporter;
 import com.amlcurran.messages.data.InFlightSmsMessage;
-import com.amlcurran.messages.events.EventBus;
+import com.amlcurran.messages.core.events.EventBus;
 import com.amlcurran.messages.launch.IntentDataExtractor;
 import com.amlcurran.messages.launch.LaunchAction;
 import com.amlcurran.messages.launch.LaunchAssistant;

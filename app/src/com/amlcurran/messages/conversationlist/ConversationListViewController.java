@@ -24,7 +24,7 @@ import com.amlcurran.messages.core.events.Broadcast;
 import com.amlcurran.messages.core.events.EventSubscriber;
 import com.amlcurran.messages.core.preferences.PreferenceListener;
 import com.amlcurran.messages.core.preferences.PreferenceStore;
-import com.amlcurran.messages.events.EventBus;
+import com.amlcurran.messages.core.events.EventBus;
 import com.amlcurran.messages.loaders.MessagesLoader;
 import com.amlcurran.messages.transition.TransitionManager;
 import com.github.amlcurran.sourcebinder.ArrayListSource;

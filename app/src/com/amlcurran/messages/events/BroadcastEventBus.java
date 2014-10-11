@@ -20,8 +20,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.v4.content.LocalBroadcastManager;
 
-import com.amlcurran.messages.data.InFlightSmsMessage;
 import com.amlcurran.messages.core.data.PhoneNumber;
+import com.amlcurran.messages.core.events.EventBus;
 
 public class BroadcastEventBus implements EventBus {
 
@@ -48,10 +48,9 @@ public class BroadcastEventBus implements EventBus {
     }
 
     @Override
-    public void postMessageSending(InFlightSmsMessage message) {
+    public void postMessageSending(PhoneNumber recipient) {
         Intent broadcast = new Intent(BROADCAST_MESSAGE_SENDING);
-        broadcast.putExtra("message", message);
-        broadcast.putExtra(EXTRA_FILTER, message.getPhoneNumber().flatten());
+        broadcast.putExtra(EXTRA_FILTER, recipient.flatten());
         broadcaster.sendBroadcast(broadcast);
     }
 

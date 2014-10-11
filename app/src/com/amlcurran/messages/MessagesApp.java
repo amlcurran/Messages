@@ -27,7 +27,7 @@ import com.amlcurran.messages.core.events.Broadcast;
 import com.amlcurran.messages.demo.DemoMessagesLoader;
 import com.amlcurran.messages.events.BroadcastEventBus;
 import com.amlcurran.messages.events.BroadcastEventSubscriber;
-import com.amlcurran.messages.events.EventBus;
+import com.amlcurran.messages.core.events.EventBus;
 import com.amlcurran.messages.loaders.ExecutorMessagesLoader;
 import com.amlcurran.messages.loaders.MemoryMessagesCache;
 import com.amlcurran.messages.loaders.MessagesCache;

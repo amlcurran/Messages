@@ -30,7 +30,7 @@ import com.amlcurran.messages.core.data.Sort;
 import com.amlcurran.messages.core.loaders.ContactListListener;
 import com.amlcurran.messages.core.loaders.ConversationListChangeListener;
 import com.amlcurran.messages.core.loaders.ThreadListener;
-import com.amlcurran.messages.events.EventBus;
+import com.amlcurran.messages.core.events.EventBus;
 
 import java.util.Collections;
 import java.util.List;
