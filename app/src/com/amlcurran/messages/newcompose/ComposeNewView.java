@@ -17,8 +17,9 @@
 package com.amlcurran.messages.newcompose;
 
 import com.amlcurran.messages.core.data.Contact;
+import com.amlcurran.messages.telephony.DefaultAppChecker;
 
-public interface ComposeNewView {
+public interface ComposeNewView extends DefaultAppChecker.Callback {
     void chosenContact(Contact contact);
 
     String getComposedMessage();

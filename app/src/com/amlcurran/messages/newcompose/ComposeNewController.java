@@ -27,6 +27,7 @@ import com.amlcurran.messages.data.InFlightSmsMessage;
 import com.amlcurran.messages.data.ParcelablePhoneNumber;
 import com.amlcurran.messages.loaders.HasConversationListener;
 import com.amlcurran.messages.loaders.MessagesLoader;
+import com.amlcurran.messages.telephony.DefaultAppChecker;
 import com.amlcurran.messages.transition.TransitionManager;
 import com.amlcurran.messages.ui.ComposeMessageView;
 
@@ -35,12 +36,14 @@ import java.util.Calendar;
 public class ComposeNewController implements ChooserListener, ComposeMessageView.ComposureCallbacks {
     private final ComposeNewView composeNewView;
     private final SmsComposeListener smsComposeListener;
+    private final DefaultAppChecker defaultAppChecker;
     private final MessagesLoader messagesLoader;
     private final TransitionManager transitionManager;
 
-    public ComposeNewController(ComposeNewView composeNewView, DependencyRepository dependencyRepository, SmsComposeListener smsComposeListener) {
+    public ComposeNewController(ComposeNewView composeNewView, DependencyRepository dependencyRepository, SmsComposeListener smsComposeListener, DefaultAppChecker defaultAppChecker) {
         this.composeNewView = composeNewView;
         this.smsComposeListener = smsComposeListener;
+        this.defaultAppChecker = defaultAppChecker;
         this.messagesLoader = dependencyRepository.getMessagesLoader();
         this.transitionManager = dependencyRepository.getTransitionManager();
     }
@@ -105,4 +108,7 @@ public class ComposeNewController implements ChooserListener, ComposeMessageView
         return arguments != null && arguments.containsKey(ComposeNewFragment.EXTRA_ADDRESS);
     }
 
+    public void resume() {
+        defaultAppChecker.checkSmsApp(composeNewView);
+    }
 }

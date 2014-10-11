@@ -51,12 +51,9 @@ public class ComposeNewFragment extends Fragment implements ContactChipView.Remo
     static final String EXTRA_MESSAGE = "message";
     private ComposeMessageView composeView;
     private EditText pickPersonView;
-    private DefaultAppChecker defaultAppChecker;
-    private SmsComposeListener listener;
     private ArrayListSource<Contact> contactSource;
     private AbsListView personListView;
     private SourceBinderAdapter<Contact> adapter;
-    private MessagesLoader loader;
     private RecipientChooser recipientChooser;
     private ContactChipView contactChip;
     private ComposeNewController composeNewController;
@@ -100,11 +97,13 @@ public class ComposeNewFragment extends Fragment implements ContactChipView.Remo
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+
         DependencyRepository dependencyRepository = (DependencyRepository) getActivity();
-        listener = new ProviderHelper<SmsComposeListener>(SmsComposeListener.class).get(getActivity());
-        composeNewController = new ComposeNewController(this, dependencyRepository, listener);
-        defaultAppChecker = new DefaultAppChecker(getActivity());
-        loader = new ProviderHelper<MessagesLoader.Provider>(MessagesLoader.Provider.class).get(getActivity()).getMessagesLoader();
+        SmsComposeListener listener = new ProviderHelper<SmsComposeListener>(SmsComposeListener.class).get(getActivity());
+        DefaultAppChecker defaultAppChecker = new DefaultAppChecker(getActivity());
+        composeNewController = new ComposeNewController(this, dependencyRepository, listener, defaultAppChecker);
+
+        MessagesLoader loader = new ProviderHelper<MessagesLoader.Provider>(MessagesLoader.Provider.class).get(getActivity()).getMessagesLoader();
         contactSource = new ArrayListSource<Contact>();
 
         adapter = new SourceBinderAdapter<Contact>(getActivity(), contactSource, new ContactBinder(loader));
@@ -122,7 +121,7 @@ public class ComposeNewFragment extends Fragment implements ContactChipView.Remo
     @Override
     public void onResume() {
         super.onResume();
-        defaultAppChecker.checkSmsApp(composeView);
+        composeNewController.resume();
     }
 
     @Override
@@ -161,6 +160,16 @@ public class ComposeNewFragment extends Fragment implements ContactChipView.Remo
     @Override
     public String getComposedMessage() {
         return composeView.getText();
+    }
+
+    @Override
+    public void isDefaultSmsApp() {
+        composeView.isDefaultSmsApp();
+    }
+
+    @Override
+    public void isNotDefaultSmsApp() {
+        composeView.isNotDefaultSmsApp();
     }
 
     private class ReplaceDataRunnable implements Runnable {
