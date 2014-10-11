@@ -32,7 +32,6 @@ public class SmsMessageAnalyser {
     private final DateFormat fullFormatter = new SimpleDateFormat("HH:mm dd-MMM-yy");
     private final DateFormat timeFormatter = new SimpleDateFormat("HH:mm");
     private final Date date = new Date();
-    private DateTime then;
     private final DateTime startOfToday;
 
     public SmsMessageAnalyser(DifferenceStringProvider differencesStringProvider) {
@@ -41,7 +40,7 @@ public class SmsMessageAnalyser {
     }
 
     boolean isYesterday(Time time) {
-        then = new DateTime(time.toMillis());
+        DateTime then = new DateTime(time.toMillis());
         return then.withTimeAtStartOfDay().plusDays(1).equals(startOfToday);
     }
 
@@ -69,7 +68,7 @@ public class SmsMessageAnalyser {
     }
 
     boolean isToday(Time time) {
-        then.withMillis(time.toMillis());
+        DateTime then = new DateTime(time.toMillis());
         return then.withTimeAtStartOfDay().equals(startOfToday);
     }
 }
