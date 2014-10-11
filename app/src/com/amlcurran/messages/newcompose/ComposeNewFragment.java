@@ -17,7 +17,6 @@
 package com.amlcurran.messages.newcompose;
 
 import android.animation.LayoutTransition;
-import android.app.Activity;
 import android.app.Fragment;
 import android.content.Context;
 import android.os.Bundle;
@@ -31,6 +30,7 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.amlcurran.messages.DependencyRepository;
 import com.amlcurran.messages.R;
 import com.amlcurran.messages.SingletonManager;
 import com.amlcurran.messages.SmsComposeListener;
@@ -39,10 +39,8 @@ import com.amlcurran.messages.core.data.Time;
 import com.amlcurran.messages.core.loaders.ContactListListener;
 import com.amlcurran.messages.data.InFlightSmsMessage;
 import com.amlcurran.messages.data.ParcelablePhoneNumber;
-import com.amlcurran.messages.loaders.HasConversationListener;
 import com.amlcurran.messages.loaders.MessagesLoader;
 import com.amlcurran.messages.telephony.DefaultAppChecker;
-import com.amlcurran.messages.transition.TransitionManager;
 import com.amlcurran.messages.ui.ComposeMessageView;
 import com.amlcurran.messages.ui.contact.ContactChipView;
 import com.amlcurran.messages.ui.contact.ContactView;
@@ -55,7 +53,8 @@ import com.github.amlcurran.sourcebinder.SourceBinderAdapter;
 import java.util.Calendar;
 import java.util.List;
 
-public class ComposeNewFragment extends Fragment implements ComposeMessageView.ComposureCallbacks, RecipientChooser.ChooserListener, ContactChipView.RemoveListener {
+public class ComposeNewFragment extends Fragment implements ComposeMessageView.ComposureCallbacks, ContactChipView.RemoveListener,
+    ComposeNewView {
 
     private static final String EXTRA_ADDRESS = "address";
     private static final String EXTRA_MESSAGE = "message";
@@ -69,7 +68,7 @@ public class ComposeNewFragment extends Fragment implements ComposeMessageView.C
     private MessagesLoader loader;
     private RecipientChooser recipientChooser;
     private ContactChipView contactChip;
-    private TransitionManager transitionManager;
+    private ComposeNewController composeNewController;
 
     public static ComposeNewFragment withAddress(String sendAddress) {
         ComposeNewFragment newFragment = new ComposeNewFragment();
@@ -111,12 +110,15 @@ public class ComposeNewFragment extends Fragment implements ComposeMessageView.C
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        DependencyRepository dependencyRepository = (DependencyRepository) getActivity();
+        composeNewController = new ComposeNewController(this, dependencyRepository);
+        listener = new ProviderHelper<SmsComposeListener>(SmsComposeListener.class).get(getActivity());
         defaultAppChecker = new DefaultAppChecker(getActivity());
         loader = new ProviderHelper<MessagesLoader.Provider>(MessagesLoader.Provider.class).get(getActivity()).getMessagesLoader();
         contactSource = new ArrayListSource<Contact>();
 
         adapter = new SourceBinderAdapter<Contact>(getActivity(), contactSource, new ContactBinder());
-        recipientChooser = new RecipientChooser(this);
+        recipientChooser = new RecipientChooser(composeNewController);
 
         personListView.setAdapter(adapter);
         personListView.setOnItemClickListener(recipientChooser);
@@ -149,13 +151,6 @@ public class ComposeNewFragment extends Fragment implements ComposeMessageView.C
     }
 
     @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-        listener = new ProviderHelper<SmsComposeListener>(SmsComposeListener.class).get(activity);
-        transitionManager = ((TransitionManager.Provider) activity).getTransitionManager();
-    }
-
-    @Override
     public void onResume() {
         super.onResume();
         defaultAppChecker.checkSmsApp(composeView);
@@ -183,25 +178,6 @@ public class ComposeNewFragment extends Fragment implements ComposeMessageView.C
         return pickPersonView.getText();
     }
 
-    @Override
-    public void recipientChosen(final Contact contact) {
-        loader.getHasConversationWith(contact, new HasConversationListener() {
-
-            @Override
-            public void noConversationForNumber() {
-                contactChip.setVisibility(View.VISIBLE);
-                contactChip.setContact(contact, SingletonManager.getMessagesLoader(getActivity()));
-                pickPersonView.setText(contact.getNumber().flatten());
-
-            }
-
-            @Override
-            public void hasConversation(Contact contact, int threadId) {
-                transitionManager.to().thread(contact, String.valueOf(threadId), composeView.getText());
-            }
-        });
-    }
-
     public String getPreparedAddress() {
         return getArguments().getString(EXTRA_ADDRESS);
     }
@@ -210,6 +186,18 @@ public class ComposeNewFragment extends Fragment implements ComposeMessageView.C
     public void chipRemoveRequested(ContactChipView contactChipView, Contact contact) {
         contactChipView.setVisibility(View.GONE);
         pickPersonView.setText("");
+    }
+
+    @Override
+    public void chosenContact(Contact contact) {
+        contactChip.setVisibility(View.VISIBLE);
+        contactChip.setContact(contact, SingletonManager.getMessagesLoader(getActivity()));
+        pickPersonView.setText(contact.getNumber().flatten());
+    }
+
+    @Override
+    public String getComposedMessage() {
+        return composeView.getText();
     }
 
     private class ContactBinder extends SimpleBinder<Contact> {

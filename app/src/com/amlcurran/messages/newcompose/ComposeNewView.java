@@ -16,29 +16,10 @@
 
 package com.amlcurran.messages.newcompose;
 
-import android.view.View;
-import android.widget.AdapterView;
-
 import com.amlcurran.messages.core.data.Contact;
 
-import java.util.List;
+public interface ComposeNewView {
+    void chosenContact(Contact contact);
 
-public class RecipientChooser implements AdapterView.OnItemClickListener {
-
-    private final ChooserListener chooserListener;
-    private List<Contact> contacts;
-
-    public RecipientChooser(ChooserListener chooserListener) {
-        this.chooserListener = chooserListener;
-    }
-
-    @Override
-    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        chooserListener.recipientChosen(contacts.get(position));
-    }
-
-    public void setContacts(List<Contact> contacts) {
-        this.contacts = contacts;
-    }
-
+    String getComposedMessage();
 }
