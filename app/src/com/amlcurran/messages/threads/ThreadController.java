@@ -64,7 +64,12 @@ class ThreadController implements ThreadListener {
 
     void start() {
         loadData(messageLoader, false);
-        messageReceiver.startListening(, getBroadcastsToListenTo());
+        messageReceiver.startListening(new EventSubscriber.Listener() {
+            @Override
+            public void onMessageReceived() {
+                loadData(messageLoader, true);
+            }
+        }, getBroadcastsToListenTo());
     }
 
     void stop() {

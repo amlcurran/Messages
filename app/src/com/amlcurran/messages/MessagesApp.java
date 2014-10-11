@@ -68,7 +68,7 @@ public class MessagesApp extends Application implements BroadcastEventSubscriber
         unreadMessageNotificationManager = new UnreadMessageNotificationManager(this, loader);
         notifier = new Notifier(this, unreadMessageNotificationManager);
         subscriber = new BroadcastEventSubscriber(this);
-        subscriber.startListening(
+        subscriber.startListening(this,
                 new Broadcast(BroadcastEventBus.BROADCAST_MESSAGE_SENT, null),
                 new Broadcast(BroadcastEventBus.BROADCAST_MESSAGE_RECEIVED, null),
                 new Broadcast(BroadcastEventBus.BROADCAST_LIST_INVALIDATED, null));
