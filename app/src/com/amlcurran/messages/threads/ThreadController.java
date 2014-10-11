@@ -21,6 +21,7 @@ import android.app.Activity;
 import com.amlcurran.messages.core.data.Contact;
 import com.amlcurran.messages.core.data.DraftRepository;
 import com.amlcurran.messages.core.data.PhoneNumber;
+import com.amlcurran.messages.core.data.PhoneNumberOnlyContact;
 import com.amlcurran.messages.core.data.SmsMessage;
 import com.amlcurran.messages.core.events.Broadcast;
 import com.amlcurran.messages.core.events.EventSubscriber;
@@ -105,7 +106,7 @@ class ThreadController implements ThreadListener {
     }
 
     public void setUpContactView(Contact contact) {
-        if (contact == null) {
+        if (contact instanceof PhoneNumberOnlyContact) {
             messageLoader.queryContact(phoneNumber, new OnContactQueryListener() {
                 @Override
                 public void contactLoaded(Contact contact) {
