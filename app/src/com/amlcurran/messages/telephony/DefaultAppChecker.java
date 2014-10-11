@@ -18,6 +18,7 @@ package com.amlcurran.messages.telephony;
 
 import android.content.Context;
 import android.provider.Telephony;
+import android.support.annotation.NonNull;
 
 import com.amlcurran.messages.BuildConfig;
 
@@ -29,14 +30,12 @@ public class DefaultAppChecker {
     }
 
     private final Context activity;
-    private final Callback callback;
 
-    public DefaultAppChecker(Context context, Callback callback) {
+    public DefaultAppChecker(Context context) {
         this.activity = context;
-        this.callback = callback;
     }
 
-    public void checkSmsApp() {
+    public void checkSmsApp(@NonNull Callback callback) {
         if (isDefaultSmsApp()) {
             callback.isDefaultSmsApp();
         } else {

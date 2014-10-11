@@ -32,14 +32,16 @@ import com.amlcurran.messages.R;
 import com.amlcurran.messages.SingletonManager;
 import com.amlcurran.messages.SmsComposeListener;
 import com.amlcurran.messages.bucket.BundleBuilder;
-import com.amlcurran.messages.core.TextUtils;
 import com.amlcurran.messages.core.data.Contact;
 import com.amlcurran.messages.core.data.DraftRepository;
-import com.amlcurran.messages.core.data.PhoneNumber;
 import com.amlcurran.messages.core.data.SmsMessage;
+import com.amlcurran.messages.core.events.EventSubscriber;
 import com.amlcurran.messages.data.ContactFactory;
+import com.amlcurran.messages.events.BroadcastEventSubscriber;
 import com.amlcurran.messages.loaders.MessagesLoader;
+import com.amlcurran.messages.loaders.MessagesLoaderProvider;
 import com.amlcurran.messages.preferences.PreferenceStoreDraftRepository;
+import com.amlcurran.messages.telephony.DefaultAppChecker;
 import com.amlcurran.messages.ui.ComposeMessageView;
 import com.amlcurran.messages.ui.CustomHeaderFragment;
 import com.amlcurran.messages.ui.contact.ContactClickListener;
@@ -48,7 +50,7 @@ import com.espian.utils.ProviderHelper;
 import com.github.amlcurran.sourcebinder.SourceBinderAdapter;
 
 public class ThreadFragment extends ListFragment implements
-        CustomHeaderFragment<DefaultContactView>, ThreadController.Callback, ThreadView {
+        CustomHeaderFragment<DefaultContactView>, ThreadController.ThreadView, ThreadView {
 
     private static final String THREAD_ID = "threadId";
     private static final String CONTACT = "contact";
@@ -96,13 +98,14 @@ public class ThreadFragment extends ListFragment implements
         contact = ContactFactory.desmooshContact(getArguments().getBundle(CONTACT));
         String threadId = getArguments().getString(THREAD_ID);
 
+        MessagesLoader messageLoader = ((MessagesLoaderProvider) getActivity()).getMessagesLoader();
+        EventSubscriber messageReceiver = new BroadcastEventSubscriber(getActivity());
+        DefaultAppChecker defaultChecker = new DefaultAppChecker(getActivity());
+
         draftRepository = new PreferenceStoreDraftRepository(getActivity());
         composeCallbacks = new StandardComposeCallbacks(getActivity(), contact.getNumber(), listener);
         composeView.setComposeListener(composeCallbacks);
-        threadController = new ThreadController(threadId, contact.getNumber(), this);
-        threadController.create(getActivity(), composeView);
-
-        prefillComposeView();
+        threadController = new ThreadController(threadId, contact, getArguments().getString(COMPOSED_MESSAGE), this, messageLoader, messageReceiver, defaultChecker, draftRepository);
 
         setHasOptionsMenu(true);
 
@@ -110,32 +113,6 @@ public class ThreadFragment extends ListFragment implements
         ThreadBinder threadBinder = new ThreadBinder(getListView(), getResources(), resendCallback);
         SourceBinderAdapter<SmsMessage> adapter = new SourceBinderAdapter<SmsMessage>(getActivity(), threadController.getSource(), threadBinder);
         setListAdapter(adapter);
-
-        threadController.setUpContactView(contact);
-    }
-
-    private void prefillComposeView() {
-        String composedMessage = getArguments().getString(COMPOSED_MESSAGE);
-        if (TextUtils.isNotEmpty(composedMessage)) {
-            composeView.setText(composedMessage);
-        } else {
-            composeView.setText(retrieveDraft(contact.getNumber()));
-        }
-    }
-
-    private void bindContactToView(Contact receivedContact, MessagesLoader messagesLoader) {
-        getHeaderView(getActivity()).setContact(receivedContact, messagesLoader);
-        getHeaderView(getActivity()).setClickToView(((ContactClickListener) getActivity()), true);
-    }
-
-    private String retrieveDraft(PhoneNumber phoneNumber) {
-        return draftRepository.getDraft(phoneNumber);
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        threadController.resume();
     }
 
     @Override
@@ -148,7 +125,6 @@ public class ThreadFragment extends ListFragment implements
     public void onStop() {
         super.onStop();
         threadController.stop();
-        threadController.saveDraft(draftRepository, composeView.getText());
     }
 
     @Override
@@ -198,7 +174,27 @@ public class ThreadFragment extends ListFragment implements
 
     @Override
     public void bindContactToHeader(Contact contact) {
-        bindContactToView(contact, SingletonManager.getMessagesLoader(getActivity()));
+        getHeaderView(getActivity()).setContact(contact, SingletonManager.getMessagesLoader(getActivity()));
+        getHeaderView(getActivity()).setClickToView(((ContactClickListener) getActivity()), true);
     }
 
+    @Override
+    public String getComposedMessage() {
+        return composeView.getText();
+    }
+
+    @Override
+    public void setComposedMessage(String composedMessage) {
+        composeView.setText(composedMessage);
+    }
+
+    @Override
+    public void isDefaultSmsApp() {
+        composeView.isDefaultSmsApp();
+    }
+
+    @Override
+    public void isNotDefaultSmsApp() {
+        composeView.isNotDefaultSmsApp();
+    }
 }

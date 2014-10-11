@@ -112,7 +112,7 @@ public class ComposeNewFragment extends Fragment implements ComposeMessageView.C
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        defaultAppChecker = new DefaultAppChecker(getActivity(), composeView);
+        defaultAppChecker = new DefaultAppChecker(getActivity());
         loader = new ProviderHelper<MessagesLoaderProvider>(MessagesLoaderProvider.class).get(getActivity()).getMessagesLoader();
         contactSource = new ArrayListSource<Contact>();
 
@@ -159,7 +159,7 @@ public class ComposeNewFragment extends Fragment implements ComposeMessageView.C
     @Override
     public void onResume() {
         super.onResume();
-        defaultAppChecker.checkSmsApp();
+        defaultAppChecker.checkSmsApp(composeView);
     }
 
     @Override

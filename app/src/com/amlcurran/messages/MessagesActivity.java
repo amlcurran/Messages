@@ -100,7 +100,7 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
         menuController = new MenuController(this, transitionManager);
         disabledBannerController = new DisabledBannerController(this, externalEventManager);
         newComposeController = new NewMessageButtonController(findViewById(R.id.button_new_message), transitionManager, statReporter);
-        appChecker = new DefaultAppChecker(this, new HideNewComposeAndShowBannerCallback(newComposeController, disabledBannerController));
+        appChecker = new DefaultAppChecker(this);
 
         handleLaunch(getIntent(), preferencesStore);
     }
@@ -165,7 +165,7 @@ public class MessagesActivity extends Activity implements MessagesLoaderProvider
     @Override
     protected void onResume() {
         super.onResume();
-        appChecker.checkSmsApp();
+        appChecker.checkSmsApp(new HideNewComposeAndShowBannerCallback(newComposeController, disabledBannerController));
     }
 
     @Override
