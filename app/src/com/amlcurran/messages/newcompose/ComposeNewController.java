@@ -16,19 +16,31 @@
 
 package com.amlcurran.messages.newcompose;
 
+import android.os.Bundle;
+import android.telephony.PhoneNumberUtils;
+
 import com.amlcurran.messages.DependencyRepository;
+import com.amlcurran.messages.SmsComposeListener;
 import com.amlcurran.messages.core.data.Contact;
+import com.amlcurran.messages.core.data.Time;
+import com.amlcurran.messages.data.InFlightSmsMessage;
+import com.amlcurran.messages.data.ParcelablePhoneNumber;
 import com.amlcurran.messages.loaders.HasConversationListener;
 import com.amlcurran.messages.loaders.MessagesLoader;
 import com.amlcurran.messages.transition.TransitionManager;
+import com.amlcurran.messages.ui.ComposeMessageView;
 
-public class ComposeNewController implements ChooserListener {
+import java.util.Calendar;
+
+public class ComposeNewController implements ChooserListener, ComposeMessageView.ComposureCallbacks {
     private final ComposeNewView composeNewView;
+    private final SmsComposeListener smsComposeListener;
     private final MessagesLoader messagesLoader;
     private final TransitionManager transitionManager;
 
-    public ComposeNewController(ComposeNewView composeNewView, DependencyRepository dependencyRepository) {
+    public ComposeNewController(ComposeNewView composeNewView, DependencyRepository dependencyRepository, SmsComposeListener smsComposeListener) {
         this.composeNewView = composeNewView;
+        this.smsComposeListener = smsComposeListener;
         this.messagesLoader = dependencyRepository.getMessagesLoader();
         this.transitionManager = dependencyRepository.getTransitionManager();
     }
@@ -49,4 +61,48 @@ public class ComposeNewController implements ChooserListener {
             }
         });
     }
+
+    @Override
+    public void onMessageComposed(CharSequence body) {
+        if (isValid(composeNewView.getEnteredAddress())) {
+            String address = String.valueOf(composeNewView.getEnteredAddress());
+            ParcelablePhoneNumber phoneNumber = new ParcelablePhoneNumber(address);
+            String message = String.valueOf(body);
+            long timestamp = Calendar.getInstance().getTimeInMillis();
+            InFlightSmsMessage smsMessage = new InFlightSmsMessage(phoneNumber, message, Time.fromMillis(timestamp));
+            smsComposeListener.sendSms(smsMessage);
+        } else {
+            composeNewView.sendFailedWithInvalidRecipient();
+        }
+    }
+
+    private static boolean isValid(CharSequence address) {
+        return PhoneNumberUtils.isWellFormedSmsAddress(String.valueOf(address));
+    }
+
+    public void create(Bundle arguments) {
+        if (hasPreparedAddress(arguments)) {
+            composeNewView.setRecipient(getPreparedAddress(arguments));
+        }
+        if (hasPreparedMessage(arguments)) {
+            composeNewView.setComposedMessage(getPreparedMessage(arguments));
+        }
+    }
+
+    private String getPreparedMessage(Bundle arguments) {
+        return arguments.getString(ComposeNewFragment.EXTRA_MESSAGE);
+    }
+
+    public String getPreparedAddress(Bundle arguments) {
+        return arguments.getString(ComposeNewFragment.EXTRA_ADDRESS);
+    }
+
+    private boolean hasPreparedMessage(Bundle arguments) {
+        return arguments != null && arguments.containsKey(ComposeNewFragment.EXTRA_MESSAGE);
+    }
+
+    private boolean hasPreparedAddress(Bundle arguments) {
+        return arguments != null && arguments.containsKey(ComposeNewFragment.EXTRA_ADDRESS);
+    }
+
 }

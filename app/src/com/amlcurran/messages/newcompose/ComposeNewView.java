@@ -22,4 +22,12 @@ public interface ComposeNewView {
     void chosenContact(Contact contact);
 
     String getComposedMessage();
+
+    CharSequence getEnteredAddress();
+
+    void sendFailedWithInvalidRecipient();
+
+    void setComposedMessage(String preparedMessage);
+
+    void setRecipient(String preparedAddress);
 }

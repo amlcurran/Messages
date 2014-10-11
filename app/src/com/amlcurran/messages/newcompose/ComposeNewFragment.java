@@ -20,7 +20,6 @@ import android.animation.LayoutTransition;
 import android.app.Fragment;
 import android.os.Bundle;
 import android.os.Handler;
-import android.telephony.PhoneNumberUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -34,10 +33,7 @@ import com.amlcurran.messages.R;
 import com.amlcurran.messages.SingletonManager;
 import com.amlcurran.messages.SmsComposeListener;
 import com.amlcurran.messages.core.data.Contact;
-import com.amlcurran.messages.core.data.Time;
 import com.amlcurran.messages.core.loaders.ContactListListener;
-import com.amlcurran.messages.data.InFlightSmsMessage;
-import com.amlcurran.messages.data.ParcelablePhoneNumber;
 import com.amlcurran.messages.loaders.MessagesLoader;
 import com.amlcurran.messages.telephony.DefaultAppChecker;
 import com.amlcurran.messages.ui.ComposeMessageView;
@@ -46,14 +42,13 @@ import com.espian.utils.ProviderHelper;
 import com.github.amlcurran.sourcebinder.ArrayListSource;
 import com.github.amlcurran.sourcebinder.SourceBinderAdapter;
 
-import java.util.Calendar;
 import java.util.List;
 
-public class ComposeNewFragment extends Fragment implements ComposeMessageView.ComposureCallbacks, ContactChipView.RemoveListener,
+public class ComposeNewFragment extends Fragment implements ContactChipView.RemoveListener,
     ComposeNewView {
 
-    private static final String EXTRA_ADDRESS = "address";
-    private static final String EXTRA_MESSAGE = "message";
+    static final String EXTRA_ADDRESS = "address";
+    static final String EXTRA_MESSAGE = "message";
     private ComposeMessageView composeView;
     private EditText pickPersonView;
     private DefaultAppChecker defaultAppChecker;
@@ -92,7 +87,6 @@ public class ComposeNewFragment extends Fragment implements ComposeMessageView.C
         contactChip = (ContactChipView) view.findViewById(R.id.new_compose_chip);
         contactChip.setRemoveListener(this);
         composeView = (ComposeMessageView) view.findViewById(R.id.new_compose_view);
-        composeView.setComposeListener(this);
         pickPersonView = ((EditText) view.findViewById(R.id.new_pick_person));
         personListView = ((AbsListView) view.findViewById(R.id.new_person_list));
 
@@ -107,42 +101,21 @@ public class ComposeNewFragment extends Fragment implements ComposeMessageView.C
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         DependencyRepository dependencyRepository = (DependencyRepository) getActivity();
-        composeNewController = new ComposeNewController(this, dependencyRepository);
         listener = new ProviderHelper<SmsComposeListener>(SmsComposeListener.class).get(getActivity());
+        composeNewController = new ComposeNewController(this, dependencyRepository, listener);
         defaultAppChecker = new DefaultAppChecker(getActivity());
         loader = new ProviderHelper<MessagesLoader.Provider>(MessagesLoader.Provider.class).get(getActivity()).getMessagesLoader();
         contactSource = new ArrayListSource<Contact>();
 
         adapter = new SourceBinderAdapter<Contact>(getActivity(), contactSource, new ContactBinder(loader));
         recipientChooser = new RecipientChooser(composeNewController);
+        composeView.setComposeListener(composeNewController);
 
         personListView.setAdapter(adapter);
         personListView.setOnItemClickListener(recipientChooser);
         personListView.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
 
-        if (hasPreparedAddress()) {
-            pickPersonView.setText(getPreparedAddress());
-        }
-        if (hasPreparedMessage()) {
-            composeView.setText(getPreparedMessage());
-        }
-
-        loadContacts();
-    }
-
-    private String getPreparedMessage() {
-        return getArguments().getString(EXTRA_MESSAGE);
-    }
-
-    private boolean hasPreparedMessage() {
-        return getArguments() != null && getArguments().containsKey(EXTRA_MESSAGE);
-    }
-
-    private boolean hasPreparedAddress() {
-        return getArguments() != null && getArguments().containsKey(EXTRA_ADDRESS);
-    }
-
-    private void loadContacts() {
+        composeNewController.create(getArguments());
         loader.loadContacts(new DelayedDataLoader());
     }
 
@@ -153,29 +126,23 @@ public class ComposeNewFragment extends Fragment implements ComposeMessageView.C
     }
 
     @Override
-    public void onMessageComposed(CharSequence body) {
-        if (isValid(getEnteredAddress())) {
-            String address = String.valueOf(getEnteredAddress());
-            ParcelablePhoneNumber phoneNumber = new ParcelablePhoneNumber(address);
-            String message = String.valueOf(body);
-            long timestamp = Calendar.getInstance().getTimeInMillis();
-            InFlightSmsMessage smsMessage = new InFlightSmsMessage(phoneNumber, message, Time.fromMillis(timestamp));
-            listener.sendSms(smsMessage);
-        } else {
-            Toast.makeText(getActivity(), "Enter a valid recipient", Toast.LENGTH_SHORT).show();
-        }
-    }
-
-    private static boolean isValid(CharSequence address) {
-        return PhoneNumberUtils.isWellFormedSmsAddress(String.valueOf(address));
-    }
-
-    private CharSequence getEnteredAddress() {
+    public CharSequence getEnteredAddress() {
         return pickPersonView.getText();
     }
 
-    public String getPreparedAddress() {
-        return getArguments().getString(EXTRA_ADDRESS);
+    @Override
+    public void sendFailedWithInvalidRecipient() {
+        Toast.makeText(getActivity(), "Enter a valid recipient", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void setComposedMessage(String preparedMessage) {
+        composeView.setText(preparedMessage);
+    }
+
+    @Override
+    public void setRecipient(String preparedAddress) {
+        pickPersonView.setText(preparedAddress);
     }
 
     @Override
