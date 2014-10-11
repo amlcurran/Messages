@@ -19,7 +19,6 @@ package com.amlcurran.messages.conversationlist;
 import com.amlcurran.messages.core.conversationlist.ConversationListListener;
 import com.amlcurran.messages.core.conversationlist.ConversationListView;
 import com.amlcurran.messages.core.data.Conversation;
-import com.amlcurran.messages.core.data.Sort;
 import com.amlcurran.messages.core.events.Broadcast;
 import com.amlcurran.messages.core.events.EventSubscriber;
 import com.amlcurran.messages.core.preferences.PreferenceListener;
@@ -51,10 +50,10 @@ class ConversationListViewController implements ConversationListListener, EventS
     }
 
     public void start() {
-        messageReceiver.startListening(this, getActions());
+        messageReceiver.startListening(this, new Broadcast(EventBus.BROADCAST_LIST_LOADED, null));
         preferenceListener.startListening(this);
         conversationListView.setConversationSelectedListener(this);
-        loadData(messageLoader, false);
+        loadData();
     }
 
     public void stop() {
@@ -63,24 +62,17 @@ class ConversationListViewController implements ConversationListListener, EventS
         conversationListView.setConversationSelectedListener(null);
     }
 
-    public Broadcast[] getActions() {
-        return new Broadcast[]{new Broadcast(EventBus.BROADCAST_LIST_LOADED, null)};
+    private void reloadData() {
+        messageLoader.loadConversationList(this, preferenceStore.getConversationSort());
     }
 
-    public void loadData(MessagesLoader loader, boolean isRefresh) {
-        if (!isRefresh) {
-            conversationListView.showLoadingUi();
-        }
-        loader.loadConversationList(this, getSort());
-    }
-
-    private Sort getSort() {
-        return preferenceStore.getConversationSort();
+    private void loadData() {
+        conversationListView.showLoadingUi();
+        reloadData();
     }
 
     @Override
     public void onConversationListLoaded(final List<Conversation> conversations) {
-        //SingletonManager.getNotifier(activity).updateUnreadNotification(false);
         source.replace(conversations);
         conversationListView.hideLoadingUi();
     }
@@ -92,7 +84,7 @@ class ConversationListViewController implements ConversationListListener, EventS
 
     @Override
     public void onMessageReceived() {
-        loadData(messageLoader, true);
+        reloadData();
     }
 
     @Override

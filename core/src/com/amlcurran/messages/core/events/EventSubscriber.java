@@ -17,7 +17,7 @@
 package com.amlcurran.messages.core.events;
 
 public interface EventSubscriber {
-    void startListening(Listener listener, Broadcast[] broadcasts);
+    void startListening(Listener listener, Broadcast... broadcasts);
 
     void stopListening();
 
