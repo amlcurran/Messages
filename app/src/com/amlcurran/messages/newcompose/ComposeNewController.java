@@ -58,7 +58,7 @@ public class ComposeNewController {
         this.source = new ArrayListSource<Contact>();
     }
 
-    public void onMessageComposed(CharSequence body) {
+    public void messageComposed(CharSequence body) {
         PhoneNumber enteredAddress = personPicker.getEnteredAddress();
         if (enteredAddress.isValid()) {
             String message = String.valueOf(body);

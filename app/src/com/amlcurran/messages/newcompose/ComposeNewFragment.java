@@ -32,13 +32,12 @@ import com.amlcurran.messages.SmsComposeListener;
 import com.amlcurran.messages.core.data.Contact;
 import com.amlcurran.messages.telephony.DefaultAppChecker;
 import com.amlcurran.messages.ui.ComposeMessageView;
-import com.espian.utils.ProviderHelper;
 import com.github.amlcurran.sourcebinder.SourceBinderAdapter;
 
 public class ComposeNewFragment extends Fragment implements ComposeNewView {
 
-    static final String EXTRA_ADDRESS = "address";
-    static final String EXTRA_MESSAGE = "message";
+    private static final String EXTRA_ADDRESS = "address";
+    private static final String EXTRA_MESSAGE = "message";
     private ComposeMessageView composeView;
     private AbsListView personListView;
     private ComposeNewController composeNewController;
@@ -77,7 +76,7 @@ public class ComposeNewFragment extends Fragment implements ComposeNewView {
         super.onActivityCreated(savedInstanceState);
 
         DependencyRepository dependencyRepository = (DependencyRepository) getActivity();
-        SmsComposeListener listener = new ProviderHelper<SmsComposeListener>(SmsComposeListener.class).get(getActivity());
+        SmsComposeListener listener = ((SmsComposeListener) getActivity());
         DefaultAppChecker defaultAppChecker = new DefaultAppChecker(getActivity());
         PersonPicker personPicker = ((PersonPicker) getView().findViewById(R.id.new_person_picker));
         composeNewController = new ComposeNewController(this, personPicker, dependencyRepository, listener, defaultAppChecker, getResources());
@@ -130,7 +129,7 @@ public class ComposeNewFragment extends Fragment implements ComposeNewView {
     private class NotifyControllerComposeListener implements ComposeMessageView.ComposureCallbacks {
         @Override
         public void onMessageComposed(CharSequence body) {
-            composeNewController.onMessageComposed(body);
+            composeNewController.messageComposed(body);
         }
     }
 }
