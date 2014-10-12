@@ -30,7 +30,7 @@ import com.amlcurran.messages.core.data.PhoneNumber;
 import com.amlcurran.messages.data.ParcelablePhoneNumber;
 import com.amlcurran.messages.ui.contact.ContactChipView;
 
-public class PersonPickerView extends LinearLayout {
+public class PersonPickerView extends LinearLayout implements PersonPicker {
 
     private final EditText numberEntry;
     private final ContactChipView personChip;
@@ -51,16 +51,19 @@ public class PersonPickerView extends LinearLayout {
         numberEntry = ((EditText) findViewById(R.id.new_pick_person));
     }
 
+    @Override
     public void chosenRecipient(Contact contact) {
         personChip.setVisibility(View.VISIBLE);
         personChip.setContact(contact, SingletonManager.getMessagesLoader(getContext()));
         numberEntry.setText(contact.getNumber().flatten());
     }
 
+    @Override
     public PhoneNumber getEnteredAddress() {
         return new ParcelablePhoneNumber(numberEntry.getText().toString());
     }
 
+    @Override
     public void setEnteredAddress(String enteredAddress) {
         numberEntry.setText(enteredAddress);
     }

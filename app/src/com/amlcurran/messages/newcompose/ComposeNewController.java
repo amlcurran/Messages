@@ -19,7 +19,6 @@ package com.amlcurran.messages.newcompose;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.os.Handler;
-import android.telephony.PhoneNumberUtils;
 
 import com.amlcurran.messages.DependencyRepository;
 import com.amlcurran.messages.SmsComposeListener;
@@ -39,6 +38,7 @@ import java.util.List;
 
 public class ComposeNewController {
     private final ComposeNewView composeNewView;
+    private final PersonPicker personPicker;
     private final SmsComposeListener smsComposeListener;
     private final DefaultAppChecker defaultAppChecker;
     private final Resources resources;
@@ -46,8 +46,9 @@ public class ComposeNewController {
     private final TransitionManager transitionManager;
     private final ArrayListSource<Contact> source;
 
-    public ComposeNewController(ComposeNewView composeNewView, DependencyRepository dependencyRepository, SmsComposeListener smsComposeListener, DefaultAppChecker defaultAppChecker, Resources resources) {
+    public ComposeNewController(ComposeNewView composeNewView, PersonPicker personPicker, DependencyRepository dependencyRepository, SmsComposeListener smsComposeListener, DefaultAppChecker defaultAppChecker, Resources resources) {
         this.composeNewView = composeNewView;
+        this.personPicker = personPicker;
         this.smsComposeListener = smsComposeListener;
         this.defaultAppChecker = defaultAppChecker;
         this.resources = resources;
@@ -57,23 +58,20 @@ public class ComposeNewController {
     }
 
     public void onMessageComposed(CharSequence body) {
-        if (isValid(composeNewView.getEnteredAddress())) {
+        PhoneNumber enteredAddress = personPicker.getEnteredAddress();
+        if (enteredAddress.isValid()) {
             String message = String.valueOf(body);
             long timestamp = Calendar.getInstance().getTimeInMillis();
-            InFlightSmsMessage smsMessage = new InFlightSmsMessage(composeNewView.getEnteredAddress(), message, Time.fromMillis(timestamp));
+            InFlightSmsMessage smsMessage = new InFlightSmsMessage(enteredAddress, message, Time.fromMillis(timestamp));
             smsComposeListener.sendSms(smsMessage);
         } else {
             composeNewView.sendFailedWithInvalidRecipient();
         }
     }
 
-    private static boolean isValid(PhoneNumber address) {
-        return PhoneNumberUtils.isWellFormedSmsAddress(address.flatten());
-    }
-
     public void create(Bundle arguments) {
         if (hasPreparedAddress(arguments)) {
-            composeNewView.setEnteredAddress(getPreparedAddress(arguments));
+            personPicker.setEnteredAddress(getPreparedAddress(arguments));
         }
         if (hasPreparedMessage(arguments)) {
             composeNewView.setComposedMessage(getPreparedMessage(arguments));
@@ -111,7 +109,7 @@ public class ComposeNewController {
 
             @Override
             public void noConversationForNumber() {
-                composeNewView.chosenContact(contact);
+                personPicker.chosenRecipient(contact);
 
             }
 

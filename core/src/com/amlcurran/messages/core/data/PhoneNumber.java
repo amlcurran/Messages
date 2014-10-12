@@ -18,4 +18,6 @@ package com.amlcurran.messages.core.data;
 
 public interface PhoneNumber {
     String flatten();
+
+    boolean isValid();
 }

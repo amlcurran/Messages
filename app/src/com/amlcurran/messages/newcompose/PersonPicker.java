@@ -16,14 +16,13 @@
 
 package com.amlcurran.messages.newcompose;
 
-import com.amlcurran.messages.telephony.DefaultAppChecker;
+import com.amlcurran.messages.core.data.Contact;
+import com.amlcurran.messages.core.data.PhoneNumber;
 
-public interface ComposeNewView extends DefaultAppChecker.Callback {
+public interface PersonPicker {
+    void chosenRecipient(Contact contact);
 
-    String getComposedMessage();
+    PhoneNumber getEnteredAddress();
 
-    void sendFailedWithInvalidRecipient();
-
-    void setComposedMessage(String preparedMessage);
-
+    void setEnteredAddress(String enteredAddress);
 }

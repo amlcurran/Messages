@@ -25,6 +25,11 @@ public class ParcelablePhoneNumber implements Parcelable, PhoneNumber {
     }
 
     @Override
+    public boolean isValid() {
+        return PhoneNumberUtils.isWellFormedSmsAddress(formattedNumber);
+    }
+
+    @Override
     public boolean equals(Object o) {
         return o instanceof PhoneNumber && formattedNumber.equals(((PhoneNumber) o).flatten());
     }

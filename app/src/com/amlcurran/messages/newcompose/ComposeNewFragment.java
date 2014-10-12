@@ -30,7 +30,6 @@ import com.amlcurran.messages.DependencyRepository;
 import com.amlcurran.messages.R;
 import com.amlcurran.messages.SmsComposeListener;
 import com.amlcurran.messages.core.data.Contact;
-import com.amlcurran.messages.core.data.PhoneNumber;
 import com.amlcurran.messages.telephony.DefaultAppChecker;
 import com.amlcurran.messages.ui.ComposeMessageView;
 import com.espian.utils.ProviderHelper;
@@ -43,7 +42,6 @@ public class ComposeNewFragment extends Fragment implements ComposeNewView {
     private ComposeMessageView composeView;
     private AbsListView personListView;
     private ComposeNewController composeNewController;
-    private PersonPickerView personPicker;
 
     public static ComposeNewFragment withAddress(String sendAddress) {
         ComposeNewFragment newFragment = new ComposeNewFragment();
@@ -68,7 +66,6 @@ public class ComposeNewFragment extends Fragment implements ComposeNewView {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_compose_new, container, false);
-        personPicker = ((PersonPickerView) view.findViewById(R.id.new_person_picker));
         composeView = (ComposeMessageView) view.findViewById(R.id.new_compose_view);
         composeView.setComposeListener(new NotifyControllerComposeListener());
         personListView = ((AbsListView) view.findViewById(R.id.new_person_list));
@@ -82,7 +79,8 @@ public class ComposeNewFragment extends Fragment implements ComposeNewView {
         DependencyRepository dependencyRepository = (DependencyRepository) getActivity();
         SmsComposeListener listener = new ProviderHelper<SmsComposeListener>(SmsComposeListener.class).get(getActivity());
         DefaultAppChecker defaultAppChecker = new DefaultAppChecker(getActivity());
-        composeNewController = new ComposeNewController(this, dependencyRepository, listener, defaultAppChecker, getResources());
+        PersonPicker personPicker = ((PersonPicker) getView().findViewById(R.id.new_person_picker));
+        composeNewController = new ComposeNewController(this, personPicker, dependencyRepository, listener, defaultAppChecker, getResources());
         composeNewController.create(getArguments());
 
         SourceBinderAdapter<Contact> adapter = new SourceBinderAdapter<Contact>(getActivity(), composeNewController.getSource(), new ContactBinder(dependencyRepository.getMessagesLoader()));
@@ -98,11 +96,6 @@ public class ComposeNewFragment extends Fragment implements ComposeNewView {
     }
 
     @Override
-    public PhoneNumber getEnteredAddress() {
-        return personPicker.getEnteredAddress();
-    }
-
-    @Override
     public void sendFailedWithInvalidRecipient() {
         Toast.makeText(getActivity(), "Enter a valid recipient", Toast.LENGTH_SHORT).show();
     }
@@ -110,16 +103,6 @@ public class ComposeNewFragment extends Fragment implements ComposeNewView {
     @Override
     public void setComposedMessage(String preparedMessage) {
         composeView.setText(preparedMessage);
-    }
-
-    @Override
-    public void setEnteredAddress(String enteredAddress) {
-        personPicker.setEnteredAddress(enteredAddress);
-    }
-
-    @Override
-    public void chosenContact(Contact contact) {
-        personPicker.chosenRecipient(contact);
     }
 
     @Override
