@@ -23,31 +23,26 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
-import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
 
 import com.amlcurran.messages.DependencyRepository;
 import com.amlcurran.messages.R;
-import com.amlcurran.messages.SingletonManager;
 import com.amlcurran.messages.SmsComposeListener;
 import com.amlcurran.messages.core.data.Contact;
 import com.amlcurran.messages.telephony.DefaultAppChecker;
 import com.amlcurran.messages.ui.ComposeMessageView;
-import com.amlcurran.messages.ui.contact.ContactChipView;
 import com.espian.utils.ProviderHelper;
 import com.github.amlcurran.sourcebinder.SourceBinderAdapter;
 
-public class ComposeNewFragment extends Fragment implements ContactChipView.RemoveListener,
-    ComposeNewView {
+public class ComposeNewFragment extends Fragment implements ComposeNewView, PersonPickerView.Listener {
 
     static final String EXTRA_ADDRESS = "address";
     static final String EXTRA_MESSAGE = "message";
     private ComposeMessageView composeView;
-    private EditText pickPersonView;
     private AbsListView personListView;
-    private ContactChipView contactChip;
     private ComposeNewController composeNewController;
+    private PersonPickerView personPicker;
 
     public static ComposeNewFragment withAddress(String sendAddress) {
         ComposeNewFragment newFragment = new ComposeNewFragment();
@@ -72,11 +67,10 @@ public class ComposeNewFragment extends Fragment implements ContactChipView.Remo
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_compose_new, container, false);
-        contactChip = (ContactChipView) view.findViewById(R.id.new_compose_chip);
-        contactChip.setRemoveListener(this);
+        personPicker = ((PersonPickerView) view.findViewById(R.id.new_person_picker));
+        personPicker.setListener(this);
         composeView = (ComposeMessageView) view.findViewById(R.id.new_compose_view);
         composeView.setComposeListener(new NotifyControllerComposeListener());
-        pickPersonView = ((EditText) view.findViewById(R.id.new_pick_person));
         personListView = ((AbsListView) view.findViewById(R.id.new_person_list));
         return view;
     }
@@ -105,7 +99,8 @@ public class ComposeNewFragment extends Fragment implements ContactChipView.Remo
 
     @Override
     public CharSequence getEnteredAddress() {
-        return pickPersonView.getText();
+        // TODO; make return phonenumber
+        return personPicker.getEnteredAddress().flatten();
     }
 
     @Override
@@ -119,21 +114,13 @@ public class ComposeNewFragment extends Fragment implements ContactChipView.Remo
     }
 
     @Override
-    public void setRecipient(String preparedAddress) {
-        pickPersonView.setText(preparedAddress);
-    }
-
-    @Override
-    public void chipRemoveRequested(ContactChipView contactChipView, Contact contact) {
-        contactChipView.setVisibility(View.GONE);
-        pickPersonView.setText("");
+    public void setEnteredAddress(String enteredAddress) {
+        personPicker.setEnteredAddress(enteredAddress);
     }
 
     @Override
     public void chosenContact(Contact contact) {
-        contactChip.setVisibility(View.VISIBLE);
-        contactChip.setContact(contact, SingletonManager.getMessagesLoader(getActivity()));
-        pickPersonView.setText(contact.getNumber().flatten());
+        personPicker.chosenRecipient(contact);
     }
 
     @Override
@@ -149,6 +136,11 @@ public class ComposeNewFragment extends Fragment implements ContactChipView.Remo
     @Override
     public void isNotDefaultSmsApp() {
         composeView.isNotDefaultSmsApp();
+    }
+
+    @Override
+    public void removedRecipient(Contact contact) {
+        // Doesn't need it yet?
     }
 
     private class NotifyControllerClickListener implements android.widget.AdapterView.OnItemClickListener {

@@ -30,5 +30,5 @@ public interface ComposeNewView extends DefaultAppChecker.Callback {
 
     void setComposedMessage(String preparedMessage);
 
-    void setRecipient(String preparedAddress);
+    void setEnteredAddress(String preparedAddress);
 }

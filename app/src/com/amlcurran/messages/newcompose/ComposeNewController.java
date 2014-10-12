@@ -75,7 +75,7 @@ public class ComposeNewController {
 
     public void create(Bundle arguments) {
         if (hasPreparedAddress(arguments)) {
-            composeNewView.setRecipient(getPreparedAddress(arguments));
+            composeNewView.setEnteredAddress(getPreparedAddress(arguments));
         }
         if (hasPreparedMessage(arguments)) {
             composeNewView.setComposedMessage(getPreparedMessage(arguments));
