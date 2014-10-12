@@ -34,8 +34,6 @@ public class PersonPickerView extends LinearLayout {
 
     private final EditText numberEntry;
     private final ContactChipView personChip;
-    private PersonPickerView.Listener listener;
-    private String enteredAddress;
 
     public PersonPickerView(Context context) {
         this(context, null, 0);
@@ -67,20 +65,9 @@ public class PersonPickerView extends LinearLayout {
         numberEntry.setText(enteredAddress);
     }
 
-    public void setListener(Listener listener) {
-        this.listener = listener;
-    }
-
-    public interface Listener {
-        void removedRecipient(Contact contact);
-    }
-
     private class BubbleUpRemoveListener implements ContactChipView.RemoveListener {
         @Override
         public void chipRemoveRequested(ContactChipView contactChipView, Contact contact) {
-            if (listener != null) {
-                listener.removedRecipient(contact);
-            }
             contactChipView.setVisibility(View.GONE);
             numberEntry.setText("");
         }

@@ -24,10 +24,10 @@ import android.telephony.PhoneNumberUtils;
 import com.amlcurran.messages.DependencyRepository;
 import com.amlcurran.messages.SmsComposeListener;
 import com.amlcurran.messages.core.data.Contact;
+import com.amlcurran.messages.core.data.PhoneNumber;
 import com.amlcurran.messages.core.data.Time;
 import com.amlcurran.messages.core.loaders.ContactListListener;
 import com.amlcurran.messages.data.InFlightSmsMessage;
-import com.amlcurran.messages.data.ParcelablePhoneNumber;
 import com.amlcurran.messages.loaders.HasConversationListener;
 import com.amlcurran.messages.loaders.MessagesLoader;
 import com.amlcurran.messages.telephony.DefaultAppChecker;
@@ -58,19 +58,17 @@ public class ComposeNewController {
 
     public void onMessageComposed(CharSequence body) {
         if (isValid(composeNewView.getEnteredAddress())) {
-            String address = String.valueOf(composeNewView.getEnteredAddress());
-            ParcelablePhoneNumber phoneNumber = new ParcelablePhoneNumber(address);
             String message = String.valueOf(body);
             long timestamp = Calendar.getInstance().getTimeInMillis();
-            InFlightSmsMessage smsMessage = new InFlightSmsMessage(phoneNumber, message, Time.fromMillis(timestamp));
+            InFlightSmsMessage smsMessage = new InFlightSmsMessage(composeNewView.getEnteredAddress(), message, Time.fromMillis(timestamp));
             smsComposeListener.sendSms(smsMessage);
         } else {
             composeNewView.sendFailedWithInvalidRecipient();
         }
     }
 
-    private static boolean isValid(CharSequence address) {
-        return PhoneNumberUtils.isWellFormedSmsAddress(String.valueOf(address));
+    private static boolean isValid(PhoneNumber address) {
+        return PhoneNumberUtils.isWellFormedSmsAddress(address.flatten());
     }
 
     public void create(Bundle arguments) {

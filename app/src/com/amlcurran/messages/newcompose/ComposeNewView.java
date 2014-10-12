@@ -17,6 +17,7 @@
 package com.amlcurran.messages.newcompose;
 
 import com.amlcurran.messages.core.data.Contact;
+import com.amlcurran.messages.core.data.PhoneNumber;
 import com.amlcurran.messages.telephony.DefaultAppChecker;
 
 public interface ComposeNewView extends DefaultAppChecker.Callback {
@@ -24,7 +25,7 @@ public interface ComposeNewView extends DefaultAppChecker.Callback {
 
     String getComposedMessage();
 
-    CharSequence getEnteredAddress();
+    PhoneNumber getEnteredAddress();
 
     void sendFailedWithInvalidRecipient();
 

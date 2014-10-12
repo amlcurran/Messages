@@ -30,12 +30,13 @@ import com.amlcurran.messages.DependencyRepository;
 import com.amlcurran.messages.R;
 import com.amlcurran.messages.SmsComposeListener;
 import com.amlcurran.messages.core.data.Contact;
+import com.amlcurran.messages.core.data.PhoneNumber;
 import com.amlcurran.messages.telephony.DefaultAppChecker;
 import com.amlcurran.messages.ui.ComposeMessageView;
 import com.espian.utils.ProviderHelper;
 import com.github.amlcurran.sourcebinder.SourceBinderAdapter;
 
-public class ComposeNewFragment extends Fragment implements ComposeNewView, PersonPickerView.Listener {
+public class ComposeNewFragment extends Fragment implements ComposeNewView {
 
     static final String EXTRA_ADDRESS = "address";
     static final String EXTRA_MESSAGE = "message";
@@ -68,7 +69,6 @@ public class ComposeNewFragment extends Fragment implements ComposeNewView, Pers
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_compose_new, container, false);
         personPicker = ((PersonPickerView) view.findViewById(R.id.new_person_picker));
-        personPicker.setListener(this);
         composeView = (ComposeMessageView) view.findViewById(R.id.new_compose_view);
         composeView.setComposeListener(new NotifyControllerComposeListener());
         personListView = ((AbsListView) view.findViewById(R.id.new_person_list));
@@ -98,9 +98,8 @@ public class ComposeNewFragment extends Fragment implements ComposeNewView, Pers
     }
 
     @Override
-    public CharSequence getEnteredAddress() {
-        // TODO; make return phonenumber
-        return personPicker.getEnteredAddress().flatten();
+    public PhoneNumber getEnteredAddress() {
+        return personPicker.getEnteredAddress();
     }
 
     @Override
@@ -136,11 +135,6 @@ public class ComposeNewFragment extends Fragment implements ComposeNewView, Pers
     @Override
     public void isNotDefaultSmsApp() {
         composeView.isNotDefaultSmsApp();
-    }
-
-    @Override
-    public void removedRecipient(Contact contact) {
-        // Doesn't need it yet?
     }
 
     private class NotifyControllerClickListener implements android.widget.AdapterView.OnItemClickListener {
