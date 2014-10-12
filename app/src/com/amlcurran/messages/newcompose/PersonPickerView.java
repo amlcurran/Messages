@@ -30,7 +30,7 @@ import com.amlcurran.messages.core.data.PhoneNumber;
 import com.amlcurran.messages.data.ParcelablePhoneNumber;
 import com.amlcurran.messages.ui.contact.ContactChipView;
 
-public class PersonPickerView extends LinearLayout implements PersonPicker {
+class PersonPickerView extends LinearLayout implements PersonPicker {
 
     private final EditText numberEntry;
     private final ContactChipView personChip;

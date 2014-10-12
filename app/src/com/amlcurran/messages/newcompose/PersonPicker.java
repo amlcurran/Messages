@@ -19,7 +19,7 @@ package com.amlcurran.messages.newcompose;
 import com.amlcurran.messages.core.data.Contact;
 import com.amlcurran.messages.core.data.PhoneNumber;
 
-public interface PersonPicker {
+interface PersonPicker {
     void chosenRecipient(Contact contact);
 
     PhoneNumber getEnteredAddress();

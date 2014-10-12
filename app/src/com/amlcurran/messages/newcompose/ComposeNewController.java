@@ -37,7 +37,7 @@ import java.util.List;
 
 import static com.amlcurran.messages.core.TextUtils.isNotEmpty;
 
-public class ComposeNewController {
+class ComposeNewController {
     private final ComposeNewView composeNewView;
     private final PersonPicker personPicker;
     private final SmsComposeListener smsComposeListener;
