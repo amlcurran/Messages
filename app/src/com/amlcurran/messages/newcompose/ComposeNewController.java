@@ -17,7 +17,6 @@
 package com.amlcurran.messages.newcompose;
 
 import android.content.res.Resources;
-import android.os.Bundle;
 import android.os.Handler;
 
 import com.amlcurran.messages.DependencyRepository;
@@ -35,6 +34,8 @@ import com.github.amlcurran.sourcebinder.ArrayListSource;
 
 import java.util.Calendar;
 import java.util.List;
+
+import static com.amlcurran.messages.core.TextUtils.isNotEmpty;
 
 public class ComposeNewController {
     private final ComposeNewView composeNewView;
@@ -69,32 +70,6 @@ public class ComposeNewController {
         }
     }
 
-    public void create(Bundle arguments) {
-        if (hasPreparedAddress(arguments)) {
-            personPicker.setEnteredAddress(getPreparedAddress(arguments));
-        }
-        if (hasPreparedMessage(arguments)) {
-            composeNewView.setComposedMessage(getPreparedMessage(arguments));
-        }
-        messagesLoader.loadContacts(new DelayedDataLoader());
-    }
-
-    private String getPreparedMessage(Bundle arguments) {
-        return arguments.getString(ComposeNewFragment.EXTRA_MESSAGE);
-    }
-
-    public String getPreparedAddress(Bundle arguments) {
-        return arguments.getString(ComposeNewFragment.EXTRA_ADDRESS);
-    }
-
-    private boolean hasPreparedMessage(Bundle arguments) {
-        return arguments != null && arguments.containsKey(ComposeNewFragment.EXTRA_MESSAGE);
-    }
-
-    private boolean hasPreparedAddress(Bundle arguments) {
-        return arguments != null && arguments.containsKey(ComposeNewFragment.EXTRA_ADDRESS);
-    }
-
     public void resume() {
         defaultAppChecker.checkSmsApp(composeNewView);
     }
@@ -118,6 +93,16 @@ public class ComposeNewController {
                 transitionManager.to().thread(contact, String.valueOf(threadId), composeNewView.getComposedMessage());
             }
         });
+    }
+
+    public void create(String address, String message) {
+        if (isNotEmpty(address)) {
+            personPicker.setEnteredAddress(address);
+        }
+        if (isNotEmpty(message)) {
+            composeNewView.setComposedMessage(message);
+        }
+        messagesLoader.loadContacts(new DelayedDataLoader());
     }
 
     private class ReplaceDataRunnable implements Runnable {
