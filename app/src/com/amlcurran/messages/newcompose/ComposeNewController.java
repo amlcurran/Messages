@@ -16,56 +16,46 @@
 
 package com.amlcurran.messages.newcompose;
 
+import android.content.res.Resources;
 import android.os.Bundle;
+import android.os.Handler;
 import android.telephony.PhoneNumberUtils;
 
 import com.amlcurran.messages.DependencyRepository;
 import com.amlcurran.messages.SmsComposeListener;
 import com.amlcurran.messages.core.data.Contact;
 import com.amlcurran.messages.core.data.Time;
+import com.amlcurran.messages.core.loaders.ContactListListener;
 import com.amlcurran.messages.data.InFlightSmsMessage;
 import com.amlcurran.messages.data.ParcelablePhoneNumber;
 import com.amlcurran.messages.loaders.HasConversationListener;
 import com.amlcurran.messages.loaders.MessagesLoader;
 import com.amlcurran.messages.telephony.DefaultAppChecker;
 import com.amlcurran.messages.transition.TransitionManager;
-import com.amlcurran.messages.ui.ComposeMessageView;
+import com.github.amlcurran.sourcebinder.ArrayListSource;
 
 import java.util.Calendar;
+import java.util.List;
 
-public class ComposeNewController implements ChooserListener, ComposeMessageView.ComposureCallbacks {
+public class ComposeNewController {
     private final ComposeNewView composeNewView;
     private final SmsComposeListener smsComposeListener;
     private final DefaultAppChecker defaultAppChecker;
+    private final Resources resources;
     private final MessagesLoader messagesLoader;
     private final TransitionManager transitionManager;
+    private final ArrayListSource<Contact> source;
 
-    public ComposeNewController(ComposeNewView composeNewView, DependencyRepository dependencyRepository, SmsComposeListener smsComposeListener, DefaultAppChecker defaultAppChecker) {
+    public ComposeNewController(ComposeNewView composeNewView, DependencyRepository dependencyRepository, SmsComposeListener smsComposeListener, DefaultAppChecker defaultAppChecker, Resources resources) {
         this.composeNewView = composeNewView;
         this.smsComposeListener = smsComposeListener;
         this.defaultAppChecker = defaultAppChecker;
+        this.resources = resources;
         this.messagesLoader = dependencyRepository.getMessagesLoader();
         this.transitionManager = dependencyRepository.getTransitionManager();
+        this.source = new ArrayListSource<Contact>();
     }
 
-    @Override
-    public void recipientChosen(final Contact contact) {
-        messagesLoader.getHasConversationWith(contact, new HasConversationListener() {
-
-            @Override
-            public void noConversationForNumber() {
-                composeNewView.chosenContact(contact);
-
-            }
-
-            @Override
-            public void hasConversation(Contact contact, int threadId) {
-                transitionManager.to().thread(contact, String.valueOf(threadId), composeNewView.getComposedMessage());
-            }
-        });
-    }
-
-    @Override
     public void onMessageComposed(CharSequence body) {
         if (isValid(composeNewView.getEnteredAddress())) {
             String address = String.valueOf(composeNewView.getEnteredAddress());
@@ -90,6 +80,7 @@ public class ComposeNewController implements ChooserListener, ComposeMessageView
         if (hasPreparedMessage(arguments)) {
             composeNewView.setComposedMessage(getPreparedMessage(arguments));
         }
+        messagesLoader.loadContacts(new DelayedDataLoader());
     }
 
     private String getPreparedMessage(Bundle arguments) {
@@ -110,5 +101,47 @@ public class ComposeNewController implements ChooserListener, ComposeMessageView
 
     public void resume() {
         defaultAppChecker.checkSmsApp(composeNewView);
+    }
+
+    public ArrayListSource<Contact> getSource() {
+        return source;
+    }
+
+    public void personSelected(int position) {
+        final Contact contact = source.getAtPosition(position);
+        messagesLoader.getHasConversationWith(contact, new HasConversationListener() {
+
+            @Override
+            public void noConversationForNumber() {
+                composeNewView.chosenContact(contact);
+
+            }
+
+            @Override
+            public void hasConversation(Contact contact, int threadId) {
+                transitionManager.to().thread(contact, String.valueOf(threadId), composeNewView.getComposedMessage());
+            }
+        });
+    }
+
+    private class ReplaceDataRunnable implements Runnable {
+        private final List<Contact> contacts;
+
+        public ReplaceDataRunnable(List<Contact> contacts) {
+            this.contacts = contacts;
+        }
+
+        @Override
+        public void run() {
+            getSource().replace(contacts);
+        }
+    }
+
+    private class DelayedDataLoader implements ContactListListener {
+
+        @Override
+        public void contactListLoaded(final List<Contact> contacts) {
+            new Handler().postDelayed(new ReplaceDataRunnable(contacts), resources.getInteger(android.R.integer.config_shortAnimTime) + 100);
+        }
     }
 }

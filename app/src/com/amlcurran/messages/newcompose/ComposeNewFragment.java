@@ -16,14 +16,13 @@
 
 package com.amlcurran.messages.newcompose;
 
-import android.animation.LayoutTransition;
 import android.app.Fragment;
 import android.os.Bundle;
-import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
+import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -33,16 +32,11 @@ import com.amlcurran.messages.R;
 import com.amlcurran.messages.SingletonManager;
 import com.amlcurran.messages.SmsComposeListener;
 import com.amlcurran.messages.core.data.Contact;
-import com.amlcurran.messages.core.loaders.ContactListListener;
-import com.amlcurran.messages.loaders.MessagesLoader;
 import com.amlcurran.messages.telephony.DefaultAppChecker;
 import com.amlcurran.messages.ui.ComposeMessageView;
 import com.amlcurran.messages.ui.contact.ContactChipView;
 import com.espian.utils.ProviderHelper;
-import com.github.amlcurran.sourcebinder.ArrayListSource;
 import com.github.amlcurran.sourcebinder.SourceBinderAdapter;
-
-import java.util.List;
 
 public class ComposeNewFragment extends Fragment implements ContactChipView.RemoveListener,
     ComposeNewView {
@@ -51,10 +45,7 @@ public class ComposeNewFragment extends Fragment implements ContactChipView.Remo
     static final String EXTRA_MESSAGE = "message";
     private ComposeMessageView composeView;
     private EditText pickPersonView;
-    private ArrayListSource<Contact> contactSource;
     private AbsListView personListView;
-    private SourceBinderAdapter<Contact> adapter;
-    private RecipientChooser recipientChooser;
     private ContactChipView contactChip;
     private ComposeNewController composeNewController;
 
@@ -84,13 +75,9 @@ public class ComposeNewFragment extends Fragment implements ContactChipView.Remo
         contactChip = (ContactChipView) view.findViewById(R.id.new_compose_chip);
         contactChip.setRemoveListener(this);
         composeView = (ComposeMessageView) view.findViewById(R.id.new_compose_view);
+        composeView.setComposeListener(new NotifyControllerComposeListener());
         pickPersonView = ((EditText) view.findViewById(R.id.new_pick_person));
         personListView = ((AbsListView) view.findViewById(R.id.new_person_list));
-
-        // Set-up the layout transitions
-        LayoutTransition layoutTransition = ((ViewGroup) view.findViewById(R.id.recipient_view_host)).getLayoutTransition();
-        layoutTransition.setDuration(150);
-
         return view;
     }
 
@@ -101,21 +88,13 @@ public class ComposeNewFragment extends Fragment implements ContactChipView.Remo
         DependencyRepository dependencyRepository = (DependencyRepository) getActivity();
         SmsComposeListener listener = new ProviderHelper<SmsComposeListener>(SmsComposeListener.class).get(getActivity());
         DefaultAppChecker defaultAppChecker = new DefaultAppChecker(getActivity());
-        composeNewController = new ComposeNewController(this, dependencyRepository, listener, defaultAppChecker);
-
-        MessagesLoader loader = new ProviderHelper<MessagesLoader.Provider>(MessagesLoader.Provider.class).get(getActivity()).getMessagesLoader();
-        contactSource = new ArrayListSource<Contact>();
-
-        adapter = new SourceBinderAdapter<Contact>(getActivity(), contactSource, new ContactBinder(loader));
-        recipientChooser = new RecipientChooser(composeNewController);
-        composeView.setComposeListener(composeNewController);
-
-        personListView.setAdapter(adapter);
-        personListView.setOnItemClickListener(recipientChooser);
-        personListView.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
-
+        composeNewController = new ComposeNewController(this, dependencyRepository, listener, defaultAppChecker, getResources());
         composeNewController.create(getArguments());
-        loader.loadContacts(new DelayedDataLoader());
+
+        SourceBinderAdapter<Contact> adapter = new SourceBinderAdapter<Contact>(getActivity(), composeNewController.getSource(), new ContactBinder(dependencyRepository.getMessagesLoader()));
+        personListView.setAdapter(adapter);
+        personListView.setOnItemClickListener(new NotifyControllerClickListener());
+        personListView.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
     }
 
     @Override
@@ -172,25 +151,17 @@ public class ComposeNewFragment extends Fragment implements ContactChipView.Remo
         composeView.isNotDefaultSmsApp();
     }
 
-    private class ReplaceDataRunnable implements Runnable {
-        private final List<Contact> contacts;
-
-        public ReplaceDataRunnable(List<Contact> contacts) {
-            this.contacts = contacts;
-        }
-
+    private class NotifyControllerClickListener implements android.widget.AdapterView.OnItemClickListener {
         @Override
-        public void run() {
-            contactSource.replace(contacts);
-            recipientChooser.setContacts(contacts);
+        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            composeNewController.personSelected(position);
         }
     }
 
-    private class DelayedDataLoader implements ContactListListener {
-
+    private class NotifyControllerComposeListener implements ComposeMessageView.ComposureCallbacks {
         @Override
-        public void contactListLoaded(final List<Contact> contacts) {
-            new Handler().postDelayed(new ReplaceDataRunnable(contacts), getResources().getInteger(android.R.integer.config_shortAnimTime) + 100);
+        public void onMessageComposed(CharSequence body) {
+            composeNewController.onMessageComposed(body);
         }
     }
 }

@@ -16,8 +16,5 @@
 
 package com.amlcurran.messages.newcompose;
 
-import com.amlcurran.messages.core.data.Contact;
-
 public interface ChooserListener {
-    void recipientChosen(Contact contact);
 }
