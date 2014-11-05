@@ -5,11 +5,11 @@ def VERSION_MINOR = 1
 def VERSION_PATCH = 0
 
 android {
-    compileSdkVersion 19
-    buildToolsVersion '19.1.0'
+    compileSdkVersion 21
+    buildToolsVersion '21.0.0'
     defaultConfig {
         minSdkVersion 19
-        targetSdkVersion 19
+        targetSdkVersion 21
         /*versionName "${VERSION_MAJOR}.${VERSION_MINOR}.${VERSION_PATCH}"*/
     }
     signingConfigs {
@@ -63,8 +63,9 @@ def getVersionCode() {
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile 'com.android.support:support-v4:20.0.0'
+    compile 'com.android.support:support-v4:21.0.0'
     compile 'com.github.amlcurran.sourcebinder:library:1.0.0-SNAPSHOT@aar'
     compile project(':core')
     compile 'com.android.support:support-annotations:20.0.0'
+    compile 'com.android.support:appcompat-v7:21.0.0'
 }

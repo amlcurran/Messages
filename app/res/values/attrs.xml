@@ -21,8 +21,8 @@
         <attr name="lv_scale" format="integer|reference" />
     </declare-styleable>
     <declare-styleable name="ContactView">
-        <attr name="titleTextAppearance" format="reference" />
-        <attr name="secondaryTextAppearance" format="reference" />
+        <attr name="cv_titleTextAppearance" format="reference" />
+        <attr name="cv_secondaryTextAppearance" format="reference" />
     </declare-styleable>
     <declare-styleable name="CutImageView">
         <attr name="drawOutline" format="boolean|reference" />

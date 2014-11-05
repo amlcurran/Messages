@@ -75,12 +75,12 @@
     <style name="ContactView" />
 
     <style name="ContactView.Chip">
-        <item name="titleTextAppearance">@style/ContactViewTitleChip</item>
+        <item name="cv_titleTextAppearance">@style/ContactViewTitleChip</item>
     </style>
 
     <style name="ContactView.Inverse">
-        <item name="titleTextAppearance">@style/ContactViewTitle.Light</item>
-        <item name="secondaryTextAppearance">@style/ContactViewLightSecondary</item>
+        <item name="cv_titleTextAppearance">@style/ContactViewTitle.Light</item>
+        <item name="cv_secondaryTextAppearance">@style/ContactViewLightSecondary</item>
     </style>
 
     <style name="ContactViewTitle.Light">
