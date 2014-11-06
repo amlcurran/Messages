@@ -24,20 +24,23 @@
         <item name="android:windowNoTitle">true</item>
     </style>
 
-    <style name="Theme.Messages" parent="@android:style/Theme.Holo.Light.DarkActionBar">
-        <item name="android:actionBarItemBackground">@drawable/selectable_background_messages</item>
-        <item name="android:popupMenuStyle">@style/PopupMenu.Messages</item>
-        <item name="android:dropDownListViewStyle">@style/DropDownListView.Messages</item>
-        <item name="android:actionBarTabStyle">@style/ActionBarTabStyle.Messages</item>
-        <item name="android:actionDropDownStyle">@style/DropDownNav.Messages</item>
-        <item name="android:actionBarStyle">@style/ActionBar.Solid.Messages</item>
-        <item name="android:actionModeStyle">@style/ActionMode.Solid.Messages</item>
-        <item name="android:actionModeBackground">@drawable/cab_background_top_messages</item>
-        <item name="android:actionModeSplitBackground">@drawable/cab_background_bottom_messages</item>
-        <item name="android:actionModeCloseButtonStyle">@style/ActionButton.CloseMode.Messages</item>
-        <item name="android:actionOverflowButtonStyle">@style/overflow_style</item>
-        <!-- Light.DarkActionBar specific -->
-        <item name="android:actionBarWidgetTheme">@style/Theme.Messages.Widget</item>
+    <style name="Theme.Messages" parent="@style/Theme.AppCompat.Light.DarkActionBar">
+        <item name="colorPrimary">@color/theme_colour</item>
+        <item name="colorPrimaryDark">@color/theme_colour_dark</item>
+        <item name="colorAccent">@color/theme_alt_color_2</item>
+        <!--<item name="android:actionBarItemBackground">@drawable/selectable_background_messages</item>-->
+        <!--<item name="android:popupMenuStyle">@style/PopupMenu.Messages</item>-->
+        <!--<item name="android:dropDownListViewStyle">@style/DropDownListView.Messages</item>-->
+        <!--<item name="android:actionBarTabStyle">@style/ActionBarTabStyle.Messages</item>-->
+        <!--<item name="android:actionDropDownStyle">@style/DropDownNav.Messages</item>-->
+        <!--<item name="android:actionBarStyle">@style/ActionBar.Solid.Messages</item>-->
+        <!--<item name="android:actionModeStyle">@style/ActionMode.Solid.Messages</item>-->
+        <!--<item name="android:actionModeBackground">@drawable/cab_background_top_messages</item>-->
+        <!--<item name="android:actionModeSplitBackground">@drawable/cab_background_bottom_messages</item>-->
+        <!--<item name="android:actionModeCloseButtonStyle">@style/ActionButton.CloseMode.Messages</item>-->
+        <!--<item name="android:actionOverflowButtonStyle">@style/overflow_style</item>-->
+        <!--&lt;!&ndash; Light.DarkActionBar specific &ndash;&gt;-->
+        <!--<item name="android:actionBarWidgetTheme">@style/Theme.Messages.Widget</item>-->
 
     </style>
 

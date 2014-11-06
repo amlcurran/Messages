@@ -16,15 +16,16 @@
 
 package com.amlcurran.messages;
 
-import android.app.Activity;
 import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
+import android.view.MenuItem;
 
 import com.amlcurran.messages.preferences.PreferencesFragment;
 
-public class SecondaryActivity extends Activity {
+public class SecondaryActivity extends ActionBarActivity {
 
     private static final int PREFERENCES = 0;
     private static final int ABOUT = 1;
@@ -40,11 +41,21 @@ public class SecondaryActivity extends Activity {
         getFragmentManager().beginTransaction()
                 .add(R.id.content, fragment)
                 .commit();
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            finish();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     private void setTitleFromFragment(Fragment fragment) {
         int resId = ((Entitled) fragment).getTitleResource();
-        getActionBar().setTitle(resId);
+        getSupportActionBar().setTitle(resId);
     }
 
     private Fragment getDisplayFragment() {

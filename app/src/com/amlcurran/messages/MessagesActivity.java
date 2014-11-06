@@ -16,9 +16,9 @@
 
 package com.amlcurran.messages;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -53,12 +53,12 @@ import com.amlcurran.messages.ui.NewMessageButtonController;
 import com.amlcurran.messages.ui.actionbar.ActionBarHeaderCallback;
 import com.amlcurran.messages.ui.actionbar.HoloActionBarController;
 import com.amlcurran.messages.ui.control.FragmentController;
-import com.amlcurran.messages.ui.control.SinglePaneFullScreenFragmentViewController;
+import com.amlcurran.messages.ui.control.TwoPaneFullScreenFragmentViewController;
 import com.google.analytics.tracking.android.EasyTracker;
 
 import java.util.List;
 
-public class MessagesActivity extends Activity implements
+public class MessagesActivity extends ActionBarActivity implements
         SmsComposeListener, ConversationModalMarshall.Callback,
         OnThreadDeleteListener, ConversationListChangeListener, FragmentController.FragmentCallback,
         TransitionManager.Provider, DependencyRepository {
@@ -83,7 +83,7 @@ public class MessagesActivity extends Activity implements
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        actionBarController = new HoloActionBarController(getActionBar());
+        actionBarController = new HoloActionBarController(getSupportActionBar());
         toastInUiNotifier = new InUiToastNotifier(this);
         blockingInUiNotifier = new BlockingInUiDialogNotifier(getFragmentManager());
         messagesLoader = SingletonManager.getMessagesLoader(this);
@@ -92,7 +92,7 @@ public class MessagesActivity extends Activity implements
         eventBus = SingletonManager.getEventBus(this);
         draftRepository = new PreferenceStoreDraftRepository(this);
 
-        FragmentController fragmentController = new SinglePaneFullScreenFragmentViewController(this, this, new ActionBarHeaderCallback(actionBarController));
+        FragmentController fragmentController = new TwoPaneFullScreenFragmentViewController(this, this, new ActionBarHeaderCallback(actionBarController));
         ActivityController activityController = new ActivityController(this, blockingInUiNotifier);
         transitionManager = new TransitionManager(fragmentController, activityController, statReporter);
         externalEventManager = new ExternalEventManager(activityController, getContentResolver(), statReporter);

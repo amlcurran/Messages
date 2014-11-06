@@ -1,6 +1,6 @@
 package com.amlcurran.messages.ui.actionbar;
 
-import android.app.ActionBar;
+import android.support.v7.app.ActionBar;
 import android.view.View;
 
 public class HoloActionBarController {
