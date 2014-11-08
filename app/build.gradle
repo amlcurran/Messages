@@ -1,8 +1,9 @@
 apply plugin: 'com.android.application'
 
 def VERSION_MAJOR = 0
-def VERSION_MINOR = 1
+def VERSION_MINOR = 2
 def VERSION_PATCH = 0
+def VERSION_CODE = Integer.valueOf("${VERSION_PATCH}") + 10 * Integer.valueOf("${VERSION_MINOR}") + 1000 * Integer.valueOf("${VERSION_MAJOR}")
 
 android {
     compileSdkVersion 21
@@ -10,7 +11,8 @@ android {
     defaultConfig {
         minSdkVersion 19
         targetSdkVersion 21
-        /*versionName "${VERSION_MAJOR}.${VERSION_MINOR}.${VERSION_PATCH}"*/
+        versionName "${VERSION_MAJOR}.${VERSION_MINOR}.${VERSION_PATCH}"
+        versionCode Integer.valueOf("${VERSION_CODE}")
     }
     signingConfigs {
         release {
