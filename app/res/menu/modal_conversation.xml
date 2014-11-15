@@ -29,7 +29,7 @@
         app:showAsAction="ifRoom"
         android:id="@+id/modal_contact_add" />
     <item
-        android:icon="@drawable/ic_unread"
+        android:icon="@drawable/ic_mark_unread"
         android:title="@string/mark_as_unread"
         app:showAsAction="ifRoom"
         android:id="@+id/modal_mark_unread" />
