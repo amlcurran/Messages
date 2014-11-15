@@ -59,7 +59,8 @@ public class ThreadActivity extends ActionBarActivity implements DependencyRepos
         preferencesStore = new SharedPreferenceStore(this);
         draftRepository = new PreferenceStoreDraftRepository(this);
 
-        FragmentController fragmentController = new TwoPaneFullScreenFragmentViewController(this, this, new ActionBarHeaderCallback(actionBarController));
+        ActionBarHeaderCallback headerCreationCallback = new ActionBarHeaderCallback(actionBarController);
+        FragmentController fragmentController = new TwoPaneFullScreenFragmentViewController(this, this, headerCreationCallback);
         ActivityController activityController = new ActivityController(this, null);
         transitionManager = new TransitionManager(fragmentController, activityController, new LoggingStatReporter());
         externalEventManager = new ExternalEventManager(activityController, getContentResolver(), new LoggingStatReporter());
@@ -72,6 +73,9 @@ public class ThreadActivity extends ActionBarActivity implements DependencyRepos
         getFragmentManager().beginTransaction()
                 .add(R.id.content, fragment)
                 .commit();
+
+        headerCreationCallback.addCustomHeader(fragment.getHeaderView(this));
+        secondaryVisible();
 
     }
 
@@ -111,7 +115,6 @@ public class ThreadActivity extends ActionBarActivity implements DependencyRepos
 
     @Override
     public void insertedDetail() {
-
     }
 
     @Override
@@ -121,7 +124,7 @@ public class ThreadActivity extends ActionBarActivity implements DependencyRepos
 
     @Override
     public void secondaryVisible() {
-
+        actionBarController.showHeader();
     }
 
     @Override
