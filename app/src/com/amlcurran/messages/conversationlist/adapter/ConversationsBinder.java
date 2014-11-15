@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.amlcurran.messages.conversationlist;
+package com.amlcurran.messages.conversationlist.adapter;
 
 import android.content.Context;
 import android.content.res.Resources;
@@ -27,7 +27,7 @@ import com.amlcurran.messages.core.data.DraftRepository;
 import com.amlcurran.messages.loaders.MessagesLoader;
 import com.github.amlcurran.sourcebinder.SimpleBinder;
 
-class ConversationsBinder extends SimpleBinder<Conversation> {
+public class ConversationsBinder extends SimpleBinder<Conversation> {
 
     private static final int IS_UNREAD = 1;
     private static final int IS_READ = 0;

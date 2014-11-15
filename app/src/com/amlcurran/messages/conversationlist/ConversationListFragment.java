@@ -26,6 +26,8 @@ import android.widget.ListView;
 
 import com.amlcurran.messages.DependencyRepository;
 import com.amlcurran.messages.R;
+import com.amlcurran.messages.conversationlist.adapter.ConversationsBinder;
+import com.amlcurran.messages.conversationlist.adapter.TextFormatter;
 import com.amlcurran.messages.core.conversationlist.ConversationListView;
 import com.amlcurran.messages.core.data.Conversation;
 import com.amlcurran.messages.core.events.EventSubscriber;

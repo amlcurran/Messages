@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.amlcurran.messages.conversationlist;
+package com.amlcurran.messages.conversationlist.adapter;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -23,7 +23,7 @@ import android.view.ViewGroup;
 
 import com.amlcurran.messages.R;
 
-public class ConversationViewCreator {
+class ConversationViewCreator {
     public ConversationViewCreator() {
     }
 

@@ -14,12 +14,13 @@
  * limitations under the License.
  */
 
-package com.amlcurran.messages.conversationlist;
+package com.amlcurran.messages.conversationlist.adapter;
 
 import android.graphics.Bitmap;
 import android.view.ViewPropertyAnimator;
 import android.widget.ImageView;
 
+import com.amlcurran.messages.conversationlist.PhotoLoadListener;
 import com.amlcurran.messages.core.data.Contact;
 
 class SettingPhotoLoadListener implements PhotoLoadListener {

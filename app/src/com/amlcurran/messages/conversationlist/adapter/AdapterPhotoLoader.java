@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-package com.amlcurran.messages.conversationlist;
+package com.amlcurran.messages.conversationlist.adapter;
 
 import com.amlcurran.messages.core.data.Contact;
 import com.amlcurran.messages.core.data.Conversation;
 import com.amlcurran.messages.loaders.MessagesLoader;
 
-public class AdapterPhotoLoader {
+class AdapterPhotoLoader {
     private final MessagesLoader loader;
     private final float animationLength;
 

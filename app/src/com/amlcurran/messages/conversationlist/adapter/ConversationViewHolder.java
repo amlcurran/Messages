@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.amlcurran.messages.conversationlist;
+package com.amlcurran.messages.conversationlist.adapter;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -24,7 +24,7 @@ import android.widget.TextView;
 import com.amlcurran.messages.R;
 import com.amlcurran.messages.loaders.Task;
 
-public class ConversationViewHolder extends RecyclerView.ViewHolder {
+class ConversationViewHolder extends RecyclerView.ViewHolder {
 
     public final TextView nameField;
     public final TextView snippetField;
