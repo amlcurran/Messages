@@ -33,11 +33,13 @@ import java.util.List;
 public class ConversationModalMarshall implements AbsListView.MultiChoiceModeListener {
 
     private final Source<Conversation> conversationSource;
+    private final ContactClickListener contactClickListener;
     private final Callback callback;
     private final ArrayList<Conversation> selectedConversations;
 
-    public ConversationModalMarshall(Source<Conversation> conversationSource, Callback callback) {
+    public ConversationModalMarshall(Source<Conversation> conversationSource, Callback callback, ContactClickListener contactClickListener) {
         this.conversationSource = conversationSource;
+        this.contactClickListener = contactClickListener;
         this.selectedConversations = new ArrayList<Conversation>();
         this.callback = callback;
     }
@@ -68,7 +70,7 @@ public class ConversationModalMarshall implements AbsListView.MultiChoiceModeLis
         switch (item.getItemId()) {
 
             case R.id.modal_contact:
-                callback.viewContact(selectedConversations.get(0).getContact());
+                contactClickListener.viewContact(selectedConversations.get(0).getContact());
                 mode.finish();
                 return true;
 
@@ -83,7 +85,7 @@ public class ConversationModalMarshall implements AbsListView.MultiChoiceModeLis
                 return true;
 
             case R.id.modal_contact_add:
-                callback.addContact(selectedConversations.get(0).getContact());
+                contactClickListener.addContact(selectedConversations.get(0).getContact());
                 mode.finish();
                 return true;
 
@@ -111,7 +113,7 @@ public class ConversationModalMarshall implements AbsListView.MultiChoiceModeLis
         mode.invalidate();
     }
 
-    public interface Callback extends ContactClickListener {
+    public interface Callback {
 
         void deleteThreads(List<Conversation> conversation);
 

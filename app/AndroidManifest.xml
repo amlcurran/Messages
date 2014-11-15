@@ -93,6 +93,8 @@
 
         <activity android:name=".SecondaryActivity" />
 
+        <activity android:name=".threads.ThreadActivity" />
+
     </application>
 
 </manifest>

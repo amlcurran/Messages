@@ -35,6 +35,7 @@ import com.amlcurran.messages.core.preferences.PreferenceListener;
 import com.amlcurran.messages.events.BroadcastEventSubscriber;
 import com.amlcurran.messages.loaders.MessagesLoader;
 import com.amlcurran.messages.preferences.SharedPreferenceListener;
+import com.amlcurran.messages.threads.DefaultContactClickListener;
 import com.amlcurran.messages.ui.control.Master;
 import com.espian.utils.ProviderHelper;
 import com.github.amlcurran.sourcebinder.ArrayListSource;
@@ -75,7 +76,7 @@ public class ConversationListFragment extends ListFragment implements Conversati
         getListView().setChoiceMode(ListView.CHOICE_MODE_MULTIPLE_MODAL);
         getListView().setDivider(null);
         getListView().setOnItemClickListener(new NotifyControllerClickListener());
-        getListView().setMultiChoiceModeListener(new ConversationModalMarshall(source, modalCallback));
+        getListView().setMultiChoiceModeListener(new ConversationModalMarshall(source, modalCallback, new DefaultContactClickListener(dependencyRepository)));
     }
 
     @Override

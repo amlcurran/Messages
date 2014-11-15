@@ -23,7 +23,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.amlcurran.messages.conversationlist.ConversationModalMarshall;
-import com.amlcurran.messages.core.data.Contact;
 import com.amlcurran.messages.core.data.Conversation;
 import com.amlcurran.messages.core.data.DraftRepository;
 import com.amlcurran.messages.core.events.EventBus;
@@ -225,11 +224,6 @@ public class MessagesActivity extends ActionBarActivity implements
     }
 
     @Override
-    public void viewContact(Contact contact) {
-        externalEventManager.viewContact(contact);
-    }
-
-    @Override
     public void deleteThreads(final List<Conversation> conversationList) {
         statReporter.sendUiEvent("delete_threads");
         Dialog.Button no = new Dialog.Button("No");
@@ -251,11 +245,6 @@ public class MessagesActivity extends ActionBarActivity implements
     public void markAsUnread(List<Conversation> threadId) {
         statReporter.sendUiEvent("mark_thread_unread");
         messagesLoader.markThreadAsUnread(threadId, this);
-    }
-
-    @Override
-    public void addContact(Contact contact) {
-        externalEventManager.addContact(contact);
     }
 
     @Override
