@@ -16,6 +16,7 @@
 
 package com.amlcurran.messages.ui;
 
+import android.os.Build;
 import android.view.View;
 import android.view.animation.DecelerateInterpolator;
 
@@ -28,6 +29,10 @@ public class NewMessageButtonController {
     public NewMessageButtonController(View newMessageButton, TransitionManager transitionManager, StatReporter statReporter) {
         this.newMessageButton = newMessageButton;
         this.newMessageButton.setOnClickListener(new NewMessageClickListener(transitionManager, statReporter));
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            this.newMessageButton.setOutlineProvider(new OvalOutlineProvider());
+            this.newMessageButton.setClipToOutline(true);
+        }
     }
 
     public void hideNewMessageButton() {

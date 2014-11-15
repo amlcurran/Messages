@@ -105,6 +105,12 @@
 
     <style name="Text" parent="android:TextAppearance.Holo.Medium" />
 
+    <style name="FloatingActionButton">
+        <item name="android:background">@null</item>
+        <item name="android:padding">16dp</item>
+        <item name="android:src">@drawable/ic_new_message_inverse</item>
+    </style>
+
     <integer name="loading_scale_small">2</integer>
     <integer name="loading_scale_large">1</integer>
     <integer name="conversation_preview_lines_unread">4</integer>

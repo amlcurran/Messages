@@ -51,12 +51,10 @@
     </LinearLayout>
 
     <ImageButton
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="56dp"
+            android:layout_height="56dp"
             android:id="@+id/button_new_message"
             android:contentDescription="@string/cd_new_message"
-            android:src="@drawable/ic_new_message_inverse"
-            android:background="@null"
             android:layout_gravity="bottom|right"
-            android:padding="16dp"/>
+            style="@style/FloatingActionButton"/>
 </FrameLayout>
