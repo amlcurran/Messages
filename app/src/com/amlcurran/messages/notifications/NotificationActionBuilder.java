@@ -44,7 +44,7 @@ class NotificationActionBuilder {
     NotificationCompat.Action buildSingleMarkReadAction(Conversation conversation) {
         PendingIntent markReadIntent = ExecutingIntentService.markReadPendingIntent(context, Collections.singletonList(conversation));
         String label = context.getString(R.string.mark_as_read);
-        return new NotificationCompat.Action.Builder(R.drawable.ic_action_read, label, markReadIntent).build();
+        return new NotificationCompat.Action.Builder(R.drawable.ic_mark_read, label, markReadIntent).build();
     }
 
     NotificationCompat.Action buildReplyAction(Conversation conversation) {
@@ -66,13 +66,13 @@ class NotificationActionBuilder {
     NotificationCompat.Action buildMultipleMarkReadAction(List<Conversation> conversations) {
         PendingIntent markReadIntent = ExecutingIntentService.markReadPendingIntent(context, conversations);
         String label = context.getString(R.string.mark_all_as_read);
-        return new NotificationCompat.Action.Builder(R.drawable.ic_action_read, label, markReadIntent).build();
+        return new NotificationCompat.Action.Builder(R.drawable.ic_mark_read, label, markReadIntent).build();
     }
 
     public NotificationCompat.Action call(Contact contact) {
         PendingIntent callIntent = callPendingIntent(contact.getNumber());
         String label = context.getString(R.string.call);
-        return new NotificationCompat.Action.Builder(R.drawable.ic_action_ring_volume, label, callIntent).build();
+        return new NotificationCompat.Action.Builder(R.drawable.ic_call, label, callIntent).build();
     }
 
     private PendingIntent callPendingIntent(PhoneNumber number) {
@@ -87,6 +87,6 @@ class NotificationActionBuilder {
         intent.setData(link.get());
         PendingIntent linkIntent = PendingIntent.getActivity(context, 12123, intent, PendingIntent.FLAG_UPDATE_CURRENT);
         String label = context.getString(R.string.open_link);
-        return new NotificationCompat.Action.Builder(R.drawable.ic_action_web_site, label, linkIntent).build();
+        return new NotificationCompat.Action.Builder(R.drawable.ic_website, label, linkIntent).build();
     }
 }
