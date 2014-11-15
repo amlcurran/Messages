@@ -16,6 +16,9 @@
 
 package com.amlcurran.messages.conversationlist.adapter;
 
+import android.content.res.Resources;
+
+import com.amlcurran.messages.R;
 import com.amlcurran.messages.core.data.Contact;
 import com.amlcurran.messages.core.data.Conversation;
 import com.amlcurran.messages.loaders.MessagesLoader;
@@ -24,9 +27,9 @@ class AdapterPhotoLoader {
     private final MessagesLoader loader;
     private final float animationLength;
 
-    public AdapterPhotoLoader(MessagesLoader loader, float animationLength) {
+    public AdapterPhotoLoader(MessagesLoader loader, Resources resources) {
         this.loader = loader;
-        this.animationLength = animationLength;
+        this.animationLength = resources.getDimension(R.dimen.photo_animation_length);
     }
 
     void loadContactPhoto(ConversationViewHolder viewHolder, Conversation item) {

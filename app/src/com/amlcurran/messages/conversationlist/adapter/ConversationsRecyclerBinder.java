@@ -16,18 +16,16 @@
 
 package com.amlcurran.messages.conversationlist.adapter;
 
-import android.content.Context;
 import android.content.res.Resources;
-import android.view.View;
 import android.view.ViewGroup;
 
 import com.amlcurran.messages.R;
 import com.amlcurran.messages.core.data.Conversation;
 import com.amlcurran.messages.core.data.DraftRepository;
 import com.amlcurran.messages.loaders.MessagesLoader;
-import com.github.amlcurran.sourcebinder.SimpleBinder;
+import com.github.amlcurran.sourcebinder.recyclerview.ViewHolderBinder;
 
-public class ConversationsBinder extends SimpleBinder<Conversation> {
+public class ConversationsRecyclerBinder implements ViewHolderBinder<Conversation, ConversationViewHolder> {
 
     private static final int IS_UNREAD = 1;
     private static final int IS_READ = 0;
@@ -38,36 +36,31 @@ public class ConversationsBinder extends SimpleBinder<Conversation> {
     private final ConversationViewCreator viewCreator;
     private final AdapterPhotoLoader adapterPhotoLoader;
 
-    public ConversationsBinder(TextFormatter textFormatter, Resources resources, MessagesLoader loader, DraftRepository draftRepository) {
+    public ConversationsRecyclerBinder(DraftRepository draftRepository, Resources resources, MessagesLoader loader, TextFormatter textFormatter) {
         this.draftRepository = draftRepository;
+        this.textFormatter = textFormatter;
         this.draftPreamble = resources.getString(R.string.draft_preamble);
         this.fromMePreamble = resources.getString(R.string.from_me_preamble);
-        this.textFormatter = textFormatter;
         this.viewCreator = new ConversationViewCreator();
         this.adapterPhotoLoader = new AdapterPhotoLoader(loader, resources);
     }
 
     @Override
-    public int getViewTypeCount() {
-        return 2;
+    public ConversationViewHolder createViewHolder(ViewGroup viewGroup, int i) {
+        if (i == IS_UNREAD) {
+            return viewCreator.createUnreadViewHolder(viewGroup.getContext(), viewGroup);
+        } else {
+            return viewCreator.createReadViewHolder(viewGroup.getContext(), viewGroup);
+        }
     }
 
     @Override
-    public int getItemViewType(int position, Conversation item) {
-        return item.isRead() ? IS_READ : IS_UNREAD;
-    }
-
-    @Override
-    public View bindView(View convertView, Conversation item, int position) {
-        ConversationViewHolder viewHolder = (ConversationViewHolder) convertView.getTag(R.id.tag_view_holder);
-
+    public void bindViewHolder(ConversationViewHolder viewHolder, Conversation item) {
         adapterPhotoLoader.stopLoadingPhoto(viewHolder);
         adapterPhotoLoader.loadContactPhoto(viewHolder, item);
 
         viewHolder.nameField.setText(item.getContact().getDisplayName());
         viewHolder.snippetField.setText(getSummaryText(item));
-
-        return convertView;
     }
 
     private CharSequence getSummaryText(Conversation item) {
@@ -88,12 +81,7 @@ public class ConversationsBinder extends SimpleBinder<Conversation> {
     }
 
     @Override
-    public View createView(Context context, int itemViewType, ViewGroup parent) {
-        if (itemViewType == IS_READ) {
-            return viewCreator.createReadView(context, parent);
-        } else {
-            return viewCreator.createUnreadView(context, parent);
-        }
+    public int getItemViewHolderType(int i, Conversation conversation) {
+        return conversation.isRead() ? IS_READ : IS_UNREAD;
     }
-
 }
