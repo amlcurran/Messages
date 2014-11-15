@@ -21,4 +21,6 @@ import com.amlcurran.messages.loaders.MessagesLoader;
 
 public interface ContactView {
     void setContact(Contact contact, MessagesLoader loader);
+
+    void setClickToView(ContactClickListener callback);
 }

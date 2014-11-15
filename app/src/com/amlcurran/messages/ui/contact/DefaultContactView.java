@@ -54,20 +54,10 @@ public class DefaultContactView extends LinearLayout implements ContactView {
         photoLoaderManager.loadContactPhoto(contact, loader);
     }
 
-    public void setClickToView(ContactClickListener callback, boolean clickToView) {
-        if (clickToView) {
-            enableClick(callback);
-        } else {
-            disableClick();
-        }
-    }
-
-    private void disableClick() {
-        setOnClickListener(null);
-    }
-
-    private void enableClick(ContactClickListener callback) {
+    @Override
+    public void setClickToView(ContactClickListener callback) {
         viewContactClickListener.callback = callback;
         setOnClickListener(viewContactClickListener);
     }
+
 }

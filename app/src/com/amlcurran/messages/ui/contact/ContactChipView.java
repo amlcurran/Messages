@@ -36,6 +36,11 @@ public class ContactChipView extends LinearLayout implements ContactView {
         photoLoaderManager.loadContactPhoto(contact, loader);
     }
 
+    @Override
+    public void setClickToView(ContactClickListener callback) {
+        throw new UnsupportedOperationException("You haven't implemented this yet...");
+    }
+
     public void setRemoveListener(RemoveListener removeListener) {
         removeRequestClickListener.removeListener = removeListener;
     }

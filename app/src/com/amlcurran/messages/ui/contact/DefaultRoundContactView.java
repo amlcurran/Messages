@@ -25,28 +25,32 @@ import com.amlcurran.messages.R;
 import com.amlcurran.messages.core.data.Contact;
 import com.amlcurran.messages.loaders.MessagesLoader;
 
-public class RoundContactView extends LinearLayout implements ContactView {
+public class DefaultRoundContactView extends LinearLayout implements ContactView {
 
-    private final ContactFormatter contactFormatter;
-    private final PhotoLoaderManager photoLoaderManager;
     private final ViewContactClickListener viewContactClickListener = new ViewContactClickListener();
+    private final TwoViewContactFormatter contactFormatter;
+    private final EndToEndPhotoManager photoLoaderManager;
 
-    public RoundContactView(Context context, AttributeSet attrs) {
-        super(context, attrs);
+    public DefaultRoundContactView(Context context, AttributeSet attrs) {
+        this(context, attrs, 0);
+    }
+
+    public DefaultRoundContactView(Context context, AttributeSet attrs, int defStyle) {
+        super(context, attrs, defStyle);
         inflate(LayoutInflater.from(context));
         photoLoaderManager = new EndToEndPhotoManager(this);
         contactFormatter = new TwoViewContactFormatter(this);
     }
 
     protected void inflate(LayoutInflater inflater) {
-        inflater.inflate(R.layout.view_contact_round, this, true);
+        inflater.inflate(R.layout.view_contact_linear_round, this, true);
     }
 
     @Override
     public void setContact(final Contact contact, MessagesLoader loader) {
         photoLoaderManager.stopLoadingPhoto();
-        contactFormatter.format(contact);
         viewContactClickListener.contact = contact;
+        contactFormatter.format(contact);
         photoLoaderManager.loadContactPhoto(contact, loader);
     }
 
