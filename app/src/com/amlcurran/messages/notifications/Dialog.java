@@ -16,16 +16,11 @@
 
 package com.amlcurran.messages.notifications;
 
+import android.app.AlertDialog;
 import android.app.DialogFragment;
+import android.content.DialogInterface;
 import android.os.Bundle;
-import android.text.TextUtils;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.view.Window;
-import android.widget.TextView;
 
-import com.amlcurran.messages.R;
 import com.amlcurran.messages.bucket.BundleBuilder;
 
 public class Dialog extends DialogFragment {
@@ -56,50 +51,23 @@ public class Dialog extends DialogFragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.dialog, container, false);
-
-        ((TextView) view.findViewById(R.id.dialog_title)).setText(getArguments().getString(TITLE));
-        ((TextView) view.findViewById(R.id.dialog_text)).setText(getArguments().getString(TEXT));
-
-        TextView negativeButton = (TextView) view.findViewById(R.id.dialog_button_negative);
-        String negativeLabel = getArguments().getString(NEGATIVE_LABEL);
-        setUpButton(negativeButton, negativeLabel);
-
-        TextView positiveButton = (TextView) view.findViewById(R.id.dialog_button_positive);
-        String positiveLabel = getArguments().getString(POSITIVE_LABEL);
-        setUpButton(positiveButton, positiveLabel);
-
-        return view;
-    }
-
-    private void setUpButton(TextView button, String label) {
-        button.setText(label);
-        button.setOnClickListener(buttonListener);
-        button.setVisibility(TextUtils.isEmpty(label) ? View.GONE : View.VISIBLE);
-    }
-
-    @Override
     public android.app.Dialog onCreateDialog(Bundle savedInstanceState) {
-        android.app.Dialog dialog = super.onCreateDialog(savedInstanceState);
-        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        dialog.getWindow().setBackgroundDrawableResource(R.drawable.dialog_bg);
-        setStyle(Dialog.STYLE_NO_FRAME, android.R.style.Theme_Holo_Light_Dialog);
-        return dialog;
-    }
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        builder.setTitle(getArguments().getString(TITLE))
+                .setMessage(getArguments().getString(TEXT));
 
-    private View.OnClickListener buttonListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            if (v.getId() == R.id.dialog_button_positive) {
-                callbacks.positive();
-                dismiss();
-            } else if (v.getId() == R.id.dialog_button_negative) {
-                callbacks.negative();
-                dismiss();
-            }
+        String negativeLabel = getArguments().getString(NEGATIVE_LABEL);
+        if (negativeLabel != null) {
+            builder.setNegativeButton(negativeLabel, standardCallbacks);
         }
-    };
+
+        String positiveLabel = getArguments().getString(POSITIVE_LABEL);
+        if (positiveLabel != null) {
+            builder.setPositiveButton(positiveLabel, standardCallbacks);
+        }
+
+        return builder.create();
+    }
 
     public Dialog setCallbacks(BlockingInUiNotifier.Callbacks callbacks) {
         this.callbacks = callbacks;
@@ -113,4 +81,16 @@ public class Dialog extends DialogFragment {
             this.label = label;
         }
     }
+
+    private DialogInterface.OnClickListener standardCallbacks = new DialogInterface.OnClickListener() {
+        @Override
+        public void onClick(DialogInterface dialog, int which) {
+            if (which == DialogInterface.BUTTON_POSITIVE) {
+                callbacks.positive();
+            } else if (which == DialogInterface.BUTTON_NEGATIVE) {
+                callbacks.negative();
+            }
+        }
+    };
+
 }
