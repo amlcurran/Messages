@@ -166,7 +166,11 @@ public class NotificationBuilder {
                 .setDefaults(Notification.DEFAULT_LIGHTS);
 
         if (shouldSoundAndVibrate) {
-            builder.setSound(Uri.parse(preferenceStore.getRingtoneUri().toString()));
+            if (preferenceStore.hasRingtoneUri()) {
+                builder.setSound(Uri.parse(preferenceStore.getRingtoneUri().toString()));
+            } else {
+                builder.setDefaults(Notification.DEFAULT_SOUND | Notification.DEFAULT_LIGHTS);
+            }
             builder.setVibrate(VIBRATE_PATTERN);
         }
 

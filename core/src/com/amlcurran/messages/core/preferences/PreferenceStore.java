@@ -35,6 +35,8 @@ public interface PreferenceStore {
 
     Sort getConversationSort();
 
+    boolean hasRingtoneUri();
+
     public interface PreferenceChangedListener {
         void preferenceChanged(String key);
     }
