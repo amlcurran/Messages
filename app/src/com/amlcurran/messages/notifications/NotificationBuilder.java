@@ -41,6 +41,7 @@ public class NotificationBuilder {
     private final NotificationActionBuilder actionBuilder;
     private final Context context;
     private final PreferenceStore preferenceStore;
+    private final int notificationColor;
 
     public NotificationBuilder(Context context, PreferenceStore preferenceStore) {
         this.context = context;
@@ -48,6 +49,7 @@ public class NotificationBuilder {
         this.notificationIntentFactory = new NotificationIntentFactory(context);
         this.styledTextFactory = new StyledTextFactory();
         this.actionBuilder = new NotificationActionBuilder(context);
+        this.notificationColor = context.getResources().getColor(R.color.theme_colour);
     }
 
     public List<Notification> buildUnreadNotification(List<Conversation> conversations, Bitmap photo, List<Conversation> newConversations) {
@@ -163,6 +165,7 @@ public class NotificationBuilder {
                 .setContentIntent(notificationIntentFactory.createLaunchActivityIntent())
                 .setAutoCancel(true)
                 .setSmallIcon(R.drawable.ic_notify_sms)
+                .setColor(notificationColor)
                 .setDefaults(Notification.DEFAULT_LIGHTS);
 
         if (shouldSoundAndVibrate) {
