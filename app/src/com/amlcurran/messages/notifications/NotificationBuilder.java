@@ -20,10 +20,12 @@ import android.app.Notification;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.net.Uri;
+import android.provider.ContactsContract;
 import android.support.v4.app.NotificationCompat;
 
 import com.amlcurran.messages.R;
 import com.amlcurran.messages.analysis.MessageAnalyser;
+import com.amlcurran.messages.core.data.Contact;
 import com.amlcurran.messages.core.data.Conversation;
 import com.amlcurran.messages.core.data.Time;
 import com.amlcurran.messages.core.preferences.PreferenceStore;
@@ -139,15 +141,22 @@ public class NotificationBuilder {
         binder.setStyle(buildBigStyle(conversation));
         binder.setExtender(extender);
 
+        Contact contact = conversation.getContact();
+
         return binder.getBaseBuilder()
                 .addAction(singleUnreadAction)
                 .addAction(callAction)
                 .setTicker(ticker)
+                .addPerson(getContactUri(contact))
                 .setContentTitle(conversation.getContact().getDisplayName())
                 .setLargeIcon(photo)
                 .setContentIntent(notificationIntentFactory.createViewConversationIntent(conversation))
                 .setContentText(conversation.getSummaryText())
                 .setWhen(conversation.getTimeOfLastMessage().toMillis());
+    }
+
+    private static String getContactUri(Contact contact) {
+        return String.valueOf(ContactsContract.Contacts.getLookupUri(contact.getContactId(), contact.getLookupKey()));
     }
 
     private static NotificationCompat.Style buildBigStyle(Conversation conversation) {
@@ -165,6 +174,7 @@ public class NotificationBuilder {
                 .setContentIntent(notificationIntentFactory.createLaunchActivityIntent())
                 .setAutoCancel(true)
                 .setSmallIcon(R.drawable.ic_notify_sms)
+                .setCategory(NotificationCompat.CATEGORY_MESSAGE)
                 .setColor(notificationColor)
                 .setDefaults(Notification.DEFAULT_LIGHTS);
 
