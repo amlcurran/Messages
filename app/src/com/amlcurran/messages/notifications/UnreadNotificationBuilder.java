@@ -115,26 +115,15 @@ public class UnreadNotificationBuilder {
     }
 
     NotificationCompat.Builder buildSingleUnreadNotification(Conversation conversation, Bitmap photo, boolean fromNewMessage, CharSequence ticker) {
-        NotificationCompat.Action voiceInputAction = actionBuilder.buildReplyAction(conversation);
         NotificationCompat.Action singleUnreadAction = actionBuilder.buildSingleMarkReadAction(conversation);
         NotificationCompat.Action callAction = actionBuilder.call(conversation.getContact());
-        NotificationCompat.Extender extender = new NotificationCompat.WearableExtender().addAction(voiceInputAction);
         NotificationCompat.Builder builder = notificationBuilder.getDefaultBuilder(fromNewMessage);
 
-        // use some cheeky message analysis
-        MessageAnalyser analyser = new MessageAnalyser(conversation.getSummaryText());
-        if (analyser.hasLink()) {
-            NotificationCompat.Action linkAction = actionBuilder.buildLinkAction(analyser.getLink());
-            builder.addAction(linkAction);
-        }
-
-        NotificationBinder binder = new NotificationBinder(builder);
-        binder.setStyle(buildBigStyle(conversation));
-        binder.setExtender(extender);
+        analyseMessage(conversation, builder);
+        enableVoiceReply(conversation, builder);
 
         Contact contact = conversation.getContact();
-
-        return binder.getBaseBuilder()
+        return builder.setStyle(buildBigStyle(conversation))
                 .addAction(singleUnreadAction)
                 .addAction(callAction)
                 .setTicker(ticker)
@@ -144,6 +133,20 @@ public class UnreadNotificationBuilder {
                 .setContentIntent(notificationIntentFactory.createViewConversationIntent(conversation))
                 .setContentText(conversation.getSummaryText())
                 .setWhen(conversation.getTimeOfLastMessage().toMillis());
+    }
+
+    private void analyseMessage(Conversation conversation, NotificationCompat.Builder builder) {
+        MessageAnalyser analyser = new MessageAnalyser(conversation.getSummaryText());
+        if (analyser.hasLink()) {
+            NotificationCompat.Action linkAction = actionBuilder.buildLinkAction(analyser.getLink());
+            builder.addAction(linkAction);
+        }
+    }
+
+    private void enableVoiceReply(Conversation conversation, NotificationCompat.Builder builder) {
+        NotificationCompat.Action voiceInputAction = actionBuilder.buildReplyAction(conversation);
+        NotificationCompat.Extender extender = new NotificationCompat.WearableExtender().addAction(voiceInputAction);
+        builder.extend(extender);
     }
 
     NotificationCompat.Style buildBigStyle(Conversation conversation) {
