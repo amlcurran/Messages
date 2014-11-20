@@ -70,7 +70,7 @@ public class UnreadNotificationBuilder {
         List<Notification> notifications = new ArrayList<Notification>();
         notifications.add(buildMultipleSummaryNotification(conversations, fromNewMessage, ticker));
         for (Conversation conversation : conversations) {
-            NotificationCompat.Builder builder = buildSingleUnreadNotification(conversation, null, fromNewMessage, ticker);
+            NotificationCompat.Builder builder = buildSingleUnreadNotificationWithoutSounds(conversation, null, ticker);
             builder.setGroup(NotificationBuilder.UNREAD_MESSAGES);
             notifications.add(builder.build());
         }
@@ -78,7 +78,7 @@ public class UnreadNotificationBuilder {
     }
 
     Notification buildMultipleSummaryNotification(List<Conversation> conversations, boolean fromNewMessage, CharSequence ticker) {
-        Time latestMessageTime = getLatestMessageTime(conversations);
+        Time latestMessageTime = MessageAnalyser.getLatestMessageTime(conversations);
         NotificationCompat.Action markReadAction = actionBuilder.buildMultipleMarkReadAction(conversations);
 
         NotificationCompat.Builder defaultBuilder = notificationBuilder.getDefaultBuilder(fromNewMessage);
@@ -96,16 +96,6 @@ public class UnreadNotificationBuilder {
                 .build();
     }
 
-    Time getLatestMessageTime(List<Conversation> conversations) {
-        Time latest = Time.fromMillis(0);
-        for (Conversation conversation : conversations) {
-            if (conversation.getTimeOfLastMessage().isLaterThan(latest)) {
-                latest = conversation.getTimeOfLastMessage();
-            }
-        }
-        return latest;
-    }
-
     NotificationCompat.Style buildInboxStyle(List<Conversation> conversations) {
         NotificationCompat.InboxStyle inboxStyle = new NotificationCompat.InboxStyle();
         for (Conversation conversation : conversations) {
@@ -118,6 +108,27 @@ public class UnreadNotificationBuilder {
         NotificationCompat.Action singleUnreadAction = actionBuilder.buildSingleMarkReadAction(conversation);
         NotificationCompat.Action callAction = actionBuilder.call(conversation.getContact());
         NotificationCompat.Builder builder = notificationBuilder.getDefaultBuilder(fromNewMessage);
+
+        analyseMessage(conversation, builder);
+        enableVoiceReply(conversation, builder);
+
+        Contact contact = conversation.getContact();
+        return builder.setStyle(buildBigStyle(conversation))
+                .addAction(singleUnreadAction)
+                .addAction(callAction)
+                .setTicker(ticker)
+                .addPerson(NotificationBuilder.getContactUri(contact))
+                .setContentTitle(conversation.getContact().getDisplayName())
+                .setLargeIcon(photo)
+                .setContentIntent(notificationIntentFactory.createViewConversationIntent(conversation))
+                .setContentText(conversation.getSummaryText())
+                .setWhen(conversation.getTimeOfLastMessage().toMillis());
+    }
+
+    NotificationCompat.Builder buildSingleUnreadNotificationWithoutSounds(Conversation conversation, Bitmap photo, CharSequence ticker) {
+        NotificationCompat.Action singleUnreadAction = actionBuilder.buildSingleMarkReadAction(conversation);
+        NotificationCompat.Action callAction = actionBuilder.call(conversation.getContact());
+        NotificationCompat.Builder builder = notificationBuilder.getDefaultBuilder(false);
 
         analyseMessage(conversation, builder);
         enableVoiceReply(conversation, builder);

@@ -18,11 +18,26 @@ package com.amlcurran.messages.analysis;
 
 import android.webkit.URLUtil;
 
+import com.amlcurran.messages.core.data.Conversation;
+import com.amlcurran.messages.core.data.Time;
+
+import java.util.List;
+
 public class MessageAnalyser {
     private String body;
 
     public MessageAnalyser(String body) {
         this.body = body;
+    }
+
+    public static Time getLatestMessageTime(List<Conversation> conversations) {
+        Time latest = Time.fromMillis(0);
+        for (Conversation conversation : conversations) {
+            if (conversation.getTimeOfLastMessage().isLaterThan(latest)) {
+                latest = conversation.getTimeOfLastMessage();
+            }
+        }
+        return latest;
     }
 
     public boolean hasLink() {
