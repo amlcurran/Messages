@@ -16,7 +16,7 @@
 
 package com.amlcurran.messages.threads;
 
-import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
@@ -79,8 +79,8 @@ public class ThreadActivity extends ActionBarActivity implements DependencyRepos
 
     }
 
-    public static Intent intent(Activity activity, String threadId, Bundle contactBundle, String writtenMessage) {
-        Intent intent = new Intent(activity, ThreadActivity.class);
+    public static Intent intent(Context context, String threadId, Bundle contactBundle, String writtenMessage) {
+        Intent intent = new Intent(context, ThreadActivity.class);
         intent.putExtra(ThreadFragment.THREAD_ID, threadId)
                 .putExtra(ThreadFragment.CONTACT, contactBundle)
                 .putExtra(ThreadFragment.COMPOSED_MESSAGE, writtenMessage);
