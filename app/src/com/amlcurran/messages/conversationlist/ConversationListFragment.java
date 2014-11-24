@@ -68,7 +68,7 @@ public class ConversationListFragment extends ListFragment implements Conversati
         PreferenceListener preferenceListener = new SharedPreferenceListener(getActivity(), "unread_priority");
         EventSubscriber messageReceiver = new BroadcastEventSubscriber(getActivity());
         DependencyRepository dependencyRepository = (DependencyRepository) getActivity();
-        conversationController = new ConversationListViewController(this, preferenceListener, source, messageReceiver, dependencyRepository, SingletonManager.getConversationList(getActivity()));
+        conversationController = new ConversationListViewController(this, preferenceListener, source, dependencyRepository, SingletonManager.getConversationList(getActivity()));
 
         TextFormatter textFormatter = new TextFormatter(getActivity());
         ConversationsBinder binder = new ConversationsBinder(textFormatter, getResources(), messageLoader, dependencyRepository.getDraftRepository(), dependencyRepository.getPreferenceStore());

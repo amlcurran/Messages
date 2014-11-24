@@ -31,43 +31,86 @@ public class ConversationList {
     private final MessagesLoader messagesLoader;
     private final Notifier notifier;
     private final PreferenceStore preferenceStore;
-    private List<Callbacks> callbacksList = new ArrayList<Callbacks>();
+    private final List<Callbacks> callbacksList = new ArrayList<Callbacks>();
+    private final List<Conversation> conversationList = new ArrayList<Conversation>();
+    private LoadingState state;
 
     public ConversationList(MessagesLoader messagesLoader, Notifier notifier, PreferenceStore preferenceStore) {
         this.messagesLoader = messagesLoader;
         this.notifier = notifier;
         this.preferenceStore = preferenceStore;
+        this.state = LoadingState.INITIAL_LOAD;
     }
 
-    private void addCallbacks(Callbacks callbacks) {
+    public void addCallbacks(Callbacks callbacks) {
+        loadIfFirstAttach();
         callbacksList.add(callbacks);
         updateCallback(callbacks);
     }
 
-    private void removeCallbacks(Callbacks callbacks) {
+    private void loadIfFirstAttach() {
+        if (state == LoadingState.INITIAL_LOAD) {
+            reloadConversations(null);
+        }
+    }
+
+    public void removeCallbacks(Callbacks callbacks) {
         callbacksList.remove(callbacks);
     }
 
     private void updateCallback(Callbacks callbacks) {
+        switch (state) {
 
+            case INITIAL_LOAD:
+                callbacks.listLoading();
+                break;
+
+            case LOADED:
+                callbacks.listLoaded(conversationList);
+                break;
+
+            case INVALIDATED:
+                callbacks.listInvalidated(conversationList);
+
+        }
     }
 
     public void reloadConversations(final ConversationListListener conversationListListener) {
+        if (state != LoadingState.INITIAL_LOAD) {
+            state = LoadingState.INVALIDATED;
+        }
+        for (Callbacks callbacks : callbacksList) {
+            updateCallback(callbacks);
+        }
         messagesLoader.loadConversationList(new ConversationListListener() {
             @Override
             public void onConversationListLoaded(List<Conversation> conversations) {
+                state = LoadingState.LOADED;
                 if (conversationListListener != null) {
                     conversationListListener.onConversationListLoaded(conversations);
                 }
                 new UpdateNotificationListener(notifier).onConversationListLoaded(conversations);
+                for (Callbacks callbacks : callbacksList) {
+                    callbacks.listLoaded(conversations);
+                }
+                updateInternalList(conversations);
             }
         }, preferenceStore.getConversationSort());
     }
 
-    private interface Callbacks {
+    private void updateInternalList(List<Conversation> conversations) {
+        conversationList.clear();
+        conversationList.addAll(conversations);
+    }
+
+    public interface Callbacks {
         void listLoading();
         void listLoaded(List<Conversation> conversations);
-        void listInvalidated();
+        void listInvalidated(List<Conversation> invalidatedList);
+    }
+
+    private enum LoadingState {
+        INITIAL_LOAD, LOADED, INVALIDATED
     }
 
 }

@@ -20,52 +20,41 @@ import com.amlcurran.messages.DependencyRepository;
 import com.amlcurran.messages.core.conversationlist.ConversationListListener;
 import com.amlcurran.messages.core.conversationlist.ConversationListView;
 import com.amlcurran.messages.core.data.Conversation;
-import com.amlcurran.messages.core.events.Broadcast;
-import com.amlcurran.messages.core.events.EventBus;
-import com.amlcurran.messages.core.events.EventSubscriber;
 import com.amlcurran.messages.core.preferences.PreferenceListener;
 import com.amlcurran.messages.transition.TransitionManager;
 import com.github.amlcurran.sourcebinder.ArrayListSource;
 
 import java.util.List;
 
-class ConversationListViewController implements ConversationListListener, ConversationListView.ConversationSelectedListener {
+class ConversationListViewController implements ConversationListListener, ConversationListView.ConversationSelectedListener, ConversationList.Callbacks {
     private final ConversationListView conversationListView;
     private final ConversationList conversationList;
     private final TransitionManager transitionManager;
     private final PreferenceListener preferenceListener;
     private final ArrayListSource<Conversation> source;
-    private final EventSubscriber messageReceiver;
 
-    public ConversationListViewController(ConversationListView conversationListView, PreferenceListener preferenceListener, ArrayListSource<Conversation> source, EventSubscriber messageReceiver, DependencyRepository dependencyRepository, ConversationList conversationList) {
+    public ConversationListViewController(ConversationListView conversationListView, PreferenceListener preferenceListener, ArrayListSource<Conversation> source, DependencyRepository dependencyRepository, ConversationList conversationList) {
         this.conversationListView = conversationListView;
         this.conversationList = conversationList;
         this.transitionManager = dependencyRepository.getTransitionManager();
         this.preferenceListener = preferenceListener;
         this.source = source;
-        this.messageReceiver = messageReceiver;
     }
 
     public void start() {
-        messageReceiver.startListening(new RefreshOnUpdateListener(this, conversationList), new Broadcast(EventBus.BROADCAST_LIST_LOADED, null));
+        conversationList.addCallbacks(this);
         preferenceListener.startListening(new RefreshOnPreferenceChangeListener(this, conversationList));
         conversationListView.setConversationSelectedListener(this);
-        loadData();
     }
 
     public void stop() {
+        conversationList.removeCallbacks(this);
         preferenceListener.stopListening();
-        messageReceiver.stopListening();
         conversationListView.setConversationSelectedListener(null);
     }
 
-    private void loadData() {
-        conversationListView.showLoadingUi();
-        conversationList.reloadConversations(this);
-    }
-
     @Override
-    public void onConversationListLoaded(final List<Conversation> conversations) {
+    public void onConversationListLoaded(List<Conversation> conversations) {
         source.replace(conversations);
         conversationListView.hideLoadingUi();
     }
@@ -76,4 +65,19 @@ class ConversationListViewController implements ConversationListListener, Conver
         transitionManager.to().thread(conversation.getContact(), conversation.getThreadId(), null);
     }
 
+    @Override
+    public void listLoading() {
+        conversationListView.showLoadingUi();
+    }
+
+    @Override
+    public void listLoaded(List<Conversation> conversations) {
+        source.replace(conversations);
+        conversationListView.hideLoadingUi();
+    }
+
+    @Override
+    public void listInvalidated(List<Conversation> invalidatedList) {
+
+    }
 }
