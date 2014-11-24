@@ -16,14 +16,20 @@
 
 package com.amlcurran.messages.core.preferences;
 
+import com.amlcurran.messages.core.data.Conversation;
 import com.amlcurran.messages.core.data.Sort;
 
 import java.net.URI;
+import java.util.Comparator;
 
 public interface PreferenceStore {
     URI getRingtoneUri();
 
     boolean showNotifications();
+
+    void stopListeningToPreferenceChanges(PreferenceChangedListener changedListener);
+
+    void listenToPreferenceChanges(PreferenceChangedListener changedListener);
 
     boolean hasNotShownAlphaMessage();
 
@@ -38,6 +44,8 @@ public interface PreferenceStore {
     Sort getConversationSort();
 
     boolean hasRingtoneUri();
+
+    Comparator<Conversation> getConversationSortComparator();
 
     public interface PreferenceChangedListener {
         void preferenceChanged(String key);

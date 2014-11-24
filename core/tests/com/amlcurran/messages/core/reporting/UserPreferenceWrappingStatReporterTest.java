@@ -16,12 +16,14 @@
 
 package com.amlcurran.messages.core.reporting;
 
+import com.amlcurran.messages.core.data.Conversation;
 import com.amlcurran.messages.core.data.Sort;
 import com.amlcurran.messages.core.preferences.PreferenceStore;
 
 import org.junit.Test;
 
 import java.net.URI;
+import java.util.Comparator;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -112,6 +114,11 @@ public class UserPreferenceWrappingStatReporterTest {
         public Sort getConversationSort() {
             return null;
         }
+
+        @Override
+        public Comparator<Conversation> getConversationSortComparator() {
+            return null;
+        }
     }
 
     private class DontSendStatsPreferenceStore implements PreferenceStore {
@@ -153,6 +160,11 @@ public class UserPreferenceWrappingStatReporterTest {
 
         @Override
         public Sort getConversationSort() {
+            return null;
+        }
+
+        @Override
+        public Comparator<Conversation> getConversationSortComparator() {
             return null;
         }
     }

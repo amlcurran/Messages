@@ -105,7 +105,9 @@ public class ConversationList {
 
     public interface Callbacks {
         void listLoading();
+
         void listLoaded(List<Conversation> conversations);
+
         void listInvalidated(List<Conversation> invalidatedList);
     }
 

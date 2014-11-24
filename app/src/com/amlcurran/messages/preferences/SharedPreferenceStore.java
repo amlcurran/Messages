@@ -21,11 +21,15 @@ import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
 import com.amlcurran.messages.core.TextUtils;
+import com.amlcurran.messages.core.conversationlist.TimestampComparator;
+import com.amlcurran.messages.core.conversationlist.UnreadComparator;
+import com.amlcurran.messages.core.data.Conversation;
 import com.amlcurran.messages.core.data.Sort;
 import com.amlcurran.messages.core.preferences.PreferenceStore;
 
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 public class SharedPreferenceStore implements PreferenceStore {
@@ -56,6 +60,15 @@ public class SharedPreferenceStore implements PreferenceStore {
     }
 
     @Override
+    public Comparator<Conversation> getConversationSortComparator() {
+        if (getConversationSort() == Sort.UNREAD) {
+            return new UnreadComparator();
+        } else {
+            return new TimestampComparator();
+        }
+    }
+
+    @Override
     public URI getRingtoneUri() {
         String ringtone = preferences.getString(RINGTONE, null);
         return TextUtils.isEmpty(ringtone) ? null : URI.create(ringtone);
@@ -66,6 +79,7 @@ public class SharedPreferenceStore implements PreferenceStore {
         return preferences.getBoolean(NOTIFICATIONS, true);
     }
 
+    @Override
     public void stopListeningToPreferenceChanges(PreferenceChangedListener changedListener) {
         changedListenerList.remove(changedListener);
         if (changedListenerList.isEmpty()) {
@@ -73,6 +87,7 @@ public class SharedPreferenceStore implements PreferenceStore {
         }
     }
 
+    @Override
     public void listenToPreferenceChanges(PreferenceChangedListener changedListener) {
         changedListenerList.add(changedListener);
         if (changedListenerList.size() == 1) {

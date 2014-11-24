@@ -21,14 +21,17 @@ import com.amlcurran.messages.core.conversationlist.ConversationListListener;
 import com.amlcurran.messages.core.conversationlist.ConversationListView;
 import com.amlcurran.messages.core.data.Conversation;
 import com.amlcurran.messages.core.preferences.PreferenceListener;
+import com.amlcurran.messages.core.preferences.PreferenceStore;
 import com.amlcurran.messages.transition.TransitionManager;
 import com.github.amlcurran.sourcebinder.ArrayListSource;
 
+import java.util.Collections;
 import java.util.List;
 
 class ConversationListViewController implements ConversationListListener, ConversationListView.ConversationSelectedListener, ConversationList.Callbacks {
     private final ConversationListView conversationListView;
     private final ConversationList conversationList;
+    private final PreferenceStore preferenceStore;
     private final TransitionManager transitionManager;
     private final PreferenceListener preferenceListener;
     private final ArrayListSource<Conversation> source;
@@ -36,6 +39,7 @@ class ConversationListViewController implements ConversationListListener, Conver
     public ConversationListViewController(ConversationListView conversationListView, PreferenceListener preferenceListener, ArrayListSource<Conversation> source, DependencyRepository dependencyRepository, ConversationList conversationList) {
         this.conversationListView = conversationListView;
         this.conversationList = conversationList;
+        this.preferenceStore = dependencyRepository.getPreferenceStore();
         this.transitionManager = dependencyRepository.getTransitionManager();
         this.preferenceListener = preferenceListener;
         this.source = source;
@@ -72,6 +76,7 @@ class ConversationListViewController implements ConversationListListener, Conver
 
     @Override
     public void listLoaded(List<Conversation> conversations) {
+        Collections.sort(conversations, preferenceStore.getConversationSortComparator());
         source.replace(conversations);
         conversationListView.hideLoadingUi();
     }
