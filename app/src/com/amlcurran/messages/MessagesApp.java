@@ -50,6 +50,7 @@ public class MessagesApp extends Application implements BroadcastEventSubscriber
     EventBus eventBus;
     ConversationList conversationList;
     private UnreadMessageNotificationManager unreadMessageNotificationManager;
+    private UpdateNotificationListener updateNotificationListener;
 
     @Override
     public void onCreate() {
@@ -74,7 +75,11 @@ public class MessagesApp extends Application implements BroadcastEventSubscriber
                 new Broadcast(BroadcastEventBus.BROADCAST_MESSAGE_SENT, null),
                 new Broadcast(BroadcastEventBus.BROADCAST_MESSAGE_RECEIVED, null),
                 new Broadcast(BroadcastEventBus.BROADCAST_LIST_INVALIDATED, null));
-        conversationList = new ConversationList(loader, notifier, new SharedPreferenceStore(this));
+
+        updateNotificationListener = new UpdateNotificationListener(notifier);
+
+        conversationList = new ConversationList(loader, new SharedPreferenceStore(this));
+        conversationList.addCallbacks(updateNotificationListener);
 
         primeZygote(executor);
 
@@ -99,6 +104,7 @@ public class MessagesApp extends Application implements BroadcastEventSubscriber
     @Override
     public void onTerminate() {
         super.onTerminate();
+        conversationList.removeCallbacks(updateNotificationListener);
         subscriber.stopListening();
         loader.cancelAll();
     }

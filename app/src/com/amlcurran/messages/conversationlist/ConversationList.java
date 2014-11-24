@@ -16,12 +16,10 @@
 
 package com.amlcurran.messages.conversationlist;
 
-import com.amlcurran.messages.UpdateNotificationListener;
 import com.amlcurran.messages.core.conversationlist.ConversationListListener;
 import com.amlcurran.messages.core.data.Conversation;
 import com.amlcurran.messages.core.preferences.PreferenceStore;
 import com.amlcurran.messages.loaders.MessagesLoader;
-import com.amlcurran.messages.notifications.Notifier;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,15 +27,13 @@ import java.util.List;
 public class ConversationList {
 
     private final MessagesLoader messagesLoader;
-    private final Notifier notifier;
     private final PreferenceStore preferenceStore;
     private final List<Callbacks> callbacksList = new ArrayList<Callbacks>();
     private final List<Conversation> conversationList = new ArrayList<Conversation>();
     private LoadingState state;
 
-    public ConversationList(MessagesLoader messagesLoader, Notifier notifier, PreferenceStore preferenceStore) {
+    public ConversationList(MessagesLoader messagesLoader, PreferenceStore preferenceStore) {
         this.messagesLoader = messagesLoader;
-        this.notifier = notifier;
         this.preferenceStore = preferenceStore;
         this.state = LoadingState.INITIAL_LOAD;
         this.preferenceStore.listenToPreferenceChanges(new PokeCallbacksListener());
@@ -87,7 +83,6 @@ public class ConversationList {
             @Override
             public void onConversationListLoaded(List<Conversation> conversations) {
                 state = LoadingState.LOADED;
-                new UpdateNotificationListener(notifier).onConversationListLoaded(conversations);
                 for (Callbacks callbacks : callbacksList) {
                     callbacks.listLoaded(conversations);
                 }
