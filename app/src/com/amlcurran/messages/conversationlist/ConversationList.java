@@ -17,6 +17,7 @@
 package com.amlcurran.messages.conversationlist;
 
 import com.amlcurran.messages.UpdateNotificationListener;
+import com.amlcurran.messages.core.conversationlist.ConversationListListener;
 import com.amlcurran.messages.core.data.Conversation;
 import com.amlcurran.messages.core.preferences.PreferenceStore;
 import com.amlcurran.messages.loaders.MessagesLoader;
@@ -51,9 +52,16 @@ public class ConversationList {
 
     }
 
-    public void reloadConversations() {
-        messagesLoader.loadConversationList(
-                new UpdateNotificationListener(notifier), preferenceStore.getConversationSort());
+    public void reloadConversations(final ConversationListListener conversationListListener) {
+        messagesLoader.loadConversationList(new ConversationListListener() {
+            @Override
+            public void onConversationListLoaded(List<Conversation> conversations) {
+                if (conversationListListener != null) {
+                    conversationListListener.onConversationListLoaded(conversations);
+                }
+                new UpdateNotificationListener(notifier).onConversationListLoaded(conversations);
+            }
+        }, preferenceStore.getConversationSort());
     }
 
     private interface Callbacks {

@@ -26,6 +26,7 @@ import android.widget.ListView;
 
 import com.amlcurran.messages.DependencyRepository;
 import com.amlcurran.messages.R;
+import com.amlcurran.messages.SingletonManager;
 import com.amlcurran.messages.conversationlist.adapter.ConversationsBinder;
 import com.amlcurran.messages.conversationlist.adapter.TextFormatter;
 import com.amlcurran.messages.core.conversationlist.ConversationListView;
@@ -67,7 +68,7 @@ public class ConversationListFragment extends ListFragment implements Conversati
         PreferenceListener preferenceListener = new SharedPreferenceListener(getActivity(), "unread_priority");
         EventSubscriber messageReceiver = new BroadcastEventSubscriber(getActivity());
         DependencyRepository dependencyRepository = (DependencyRepository) getActivity();
-        conversationController = new ConversationListViewController(this, preferenceListener, source, messageReceiver, dependencyRepository);
+        conversationController = new ConversationListViewController(this, preferenceListener, source, messageReceiver, dependencyRepository, SingletonManager.getConversationList(getActivity()));
 
         TextFormatter textFormatter = new TextFormatter(getActivity());
         ConversationsBinder binder = new ConversationsBinder(textFormatter, getResources(), messageLoader, dependencyRepository.getDraftRepository(), dependencyRepository.getPreferenceStore());

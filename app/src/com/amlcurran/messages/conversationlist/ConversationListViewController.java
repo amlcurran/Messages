@@ -21,11 +21,9 @@ import com.amlcurran.messages.core.conversationlist.ConversationListListener;
 import com.amlcurran.messages.core.conversationlist.ConversationListView;
 import com.amlcurran.messages.core.data.Conversation;
 import com.amlcurran.messages.core.events.Broadcast;
+import com.amlcurran.messages.core.events.EventBus;
 import com.amlcurran.messages.core.events.EventSubscriber;
 import com.amlcurran.messages.core.preferences.PreferenceListener;
-import com.amlcurran.messages.core.preferences.PreferenceStore;
-import com.amlcurran.messages.core.events.EventBus;
-import com.amlcurran.messages.loaders.MessagesLoader;
 import com.amlcurran.messages.transition.TransitionManager;
 import com.github.amlcurran.sourcebinder.ArrayListSource;
 
@@ -33,21 +31,19 @@ import java.util.List;
 
 class ConversationListViewController implements ConversationListListener, EventSubscriber.Listener, PreferenceListener.ChangeListener, ConversationListView.ConversationSelectedListener {
     private final ConversationListView conversationListView;
-    private final MessagesLoader messageLoader;
+    private final ConversationList conversationList;
     private final TransitionManager transitionManager;
     private final PreferenceListener preferenceListener;
     private final ArrayListSource<Conversation> source;
     private final EventSubscriber messageReceiver;
-    private final PreferenceStore preferenceStore;
 
-    public ConversationListViewController(ConversationListView conversationListView, PreferenceListener preferenceListener, ArrayListSource<Conversation> source, EventSubscriber messageReceiver, DependencyRepository dependencyRepository) {
+    public ConversationListViewController(ConversationListView conversationListView, PreferenceListener preferenceListener, ArrayListSource<Conversation> source, EventSubscriber messageReceiver, DependencyRepository dependencyRepository, ConversationList conversationList) {
         this.conversationListView = conversationListView;
-        this.messageLoader = dependencyRepository.getMessagesLoader();
+        this.conversationList = conversationList;
         this.transitionManager = dependencyRepository.getTransitionManager();
         this.preferenceListener = preferenceListener;
         this.source = source;
         this.messageReceiver = messageReceiver;
-        this.preferenceStore = dependencyRepository.getPreferenceStore();
     }
 
     public void start() {
@@ -63,13 +59,9 @@ class ConversationListViewController implements ConversationListListener, EventS
         conversationListView.setConversationSelectedListener(null);
     }
 
-    private void reloadData() {
-        messageLoader.loadConversationList(this, preferenceStore.getConversationSort());
-    }
-
     private void loadData() {
         conversationListView.showLoadingUi();
-        reloadData();
+        conversationList.reloadConversations(this);
     }
 
     @Override
@@ -80,12 +72,12 @@ class ConversationListViewController implements ConversationListListener, EventS
 
     @Override
     public void preferenceChanged(String requestKey) {
-        onMessageReceived();
+        conversationList.reloadConversations(this);
     }
 
     @Override
     public void onMessageReceived() {
-        reloadData();
+        conversationList.reloadConversations(this);
     }
 
     @Override
