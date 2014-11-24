@@ -36,6 +36,7 @@ public class SharedPreferenceStore implements PreferenceStore {
     static final String SHOWN_ALPHA_MESSAGE = "alpha_message";
     public static final String PERSISTENT_NOTIFICATION = "persistent_notification";
     private static final String SEND_STATS = "send_stats";
+    private static final String LARGE_UNREAD_PREVIEWS = "large_unread_previews";
     private final SharedPreferences preferences;
     private final List<PreferenceChangedListener> changedListenerList = new ArrayList<PreferenceChangedListener>();
 
@@ -116,6 +117,11 @@ public class SharedPreferenceStore implements PreferenceStore {
     @Override
     public boolean isNotificationPersistent() {
         return preferences.getBoolean(PERSISTENT_NOTIFICATION, false);
+    }
+
+    @Override
+    public boolean showLargeUnreadPreviews() {
+        return preferences.getBoolean(LARGE_UNREAD_PREVIEWS, true);
     }
 
     @Override

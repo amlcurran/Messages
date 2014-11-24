@@ -64,6 +64,8 @@
     <string name="yesterday">Yesterday, %1$s</string>
     <string name="pref_sum_stats">Let the developer see statistics about how you use the app</string>
     <string name="pref_title_stats">Allow anonymous statistics</string>
+    <string name="preference_large_unread_title">Expanded unread previews</string>
+    <string name="preference_large_unread_summary">Display larger previews on unread conversations</string>
 
     <plurals name="minutesDifference">
         <item quantity="one">%1$s minute ago</item>

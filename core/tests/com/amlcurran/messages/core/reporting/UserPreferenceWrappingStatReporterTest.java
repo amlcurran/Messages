@@ -99,6 +99,11 @@ public class UserPreferenceWrappingStatReporterTest {
         }
 
         @Override
+        public boolean showLargeUnreadPreviews() {
+            return false;
+        }
+
+        @Override
         public boolean shouldSendStats() {
             return true;
         }
@@ -133,6 +138,11 @@ public class UserPreferenceWrappingStatReporterTest {
 
         @Override
         public boolean isNotificationPersistent() {
+            return false;
+        }
+
+        @Override
+        public boolean showLargeUnreadPreviews() {
             return false;
         }
 

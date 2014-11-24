@@ -41,7 +41,7 @@ public class ConversationsRecyclerBinder implements ViewHolderBinder<Conversatio
         this.textFormatter = textFormatter;
         this.draftPreamble = resources.getString(R.string.draft_preamble);
         this.fromMePreamble = resources.getString(R.string.from_me_preamble);
-        this.viewCreator = new ConversationViewCreator();
+        this.viewCreator = new ConversationViewCreator(null);
         this.adapterPhotoLoader = new AdapterPhotoLoader(loader, resources);
     }
 

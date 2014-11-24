@@ -22,13 +22,23 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.amlcurran.messages.R;
+import com.amlcurran.messages.core.preferences.PreferenceStore;
 
 class ConversationViewCreator {
-    public ConversationViewCreator() {
+    private final PreferenceStore preferenceStore;
+
+    public ConversationViewCreator(PreferenceStore preferenceStore) {
+        this.preferenceStore = preferenceStore;
     }
 
     View createUnreadView(Context context, ViewGroup parent) {
-        View view = LayoutInflater.from(context).inflate(R.layout.item_conversation_unread, parent, false);
+        int layoutRes;
+        if (preferenceStore.showLargeUnreadPreviews()) {
+            layoutRes = R.layout.item_conversation_unread_large;
+        } else {
+            layoutRes = R.layout.item_conversation_unread;
+        }
+        View view = LayoutInflater.from(context).inflate(layoutRes, parent, false);
         view.setTag(R.id.tag_view_holder, new ConversationViewHolder(view));
         return view;
     }

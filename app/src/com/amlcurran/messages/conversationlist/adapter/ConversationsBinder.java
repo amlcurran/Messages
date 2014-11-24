@@ -24,6 +24,7 @@ import android.view.ViewGroup;
 import com.amlcurran.messages.R;
 import com.amlcurran.messages.core.data.Conversation;
 import com.amlcurran.messages.core.data.DraftRepository;
+import com.amlcurran.messages.core.preferences.PreferenceStore;
 import com.amlcurran.messages.loaders.MessagesLoader;
 import com.github.amlcurran.sourcebinder.SimpleBinder;
 
@@ -32,18 +33,20 @@ public class ConversationsBinder extends SimpleBinder<Conversation> {
     private static final int IS_UNREAD = 1;
     private static final int IS_READ = 0;
     private final DraftRepository draftRepository;
+    private final PreferenceStore preferenceStore;
     private final String draftPreamble;
     private final String fromMePreamble;
     private final TextFormatter textFormatter;
     private final ConversationViewCreator viewCreator;
     private final AdapterPhotoLoader adapterPhotoLoader;
 
-    public ConversationsBinder(TextFormatter textFormatter, Resources resources, MessagesLoader loader, DraftRepository draftRepository) {
+    public ConversationsBinder(TextFormatter textFormatter, Resources resources, MessagesLoader loader, DraftRepository draftRepository, PreferenceStore preferenceStore) {
         this.draftRepository = draftRepository;
+        this.preferenceStore = preferenceStore;
         this.draftPreamble = resources.getString(R.string.draft_preamble);
         this.fromMePreamble = resources.getString(R.string.from_me_preamble);
         this.textFormatter = textFormatter;
-        this.viewCreator = new ConversationViewCreator();
+        this.viewCreator = new ConversationViewCreator(preferenceStore);
         this.adapterPhotoLoader = new AdapterPhotoLoader(loader, resources);
     }
 

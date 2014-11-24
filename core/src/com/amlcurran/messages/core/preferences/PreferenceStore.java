@@ -31,6 +31,8 @@ public interface PreferenceStore {
 
     boolean isNotificationPersistent();
 
+    boolean showLargeUnreadPreviews();
+
     boolean shouldSendStats();
 
     Sort getConversationSort();
