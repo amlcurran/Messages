@@ -19,6 +19,7 @@ package com.amlcurran.messages;
 import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.provider.Telephony;
 import android.telephony.PhoneNumberUtils;
@@ -26,6 +27,7 @@ import android.telephony.PhoneNumberUtils;
 import com.amlcurran.messages.core.data.PhoneNumber;
 import com.amlcurran.messages.notifications.BlockingInUiNotifier;
 import com.amlcurran.messages.notifications.Dialog;
+import com.amlcurran.messages.threads.ThreadActivity;
 
 public class ActivityController {
 
@@ -90,5 +92,9 @@ public class ActivityController {
 
     public void showPreferences() {
         activity.startActivity(SecondaryActivity.preferences(activity));
+    }
+
+    public void showThreadActivity(String threadId, Bundle contactBundle, String writtenMessage) {
+        activity.startActivity(ThreadActivity.intent(activity, threadId, contactBundle, writtenMessage));
     }
 }

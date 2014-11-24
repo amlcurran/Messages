@@ -19,12 +19,14 @@ package com.amlcurran.messages.notifications;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
 
-import com.amlcurran.messages.launch.LaunchAssistant;
 import com.amlcurran.messages.MessagesActivity;
 import com.amlcurran.messages.core.data.Conversation;
+import com.amlcurran.messages.data.ContactFactory;
 import com.amlcurran.messages.data.InFlightSmsMessage;
 import com.amlcurran.messages.telephony.SmsSender;
+import com.amlcurran.messages.threads.ThreadActivity;
 
 public class NotificationIntentFactory {
     private final Context context;
@@ -34,10 +36,8 @@ public class NotificationIntentFactory {
     }
 
     PendingIntent createViewConversationIntent(Conversation conversation) {
-        Intent intent = new Intent(context, MessagesActivity.class);
-        intent.setAction(Notifier.ACTION_VIEW_CONVERSATION);
-        intent.putExtra(LaunchAssistant.EXTRA_THREAD_ID, conversation.getThreadId());
-        intent.putExtra(LaunchAssistant.EXTRA_ADDRESS, conversation.getAddress().flatten());
+        Bundle smooshed = ContactFactory.smooshContact(ContactFactory.fromAddress(conversation.getAddress().flatten()));
+        Intent intent = ThreadActivity.intent(context, conversation.getThreadId(), smooshed, null);
         return PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT);
     }
 

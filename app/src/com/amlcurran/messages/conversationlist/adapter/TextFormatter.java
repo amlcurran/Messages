@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.amlcurran.messages.conversationlist;
+package com.amlcurran.messages.conversationlist.adapter;
 
 import android.content.Context;
 import android.text.style.TextAppearanceSpan;

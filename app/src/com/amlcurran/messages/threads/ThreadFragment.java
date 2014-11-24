@@ -41,7 +41,6 @@ import com.amlcurran.messages.events.BroadcastEventSubscriber;
 import com.amlcurran.messages.telephony.DefaultAppChecker;
 import com.amlcurran.messages.ui.ComposeMessageView;
 import com.amlcurran.messages.ui.CustomHeaderFragment;
-import com.amlcurran.messages.ui.contact.ContactClickListener;
 import com.amlcurran.messages.ui.contact.DefaultRoundContactView;
 import com.espian.utils.ProviderHelper;
 import com.github.amlcurran.sourcebinder.SourceBinderAdapter;
@@ -49,9 +48,9 @@ import com.github.amlcurran.sourcebinder.SourceBinderAdapter;
 public class ThreadFragment extends ListFragment implements
         CustomHeaderFragment<DefaultRoundContactView>, ThreadController.ThreadView, ThreadView {
 
-    private static final String THREAD_ID = "threadId";
-    private static final String CONTACT = "contact";
-    private static final String COMPOSED_MESSAGE = "composed_message";
+    static final String THREAD_ID = "threadId";
+    static final String CONTACT = "contact";
+    static final String COMPOSED_MESSAGE = "composed_message";
 
     private ComposeMessageView composeView;
     private DefaultRoundContactView contactView;
@@ -161,7 +160,7 @@ public class ThreadFragment extends ListFragment implements
     @Override
     public void bindContactToHeader(Contact contact) {
         getHeaderView(getActivity()).setContact(contact, SingletonManager.getMessagesLoader(getActivity()));
-        getHeaderView(getActivity()).setClickToView(((ContactClickListener) getActivity()));
+        getHeaderView(getActivity()).setClickToView(new DefaultContactClickListener((DependencyRepository) getActivity()));
     }
 
     @Override

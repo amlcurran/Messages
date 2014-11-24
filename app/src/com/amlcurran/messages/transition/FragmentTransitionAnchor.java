@@ -18,23 +18,25 @@ package com.amlcurran.messages.transition;
 
 import android.os.Bundle;
 
+import com.amlcurran.messages.ActivityController;
 import com.amlcurran.messages.MmsErrorFragment;
 import com.amlcurran.messages.core.data.Contact;
 import com.amlcurran.messages.core.reporting.StatReporter;
 import com.amlcurran.messages.data.ContactFactory;
 import com.amlcurran.messages.newcompose.ComposeNewFragment;
-import com.amlcurran.messages.threads.ThreadFragment;
 import com.amlcurran.messages.ui.control.FragmentController;
 
 class FragmentTransitionAnchor implements TransitionAnchor {
 
     private final TransitionManager transitionManager;
     private final FragmentController fragmentController;
+    private final ActivityController activityController;
     private final StatReporter statReporter;
 
-    public FragmentTransitionAnchor(TransitionManager transitionManager, FragmentController fragmentController, StatReporter statReporter) {
+    public FragmentTransitionAnchor(TransitionManager transitionManager, FragmentController fragmentController, ActivityController activityController, StatReporter statReporter) {
         this.transitionManager = transitionManager;
         this.fragmentController = fragmentController;
+        this.activityController = activityController;
         this.statReporter = statReporter;
     }
 
@@ -47,8 +49,9 @@ class FragmentTransitionAnchor implements TransitionAnchor {
     @Override
     public TransitionManager thread(Contact contact, String threadId, String writtenMessage) {
         Bundle contactBundle = ContactFactory.smooshContact(contact);
-        ThreadFragment fragment = ThreadFragment.create(threadId, contactBundle, writtenMessage);
-        fragmentController.replaceFragment(fragment);
+        //ThreadFragment fragment = ThreadFragment.create(threadId, contactBundle, writtenMessage);
+        //fragmentController.replaceFragment(fragment);
+        activityController.showThreadActivity(threadId, contactBundle, writtenMessage);
         return transitionManager;
     }
 
