@@ -40,6 +40,7 @@ public class ConversationList {
         this.notifier = notifier;
         this.preferenceStore = preferenceStore;
         this.state = LoadingState.INITIAL_LOAD;
+        this.preferenceStore.listenToPreferenceChanges(new PokeCallbacksListener());
     }
 
     public void addCallbacks(Callbacks callbacks) {
@@ -115,4 +116,12 @@ public class ConversationList {
         INITIAL_LOAD, LOADED, INVALIDATED
     }
 
+    private class PokeCallbacksListener implements PreferenceStore.PreferenceChangedListener {
+        @Override
+        public void preferenceChanged(String key) {
+            for (Callbacks callbacks : callbacksList) {
+                updateCallback(callbacks);
+            }
+        }
+    }
 }

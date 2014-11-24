@@ -31,11 +31,7 @@ import com.amlcurran.messages.conversationlist.adapter.ConversationsBinder;
 import com.amlcurran.messages.conversationlist.adapter.TextFormatter;
 import com.amlcurran.messages.core.conversationlist.ConversationListView;
 import com.amlcurran.messages.core.data.Conversation;
-import com.amlcurran.messages.core.events.EventSubscriber;
-import com.amlcurran.messages.core.preferences.PreferenceListener;
-import com.amlcurran.messages.events.BroadcastEventSubscriber;
 import com.amlcurran.messages.loaders.MessagesLoader;
-import com.amlcurran.messages.preferences.SharedPreferenceListener;
 import com.amlcurran.messages.threads.DefaultContactClickListener;
 import com.amlcurran.messages.ui.control.Master;
 import com.espian.utils.ProviderHelper;
@@ -65,10 +61,8 @@ public class ConversationListFragment extends ListFragment implements Conversati
         ArrayListSource<Conversation> source = new ArrayListSource<Conversation>();
         ConversationModalMarshall.Callback modalCallback = (ConversationModalMarshall.Callback) getActivity();
         MessagesLoader messageLoader = new ProviderHelper<MessagesLoader.Provider>(MessagesLoader.Provider.class).get(getActivity()).getMessagesLoader();
-        PreferenceListener preferenceListener = new SharedPreferenceListener(getActivity(), "unread_priority");
-        EventSubscriber messageReceiver = new BroadcastEventSubscriber(getActivity());
         DependencyRepository dependencyRepository = (DependencyRepository) getActivity();
-        conversationController = new ConversationListViewController(this, preferenceListener, source, dependencyRepository, SingletonManager.getConversationList(getActivity()));
+        conversationController = new ConversationListViewController(this, source, dependencyRepository, SingletonManager.getConversationList(getActivity()));
 
         TextFormatter textFormatter = new TextFormatter(getActivity());
         ConversationsBinder binder = new ConversationsBinder(textFormatter, getResources(), messageLoader, dependencyRepository.getDraftRepository(), dependencyRepository.getPreferenceStore());

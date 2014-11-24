@@ -20,7 +20,6 @@ import com.amlcurran.messages.DependencyRepository;
 import com.amlcurran.messages.core.conversationlist.ConversationListListener;
 import com.amlcurran.messages.core.conversationlist.ConversationListView;
 import com.amlcurran.messages.core.data.Conversation;
-import com.amlcurran.messages.core.preferences.PreferenceListener;
 import com.amlcurran.messages.core.preferences.PreferenceStore;
 import com.amlcurran.messages.transition.TransitionManager;
 import com.github.amlcurran.sourcebinder.ArrayListSource;
@@ -33,27 +32,23 @@ class ConversationListViewController implements ConversationListListener, Conver
     private final ConversationList conversationList;
     private final PreferenceStore preferenceStore;
     private final TransitionManager transitionManager;
-    private final PreferenceListener preferenceListener;
     private final ArrayListSource<Conversation> source;
 
-    public ConversationListViewController(ConversationListView conversationListView, PreferenceListener preferenceListener, ArrayListSource<Conversation> source, DependencyRepository dependencyRepository, ConversationList conversationList) {
+    public ConversationListViewController(ConversationListView conversationListView, ArrayListSource<Conversation> source, DependencyRepository dependencyRepository, ConversationList conversationList) {
         this.conversationListView = conversationListView;
         this.conversationList = conversationList;
         this.preferenceStore = dependencyRepository.getPreferenceStore();
         this.transitionManager = dependencyRepository.getTransitionManager();
-        this.preferenceListener = preferenceListener;
         this.source = source;
     }
 
     public void start() {
         conversationList.addCallbacks(this);
-        preferenceListener.startListening(new RefreshOnPreferenceChangeListener(this, conversationList));
         conversationListView.setConversationSelectedListener(this);
     }
 
     public void stop() {
         conversationList.removeCallbacks(this);
-        preferenceListener.stopListening();
         conversationListView.setConversationSelectedListener(null);
     }
 
