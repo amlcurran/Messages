@@ -51,7 +51,7 @@ public class ConversationList {
 
     private void loadIfFirstAttach() {
         if (state == LoadingState.INITIAL_LOAD) {
-            reloadConversations(null);
+            reloadConversations();
         }
     }
 
@@ -76,7 +76,7 @@ public class ConversationList {
         }
     }
 
-    public void reloadConversations(final ConversationListListener conversationListListener) {
+    public void reloadConversations() {
         if (state != LoadingState.INITIAL_LOAD) {
             state = LoadingState.INVALIDATED;
         }
@@ -87,9 +87,6 @@ public class ConversationList {
             @Override
             public void onConversationListLoaded(List<Conversation> conversations) {
                 state = LoadingState.LOADED;
-                if (conversationListListener != null) {
-                    conversationListListener.onConversationListLoaded(conversations);
-                }
                 new UpdateNotificationListener(notifier).onConversationListLoaded(conversations);
                 for (Callbacks callbacks : callbacksList) {
                     callbacks.listLoaded(conversations);

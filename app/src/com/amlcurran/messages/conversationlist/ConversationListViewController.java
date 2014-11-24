@@ -17,7 +17,6 @@
 package com.amlcurran.messages.conversationlist;
 
 import com.amlcurran.messages.DependencyRepository;
-import com.amlcurran.messages.core.conversationlist.ConversationListListener;
 import com.amlcurran.messages.core.conversationlist.ConversationListView;
 import com.amlcurran.messages.core.data.Conversation;
 import com.amlcurran.messages.core.preferences.PreferenceStore;
@@ -27,7 +26,7 @@ import com.github.amlcurran.sourcebinder.ArrayListSource;
 import java.util.Collections;
 import java.util.List;
 
-class ConversationListViewController implements ConversationListListener, ConversationListView.ConversationSelectedListener, ConversationList.Callbacks {
+class ConversationListViewController implements ConversationListView.ConversationSelectedListener, ConversationList.Callbacks {
     private final ConversationListView conversationListView;
     private final ConversationList conversationList;
     private final PreferenceStore preferenceStore;
@@ -50,12 +49,6 @@ class ConversationListViewController implements ConversationListListener, Conver
     public void stop() {
         conversationList.removeCallbacks(this);
         conversationListView.setConversationSelectedListener(null);
-    }
-
-    @Override
-    public void onConversationListLoaded(List<Conversation> conversations) {
-        source.replace(conversations);
-        conversationListView.hideLoadingUi();
     }
 
     @Override

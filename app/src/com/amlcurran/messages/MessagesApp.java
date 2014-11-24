@@ -106,7 +106,7 @@ public class MessagesApp extends Application implements BroadcastEventSubscriber
     @Override
     public void onMessageReceived() {
         cache.invalidate();
-        conversationList.reloadConversations(null);
+        conversationList.reloadConversations();
     }
 
     private class PrimeLinkifyTask implements Callable<Object> {
