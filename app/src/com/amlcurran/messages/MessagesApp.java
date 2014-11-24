@@ -23,11 +23,12 @@ import android.preference.PreferenceManager;
 import android.text.SpannableStringBuilder;
 import android.text.util.Linkify;
 
+import com.amlcurran.messages.conversationlist.ConversationList;
 import com.amlcurran.messages.core.events.Broadcast;
+import com.amlcurran.messages.core.events.EventBus;
 import com.amlcurran.messages.demo.DemoMessagesLoader;
 import com.amlcurran.messages.events.BroadcastEventBus;
 import com.amlcurran.messages.events.BroadcastEventSubscriber;
-import com.amlcurran.messages.core.events.EventBus;
 import com.amlcurran.messages.loaders.ExecutorMessagesLoader;
 import com.amlcurran.messages.loaders.MemoryMessagesCache;
 import com.amlcurran.messages.loaders.MessagesCache;
@@ -47,6 +48,7 @@ public class MessagesApp extends Application implements BroadcastEventSubscriber
     MessagesLoader loader;
     Notifier notifier;
     EventBus eventBus;
+    ConversationList conversationList;
     private UnreadMessageNotificationManager unreadMessageNotificationManager;
 
     @Override
@@ -72,6 +74,8 @@ public class MessagesApp extends Application implements BroadcastEventSubscriber
                 new Broadcast(BroadcastEventBus.BROADCAST_MESSAGE_SENT, null),
                 new Broadcast(BroadcastEventBus.BROADCAST_MESSAGE_RECEIVED, null),
                 new Broadcast(BroadcastEventBus.BROADCAST_LIST_INVALIDATED, null));
+        conversationList = new ConversationList(loader, notifier, new SharedPreferenceStore(this));
+
         primeZygote(executor);
 
         if (BuildConfig.DEBUG) {
@@ -102,7 +106,7 @@ public class MessagesApp extends Application implements BroadcastEventSubscriber
     @Override
     public void onMessageReceived() {
         cache.invalidate();
-        loader.loadConversationList(new UpdateNotificationListener(notifier), new SharedPreferenceStore(this).getConversationSort());
+        conversationList.reloadConversations();
     }
 
     private class PrimeLinkifyTask implements Callable<Object> {
