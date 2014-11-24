@@ -29,7 +29,7 @@ import com.github.amlcurran.sourcebinder.ArrayListSource;
 
 import java.util.List;
 
-class ConversationListViewController implements ConversationListListener, EventSubscriber.Listener, PreferenceListener.ChangeListener, ConversationListView.ConversationSelectedListener {
+class ConversationListViewController implements ConversationListListener, ConversationListView.ConversationSelectedListener {
     private final ConversationListView conversationListView;
     private final ConversationList conversationList;
     private final TransitionManager transitionManager;
@@ -47,8 +47,8 @@ class ConversationListViewController implements ConversationListListener, EventS
     }
 
     public void start() {
-        messageReceiver.startListening(this, new Broadcast(EventBus.BROADCAST_LIST_LOADED, null));
-        preferenceListener.startListening(this);
+        messageReceiver.startListening(new RefreshOnUpdateListener(this, conversationList), new Broadcast(EventBus.BROADCAST_LIST_LOADED, null));
+        preferenceListener.startListening(new RefreshOnPreferenceChangeListener(this, conversationList));
         conversationListView.setConversationSelectedListener(this);
         loadData();
     }
@@ -71,18 +71,9 @@ class ConversationListViewController implements ConversationListListener, EventS
     }
 
     @Override
-    public void preferenceChanged(String requestKey) {
-        conversationList.reloadConversations(this);
-    }
-
-    @Override
-    public void onMessageReceived() {
-        conversationList.reloadConversations(this);
-    }
-
-    @Override
     public void selectedPosition(int position) {
         Conversation conversation = source.getAtPosition(position);
         transitionManager.to().thread(conversation.getContact(), conversation.getThreadId(), null);
     }
+
 }
