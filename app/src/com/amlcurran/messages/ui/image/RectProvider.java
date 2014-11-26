@@ -16,22 +16,8 @@
 
 package com.amlcurran.messages.ui.image;
 
-import android.content.Context;
-import android.util.AttributeSet;
+import android.graphics.RectF;
 
-public class CircularImageView extends CutImageView {
-
-    public CircularImageView(Context context, AttributeSet attrs) {
-        super(context, attrs);
-    }
-
-    public CircularImageView(Context context, AttributeSet attrs, int defStyle) {
-        super(context, attrs, defStyle);
-    }
-
-    @Override
-    public RectProvider getCircularRectProvider() {
-        return new CircleRectProvider();
-    }
-
+public interface RectProvider {
+    void setCircleRect(RectF circleRectF, int dimen, float borderWidth);
 }

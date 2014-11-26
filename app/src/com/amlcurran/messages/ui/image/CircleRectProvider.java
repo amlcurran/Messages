@@ -16,22 +16,18 @@
 
 package com.amlcurran.messages.ui.image;
 
-import android.content.Context;
-import android.util.AttributeSet;
+import android.graphics.RectF;
 
-public class CircularImageView extends CutImageView {
-
-    public CircularImageView(Context context, AttributeSet attrs) {
-        super(context, attrs);
-    }
-
-    public CircularImageView(Context context, AttributeSet attrs, int defStyle) {
-        super(context, attrs, defStyle);
-    }
+public class CircleRectProvider implements RectProvider {
 
     @Override
-    public RectProvider getCircularRectProvider() {
-        return new CircleRectProvider();
+    public void setCircleRect(RectF circleRectF, int dimen, float borderWidth) {
+        int padding;
+        if (borderWidth > 0) {
+            padding = (int) (dimen / 16f);
+        } else {
+            padding = 0;
+        }
+        circleRectF.set(padding, padding, dimen - padding, dimen - padding);
     }
-
 }

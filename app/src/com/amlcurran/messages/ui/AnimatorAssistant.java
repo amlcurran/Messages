@@ -3,6 +3,7 @@ package com.amlcurran.messages.ui;
 import android.animation.Animator;
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
+import android.view.View;
 import android.view.animation.AccelerateDecelerateInterpolator;
 
 public class AnimatorAssistant {
@@ -44,7 +45,7 @@ public class AnimatorAssistant {
         fadeOutAnimator.start();
     }
 
-    private void fadeOut(final BlockProgressBar blockProgressBar, final MessageSentAnimationEvents animationEvents) {
+    private void fadeOut(final View blockProgressBar, final MessageSentAnimationEvents animationEvents) {
         fadeOutAnimator = ObjectAnimator.ofFloat(blockProgressBar, "alpha", 0f);
         fadeOutAnimator.addListener(new Animator.AnimatorListener() {
             @Override

@@ -37,6 +37,7 @@ public class CutImageView extends ImageView {
     private final float borderWidth;
     protected final boolean drawOutline;
     private final CookieCutter cookieCutter;
+    private final RectProvider rectProvider;
 
     public CutImageView(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
@@ -62,6 +63,7 @@ public class CutImageView extends ImageView {
         borderPaint.setShadowLayer(borderWidth, 0, 0, Color.GRAY);
 
         cookieCutter = new BitmapShaderCookieCutter(borderPaint, drawOutline);
+        rectProvider = getCircularRectProvider();
 
         getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
             @Override
@@ -76,12 +78,16 @@ public class CutImageView extends ImageView {
         //setImageBitmap(defaultImage);
     }
 
+    public RectProvider getCircularRectProvider() {
+        return new CutRectProvider(CUT_HEIGHT_OFFSET);
+    }
+
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
         int maxDimen = Math.max(getMeasuredHeight(), getMeasuredWidth());
         setMeasuredDimension(maxDimen, maxDimen);
-        setCircleRect(circleRectF, maxDimen);
+        rectProvider.setCircleRect(circleRectF, maxDimen, drawOutline ? borderWidth : 0);
         insetRect(borderRectF, circleRectF, -borderWidth / 2);
         cookieCutter.updateCircleRect(circleRectF);
         cookieCutter.updateBorderRect(borderRectF);
@@ -94,11 +100,6 @@ public class CutImageView extends ImageView {
             cookieCutter.updateImage(bm);
         }
         super.setImageBitmap(bm);
-    }
-
-    protected void setCircleRect(RectF circleRectF, int maxDimen) {
-        circleRectF.set(-2 * maxDimen, (float) (-CUT_HEIGHT_OFFSET * maxDimen),
-                maxDimen - borderWidth, (float) (1 + CUT_HEIGHT_OFFSET) * maxDimen);
     }
 
     private void insetRect(RectF dest, RectF src, float offset) {
