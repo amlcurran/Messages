@@ -49,6 +49,7 @@ public class ThreadActivity extends ActionBarActivity implements DependencyRepos
     private DraftRepository draftRepository;
     private MessagesLoader messagesLoader;
     private HoloActionBarController actionBarController;
+    private ActionBarHeaderCallback headerCreationCallback;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,24 +60,32 @@ public class ThreadActivity extends ActionBarActivity implements DependencyRepos
         preferencesStore = new SharedPreferenceStore(this);
         draftRepository = new PreferenceStoreDraftRepository(this);
 
-        ActionBarHeaderCallback headerCreationCallback = new ActionBarHeaderCallback(actionBarController);
+        headerCreationCallback = new ActionBarHeaderCallback(actionBarController);
         FragmentController fragmentController = new TwoPaneFullScreenFragmentViewController(this, this, headerCreationCallback);
         ActivityController activityController = new ActivityController(this, null);
         transitionManager = new TransitionManager(fragmentController, activityController, new LoggingStatReporter());
         externalEventManager = new ExternalEventManager(activityController, getContentResolver(), new LoggingStatReporter());
 
+        insertThreadFragment(getIntent());
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        insertThreadFragment(intent);
+    }
+
+    private void insertThreadFragment(Intent intent) {
         ThreadFragment fragment = ThreadFragment.create(
-                getIntent().getStringExtra(ThreadFragment.THREAD_ID),
-                getIntent().getBundleExtra(ThreadFragment.CONTACT),
-                getIntent().getStringExtra(ThreadFragment.COMPOSED_MESSAGE));
+                intent.getStringExtra(ThreadFragment.THREAD_ID),
+                intent.getBundleExtra(ThreadFragment.CONTACT),
+                intent.getStringExtra(ThreadFragment.COMPOSED_MESSAGE));
 
         getFragmentManager().beginTransaction()
-                .add(R.id.content, fragment)
+                .replace(R.id.content, fragment)
                 .commit();
 
         headerCreationCallback.addCustomHeader(fragment.getHeaderView(this));
         secondaryVisible();
-
     }
 
     public static Intent intent(Context context, String threadId, Bundle contactBundle, String writtenMessage) {

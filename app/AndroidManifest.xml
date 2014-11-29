@@ -93,7 +93,8 @@
 
         <activity android:name=".SecondaryActivity" />
 
-        <activity android:name=".threads.ThreadActivity" />
+        <activity android:name=".threads.ThreadActivity"
+                android:launchMode="singleTop" />
 
     </application>
 
