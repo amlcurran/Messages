@@ -37,7 +37,7 @@
         <item name="android:background">@null</item>
     </style>
 
-    <style name="ConversationText" parent="TextAppearance.AppCompat.Body1">
+    <style name="ConversationText" parent="Material.Body1">
         <item name="android:ellipsize">end</item>
         <item name="android:minLines">@integer/conversation_preview_lines</item>
     </style>
