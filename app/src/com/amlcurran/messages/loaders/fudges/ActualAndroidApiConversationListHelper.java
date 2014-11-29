@@ -43,4 +43,11 @@ class ActualAndroidApiConversationListHelper implements ConversationListHelper {
         return Telephony.Sms.BODY;
     }
 
+    @Override
+    public int getConversationCount(ContentResolver contentResolver, String threadId) {
+        Cursor query = contentResolver.query(Telephony.Sms.CONTENT_URI, null, getThreadIdCursorKey() + "=?",
+                new String[] { threadId }, null);
+        return query.getCount();
+    }
+
 }

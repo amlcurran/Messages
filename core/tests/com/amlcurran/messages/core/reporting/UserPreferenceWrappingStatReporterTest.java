@@ -119,6 +119,11 @@ public class UserPreferenceWrappingStatReporterTest {
         public Comparator<Conversation> getConversationSortComparator() {
             return null;
         }
+
+        @Override
+        public boolean showConversationCount() {
+            return false;
+        }
     }
 
     private class DontSendStatsPreferenceStore implements PreferenceStore {
@@ -166,6 +171,11 @@ public class UserPreferenceWrappingStatReporterTest {
         @Override
         public Comparator<Conversation> getConversationSortComparator() {
             return null;
+        }
+
+        @Override
+        public boolean showConversationCount() {
+            return false;
         }
     }
 

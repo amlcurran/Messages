@@ -69,6 +69,11 @@ public class SharedPreferenceStore implements PreferenceStore {
     }
 
     @Override
+    public boolean showConversationCount() {
+        return true;
+    }
+
+    @Override
     public URI getRingtoneUri() {
         String ringtone = preferences.getString(RINGTONE, null);
         return TextUtils.isEmpty(ringtone) ? null : URI.create(ringtone);

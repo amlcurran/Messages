@@ -67,10 +67,18 @@ public class ConversationsBinder extends SimpleBinder<Conversation> {
         adapterPhotoLoader.stopLoadingPhoto(viewHolder);
         adapterPhotoLoader.loadContactPhoto(viewHolder, item);
 
-        viewHolder.nameField.setText(item.getContact().getDisplayName());
+        viewHolder.nameField.setText(formatTopLine(item));
         viewHolder.snippetField.setText(getSummaryText(item));
 
         return convertView;
+    }
+
+    private CharSequence formatTopLine(Conversation item) {
+        StringBuilder builder = new StringBuilder(item.getContact().getDisplayName());
+        if (preferenceStore.showConversationCount()) {
+            builder.append(" " + item.getConversationCount());
+        }
+        return builder;
     }
 
     private CharSequence getSummaryText(Conversation item) {

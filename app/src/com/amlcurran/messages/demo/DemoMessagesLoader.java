@@ -56,7 +56,7 @@ public class DemoMessagesLoader implements MessagesLoader {
         for (int i = 0; i < numbers.length; i++) {
             PhoneNumber number = new ParcelablePhoneNumber(numbers[i]);
             Contact contact = new SavedContact(i, contactNames[i], number, i, String.valueOf(i), 0);
-            Conversation conversation = new Conversation(number, bodies[i], String.valueOf(i), i != 4, contact, i == 2, Time.fromMillis(0));
+            Conversation conversation = new Conversation(number, bodies[i], String.valueOf(i), i != 4, contact, i == 2, Time.fromMillis(0), (int) (Math.random() * 100));
             fakeConversations.add(conversation);
         }
         loadListener.onConversationListLoaded(fakeConversations);

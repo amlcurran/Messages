@@ -47,6 +47,8 @@ public interface PreferenceStore {
 
     Comparator<Conversation> getConversationSortComparator();
 
+    boolean showConversationCount();
+
     public interface PreferenceChangedListener {
         void preferenceChanged(String key);
     }

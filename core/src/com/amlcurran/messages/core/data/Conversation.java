@@ -25,8 +25,9 @@ public class Conversation {
     private final Contact contact;
     private final boolean lastFromMe;
     private final Time time;
+    private int conversationCount;
 
-    public Conversation(PhoneNumber address, String body, String threadId, boolean isRead, Contact contact, boolean lastFromMe, Time time) {
+    public Conversation(PhoneNumber address, String body, String threadId, boolean isRead, Contact contact, boolean lastFromMe, Time time, int conversationCount) {
         this.address = address;
         this.body = body;
         this.threadId = threadId;
@@ -34,6 +35,7 @@ public class Conversation {
         this.contact = contact;
         this.lastFromMe = lastFromMe;
         this.time = time;
+        this.conversationCount = conversationCount;
     }
 
     public boolean isLastFromMe() {
@@ -77,5 +79,9 @@ public class Conversation {
 
     public Time getTimeOfLastMessage() {
         return time;
+    }
+
+    public int getConversationCount() {
+        return conversationCount;
     }
 }

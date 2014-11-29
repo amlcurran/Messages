@@ -27,4 +27,6 @@ public interface ConversationListHelper {
     String getAddressFromRow(ContentResolver contentResolver, Cursor conversationsList);
 
     String getSnippetCursorKey();
+
+    int getConversationCount(ContentResolver contentResolver, String threadId);
 }

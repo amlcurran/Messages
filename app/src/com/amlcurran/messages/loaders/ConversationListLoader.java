@@ -62,7 +62,11 @@ public class ConversationListLoader {
             String threadId = CursorHelper.asString(conversationsList, helper.getThreadIdCursorKey());
             boolean lastFromMe = CursorHelper.asInt(conversationsList, Telephony.Sms.TYPE) != Telephony.Sms.MESSAGE_TYPE_INBOX;
             long lastMessageTime = CursorHelper.asLong(conversationsList, Telephony.Sms.DATE_SENT);
-            Conversation conversation = new Conversation(contact.getNumber(), body, threadId, isRead, contact, lastFromMe, Time.fromMillis(lastMessageTime));
+            int conversationCount = -1;
+            if (threadId != null) {
+                conversationCount = helper.getConversationCount(contentResolver, threadId);
+            }
+            Conversation conversation = new Conversation(contact.getNumber(), body, threadId, isRead, contact, lastFromMe, Time.fromMillis(lastMessageTime), conversationCount);
 
             if (conversation.getThreadId() != null) {
                 conversations.add(conversation);
