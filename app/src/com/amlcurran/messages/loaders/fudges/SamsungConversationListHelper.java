@@ -53,6 +53,8 @@ class SamsungConversationListHelper implements ConversationListHelper {
     public int getConversationCount(ContentResolver contentResolver, String threadId) {
         Cursor query = contentResolver.query(Telephony.Sms.CONTENT_URI, null, getThreadIdCursorKey() + "=?",
                 new String[] { threadId }, null);
-        return query.getCount();
+        int count = query.getCount();
+        query.close();
+        return count;
     }
 }
