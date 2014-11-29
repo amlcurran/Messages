@@ -18,10 +18,12 @@ package com.amlcurran.messages.conversationlist.adapter;
 
 import android.content.Context;
 import android.content.res.Resources;
+import android.text.style.TextAppearanceSpan;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.amlcurran.messages.R;
+import com.amlcurran.messages.bucket.Truss;
 import com.amlcurran.messages.core.data.Conversation;
 import com.amlcurran.messages.core.data.DraftRepository;
 import com.amlcurran.messages.core.preferences.PreferenceStore;
@@ -39,8 +41,10 @@ public class ConversationsBinder extends SimpleBinder<Conversation> {
     private final TextFormatter textFormatter;
     private final ConversationViewCreator viewCreator;
     private final AdapterPhotoLoader adapterPhotoLoader;
+    private final Context context;
 
-    public ConversationsBinder(TextFormatter textFormatter, Resources resources, MessagesLoader loader, DraftRepository draftRepository, PreferenceStore preferenceStore) {
+    public ConversationsBinder(Context context, TextFormatter textFormatter, Resources resources, MessagesLoader loader, DraftRepository draftRepository, PreferenceStore preferenceStore) {
+        this.context = context;
         this.draftRepository = draftRepository;
         this.preferenceStore = preferenceStore;
         this.draftPreamble = resources.getString(R.string.draft_preamble);
@@ -74,11 +78,15 @@ public class ConversationsBinder extends SimpleBinder<Conversation> {
     }
 
     private CharSequence formatTopLine(Conversation item) {
-        StringBuilder builder = new StringBuilder(item.getContact().getDisplayName());
+        Truss truss = new Truss();
+        truss.append(item.getContact().getDisplayName());
         if (preferenceStore.showConversationCount()) {
-            builder.append(" " + item.getConversationCount());
+            truss.append(" ")
+                    .pushSpan(new TextAppearanceSpan(context, R.style.ConversationCount))
+                    .append(item.getConversationCount())
+                    .popSpan();
         }
-        return builder;
+        return truss.build();
     }
 
     private CharSequence getSummaryText(Conversation item) {

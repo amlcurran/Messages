@@ -67,7 +67,7 @@ public class ConversationListFragment extends ListFragment implements Conversati
         conversationController = new ConversationListViewController(this, source, dependencyRepository, SingletonManager.getConversationList(getActivity()));
 
         TextFormatter textFormatter = new TextFormatter(getActivity());
-        ConversationsBinder binder = new ConversationsBinder(textFormatter, getResources(), messageLoader, dependencyRepository.getDraftRepository(), dependencyRepository.getPreferenceStore());
+        ConversationsBinder binder = new ConversationsBinder(getActivity(), textFormatter, getResources(), messageLoader, dependencyRepository.getDraftRepository(), dependencyRepository.getPreferenceStore());
         SourceBinderAdapter adapter = new SourceBinderAdapter<>(getActivity(), source, binder);
         setListAdapter(adapter);
         getListView().setChoiceMode(ListView.CHOICE_MODE_MULTIPLE_MODAL);

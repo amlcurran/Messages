@@ -67,6 +67,8 @@
     <string name="preference_large_unread_title">Expanded unread previews</string>
     <string name="preference_large_unread_summary">Display larger previews on unread conversations</string>
     <string name="no_messages">No messages.\nWhy not send one?</string>
+    <string name="preference_conversation_count_title">Show conversation count</string>
+    <string name="preference_conversation_count_summary">Display the number of texts in a conversation</string>
 
     <plurals name="minutesDifference">
         <item quantity="one">%1$s minute ago</item>
