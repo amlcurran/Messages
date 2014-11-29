@@ -28,9 +28,17 @@
         <item name="colorPrimary">@color/theme_colour</item>
         <item name="colorPrimaryDark">@color/theme_colour_dark</item>
         <item name="colorAccent">@color/theme_alt_color_2</item>
+        <item name="actionBarStyle">@style/ActionBar</item>
     </style>
 
-    <style name="ActionBarText" parent="@android:style/TextAppearance.Inverse">
+    <style name="ActionBar" parent="@style/Widget.AppCompat.Light.ActionBar.Solid">
+        <item name="colorPrimary">@color/theme_colour</item>
+        <item name="colorPrimaryDark">@color/theme_colour_dark</item>
+        <item name="titleTextAppearance">@style/ActionBarText</item>
+        <item name="titleTextStyle">@style/ActionBarText</item>
+    </style>
+
+    <style name="ActionBarText" parent="@android:style/TextAppearance">
         <item name="android:textSize">24sp</item>
         <item name="android:fontFamily">sans-serif-condensed</item>
     </style>
