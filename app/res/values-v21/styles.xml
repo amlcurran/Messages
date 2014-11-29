@@ -18,6 +18,8 @@
 <resources>
 
     <style name="FloatingActionButton">
+        <item name="android:layout_width">56dp</item>
+        <item name="android:layout_height">56dp</item>
         <item name="android:background">?android:attr/colorPrimary</item>
         <item name="android:layout_margin">16dp</item>
         <item name="android:scaleType">centerInside</item>

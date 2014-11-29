@@ -51,8 +51,6 @@
     </LinearLayout>
 
     <ImageButton
-            android:layout_width="56dp"
-            android:layout_height="56dp"
             android:id="@+id/button_new_message"
             android:contentDescription="@string/cd_new_message"
             android:layout_gravity="bottom|right"
