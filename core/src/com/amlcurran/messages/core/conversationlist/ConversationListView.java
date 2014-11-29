@@ -23,6 +23,10 @@ public interface ConversationListView {
 
     void setConversationSelectedListener(ConversationSelectedListener conversationSelectedListener);
 
+    void showEmptyUi();
+
+    void hideEmptyUi();
+
     interface ConversationSelectedListener {
         void selectedPosition(int position);
     }

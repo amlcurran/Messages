@@ -40,6 +40,7 @@ import com.github.amlcurran.sourcebinder.SourceBinderAdapter;
 
 public class ConversationListFragment extends ListFragment implements ConversationListView, Master {
 
+    private View loadingView;
     private View emptyView;
     private ConversationListViewController conversationController;
     private ConversationSelectedListener conversationSelectedListener;
@@ -50,6 +51,7 @@ public class ConversationListFragment extends ListFragment implements Conversati
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_messages, container, false);
+        loadingView = view.findViewById(R.id.loading);
         emptyView = view.findViewById(R.id.empty);
         return view;
     }
@@ -60,13 +62,13 @@ public class ConversationListFragment extends ListFragment implements Conversati
 
         ArrayListSource<Conversation> source = new ArrayListSource<Conversation>();
         ConversationModalMarshall.Callback modalCallback = (ConversationModalMarshall.Callback) getActivity();
-        MessagesLoader messageLoader = new ProviderHelper<MessagesLoader.Provider>(MessagesLoader.Provider.class).get(getActivity()).getMessagesLoader();
+        MessagesLoader messageLoader = new ProviderHelper<>(MessagesLoader.Provider.class).get(getActivity()).getMessagesLoader();
         DependencyRepository dependencyRepository = (DependencyRepository) getActivity();
         conversationController = new ConversationListViewController(this, source, dependencyRepository, SingletonManager.getConversationList(getActivity()));
 
         TextFormatter textFormatter = new TextFormatter(getActivity());
         ConversationsBinder binder = new ConversationsBinder(textFormatter, getResources(), messageLoader, dependencyRepository.getDraftRepository(), dependencyRepository.getPreferenceStore());
-        SourceBinderAdapter adapter = new SourceBinderAdapter<Conversation>(getActivity(), source, binder);
+        SourceBinderAdapter adapter = new SourceBinderAdapter<>(getActivity(), source, binder);
         setListAdapter(adapter);
         getListView().setChoiceMode(ListView.CHOICE_MODE_MULTIPLE_MODAL);
         getListView().setDivider(null);
@@ -89,7 +91,7 @@ public class ConversationListFragment extends ListFragment implements Conversati
     @Override
     public void showLoadingUi() {
         getListView().setVisibility(View.GONE);
-        emptyView.setVisibility(View.VISIBLE);
+        loadingView.setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -98,10 +100,20 @@ public class ConversationListFragment extends ListFragment implements Conversati
     }
 
     @Override
+    public void showEmptyUi() {
+        emptyView.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void hideEmptyUi() {
+        emptyView.setVisibility(View.GONE);
+    }
+
+    @Override
     public void hideLoadingUi() {
         if (getView() != null) {
             getListView().setVisibility(View.VISIBLE);
-            emptyView.setVisibility(View.GONE);
+            loadingView.setVisibility(View.GONE);
         }
     }
 
