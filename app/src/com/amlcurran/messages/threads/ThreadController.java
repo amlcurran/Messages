@@ -79,7 +79,9 @@ class ThreadController implements ThreadListener {
 
     void stop() {
         messageReceiver.stopListening();
-        draftRepository.storeDraft(contact.getNumber(), threadView.getComposedMessage());
+        if (TextUtils.isText(threadView.getComposedMessage())) {
+            draftRepository.storeDraft(contact.getNumber(), threadView.getComposedMessage());
+        }
     }
 
     @Override

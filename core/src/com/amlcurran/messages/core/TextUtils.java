@@ -24,4 +24,8 @@ public class TextUtils {
     public static boolean isNotEmpty(CharSequence charSequence) {
         return !isEmpty(charSequence);
     }
+
+    public static boolean isText(String string) {
+        return isNotEmpty(string) && string.trim().length() != 0;
+    }
 }

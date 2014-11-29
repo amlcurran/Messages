@@ -3,7 +3,6 @@ package com.amlcurran.messages.telephony;
 import android.content.Context;
 
 import com.amlcurran.messages.core.data.PhoneNumber;
-import com.amlcurran.messages.data.InFlightSmsMessage;
 import com.amlcurran.messages.preferences.PreferenceStoreDraftRepository;
 
 public class SynchronousDatabaseWriter {
@@ -12,10 +11,6 @@ public class SynchronousDatabaseWriter {
 
     public SynchronousDatabaseWriter(Context context) {
         this.context = context.getApplicationContext();
-    }
-
-    public void storeDraft(InFlightSmsMessage message) {
-        new PreferenceStoreDraftRepository(context).storeDraft(message.getPhoneNumber(), message.getBody());
     }
 
     public void clearDraft(PhoneNumber phoneNumber) {
