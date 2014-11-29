@@ -16,6 +16,7 @@
         <item name="android:lineSpacingMultiplier">1.1</item>
         <item name="android:textColor">@color/material_text_standard_dark</item>
         <item name="android:textIsSelectable">true</item>
+        <item name="android:textColorLink">@color/theme_alt_color_2</item>
     </style>
 
     <style name="ThreadMessage.Received">
@@ -36,7 +37,7 @@
         <item name="android:background">@null</item>
     </style>
 
-    <style name="ConversationText" parent="Material.Body1">
+    <style name="ConversationText" parent="TextAppearance.AppCompat.Body1">
         <item name="android:ellipsize">end</item>
         <item name="android:minLines">@integer/conversation_preview_lines</item>
     </style>
