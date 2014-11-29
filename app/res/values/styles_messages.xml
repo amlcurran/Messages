@@ -32,9 +32,6 @@
     </style>
 
     <style name="ActionBar" parent="@style/Widget.AppCompat.Light.ActionBar.Solid">
-        <item name="colorPrimary">@color/theme_colour</item>
-        <item name="colorPrimaryDark">@color/theme_colour_dark</item>
-        <item name="titleTextAppearance">@style/ActionBarText</item>
         <item name="titleTextStyle">@style/ActionBarText</item>
     </style>
 
