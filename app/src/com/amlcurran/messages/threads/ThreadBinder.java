@@ -18,6 +18,7 @@ package com.amlcurran.messages.threads;
 
 import android.content.Context;
 import android.content.res.Resources;
+import android.support.v7.widget.RecyclerView;
 import android.text.util.Linkify;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -47,50 +48,38 @@ class ThreadBinder extends SimpleBinder<SmsMessage> {
 
     @Override
     public View bindView(View convertView, SmsMessage item, int position) {
+        ViewHolder holder = (ViewHolder) convertView.getTag();
+        holder.bodyText.setText(item.getBody());
+        Linkify.addLinks(holder.bodyText, Linkify.ALL);
 
-        TextView bodyText = getTextView(convertView, android.R.id.text1);
-        bodyText.setText(item.getBody());
-
-        manipulateView(convertView, item);
-
-        Linkify.addLinks(bodyText, Linkify.ALL);
+        if (item.getType() == SmsMessage.Type.FAILED) {
+            showFailedIcon(holder, item);
+        } else if (item.getType() == SmsMessage.Type.INBOX || item.getType() == SmsMessage.Type.SENT) {
+            addTimestampView(holder, item);
+        }
 
         return convertView;
     }
 
-    private boolean isFailed(SmsMessage item) {
-        return (item.getType() == SmsMessage.Type.DRAFT);
+    private void addTimestampView(ViewHolder viewHolder, SmsMessage smsMessage) {
+        viewHolder.secondaryText.setText(smsMessageAnalyser.getDifferenceToNow(smsMessage.getTimestamp()));
     }
 
-    private void manipulateView(View view, final SmsMessage smsMessage) {
-        switch (smsMessage.getType()) {
-
-            case FAILED:
-                manipulateFailedView(view, smsMessage);
-                break;
-
-            case INBOX:
-            case SENT:
-                addTimestampView(view, smsMessage);
-
-        }
-    }
-
-    private void addTimestampView(View view, SmsMessage smsMessage) {
-        getTextView(view, android.R.id.text2).setText(smsMessageAnalyser.getDifferenceToNow(smsMessage.getTimestamp()));
-    }
-
-    private void manipulateFailedView(View view, SmsMessage smsMessage) {
-        ImageView imageView = (ImageView) view.findViewById(R.id.failed_to_send_image);
-        imageView.setColorFilter(resources.getColor(R.color.theme_alt_color_2));
-        imageView.setOnClickListener(new ResendClickListener(smsMessage));
+    private void showFailedIcon(ViewHolder viewHolder, SmsMessage smsMessage) {
+        viewHolder.icon.setColorFilter(resources.getColor(R.color.theme_alt_color_2));
+        viewHolder.icon.setOnClickListener(new ResendClickListener(smsMessage));
     }
 
     @Override
     public View createView(Context context, int itemViewType, ViewGroup parent) {
-        // This is icky
         SmsMessage.Type type = SmsMessage.Type.values()[itemViewType];
+        View view = LayoutInflater.from(context).inflate(getResourceForMessageType(type), listView, false);
+        ViewHolder viewHolder = new ViewHolder(view);
+        view.setTag(viewHolder);
+        return view;
+    }
 
+    private int getResourceForMessageType(SmsMessage.Type type) {
         int layoutId = R.layout.item_thread_item_them;
         switch (type) {
 
@@ -110,8 +99,7 @@ class ThreadBinder extends SimpleBinder<SmsMessage> {
                 layoutId = R.layout.item_thread_item_me_failed;
                 break;
         }
-
-        return LayoutInflater.from(context).inflate(layoutId, listView, false);
+        return layoutId;
     }
 
     @Override
@@ -122,10 +110,6 @@ class ThreadBinder extends SimpleBinder<SmsMessage> {
     @Override
     public int getItemViewType(int position, SmsMessage item) {
         return item.getType().ordinal();
-    }
-
-    private TextView getTextView(View convertView, int text1) {
-        return (TextView) convertView.findViewById(text1);
     }
 
     public interface ResendCallback {
@@ -142,6 +126,20 @@ class ThreadBinder extends SimpleBinder<SmsMessage> {
         @Override
         public void onClick(View v) {
             resendCallback.resend(smsMessage);
+        }
+    }
+
+    private class ViewHolder extends RecyclerView.ViewHolder {
+
+        private final TextView bodyText;
+        private final ImageView icon;
+        private final TextView secondaryText;
+
+        public ViewHolder(View view) {
+            super(view);
+            bodyText = ((TextView) view.findViewById(android.R.id.text1));
+            icon = ((ImageView) view.findViewById(R.id.failed_to_send_image));
+            secondaryText = ((TextView) view.findViewById(android.R.id.text2));
         }
     }
 }
