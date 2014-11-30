@@ -17,21 +17,27 @@
   -->
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent">
+
+    <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1">
+
+        <view
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                class="android.support.v7.widget.RecyclerView"
+                android:id="@+id/thread_recycler" />
+
+    </FrameLayout>
 
     <view
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            class="android.support.v7.widget.RecyclerView"
-            android:id="@+id/thread_recycler"
-            android:layout_weight="1"/>
-
-    <view
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        class="com.amlcurran.messages.ui.ComposeMessageView"
-        android:id="@+id/thread_compose_view" />
+            android:layout_height="wrap_content"
+            class="com.amlcurran.messages.ui.ComposeMessageView"
+            android:id="@+id/thread_compose_view"/>
 
 </LinearLayout>

@@ -94,6 +94,7 @@
         <activity android:name=".SecondaryActivity" />
 
         <activity android:name=".threads.ThreadActivity"
+                  android:windowSoftInputMode="adjustResize"
                 android:launchMode="singleTop" />
 
     </application>
