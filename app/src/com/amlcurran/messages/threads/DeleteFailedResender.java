@@ -23,7 +23,7 @@ import com.amlcurran.messages.core.data.SmsMessage;
 import com.amlcurran.messages.telephony.SmsAsyncService;
 import com.amlcurran.messages.ui.ComposeMessageView;
 
-class DeleteFailedResender implements ThreadBinder.ResendCallback {
+class DeleteFailedResender implements ResendCallback {
     private Activity activity;
     private ComposeMessageView.ComposureCallbacks composureCallbacks;
 

@@ -16,17 +16,18 @@
 
 package com.amlcurran.messages.threads;
 
-import android.app.ListFragment;
+import android.app.Fragment;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ListView;
 
 import com.amlcurran.messages.DependencyRepository;
 import com.amlcurran.messages.R;
@@ -43,9 +44,9 @@ import com.amlcurran.messages.ui.ComposeMessageView;
 import com.amlcurran.messages.ui.CustomHeaderFragment;
 import com.amlcurran.messages.ui.contact.DefaultRoundContactView;
 import com.espian.utils.ProviderHelper;
-import com.github.amlcurran.sourcebinder.SourceBinderAdapter;
+import com.github.amlcurran.sourcebinder.recyclerview.RecyclerSourceBinderAdapter;
 
-public class ThreadFragment extends ListFragment implements
+public class ThreadFragment extends Fragment implements
         CustomHeaderFragment<DefaultRoundContactView>, ThreadController.ThreadView, ThreadView {
 
     static final String THREAD_ID = "threadId";
@@ -55,7 +56,7 @@ public class ThreadFragment extends ListFragment implements
     private ComposeMessageView composeView;
     private DefaultRoundContactView contactView;
     private ThreadController threadController;
-    private ListView listView;
+    private RecyclerView recyclerView;
 
     public static ThreadFragment create(String threadId, @NonNull Bundle contactBundle, String composedMessage) {
         Bundle bundle = new BundleBuilder()
@@ -72,13 +73,11 @@ public class ThreadFragment extends ListFragment implements
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_thread, container, false);
-        listView = (ListView) view.findViewById(android.R.id.list);
-        listView.setOnScrollListener(new LegacyShadowingScrollListener());
-        listView.setTranscriptMode(ListView.TRANSCRIPT_MODE_NORMAL);
-        listView.setStackFromBottom(true);
-        listView.setDivider(null);
-        listView.setAlpha(0);
+        View view = inflater.inflate(R.layout.fragment_thread_recycler, container, false);
+        recyclerView = ((RecyclerView) view.findViewById(R.id.thread_recycler));
+        LinearLayoutManager layoutManager = new LinearLayoutManager(recyclerView.getContext());
+        layoutManager.setStackFromEnd(true);
+        recyclerView.setLayoutManager(layoutManager);
         composeView = ((ComposeMessageView) view.findViewById(R.id.thread_compose_view));
         return view;
     }
@@ -95,16 +94,17 @@ public class ThreadFragment extends ListFragment implements
 
         threadController = new ThreadController(threadId, contact, getArguments().getString(COMPOSED_MESSAGE), this, messageReceiver, defaultChecker, dependencyRepository);
 
-        SmsComposeListener listener = new ProviderHelper<SmsComposeListener>(SmsComposeListener.class).get(getActivity());
+        SmsComposeListener listener = new ProviderHelper<>(SmsComposeListener.class).get(getActivity());
         StandardComposeCallbacks composeCallbacks = new StandardComposeCallbacks(getActivity(), contact.getNumber(), listener);
         composeView.setComposeListener(composeCallbacks);
 
         setHasOptionsMenu(true);
 
-        ThreadBinder.ResendCallback resendCallback = new DeleteFailedResender(getActivity(), composeCallbacks);
-        ThreadBinder threadBinder = new ThreadBinder(getListView(), getResources(), resendCallback);
-        SourceBinderAdapter<SmsMessage> adapter = new SourceBinderAdapter<SmsMessage>(getActivity(), threadController.getSource(), threadBinder);
-        setListAdapter(adapter);
+        ResendCallback resendCallback = new DeleteFailedResender(getActivity(), composeCallbacks);
+        ThreadRecyclerBinder binder = new ThreadRecyclerBinder(getResources(), resendCallback);
+        RecyclerSourceBinderAdapter<SmsMessage, ThreadRecyclerBinder.ViewHolder> binderAdapter =
+                new RecyclerSourceBinderAdapter<>(threadController.getSource(), binder);
+        recyclerView.setAdapter(binderAdapter);
     }
 
     @Override
@@ -129,15 +129,6 @@ public class ThreadFragment extends ListFragment implements
         return threadController.menuItemClicked(item) || super.onOptionsItemSelected(item);
     }
 
-    private void scrollTo(final int position) {
-        getListView().post(new Runnable() {
-            @Override
-            public void run() {
-                getListView().smoothScrollToPosition(position);
-            }
-        });
-    }
-
     @Override
     public DefaultRoundContactView getHeaderView(Context context) {
         if (contactView == null) {
@@ -148,13 +139,6 @@ public class ThreadFragment extends ListFragment implements
 
     @Override
     public void showThreadList(int count) {
-        if (isAdded()) {
-            listView.animate()
-                    .alpha(1)
-                    .setDuration(getResources().getInteger(android.R.integer.config_shortAnimTime))
-                    .start();
-            scrollTo(count - 1);
-        }
     }
 
     @Override

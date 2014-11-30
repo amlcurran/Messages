@@ -16,7 +16,6 @@
 
 package com.amlcurran.messages.threads;
 
-import android.content.Context;
 import android.content.res.Resources;
 import android.support.v7.widget.RecyclerView;
 import android.text.util.Linkify;
@@ -24,41 +23,23 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.ListView;
 import android.widget.TextView;
 
 import com.amlcurran.messages.R;
 import com.amlcurran.messages.core.analysis.SmsMessageAnalyser;
 import com.amlcurran.messages.core.data.SmsMessage;
-import com.github.amlcurran.sourcebinder.SimpleBinder;
+import com.github.amlcurran.sourcebinder.recyclerview.ViewHolderBinder;
 
-class ThreadBinder extends SimpleBinder<SmsMessage> {
+class ThreadRecyclerBinder implements ViewHolderBinder<SmsMessage, ThreadRecyclerBinder.ViewHolder> {
 
-    private final ListView listView;
     private final SmsMessageAnalyser smsMessageAnalyser;
     private Resources resources;
     private ResendCallback resendCallback;
 
-    public ThreadBinder(ListView listView, Resources resources, ResendCallback resendCallback) {
-        this.listView = listView;
+    public ThreadRecyclerBinder(Resources resources, ResendCallback resendCallback) {
         this.resources = resources;
         this.resendCallback = resendCallback;
         this.smsMessageAnalyser = new SmsMessageAnalyser(new ResourcesDifferencesStringProvider(resources));
-    }
-
-    @Override
-    public View bindView(View convertView, SmsMessage item, int position) {
-        ViewHolder holder = (ViewHolder) convertView.getTag();
-        holder.bodyText.setText(item.getBody());
-        Linkify.addLinks(holder.bodyText, Linkify.ALL);
-
-        if (item.getType() == SmsMessage.Type.FAILED) {
-            showFailedIcon(holder, item);
-        } else if (item.getType() == SmsMessage.Type.INBOX || item.getType() == SmsMessage.Type.SENT) {
-            addTimestampView(holder, item);
-        }
-
-        return convertView;
     }
 
     private void addTimestampView(ViewHolder viewHolder, SmsMessage smsMessage) {
@@ -68,15 +49,6 @@ class ThreadBinder extends SimpleBinder<SmsMessage> {
     private void showFailedIcon(ViewHolder viewHolder, SmsMessage smsMessage) {
         viewHolder.icon.setColorFilter(resources.getColor(R.color.theme_alt_color_2));
         viewHolder.icon.setOnClickListener(new ResendClickListener(smsMessage));
-    }
-
-    @Override
-    public View createView(Context context, int itemViewType, ViewGroup parent) {
-        SmsMessage.Type type = SmsMessage.Type.values()[itemViewType];
-        View view = LayoutInflater.from(context).inflate(getResourceForMessageType(type), listView, false);
-        ViewHolder viewHolder = new ViewHolder(view);
-        view.setTag(viewHolder);
-        return view;
     }
 
     private int getResourceForMessageType(SmsMessage.Type type) {
@@ -103,13 +75,27 @@ class ThreadBinder extends SimpleBinder<SmsMessage> {
     }
 
     @Override
-    public int getViewTypeCount() {
-        return SmsMessage.Type.values().length;
+    public ViewHolder createViewHolder(ViewGroup viewGroup, int i) {
+        SmsMessage.Type type = SmsMessage.Type.values()[i];
+        View view = LayoutInflater.from(viewGroup.getContext()).inflate(getResourceForMessageType(type), viewGroup, false);
+        return new ViewHolder(view);
     }
 
     @Override
-    public int getItemViewType(int position, SmsMessage item) {
-        return item.getType().ordinal();
+    public void bindViewHolder(ViewHolder viewHolder, SmsMessage smsMessage) {
+        viewHolder.bodyText.setText(smsMessage.getBody());
+        Linkify.addLinks(viewHolder.bodyText, Linkify.ALL);
+
+        if (smsMessage.getType() == SmsMessage.Type.FAILED) {
+            showFailedIcon(viewHolder, smsMessage);
+        } else if (smsMessage.getType() == SmsMessage.Type.INBOX || smsMessage.getType() == SmsMessage.Type.SENT) {
+            addTimestampView(viewHolder, smsMessage);
+        }
+    }
+
+    @Override
+    public int getItemViewHolderType(int i, SmsMessage smsMessage) {
+        return smsMessage.getType().ordinal();
     }
 
     private class ResendClickListener implements View.OnClickListener {
@@ -125,7 +111,7 @@ class ThreadBinder extends SimpleBinder<SmsMessage> {
         }
     }
 
-    private class ViewHolder extends RecyclerView.ViewHolder {
+    class ViewHolder extends RecyclerView.ViewHolder {
 
         private final TextView bodyText;
         private final ImageView icon;
