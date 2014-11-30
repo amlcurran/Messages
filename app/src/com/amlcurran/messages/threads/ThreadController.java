@@ -35,6 +35,7 @@ import com.amlcurran.messages.loaders.MessagesLoader;
 import com.amlcurran.messages.telephony.DefaultAppChecker;
 import com.github.amlcurran.sourcebinder.ArrayListSource;
 
+import java.util.Collections;
 import java.util.List;
 
 class ThreadController implements ThreadListener {
@@ -86,6 +87,7 @@ class ThreadController implements ThreadListener {
 
     @Override
     public void onThreadLoaded(List<SmsMessage> messageList) {
+        Collections.reverse(messageList);
         source.replace(messageList);
         threadView.showThreadList(source.getCount());
         messageLoader.markThreadAsRead(threadId, null);

@@ -76,7 +76,7 @@ public class ThreadFragment extends Fragment implements
         View view = inflater.inflate(R.layout.fragment_thread_recycler, container, false);
         recyclerView = ((RecyclerView) view.findViewById(R.id.thread_recycler));
         LinearLayoutManager layoutManager = new LinearLayoutManager(recyclerView.getContext());
-        layoutManager.setStackFromEnd(true);
+        layoutManager.setReverseLayout(true);
         recyclerView.setLayoutManager(layoutManager);
         composeView = ((ComposeMessageView) view.findViewById(R.id.thread_compose_view));
         return view;
