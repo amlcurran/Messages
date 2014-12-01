@@ -91,7 +91,7 @@ public class ConversationsBinder extends SimpleBinder<Conversation> {
 
     private CharSequence getSummaryText(Conversation item) {
         if (showDraftAsSummary(item)) {
-            return textFormatter.constructSummary(draftPreamble, draftRepository.getDraft(item.getAddress()));
+            return textFormatter.constructColouredSummary(draftPreamble, draftRepository.getDraft(item.getAddress()));
         } else if (showAsFromMe(item)) {
             return textFormatter.constructSummary(fromMePreamble, item.getSummaryText());
         }

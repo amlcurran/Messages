@@ -38,4 +38,13 @@ public class TextFormatter {
                 .append(text)
                 .build();
     }
+
+    public CharSequence constructColouredSummary(String preamble, String text) {
+        return new Truss().pushSpan(new TextAppearanceSpan(activity, R.style.Material_Body2_Coloured))
+                .append(preamble)
+                .popSpan()
+                .append(" — ")
+                .append(text)
+                .build();
+    }
 }

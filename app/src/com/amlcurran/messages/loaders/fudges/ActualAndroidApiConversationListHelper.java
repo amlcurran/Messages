@@ -23,9 +23,21 @@ import android.provider.Telephony;
 import com.github.amlcurran.sourcebinder.CursorHelper;
 
 class ActualAndroidApiConversationListHelper implements ConversationListHelper {
+
+    private final String[] PROJECTION;
+
+    public ActualAndroidApiConversationListHelper() {
+        PROJECTION = new String[] {
+                getThreadIdCursorKey(), getSnippetCursorKey(),
+                Telephony.Sms.Inbox.READ, Telephony.Sms.Inbox.ADDRESS,
+                Telephony.Sms.TYPE, Telephony.Sms.DATE_SENT
+        };
+    }
+
+
     @Override
     public Cursor queryConversationList(ContentResolver contentResolver, String query, String[] args, String sortString) {
-        return contentResolver.query(Telephony.Threads.CONTENT_URI, null, query, args, sortString);
+        return contentResolver.query(Telephony.Threads.CONTENT_URI, PROJECTION, query, args, sortString);
     }
 
     @Override
@@ -45,7 +57,7 @@ class ActualAndroidApiConversationListHelper implements ConversationListHelper {
 
     @Override
     public int getConversationCount(ContentResolver contentResolver, String threadId) {
-        Cursor query = contentResolver.query(Telephony.Sms.CONTENT_URI, null, getThreadIdCursorKey() + "=?",
+        Cursor query = contentResolver.query(Telephony.Sms.CONTENT_URI, new String[] { getThreadIdCursorKey() }, getThreadIdCursorKey() + "=?",
                 new String[] { threadId }, null);
         int count = query.getCount();
         query.close();

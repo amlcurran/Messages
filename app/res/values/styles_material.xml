@@ -28,6 +28,10 @@
         <item name="android:textColor">@color/material_text_standard_dark</item>
     </style>
 
+    <style name="Material.Body2.Coloured">
+        <item name="android:textColor">@color/theme_colour</item>
+    </style>
+
     <style name="Material.Body1.Light">
         <item name="android:textColor">@color/material_text_low_light</item>
     </style>
