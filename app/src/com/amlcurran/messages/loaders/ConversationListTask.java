@@ -18,6 +18,7 @@ package com.amlcurran.messages.loaders;
 
 import android.content.ContentResolver;
 
+import com.amlcurran.messages.MessagesLog;
 import com.amlcurran.messages.core.conversationlist.ConversationListListener;
 import com.amlcurran.messages.core.data.Conversation;
 import com.amlcurran.messages.core.data.Sort;
@@ -48,9 +49,11 @@ class ConversationListTask implements Callable<Object> {
 
     @Override
     public Object call() throws Exception {
+        long startTime = System.currentTimeMillis();
         List<Conversation> conversations = conversationListLoader.loadList(query, args);
         cache.storeConversationList(conversations);
         loadListener.onConversationListLoaded(conversations);
+        MessagesLog.d(this, String.format("Millis taken: %d", System.currentTimeMillis() - startTime));
         return null;
     }
 
