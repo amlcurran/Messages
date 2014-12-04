@@ -55,6 +55,7 @@ import com.amlcurran.messages.ui.control.FragmentController;
 import com.amlcurran.messages.ui.control.TwoPaneFullScreenFragmentViewController;
 import com.google.analytics.tracking.android.EasyTracker;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class MessagesActivity extends ActionBarActivity implements
@@ -242,9 +243,14 @@ public class MessagesActivity extends ActionBarActivity implements
     }
 
     @Override
-    public void markAsUnread(List<Conversation> threadId) {
+    public void markAsUnread(List<Conversation> conversationList) {
         statReporter.sendUiEvent("mark_thread_unread");
-        messagesLoader.markThreadAsUnread(threadId, this);
+        List<String> threadIds = new ArrayList<>();
+        for (int i = 0; i < conversationList.size(); i++) {
+            Conversation conversation = conversationList.get(i);
+            threadIds.add(conversation.getThreadId());
+        }
+        messagesLoader.markThreadAsUnread(threadIds, this);
     }
 
     @Override

@@ -134,8 +134,8 @@ public class ExecutorMessagesLoader implements MessagesLoader {
     }
 
     @Override
-    public void markThreadAsUnread(List<Conversation> conversations, ConversationListChangeListener changeListener) {
-        submit(new MarkUnreadTask(getResolver(), conversations, changeListener, uiHandler));
+    public void markThreadAsUnread(List<String> threadIds, ConversationListChangeListener changeListener) {
+        submit(new MarkUnreadTask(getResolver(), threadIds, changeListener, uiHandler));
     }
 
     @Override

@@ -47,7 +47,7 @@ public interface MessagesLoader {
 
     void deleteThreads(List<Conversation> conversation, OnThreadDeleteListener threadDeleteListener);
 
-    void markThreadAsUnread(List<Conversation> threadId, ConversationListChangeListener changeListener);
+    void markThreadAsUnread(List<String> threadIds, ConversationListChangeListener changeListener);
 
     void loadContacts(ContactListListener contactListListener);
 

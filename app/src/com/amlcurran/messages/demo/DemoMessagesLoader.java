@@ -101,7 +101,7 @@ public class DemoMessagesLoader implements MessagesLoader {
     }
 
     @Override
-    public void markThreadAsUnread(List<Conversation> threadId, ConversationListChangeListener changeListener) {
+    public void markThreadAsUnread(List<String> threadId, ConversationListChangeListener changeListener) {
 
     }
 
