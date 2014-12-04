@@ -28,20 +28,21 @@ import com.espian.utils.ui.MenuFinder;
 import com.github.amlcurran.sourcebinder.Source;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class ConversationModalMarshall implements AbsListView.MultiChoiceModeListener {
 
     private final Source<Conversation> conversationSource;
     private final ContactClickListener contactClickListener;
-    private final Callback callback;
     private final ArrayList<Conversation> selectedConversations;
+    private final MarkAsUnreadViewCallback markAsUnreadViewCallback;
+    private final DeleteThreadViewCallback deleteThreadsViewCallback;
 
-    public ConversationModalMarshall(Source<Conversation> conversationSource, Callback callback, ContactClickListener contactClickListener) {
+    public ConversationModalMarshall(Source<Conversation> conversationSource, ContactClickListener contactClickListener, MarkAsUnreadViewCallback unreadViewCallback, DeleteThreadViewCallback deleteThreadViewCallback) {
         this.conversationSource = conversationSource;
         this.contactClickListener = contactClickListener;
+        this.markAsUnreadViewCallback = unreadViewCallback;
+        this.deleteThreadsViewCallback = deleteThreadViewCallback;
         this.selectedConversations = new ArrayList<Conversation>();
-        this.callback = callback;
     }
 
     @Override
@@ -75,12 +76,12 @@ public class ConversationModalMarshall implements AbsListView.MultiChoiceModeLis
                 return true;
 
             case R.id.modal_delete_thread:
-                callback.deleteThreads(copyConversations());
+                deleteThreadsViewCallback.deleteThreads(copyConversations());
                 mode.finish();
                 return true;
 
             case R.id.modal_mark_unread:
-                callback.markAsUnread(copyConversations());
+                markAsUnreadViewCallback.markAsUnread(copyConversations());
                 mode.finish();
                 return true;
 
@@ -111,14 +112,6 @@ public class ConversationModalMarshall implements AbsListView.MultiChoiceModeLis
             selectedConversations.remove(checkedConversation);
         }
         mode.invalidate();
-    }
-
-    public interface Callback {
-
-        void deleteThreads(List<Conversation> conversation);
-
-        void markAsUnread(List<Conversation> threadId);
-
     }
 
 }

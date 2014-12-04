@@ -61,7 +61,8 @@ public class ConversationListFragment extends ListFragment implements Conversati
         super.onActivityCreated(savedInstanceState);
 
         ArrayListSource<Conversation> source = new ArrayListSource<Conversation>();
-        ConversationModalMarshall.Callback modalCallback = (ConversationModalMarshall.Callback) getActivity();
+        MarkAsUnreadViewCallback unreadViewCallback = (MarkAsUnreadViewCallback) getActivity();
+        DeleteThreadViewCallback deleteThreadsViewCallback = (DeleteThreadViewCallback) getActivity();
         MessagesLoader messageLoader = new ProviderHelper<>(MessagesLoader.Provider.class).get(getActivity()).getMessagesLoader();
         DependencyRepository dependencyRepository = (DependencyRepository) getActivity();
         conversationController = new ConversationListViewController(this, source, dependencyRepository, SingletonManager.getConversationList(getActivity()));
@@ -73,7 +74,7 @@ public class ConversationListFragment extends ListFragment implements Conversati
         getListView().setChoiceMode(ListView.CHOICE_MODE_MULTIPLE_MODAL);
         getListView().setDivider(null);
         getListView().setOnItemClickListener(new NotifyControllerClickListener());
-        getListView().setMultiChoiceModeListener(new ConversationModalMarshall(source, modalCallback, new DefaultContactClickListener(dependencyRepository)));
+        getListView().setMultiChoiceModeListener(new ConversationModalMarshall(source, new DefaultContactClickListener(dependencyRepository), unreadViewCallback, deleteThreadsViewCallback));
     }
 
     @Override

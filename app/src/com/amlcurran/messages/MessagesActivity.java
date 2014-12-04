@@ -22,7 +22,8 @@ import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import com.amlcurran.messages.conversationlist.ConversationModalMarshall;
+import com.amlcurran.messages.conversationlist.DeleteThreadViewCallback;
+import com.amlcurran.messages.conversationlist.MarkAsUnreadViewCallback;
 import com.amlcurran.messages.core.data.Conversation;
 import com.amlcurran.messages.core.data.DraftRepository;
 import com.amlcurran.messages.core.events.EventBus;
@@ -59,9 +60,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MessagesActivity extends ActionBarActivity implements
-        SmsComposeListener, ConversationModalMarshall.Callback,
+        SmsComposeListener,
         OnThreadDeleteListener, ConversationListChangeListener, FragmentController.FragmentCallback,
-        TransitionManager.Provider, DependencyRepository {
+        TransitionManager.Provider, DependencyRepository, DeleteThreadViewCallback, MarkAsUnreadViewCallback {
 
     private InUiNotifier toastInUiNotifier;
     private StatReporter statReporter;
