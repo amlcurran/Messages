@@ -78,7 +78,7 @@ public class MessagesApp extends Application implements BroadcastEventSubscriber
 
         updateNotificationListener = new UpdateNotificationListener(notifier);
 
-        conversationList = new ConversationList(loader, new SharedPreferenceStore(this));
+        conversationList = new ConversationList(loader, new SharedPreferenceStore(this), uiHandler);
         conversationList.addCallbacks(updateNotificationListener);
 
         primeZygote(executor);

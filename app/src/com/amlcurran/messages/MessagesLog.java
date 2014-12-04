@@ -12,6 +12,10 @@ public class MessagesLog {
         }
     }
 
+    public static void d(Object object, String message, Object... objects) {
+        d(object, String.format(message, objects));
+    }
+
     public static void w(Object object, String message) {
         Log.w(object.getClass().getSimpleName(), message);
     }

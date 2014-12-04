@@ -32,27 +32,25 @@ class ConversationListTask implements Callable<Object> {
     private final String query;
     private final String[] args;
     private final ConversationListListener loadListener;
-    private final MessagesCache cache;
     private final ConversationListLoader conversationListLoader;
 
-    ConversationListTask(ContentResolver contentResolver, String query, String[] args, ConversationListListener loadListener, Sort sort, MessagesCache cache) {
+    ConversationListTask(ContentResolver contentResolver, String query, String[] args, ConversationListListener loadListener, Sort sort) {
         this.query = query;
         this.args = args;
         this.loadListener = loadListener;
-        this.cache = cache;
         conversationListLoader = new ConversationListLoader(contentResolver, sort, ConversationListHelperFactory.get());
     }
 
     public ConversationListTask(ContentResolver contentResolver, ConversationListListener loadListener, Sort sort, MessagesCache cache) {
-        this(contentResolver, null, null, loadListener, sort, cache);
+        this(contentResolver, null, null, loadListener, sort);
     }
 
     @Override
     public Object call() throws Exception {
         long startTime = System.currentTimeMillis();
         List<Conversation> conversations = conversationListLoader.loadList(query, args);
-        cache.storeConversationList(conversations);
         loadListener.onConversationListLoaded(conversations);
+        MessagesLog.d(this, "Load listener of type" + loadListener.getClass().getSimpleName());
         MessagesLog.d(this, String.format("Millis taken: %d", System.currentTimeMillis() - startTime));
         return null;
     }

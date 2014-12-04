@@ -19,29 +19,14 @@ package com.amlcurran.messages.loaders;
 import android.graphics.Bitmap;
 
 import com.amlcurran.messages.core.data.Contact;
-import com.amlcurran.messages.core.data.Conversation;
-
-import java.util.List;
 
 public interface MessagesCache {
-    List<Conversation> getConversationList();
-
-    void storeConversationList(List<Conversation> conversations);
 
     Bitmap getContactPhoto(Contact contact);
 
     void storeContactPhoto(Contact contact, Bitmap bitmap);
 
     public static final MessagesCache NO_CACHE = new MessagesCache() {
-        @Override
-        public List<Conversation> getConversationList() {
-            return null;
-        }
-
-        @Override
-        public void storeConversationList(List<Conversation> conversations) {
-
-        }
 
         @Override
         public Bitmap getContactPhoto(Contact contact) {

@@ -46,7 +46,6 @@ class UnreadConversationListTask implements Callable<Object> {
     @Override
     public Object call() throws Exception {
         List<Conversation> conversations = conversationListLoader.loadList(query, args);
-        cache.storeConversationList(conversations);
         loadListener.onConversationListLoaded(conversations);
         return null;
     }

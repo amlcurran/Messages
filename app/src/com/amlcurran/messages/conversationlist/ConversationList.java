@@ -16,6 +16,8 @@
 
 package com.amlcurran.messages.conversationlist;
 
+import android.os.Handler;
+
 import com.amlcurran.messages.core.conversationlist.ConversationListListener;
 import com.amlcurran.messages.core.data.Conversation;
 import com.amlcurran.messages.core.preferences.PreferenceStore;
@@ -28,13 +30,15 @@ public class ConversationList {
 
     private final MessagesLoader messagesLoader;
     private final PreferenceStore preferenceStore;
+    private final Handler uiHandler;
     private final List<Callbacks> callbacksList = new ArrayList<Callbacks>();
     private final List<Conversation> conversationList = new ArrayList<Conversation>();
     private LoadingState state;
 
-    public ConversationList(MessagesLoader messagesLoader, PreferenceStore preferenceStore) {
+    public ConversationList(MessagesLoader messagesLoader, PreferenceStore preferenceStore, Handler uiHandler) {
         this.messagesLoader = messagesLoader;
         this.preferenceStore = preferenceStore;
+        this.uiHandler = uiHandler;
         this.state = LoadingState.INITIAL_LOAD;
         this.preferenceStore.listenToPreferenceChanges(new PokeCallbacksListener());
     }
@@ -59,23 +63,49 @@ public class ConversationList {
         switch (state) {
 
             case INITIAL_LOAD:
-                callbacks.listLoading();
+                postLoading(callbacks);
                 break;
 
             case LOADED:
-                callbacks.listLoaded(conversationList);
+                postLoaded(callbacks, conversationList);
                 break;
 
             case INVALIDATED:
-                callbacks.listInvalidated(conversationList);
+                postInvalidated(callbacks, conversationList);
+                break;
 
         }
     }
 
+    private void postInvalidated(final Callbacks callbacks, final List<Conversation> conversationList) {
+        uiHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                callbacks.listInvalidated(conversationList);
+            }
+        });
+    }
+
+    private void postLoading(final Callbacks callbacks) {
+        uiHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                callbacks.listLoading();
+            }
+        });
+    }
+
+    private void postLoaded(final Callbacks callbacks, final List<Conversation> conversationList) {
+        uiHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                callbacks.listLoaded(conversationList);
+            }
+        });
+    }
+
     public void reloadConversations() {
-        if (state != LoadingState.INITIAL_LOAD) {
             state = LoadingState.INVALIDATED;
-        }
         for (Callbacks callbacks : callbacksList) {
             updateCallback(callbacks);
         }
@@ -84,7 +114,7 @@ public class ConversationList {
             public void onConversationListLoaded(List<Conversation> conversations) {
                 state = LoadingState.LOADED;
                 for (Callbacks callbacks : callbacksList) {
-                    callbacks.listLoaded(conversations);
+                    postLoaded(callbacks, conversations);
                 }
                 updateInternalList(conversations);
             }
