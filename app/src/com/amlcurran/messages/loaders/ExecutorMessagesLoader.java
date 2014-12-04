@@ -76,17 +76,13 @@ public class ExecutorMessagesLoader implements MessagesLoader {
 
     @Override
     public void loadConversationList(final ConversationListListener loadListener, Sort sort) {
-        if (cache.getConversationList() == null) {
-            submit(new ConversationListTask(getResolver(), new ConversationListListener() {
-                @Override
-                public void onConversationListLoaded(List<Conversation> conversations) {
-                    postConversationListLoaded(loadListener);
-                    eventBus.postListLoaded();
-                }
-            }, sort, cache));
-        } else {
-            postConversationListLoaded(loadListener);
-        }
+        submit(new ConversationListTask(getResolver(), new ConversationListListener() {
+            @Override
+            public void onConversationListLoaded(List<Conversation> conversations) {
+                postConversationListLoaded(loadListener);
+                eventBus.postListLoaded();
+            }
+        }, sort, cache));
     }
 
     private void postConversationListLoaded(final ConversationListListener loadListener) {
