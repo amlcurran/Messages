@@ -92,7 +92,9 @@ public class ThreadFragment extends Fragment implements
         EventSubscriber messageReceiver = new BroadcastEventSubscriber(getActivity());
         DefaultAppChecker defaultChecker = new DefaultAppChecker(getActivity());
 
-        threadController = new ThreadController(threadId, contact, getArguments().getString(COMPOSED_MESSAGE), this, messageReceiver, defaultChecker, dependencyRepository);
+        threadController = new ThreadController(threadId, contact, getArguments().getString(COMPOSED_MESSAGE),
+                this, messageReceiver, defaultChecker, dependencyRepository, new MarkUnreadAndEndActivity(getActivity(),
+                dependencyRepository.getMessagesLoader(), SingletonManager.getConversationList(getActivity())));
 
         SmsComposeListener listener = new ProviderHelper<>(SmsComposeListener.class).get(getActivity());
         StandardComposeCallbacks composeCallbacks = new StandardComposeCallbacks(getActivity(), contact.getNumber(), listener);

@@ -49,11 +49,13 @@ class ThreadController implements ThreadListener {
     private final DraftRepository draftRepository;
     private final ExternalEventManager externalEventManager;
     private final MessagesLoader messageLoader;
+    private final UnreadViewCallback unreadViewCallback;
 
-    public ThreadController(String threadId, Contact contact, String composedMessage, ThreadView threadView, EventSubscriber messageReceiver, DefaultAppChecker defaultChecker, DependencyRepository dependencyRepository) {
+    public ThreadController(String threadId, Contact contact, String composedMessage, ThreadView threadView, EventSubscriber messageReceiver, DefaultAppChecker defaultChecker, DependencyRepository dependencyRepository, UnreadViewCallback unreadViewCallback) {
         this.threadId = threadId;
         this.contact = contact;
         this.threadView = threadView;
+        this.unreadViewCallback = unreadViewCallback;
         this.messageLoader = dependencyRepository.getMessagesLoader();
         this.messageReceiver = messageReceiver;
         this.defaultChecker = defaultChecker;
@@ -124,6 +126,9 @@ class ThreadController implements ThreadListener {
     public boolean menuItemClicked(MenuItem item) {
         if (item.getItemId() == R.id.menu_call) {
             externalEventManager.callNumber(contact.getNumber());
+            return true;
+        } else if (item.getItemId() == R.id.modal_mark_unread) {
+            unreadViewCallback.markUnread(threadId);
             return true;
         }
         return false;
