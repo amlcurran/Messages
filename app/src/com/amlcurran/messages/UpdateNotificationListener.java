@@ -17,22 +17,16 @@
 package com.amlcurran.messages;
 
 import com.amlcurran.messages.conversationlist.ConversationList;
-import com.amlcurran.messages.core.conversationlist.ConversationListListener;
 import com.amlcurran.messages.core.data.Conversation;
 import com.amlcurran.messages.notifications.Notifier;
 
 import java.util.List;
 
-public class UpdateNotificationListener implements ConversationListListener, ConversationList.Callbacks {
+public class UpdateNotificationListener implements ConversationList.Callbacks {
     private Notifier notifier;
 
     public UpdateNotificationListener(Notifier notifier) {
         this.notifier = notifier;
-    }
-
-    @Override
-    public void onConversationListLoaded(List<Conversation> conversations) {
-        notifier.updateUnreadNotification();
     }
 
     @Override
