@@ -53,6 +53,7 @@ public class UnreadMessagesTask implements Callable {
             }
         }
 
+        cursor.close();
         uiHandler.post(new Runnable() {
             @Override
             public void run() {
