@@ -20,37 +20,40 @@ import android.content.ContentResolver;
 import android.os.Handler;
 import android.provider.Telephony;
 
+import com.amlcurran.messages.conversationlist.ConversationList;
 import com.amlcurran.messages.core.data.Conversation;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
 
 class DeleteThreadTask implements Callable<Object> {
     private final ContentResolver contentResolver;
-    private final List<Conversation> conversationList;
+    private final List<Conversation> conversationsToDelete;
     private final OnThreadDeleteListener threadDeleteListener;
     private Handler uiHandler;
+    private final ConversationList conversationList;
 
-    public DeleteThreadTask(ContentResolver contentResolver, List<Conversation> conversationList, OnThreadDeleteListener threadDeleteListener, Handler uiHandler) {
+    public DeleteThreadTask(ContentResolver contentResolver, List<Conversation> conversationsToDelete, OnThreadDeleteListener threadDeleteListener, Handler uiHandler, ConversationList conversationList) {
         this.contentResolver = contentResolver;
-        this.conversationList = conversationList;
+        this.conversationsToDelete = conversationsToDelete;
         this.threadDeleteListener = threadDeleteListener;
         this.uiHandler = uiHandler;
+        this.conversationList = conversationList;
     }
 
     @Override
     public Object call() throws Exception {
         String where = Telephony.Sms.THREAD_ID + "=?";
-        for (Conversation conversation : conversationList) {
+        List<Conversation> deletedConversations = new ArrayList<>();
+        for (Conversation conversation : conversationsToDelete) {
             String[] args = new String[]{conversation.getThreadId()};
-            contentResolver.delete(Telephony.Sms.CONTENT_URI, where, args);
-        }
-        uiHandler.post(new Runnable() {
-            @Override
-            public void run() {
-                threadDeleteListener.threadDeleted(conversationList);
+            int result = contentResolver.delete(Telephony.Sms.CONTENT_URI, where, args);
+            if (result > 0) {
+                deletedConversations.add(conversation);
             }
-        });
+        }
+        conversationList.deletedConversations(deletedConversations);
         return null;
     }
 }

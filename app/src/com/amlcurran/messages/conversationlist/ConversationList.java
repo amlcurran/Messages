@@ -104,6 +104,15 @@ public class ConversationList {
         });
     }
 
+    private void postConversationDeleted(final Callbacks callbacks, final Conversation deletedConversation, final List<Conversation> conversationList) {
+        uiHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                callbacks.conversationDeleted(deletedConversation, conversationList);
+            }
+        });
+    }
+
     public void reloadConversations() {
         state = LoadingState.INVALIDATED;
         for (Callbacks callbacks : callbacksList) {
@@ -126,12 +135,23 @@ public class ConversationList {
         conversationList.addAll(conversations);
     }
 
+    public void deletedConversations(List<Conversation> deletedConversations) {
+        for (Conversation deletedConversation : deletedConversations) {
+            conversationList.remove(deletedConversation);
+            for (Callbacks callbacks : callbacksList) {
+                postConversationDeleted(callbacks, deletedConversation, conversationList);
+            }
+        }
+    }
+
     public interface Callbacks {
         void listLoading();
 
         void listLoaded(List<Conversation> conversations);
 
         void listInvalidated(List<Conversation> invalidatedList);
+
+        void conversationDeleted(Conversation deletedConversation, List<Conversation> conversationList);
     }
 
     private enum LoadingState {

@@ -21,6 +21,7 @@ import android.content.Context;
 import android.os.Handler;
 
 import com.amlcurran.messages.MessagesLog;
+import com.amlcurran.messages.SingletonManager;
 import com.amlcurran.messages.core.conversationlist.ConversationListListener;
 import com.amlcurran.messages.core.data.Contact;
 import com.amlcurran.messages.core.data.Conversation;
@@ -34,11 +35,13 @@ import java.util.concurrent.Future;
 public class ExecutorConversationLoader implements ConversationLoader {
 
     private final ExecutorService executor;
+    private final Context context;
     private final Handler uiHandler;
     private final ContentResolver resolver;
 
     public ExecutorConversationLoader(ExecutorService executor, Context context, Handler uiHandler) {
         this.executor = executor;
+        this.context = context;
         this.uiHandler = uiHandler;
         this.resolver = context.getContentResolver();
     }
@@ -70,7 +73,7 @@ public class ExecutorConversationLoader implements ConversationLoader {
 
     @Override
     public void deleteThreads(List<Conversation> conversationList, OnThreadDeleteListener threadDeleteListener) {
-        submit(new DeleteThreadTask(resolver, conversationList, threadDeleteListener, uiHandler));
+        submit(new DeleteThreadTask(resolver, conversationList, threadDeleteListener, uiHandler, SingletonManager.getConversationList(context)));
     }
 
     @Override

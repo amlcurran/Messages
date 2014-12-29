@@ -78,4 +78,9 @@ class ConversationListViewController implements ConversationListView.Conversatio
     public void listInvalidated(List<Conversation> invalidatedList) {
 
     }
+
+    @Override
+    public void conversationDeleted(Conversation deletedConversation, List<Conversation> conversationList) {
+        listLoaded(conversationList);
+    }
 }
