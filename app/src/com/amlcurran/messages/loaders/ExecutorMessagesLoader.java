@@ -22,11 +22,7 @@ import android.os.Handler;
 
 import com.amlcurran.messages.MessagesLog;
 import com.amlcurran.messages.SingletonManager;
-import com.amlcurran.messages.core.conversationlist.ConversationListListener;
-import com.amlcurran.messages.core.data.Contact;
-import com.amlcurran.messages.core.data.Conversation;
 import com.amlcurran.messages.core.data.PhoneNumber;
-import com.amlcurran.messages.core.data.Sort;
 import com.amlcurran.messages.core.events.EventBus;
 import com.amlcurran.messages.core.loaders.ContactListListener;
 import com.amlcurran.messages.core.loaders.ConversationListChangeListener;
@@ -39,7 +35,7 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 
-public class ExecutorMessagesLoader implements MessagesLoader, ConversationLoader {
+public class ExecutorMessagesLoader implements MessagesLoader {
 
     private final Context context;
     private final ExecutorService executor;
@@ -72,26 +68,6 @@ public class ExecutorMessagesLoader implements MessagesLoader, ConversationLoade
             }
         });
         return new FutureTask(result);
-    }
-
-    @Override
-    public void loadConversationList(final ConversationListListener loadListener, Sort sort) {
-        submit(new ConversationListTask(getResolver(), loadListener, sort));
-    }
-
-    @Override
-    public void loadUnreadConversationList(ConversationListListener loadListener) {
-        submit(new UnreadConversationListTask(getResolver(), loadListener));
-    }
-
-    @Override
-    public void deleteThreads(List<Conversation> conversationList, OnThreadDeleteListener threadDeleteListener) {
-        submit(new DeleteThreadTask(getResolver(), conversationList, threadDeleteListener, uiHandler));
-    }
-
-    @Override
-    public void getHasConversationWith(Contact contact, HasConversationListener hasConversationListener) {
-        submit(new HasConversationTask(getResolver(), hasConversationListener, contact, uiHandler));
     }
 
     @Override
