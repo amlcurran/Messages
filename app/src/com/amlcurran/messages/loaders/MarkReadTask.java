@@ -20,7 +20,7 @@ import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.provider.Telephony;
 
-import com.amlcurran.messages.core.events.EventBus;
+import com.amlcurran.messages.core.conversationlist.ConversationList;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,13 +28,13 @@ import java.util.concurrent.Callable;
 
 class MarkReadTask implements Callable<Object> {
     private final ContentResolver contentResolver;
+    private final ConversationList conversationList;
     private final List<String> threadIds;
-    private final EventBus eventBus;
 
-    public MarkReadTask(ContentResolver contentResolver, EventBus eventBus, List<String> threadIds) {
+    public MarkReadTask(ContentResolver contentResolver, ConversationList conversationList, List<String> threadIds) {
         this.contentResolver = contentResolver;
-        this.threadIds = new ArrayList<String>(threadIds);
-        this.eventBus = eventBus;
+        this.conversationList = conversationList;
+        this.threadIds = new ArrayList<>(threadIds);
     }
 
     @Override
@@ -44,7 +44,7 @@ class MarkReadTask implements Callable<Object> {
             String[] args = new String[]{threadId, "0", "0"};
             contentResolver.update(Telephony.Sms.CONTENT_URI, createReadContentValues(), selection, args);
         }
-        eventBus.postListInvalidated();
+        conversationList.reloadConversations();
         return null;
     }
 

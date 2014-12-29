@@ -33,11 +33,6 @@ public class BroadcastEventBus implements EventBus {
     }
 
     @Override
-    public void postListInvalidated() {
-        broadcaster.sendBroadcast(new Intent(BROADCAST_LIST_INVALIDATED));
-    }
-
-    @Override
     public void postMessageSent(PhoneNumber phoneNumber) {
         broadcaster.sendBroadcast(new Intent(BROADCAST_MESSAGE_SENT).putExtra(EXTRA_FILTER, phoneNumber.flatten()));
     }

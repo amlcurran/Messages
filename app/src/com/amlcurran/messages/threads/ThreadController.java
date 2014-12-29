@@ -94,7 +94,7 @@ class ThreadController implements ThreadListener {
         Collections.reverse(messageList);
         source.replace(messageList);
         threadView.showThreadList(source.getCount());
-        messageLoader.markThreadAsRead(threadId, null);
+        messageLoader.markThreadAsRead(threadId);
     }
 
     public ArrayListSource<SmsMessage> getSource() {

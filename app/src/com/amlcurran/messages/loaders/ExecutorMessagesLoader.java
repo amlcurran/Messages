@@ -19,13 +19,12 @@ package com.amlcurran.messages.loaders;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.os.Handler;
+import android.provider.Telephony;
 
 import com.amlcurran.messages.MessagesLog;
 import com.amlcurran.messages.SingletonManager;
 import com.amlcurran.messages.core.data.PhoneNumber;
-import com.amlcurran.messages.core.events.EventBus;
 import com.amlcurran.messages.core.loaders.ContactListListener;
-import com.amlcurran.messages.core.loaders.ConversationListChangeListener;
 import com.amlcurran.messages.core.loaders.OnContactQueryListener;
 import com.amlcurran.messages.core.loaders.ThreadListener;
 
@@ -39,15 +38,11 @@ public class ExecutorMessagesLoader implements MessagesLoader {
 
     private final Context context;
     private final ExecutorService executor;
-    private final MessagesCache cache;
-    private final EventBus eventBus;
     private final Handler uiHandler;
 
-    public ExecutorMessagesLoader(Context context, ExecutorService executor, MessagesCache cache, EventBus eventBus, Handler uiHandler) {
+    public ExecutorMessagesLoader(Context context, ExecutorService executor, Handler uiHandler) {
         this.context = context;
         this.executor = executor;
-        this.cache = cache;
-        this.eventBus = eventBus;
         this.uiHandler = uiHandler;
     }
 
@@ -72,12 +67,12 @@ public class ExecutorMessagesLoader implements MessagesLoader {
 
     @Override
     public void loadThread(String threadId, ThreadListener threadListener) {
-        submit(new ThreadTask(getResolver(), threadId, threadListener, uiHandler));
+        submit(new ThreadTask(getResolver(), threadId, Telephony.Sms.CONTENT_URI, threadListener, uiHandler));
     }
 
     @Override
-    public void markThreadAsRead(String threadId, ConversationListChangeListener listChangeListener) {
-        submit(new MarkReadTask(getResolver(), eventBus, Collections.singletonList(threadId)));
+    public void markThreadAsRead(String threadId) {
+        submit(new MarkReadTask(getResolver(), SingletonManager.getConversationList(context), Collections.singletonList(threadId)));
     }
 
     @Override
@@ -91,13 +86,8 @@ public class ExecutorMessagesLoader implements MessagesLoader {
     }
 
     @Override
-    public void markThreadAsUnread(List<String> threadIds, ConversationListChangeListener changeListener) {
-        submit(new MarkUnreadTask(getResolver(), SingletonManager.getConversationList(context), threadIds, new ConversationListChangeListener() {
-            @Override
-            public void listChanged() {
-
-            }
-        }, uiHandler));
+    public void markThreadsAsUnread(List<String> threadIds) {
+        submit(new MarkUnreadTask(getResolver(), SingletonManager.getConversationList(context), threadIds));
     }
 
     @Override

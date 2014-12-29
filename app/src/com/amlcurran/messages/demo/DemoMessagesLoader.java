@@ -27,7 +27,6 @@ import com.amlcurran.messages.core.data.SavedContact;
 import com.amlcurran.messages.core.data.Sort;
 import com.amlcurran.messages.core.data.Time;
 import com.amlcurran.messages.core.loaders.ContactListListener;
-import com.amlcurran.messages.core.loaders.ConversationListChangeListener;
 import com.amlcurran.messages.core.loaders.OnContactQueryListener;
 import com.amlcurran.messages.core.loaders.ThreadListener;
 import com.amlcurran.messages.data.ParcelablePhoneNumber;
@@ -70,7 +69,7 @@ public class DemoMessagesLoader implements MessagesLoader, ConversationLoader {
     }
 
     @Override
-    public void markThreadAsRead(String threadId, ConversationListChangeListener conversationListChangeListener) {
+    public void markThreadAsRead(String threadId) {
 
     }
 
@@ -95,7 +94,7 @@ public class DemoMessagesLoader implements MessagesLoader, ConversationLoader {
     }
 
     @Override
-    public void markThreadAsUnread(List<String> threadId, ConversationListChangeListener changeListener) {
+    public void markThreadsAsUnread(List<String> threadId) {
 
     }
 

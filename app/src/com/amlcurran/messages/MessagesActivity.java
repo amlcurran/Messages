@@ -24,10 +24,10 @@ import android.view.MenuItem;
 
 import com.amlcurran.messages.conversationlist.DeleteThreadViewCallback;
 import com.amlcurran.messages.conversationlist.MarkAsUnreadViewCallback;
+import com.amlcurran.messages.core.conversationlist.ConversationLoader;
 import com.amlcurran.messages.core.data.Conversation;
 import com.amlcurran.messages.core.data.DraftRepository;
 import com.amlcurran.messages.core.events.EventBus;
-import com.amlcurran.messages.core.loaders.ConversationListChangeListener;
 import com.amlcurran.messages.core.preferences.PreferenceStore;
 import com.amlcurran.messages.core.reporting.StatReporter;
 import com.amlcurran.messages.core.reporting.UserPreferenceWrappingStatReporter;
@@ -35,14 +35,10 @@ import com.amlcurran.messages.data.InFlightSmsMessage;
 import com.amlcurran.messages.launch.IntentDataExtractor;
 import com.amlcurran.messages.launch.LaunchAction;
 import com.amlcurran.messages.launch.LaunchAssistant;
-import com.amlcurran.messages.core.conversationlist.ConversationLoader;
 import com.amlcurran.messages.loaders.MessagesLoader;
-import com.amlcurran.messages.loaders.OnThreadDeleteListener;
 import com.amlcurran.messages.notifications.BlockingInUiDialogNotifier;
 import com.amlcurran.messages.notifications.BlockingInUiNotifier;
 import com.amlcurran.messages.notifications.Dialog;
-import com.amlcurran.messages.notifications.InUiNotifier;
-import com.amlcurran.messages.notifications.InUiToastNotifier;
 import com.amlcurran.messages.preferences.PreferenceStoreDraftRepository;
 import com.amlcurran.messages.preferences.SharedPreferenceStore;
 import com.amlcurran.messages.reporting.EasyTrackerStatReporter;
@@ -61,11 +57,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MessagesActivity extends ActionBarActivity implements
-        SmsComposeListener,
-        OnThreadDeleteListener, ConversationListChangeListener, FragmentController.FragmentCallback,
+        SmsComposeListener, FragmentController.FragmentCallback,
         TransitionManager.Provider, DependencyRepository, DeleteThreadViewCallback, MarkAsUnreadViewCallback {
 
-    private InUiNotifier toastInUiNotifier;
     private StatReporter statReporter;
     private MenuController menuController;
     private DefaultAppChecker appChecker;
@@ -87,7 +81,6 @@ public class MessagesActivity extends ActionBarActivity implements
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         actionBarController = new HoloActionBarController(getSupportActionBar());
-        toastInUiNotifier = new InUiToastNotifier(this);
         blockingInUiNotifier = new BlockingInUiDialogNotifier(getFragmentManager());
         messagesLoader = SingletonManager.getMessagesLoader(this);
         conversationLoader = SingletonManager.getConversationLoader(this);
@@ -254,18 +247,7 @@ public class MessagesActivity extends ActionBarActivity implements
             Conversation conversation = conversationList.get(i);
             threadIds.add(conversation.getThreadId());
         }
-        messagesLoader.markThreadAsUnread(threadIds, this);
-    }
-
-    @Override
-    public void threadDeleted(final List<Conversation> conversations) {
-        toastInUiNotifier.deletedConversations(conversations);
-        eventBus.postListInvalidated();
-    }
-
-    @Override
-    public void listChanged() {
-        eventBus.postListInvalidated();
+        messagesLoader.markThreadsAsUnread(threadIds);
     }
 
     @Override

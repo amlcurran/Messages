@@ -18,7 +18,6 @@ package com.amlcurran.messages.loaders;
 
 import com.amlcurran.messages.core.data.PhoneNumber;
 import com.amlcurran.messages.core.loaders.ContactListListener;
-import com.amlcurran.messages.core.loaders.ConversationListChangeListener;
 import com.amlcurran.messages.core.loaders.OnContactQueryListener;
 import com.amlcurran.messages.core.loaders.ThreadListener;
 
@@ -28,13 +27,13 @@ public interface MessagesLoader {
 
     void loadThread(String threadId, ThreadListener threadListener);
 
-    void markThreadAsRead(String threadId, ConversationListChangeListener conversationListChangeListener);
+    void markThreadAsRead(String threadId);
 
     void cancelAll();
 
     void queryContact(PhoneNumber phoneNumber, OnContactQueryListener onContactQueryListener);
 
-    void markThreadAsUnread(List<String> threadIds, ConversationListChangeListener changeListener);
+    void markThreadsAsUnread(List<String> threadIds);
 
     void loadContacts(ContactListListener contactListListener);
 

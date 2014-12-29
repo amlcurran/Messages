@@ -23,7 +23,6 @@ import android.content.Intent;
 
 import com.amlcurran.messages.SingletonManager;
 import com.amlcurran.messages.core.data.Conversation;
-import com.amlcurran.messages.events.BroadcastEventBus;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -48,7 +47,7 @@ public class ExecutingIntentService extends IntentService {
             SingletonManager.getNotifier(this).clearNewMessagesNotification();
             List<String> threadIds = intent.getStringArrayListExtra(EXTRA_THREAD_ID_LIST);
             try {
-                new MarkReadTask(getContentResolver(), new BroadcastEventBus(this), threadIds).call();
+                new MarkReadTask(getContentResolver(), SingletonManager.getConversationList(this), threadIds).call();
             } catch (Exception e) {
                 e.printStackTrace();
             }

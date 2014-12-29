@@ -17,16 +17,12 @@
 package com.amlcurran.messages.loaders;
 
 import android.content.ContentResolver;
-import android.database.Cursor;
 import android.net.Uri;
 import android.os.Handler;
-import android.provider.Telephony;
 
-import com.amlcurran.messages.core.loaders.ThreadListener;
-import com.amlcurran.messages.data.InFlightSmsMessageFactory;
 import com.amlcurran.messages.core.data.SmsMessage;
+import com.amlcurran.messages.core.loaders.ThreadListener;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
 
@@ -37,26 +33,20 @@ class ThreadTask implements Callable<Object> {
     private final Uri contentUri;
     private final ThreadListener threadListener;
     private final Handler uiHandler;
+    private final ThreadLoader threadLoader;
 
     public ThreadTask(ContentResolver contentResolver, String threadId, Uri contentUri, ThreadListener threadListener, Handler uiHandler) {
         this.contentResolver = contentResolver;
         this.threadId = threadId;
         this.contentUri = contentUri;
         this.threadListener = threadListener;
+        this.threadLoader = new ThreadLoader(contentUri, contentResolver);
         this.uiHandler = uiHandler;
-    }
-
-    public ThreadTask(ContentResolver resolver, String threadId, ThreadListener threadListener, Handler uiHandler) {
-        this(resolver, threadId, Telephony.Sms.CONTENT_URI, threadListener, uiHandler);
     }
 
     @Override
     public Object call() throws Exception {
-        String selection = Telephony.Sms.THREAD_ID + "=?";
-        String[] selectionArgs = {threadId};
-        Cursor cursor = contentResolver.query(contentUri, null, selection, selectionArgs, Telephony.Sms.DEFAULT_SORT_ORDER.replace("DESC", "ASC"));
-        final List<SmsMessage> messageList = createMessageList(cursor);
-        cursor.close();
+        final List<SmsMessage> messageList = threadLoader.loadSmsList(threadId);
         uiHandler.post(new Runnable() {
             @Override
             public void run() {
@@ -64,18 +54,6 @@ class ThreadTask implements Callable<Object> {
             }
         });
         return null;
-    }
-
-    private List<SmsMessage> createMessageList(Cursor cursor) {
-        List<SmsMessage> messageList = new ArrayList<SmsMessage>();
-        SmsMessage tempPointer;
-        while (cursor.moveToNext()) {
-            tempPointer = InFlightSmsMessageFactory.fromCursor(cursor);
-            if (tempPointer != null) {
-                messageList.add(tempPointer);
-            }
-        }
-        return messageList;
     }
 
 }

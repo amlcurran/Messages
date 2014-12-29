@@ -19,7 +19,6 @@ package com.amlcurran.messages.threads;
 import android.app.Activity;
 
 import com.amlcurran.messages.core.conversationlist.ConversationList;
-import com.amlcurran.messages.core.loaders.ConversationListChangeListener;
 import com.amlcurran.messages.loaders.MessagesLoader;
 
 import java.util.Collections;
@@ -37,12 +36,7 @@ public class MarkUnreadAndEndActivity implements UnreadViewCallback {
 
     @Override
     public void markUnread(String threadId) {
-        messagesLoader.markThreadAsUnread(Collections.singletonList(threadId), new ConversationListChangeListener() {
-            @Override
-            public void listChanged() {
-                conversationList.reloadConversations();
-            }
-        });
+        messagesLoader.markThreadsAsUnread(Collections.singletonList(threadId));
         activity.finish();
     }
 }

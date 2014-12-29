@@ -72,7 +72,7 @@ public class MessagesApp extends Application implements BroadcastEventSubscriber
             loader = demoMessagesLoader;
             conversationLoader = demoMessagesLoader;
         } else {
-            loader = new ExecutorMessagesLoader(this, executor, cache, eventBus, uiHandler);
+            loader = new ExecutorMessagesLoader(this, executor, uiHandler);
             conversationLoader = new ExecutorConversationLoader(executor, this, uiHandler);
         }
         photoLoader = new AndroidPhotoLoader(this, cache, executor, uiHandler);
