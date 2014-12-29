@@ -236,7 +236,7 @@ public class MessagesActivity extends ActionBarActivity implements
         blockingInUiNotifier.show(new BlockingInUiNotifier.Callbacks() {
             @Override
             public void positive() {
-                conversationLoader.deleteThreads(conversationList, MessagesActivity.this);
+                conversationLoader.deleteConversations(conversationList);
             }
 
             @Override

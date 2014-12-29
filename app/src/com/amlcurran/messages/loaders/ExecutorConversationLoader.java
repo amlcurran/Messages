@@ -72,8 +72,8 @@ public class ExecutorConversationLoader implements ConversationLoader {
     }
 
     @Override
-    public void deleteThreads(List<Conversation> conversationList, OnThreadDeleteListener threadDeleteListener) {
-        submit(new DeleteThreadTask(resolver, conversationList, threadDeleteListener, uiHandler, SingletonManager.getConversationList(context)));
+    public void deleteConversations(List<Conversation> conversationList) {
+        submit(new DeleteThreadTask(resolver, conversationList, SingletonManager.getConversationList(context)));
     }
 
     @Override

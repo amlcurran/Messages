@@ -28,7 +28,7 @@ public interface ConversationLoader {
 
     void loadUnreadConversationList(ConversationListListener loadListener);
 
-    void deleteThreads(List<Conversation> conversation, OnThreadDeleteListener threadDeleteListener);
+    void deleteConversations(List<Conversation> conversation);
 
     void getHasConversationWith(Contact contact, HasConversationListener hasConversationListener);
 }

@@ -34,7 +34,6 @@ import com.amlcurran.messages.data.ParcelablePhoneNumber;
 import com.amlcurran.messages.loaders.ConversationLoader;
 import com.amlcurran.messages.loaders.HasConversationListener;
 import com.amlcurran.messages.loaders.MessagesLoader;
-import com.amlcurran.messages.loaders.OnThreadDeleteListener;
 import com.amlcurran.messages.loaders.Task;
 
 import java.util.ArrayList;
@@ -91,7 +90,7 @@ public class DemoMessagesLoader implements MessagesLoader, ConversationLoader {
     }
 
     @Override
-    public void deleteThreads(List<Conversation> conversation, OnThreadDeleteListener threadDeleteListener) {
+    public void deleteConversations(List<Conversation> conversation) {
 
     }
 
