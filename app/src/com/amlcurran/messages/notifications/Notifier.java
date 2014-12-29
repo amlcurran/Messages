@@ -46,11 +46,9 @@ public class Notifier {
     private final NotificationBuilder notificationBuilder;
     private final MessagesLoader loader;
     private final PreferenceStore preferenceStore;
-    private final UnreadMessageNotificationManager unreadMessageNotificationManager;
     private final ArrayList<Conversation> postedConversations;
 
-    public Notifier(Context context, UnreadMessageNotificationManager unreadMessageNotificationManager) {
-        this.unreadMessageNotificationManager = unreadMessageNotificationManager;
+    public Notifier(Context context) {
         this.preferenceStore = new SharedPreferenceStore(context);
         this.loader = SingletonManager.getMessagesLoader(context);
         this.notificationManager = NotificationManagerCompat.from(context);
@@ -60,7 +58,7 @@ public class Notifier {
 
     public void updateUnreadNotification() {
         if (preferenceStore.showNotifications()) {
-            unreadMessageNotificationManager.update();
+            //unreadMessageNotificationManager.update();
             UnreadNotificationManager conversationListListener = new UnreadNotificationManager();
             loader.loadUnreadConversationList(conversationListListener);
         }
