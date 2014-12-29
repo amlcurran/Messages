@@ -105,7 +105,7 @@ public class ConversationList {
     }
 
     public void reloadConversations() {
-            state = LoadingState.INVALIDATED;
+        state = LoadingState.INVALIDATED;
         for (Callbacks callbacks : callbacksList) {
             updateCallback(callbacks);
         }
