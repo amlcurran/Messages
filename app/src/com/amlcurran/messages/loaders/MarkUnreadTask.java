@@ -22,6 +22,7 @@ import android.os.Handler;
 import android.provider.Telephony;
 
 import com.amlcurran.messages.MessagesLog;
+import com.amlcurran.messages.conversationlist.ConversationList;
 import com.amlcurran.messages.core.data.SmsMessage;
 import com.amlcurran.messages.core.loaders.ConversationListChangeListener;
 import com.amlcurran.messages.core.loaders.ThreadListener;
@@ -31,12 +32,14 @@ import java.util.concurrent.Callable;
 
 class MarkUnreadTask implements Callable<Object> {
     private final ContentResolver contentResolver;
+    private final ConversationList conversationList;
     private final List<String> threadIds;
     private final ConversationListChangeListener changeListener;
     private final Handler uiHandler;
 
-    public MarkUnreadTask(ContentResolver contentResolver, List<String> threadIds, ConversationListChangeListener changeListener, Handler uiHandler) {
+    public MarkUnreadTask(ContentResolver contentResolver, ConversationList conversationList, List<String> threadIds, ConversationListChangeListener changeListener, Handler uiHandler) {
         this.contentResolver = contentResolver;
+        this.conversationList = conversationList;
         this.threadIds = threadIds;
         this.changeListener = changeListener;
         this.uiHandler = uiHandler;
@@ -59,10 +62,11 @@ class MarkUnreadTask implements Callable<Object> {
                         MessagesLog.w(MarkUnreadTask.this, "Couldn't mark conversation " + threadId + " as read");
                     }
 
+                    conversationList.reloadConversations();
+
                 }
             }, uiHandler).call();
         }
-        changeListener.listChanged();
         return null;
     }
 

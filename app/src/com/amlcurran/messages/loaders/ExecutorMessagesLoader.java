@@ -21,6 +21,7 @@ import android.content.Context;
 import android.os.Handler;
 
 import com.amlcurran.messages.MessagesLog;
+import com.amlcurran.messages.SingletonManager;
 import com.amlcurran.messages.core.conversationlist.ConversationListListener;
 import com.amlcurran.messages.core.data.Contact;
 import com.amlcurran.messages.core.data.Conversation;
@@ -110,7 +111,12 @@ public class ExecutorMessagesLoader implements MessagesLoader {
 
     @Override
     public void markThreadAsUnread(List<String> threadIds, ConversationListChangeListener changeListener) {
-        submit(new MarkUnreadTask(getResolver(), threadIds, changeListener, uiHandler));
+        submit(new MarkUnreadTask(getResolver(), SingletonManager.getConversationList(context), threadIds, new ConversationListChangeListener() {
+            @Override
+            public void listChanged() {
+
+            }
+        }, uiHandler));
     }
 
     @Override
