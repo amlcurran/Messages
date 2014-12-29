@@ -14,14 +14,13 @@
  * limitations under the License.
  */
 
-package com.amlcurran.messages.conversationlist;
+package com.amlcurran.messages.conversationlist.data;
 
 import android.os.Handler;
 
 import com.amlcurran.messages.core.conversationlist.ConversationListListener;
 import com.amlcurran.messages.core.data.Conversation;
 import com.amlcurran.messages.core.preferences.PreferenceStore;
-import com.amlcurran.messages.loaders.ConversationLoader;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -135,7 +134,7 @@ public class ConversationList {
         conversationList.addAll(conversations);
     }
 
-    public void deletedConversations(List<Conversation> deletedConversations) {
+    void deletedConversations(List<Conversation> deletedConversations) {
         for (Conversation deletedConversation : deletedConversations) {
             conversationList.remove(deletedConversation);
             for (Callbacks callbacks : callbacksList) {

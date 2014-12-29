@@ -23,15 +23,15 @@ import android.preference.PreferenceManager;
 import android.text.SpannableStringBuilder;
 import android.text.util.Linkify;
 
-import com.amlcurran.messages.conversationlist.ConversationList;
+import com.amlcurran.messages.conversationlist.data.ConversationList;
 import com.amlcurran.messages.core.events.Broadcast;
 import com.amlcurran.messages.core.events.EventBus;
 import com.amlcurran.messages.demo.DemoMessagesLoader;
 import com.amlcurran.messages.events.BroadcastEventBus;
 import com.amlcurran.messages.events.BroadcastEventSubscriber;
 import com.amlcurran.messages.loaders.AndroidPhotoLoader;
-import com.amlcurran.messages.loaders.ConversationLoader;
-import com.amlcurran.messages.loaders.ExecutorConversationLoader;
+import com.amlcurran.messages.conversationlist.data.ConversationLoader;
+import com.amlcurran.messages.conversationlist.data.ExecutorConversationLoader;
 import com.amlcurran.messages.loaders.ExecutorMessagesLoader;
 import com.amlcurran.messages.loaders.MemoryMessagesCache;
 import com.amlcurran.messages.loaders.MessagesCache;

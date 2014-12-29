@@ -14,12 +14,11 @@
  * limitations under the License.
  */
 
-package com.amlcurran.messages.loaders;
+package com.amlcurran.messages.conversationlist.data;
 
 import android.content.ContentResolver;
 import android.provider.Telephony;
 
-import com.amlcurran.messages.conversationlist.ConversationList;
 import com.amlcurran.messages.core.data.Conversation;
 
 import java.util.ArrayList;

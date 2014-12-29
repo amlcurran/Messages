@@ -14,12 +14,21 @@
  * limitations under the License.
  */
 
-package com.amlcurran.messages.loaders;
+package com.amlcurran.messages.conversationlist.data;
 
+import com.amlcurran.messages.core.conversationlist.ConversationListListener;
 import com.amlcurran.messages.core.data.Contact;
+import com.amlcurran.messages.core.data.Conversation;
+import com.amlcurran.messages.core.data.Sort;
 
-public interface HasConversationListener {
-    void noConversationForNumber();
+import java.util.List;
 
-    void hasConversation(Contact contact, int threadId);
+public interface ConversationLoader {
+    void loadConversationList(ConversationListListener loadListener, Sort sort);
+
+    void loadUnreadConversationList(ConversationListListener loadListener);
+
+    void deleteConversations(List<Conversation> conversation);
+
+    void getHasConversationWith(Contact contact, HasConversationListener hasConversationListener);
 }

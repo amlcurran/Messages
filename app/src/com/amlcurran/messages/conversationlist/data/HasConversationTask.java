@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.amlcurran.messages.loaders;
+package com.amlcurran.messages.conversationlist.data;
 
 import android.content.ContentResolver;
 import android.database.Cursor;
@@ -26,7 +26,7 @@ import com.github.amlcurran.sourcebinder.CursorHelper;
 
 import java.util.concurrent.Callable;
 
-public class HasConversationTask implements Callable {
+class HasConversationTask implements Callable {
     private final ContentResolver resolver;
     private HasConversationListener hasConversationListener;
     private final Contact contact;

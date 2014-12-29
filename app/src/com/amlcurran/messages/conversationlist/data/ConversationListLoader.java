@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.amlcurran.messages.loaders;
+package com.amlcurran.messages.conversationlist.data;
 
 import android.content.ContentResolver;
 import android.database.Cursor;
@@ -36,7 +36,7 @@ import com.github.amlcurran.sourcebinder.CursorHelper;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ConversationListLoader {
+class ConversationListLoader {
     private final ContentResolver contentResolver;
     private final Sort sort;
     private final ConversationListHelper helper;

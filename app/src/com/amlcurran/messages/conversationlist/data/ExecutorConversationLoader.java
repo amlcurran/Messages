@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.amlcurran.messages.loaders;
+package com.amlcurran.messages.conversationlist.data;
 
 import android.content.ContentResolver;
 import android.content.Context;
@@ -26,6 +26,8 @@ import com.amlcurran.messages.core.conversationlist.ConversationListListener;
 import com.amlcurran.messages.core.data.Contact;
 import com.amlcurran.messages.core.data.Conversation;
 import com.amlcurran.messages.core.data.Sort;
+import com.amlcurran.messages.loaders.FutureTask;
+import com.amlcurran.messages.loaders.Task;
 
 import java.util.List;
 import java.util.concurrent.Callable;

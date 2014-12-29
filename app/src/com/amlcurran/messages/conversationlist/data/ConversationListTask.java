@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.amlcurran.messages.loaders;
+package com.amlcurran.messages.conversationlist.data;
 
 import android.content.ContentResolver;
 
