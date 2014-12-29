@@ -34,7 +34,6 @@ import com.amlcurran.messages.loaders.MemoryMessagesCache;
 import com.amlcurran.messages.loaders.MessagesCache;
 import com.amlcurran.messages.loaders.MessagesLoader;
 import com.amlcurran.messages.notifications.Notifier;
-import com.amlcurran.messages.notifications.UnreadMessageNotificationManager;
 import com.amlcurran.messages.preferences.SharedPreferenceStore;
 
 import java.util.concurrent.Callable;
@@ -49,7 +48,6 @@ public class MessagesApp extends Application implements BroadcastEventSubscriber
     Notifier notifier;
     EventBus eventBus;
     ConversationList conversationList;
-    private UnreadMessageNotificationManager unreadMessageNotificationManager;
     private UpdateNotificationListener updateNotificationListener;
 
     @Override
