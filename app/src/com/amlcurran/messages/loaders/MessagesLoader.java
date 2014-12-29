@@ -16,11 +16,7 @@
 
 package com.amlcurran.messages.loaders;
 
-import com.amlcurran.messages.core.conversationlist.ConversationListListener;
-import com.amlcurran.messages.core.data.Contact;
-import com.amlcurran.messages.core.data.Conversation;
 import com.amlcurran.messages.core.data.PhoneNumber;
-import com.amlcurran.messages.core.data.Sort;
 import com.amlcurran.messages.core.loaders.ContactListListener;
 import com.amlcurran.messages.core.loaders.ConversationListChangeListener;
 import com.amlcurran.messages.core.loaders.OnContactQueryListener;
@@ -30,25 +26,17 @@ import java.util.List;
 
 public interface MessagesLoader {
 
-    void loadConversationList(ConversationListListener loadListener, Sort sort);
-
     void loadThread(String threadId, ThreadListener threadListener);
 
     void markThreadAsRead(String threadId, ConversationListChangeListener conversationListChangeListener);
-
-    void loadUnreadConversationList(ConversationListListener loadListener);
 
     void cancelAll();
 
     void queryContact(PhoneNumber phoneNumber, OnContactQueryListener onContactQueryListener);
 
-    void deleteThreads(List<Conversation> conversation, OnThreadDeleteListener threadDeleteListener);
-
     void markThreadAsUnread(List<String> threadIds, ConversationListChangeListener changeListener);
 
     void loadContacts(ContactListListener contactListListener);
-
-    void getHasConversationWith(Contact contact, HasConversationListener hasConversationListener);
 
     Task loadUnreadMessages(ThreadListener threadListener);
 

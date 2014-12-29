@@ -35,6 +35,7 @@ import com.amlcurran.messages.data.InFlightSmsMessage;
 import com.amlcurran.messages.launch.IntentDataExtractor;
 import com.amlcurran.messages.launch.LaunchAction;
 import com.amlcurran.messages.launch.LaunchAssistant;
+import com.amlcurran.messages.loaders.ConversationLoader;
 import com.amlcurran.messages.loaders.MessagesLoader;
 import com.amlcurran.messages.loaders.OnThreadDeleteListener;
 import com.amlcurran.messages.notifications.BlockingInUiDialogNotifier;
@@ -72,6 +73,7 @@ public class MessagesActivity extends ActionBarActivity implements
     private LaunchAssistant launchHelper = new LaunchAssistant();
     private boolean isSecondaryVisible;
     private MessagesLoader messagesLoader;
+    private ConversationLoader conversationLoader;
     private BlockingInUiNotifier blockingInUiNotifier;
     private PreferenceStore preferencesStore;
     private HoloActionBarController actionBarController;
@@ -88,6 +90,7 @@ public class MessagesActivity extends ActionBarActivity implements
         toastInUiNotifier = new InUiToastNotifier(this);
         blockingInUiNotifier = new BlockingInUiDialogNotifier(getFragmentManager());
         messagesLoader = SingletonManager.getMessagesLoader(this);
+        conversationLoader = SingletonManager.getConversationLoader(this);
         preferencesStore = new SharedPreferenceStore(this);
         statReporter = createStatReporter();
         eventBus = SingletonManager.getEventBus(this);
@@ -233,7 +236,7 @@ public class MessagesActivity extends ActionBarActivity implements
         blockingInUiNotifier.show(new BlockingInUiNotifier.Callbacks() {
             @Override
             public void positive() {
-                messagesLoader.deleteThreads(conversationList, MessagesActivity.this);
+                conversationLoader.deleteThreads(conversationList, MessagesActivity.this);
             }
 
             @Override

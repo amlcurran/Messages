@@ -26,6 +26,7 @@ import com.amlcurran.messages.core.data.PhoneNumber;
 import com.amlcurran.messages.core.data.Time;
 import com.amlcurran.messages.core.loaders.ContactListListener;
 import com.amlcurran.messages.data.InFlightSmsMessage;
+import com.amlcurran.messages.loaders.ConversationLoader;
 import com.amlcurran.messages.loaders.HasConversationListener;
 import com.amlcurran.messages.loaders.MessagesLoader;
 import com.amlcurran.messages.telephony.DefaultAppChecker;
@@ -43,16 +44,18 @@ class ComposeNewController {
     private final SmsComposeListener smsComposeListener;
     private final DefaultAppChecker defaultAppChecker;
     private final Resources resources;
+    private final ConversationLoader conversationLoader;
     private final MessagesLoader messagesLoader;
     private final TransitionManager transitionManager;
     private final ArrayListSource<Contact> source;
 
-    public ComposeNewController(ComposeNewView composeNewView, PersonPicker personPicker, DependencyRepository dependencyRepository, SmsComposeListener smsComposeListener, DefaultAppChecker defaultAppChecker, Resources resources) {
+    public ComposeNewController(ComposeNewView composeNewView, PersonPicker personPicker, DependencyRepository dependencyRepository, SmsComposeListener smsComposeListener, DefaultAppChecker defaultAppChecker, Resources resources, ConversationLoader conversationLoader) {
         this.composeNewView = composeNewView;
         this.personPicker = personPicker;
         this.smsComposeListener = smsComposeListener;
         this.defaultAppChecker = defaultAppChecker;
         this.resources = resources;
+        this.conversationLoader = conversationLoader;
         this.messagesLoader = dependencyRepository.getMessagesLoader();
         this.transitionManager = dependencyRepository.getTransitionManager();
         this.source = new ArrayListSource<Contact>();
@@ -80,7 +83,7 @@ class ComposeNewController {
 
     public void personSelected(int position) {
         final Contact contact = source.getAtPosition(position);
-        messagesLoader.getHasConversationWith(contact, new HasConversationListener() {
+        conversationLoader.getHasConversationWith(contact, new HasConversationListener() {
 
             @Override
             public void noConversationForNumber() {

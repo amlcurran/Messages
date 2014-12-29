@@ -28,7 +28,7 @@ import com.amlcurran.messages.core.data.Contact;
 import com.amlcurran.messages.core.data.Conversation;
 import com.amlcurran.messages.core.preferences.PreferenceStore;
 import com.amlcurran.messages.data.InFlightSmsMessage;
-import com.amlcurran.messages.loaders.MessagesLoader;
+import com.amlcurran.messages.loaders.ConversationLoader;
 import com.amlcurran.messages.loaders.PhotoLoader;
 import com.amlcurran.messages.preferences.SharedPreferenceStore;
 
@@ -45,14 +45,14 @@ public class Notifier {
     public static final String ACTION_VIEW_CONVERSATION = "com.amlcurran.messages.notification.VIEW_CONVERSATION";
     private final NotificationManagerCompat notificationManager;
     private final NotificationBuilder notificationBuilder;
-    private final MessagesLoader loader;
+    private final ConversationLoader loader;
     private final PreferenceStore preferenceStore;
     private final ArrayList<Conversation> postedConversations;
     private final PhotoLoader photoLoader;
 
     public Notifier(Context context) {
         this.preferenceStore = new SharedPreferenceStore(context);
-        this.loader = SingletonManager.getMessagesLoader(context);
+        this.loader = SingletonManager.getConversationLoader(context);
         this.photoLoader = SingletonManager.getPhotoLoader(context);
         this.notificationManager = NotificationManagerCompat.from(context);
         this.notificationBuilder = new NotificationBuilder(context, new SharedPreferenceStore(context));

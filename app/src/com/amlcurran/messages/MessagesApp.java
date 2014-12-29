@@ -30,6 +30,7 @@ import com.amlcurran.messages.demo.DemoMessagesLoader;
 import com.amlcurran.messages.events.BroadcastEventBus;
 import com.amlcurran.messages.events.BroadcastEventSubscriber;
 import com.amlcurran.messages.loaders.AndroidPhotoLoader;
+import com.amlcurran.messages.loaders.ConversationLoader;
 import com.amlcurran.messages.loaders.ExecutorMessagesLoader;
 import com.amlcurran.messages.loaders.MemoryMessagesCache;
 import com.amlcurran.messages.loaders.MessagesCache;
@@ -47,6 +48,7 @@ public class MessagesApp extends Application implements BroadcastEventSubscriber
     private BroadcastEventSubscriber subscriber;
     private MessagesCache cache;
     MessagesLoader loader;
+    ConversationLoader conversationLoader;
     PhotoLoader photoLoader;
     Notifier notifier;
     EventBus eventBus;
@@ -66,7 +68,9 @@ public class MessagesApp extends Application implements BroadcastEventSubscriber
         if (BuildConfig.FLAVOR.equals("demo")) {
             loader = new DemoMessagesLoader(this);
         } else {
-            loader = new ExecutorMessagesLoader(this, executor, cache, eventBus, uiHandler);
+            ExecutorMessagesLoader executorMessagesLoader = new ExecutorMessagesLoader(this, executor, cache, eventBus, uiHandler);
+            loader = executorMessagesLoader;
+            conversationLoader = executorMessagesLoader;
         }
         photoLoader = new AndroidPhotoLoader(this, cache, executor, uiHandler);
 
@@ -79,7 +83,7 @@ public class MessagesApp extends Application implements BroadcastEventSubscriber
 
         updateNotificationListener = new UpdateNotificationListener(notifier);
 
-        conversationList = new ConversationList(loader, new SharedPreferenceStore(this), uiHandler);
+        conversationList = new ConversationList(conversationLoader, new SharedPreferenceStore(this), uiHandler);
         conversationList.addCallbacks(updateNotificationListener);
 
         primeZygote(executor);

@@ -80,7 +80,7 @@ public class ComposeNewFragment extends Fragment implements ComposeNewView {
         SmsComposeListener listener = ((SmsComposeListener) getActivity());
         DefaultAppChecker defaultAppChecker = new DefaultAppChecker(getActivity());
         PersonPicker personPicker = ((PersonPicker) getView().findViewById(R.id.new_person_picker));
-        composeNewController = new ComposeNewController(this, personPicker, dependencyRepository, listener, defaultAppChecker, getResources());
+        composeNewController = new ComposeNewController(this, personPicker, dependencyRepository, listener, defaultAppChecker, getResources(), SingletonManager.getConversationLoader(getActivity()));
         composeNewController.create(getArgument(EXTRA_ADDRESS), getArgument(EXTRA_MESSAGE));
 
         SourceBinderAdapter<Contact> adapter = new SourceBinderAdapter<Contact>(getActivity(), composeNewController.getSource(), new ContactBinder(SingletonManager.getPhotoLoader(getActivity())));

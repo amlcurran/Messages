@@ -31,6 +31,7 @@ import com.amlcurran.messages.core.loaders.ConversationListChangeListener;
 import com.amlcurran.messages.core.loaders.OnContactQueryListener;
 import com.amlcurran.messages.core.loaders.ThreadListener;
 import com.amlcurran.messages.data.ParcelablePhoneNumber;
+import com.amlcurran.messages.loaders.ConversationLoader;
 import com.amlcurran.messages.loaders.HasConversationListener;
 import com.amlcurran.messages.loaders.MessagesLoader;
 import com.amlcurran.messages.loaders.OnThreadDeleteListener;
@@ -39,7 +40,7 @@ import com.amlcurran.messages.loaders.Task;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DemoMessagesLoader implements MessagesLoader {
+public class DemoMessagesLoader implements MessagesLoader, ConversationLoader {
     private Context context;
 
     public DemoMessagesLoader(Context context) {

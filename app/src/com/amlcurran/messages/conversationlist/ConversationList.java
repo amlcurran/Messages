@@ -21,22 +21,22 @@ import android.os.Handler;
 import com.amlcurran.messages.core.conversationlist.ConversationListListener;
 import com.amlcurran.messages.core.data.Conversation;
 import com.amlcurran.messages.core.preferences.PreferenceStore;
-import com.amlcurran.messages.loaders.MessagesLoader;
+import com.amlcurran.messages.loaders.ConversationLoader;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class ConversationList {
 
-    private final MessagesLoader messagesLoader;
+    private final ConversationLoader conversationLoader;
     private final PreferenceStore preferenceStore;
     private final Handler uiHandler;
     private final List<Callbacks> callbacksList = new ArrayList<Callbacks>();
     private final List<Conversation> conversationList = new ArrayList<Conversation>();
     private LoadingState state;
 
-    public ConversationList(MessagesLoader messagesLoader, PreferenceStore preferenceStore, Handler uiHandler) {
-        this.messagesLoader = messagesLoader;
+    public ConversationList(ConversationLoader conversationLoader, PreferenceStore preferenceStore, Handler uiHandler) {
+        this.conversationLoader = conversationLoader;
         this.preferenceStore = preferenceStore;
         this.uiHandler = uiHandler;
         this.state = LoadingState.INITIAL_LOAD;
@@ -109,7 +109,7 @@ public class ConversationList {
         for (Callbacks callbacks : callbacksList) {
             updateCallback(callbacks);
         }
-        messagesLoader.loadConversationList(new ConversationListListener() {
+        conversationLoader.loadConversationList(new ConversationListListener() {
             @Override
             public void onConversationListLoaded(List<Conversation> conversations) {
                 state = LoadingState.LOADED;
