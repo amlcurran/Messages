@@ -67,7 +67,9 @@ public class MessagesApp extends Application implements BroadcastEventSubscriber
         eventBus = new BroadcastEventBus(this);
 
         if (BuildConfig.FLAVOR.equals("demo")) {
-            loader = new DemoMessagesLoader(this);
+            DemoMessagesLoader demoMessagesLoader = new DemoMessagesLoader(this);
+            loader = demoMessagesLoader;
+            conversationLoader = demoMessagesLoader;
         } else {
             loader = new ExecutorMessagesLoader(this, executor, cache, eventBus, uiHandler);
             conversationLoader = new ExecutorConversationLoader(executor, this, uiHandler);
