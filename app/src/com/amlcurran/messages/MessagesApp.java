@@ -31,6 +31,7 @@ import com.amlcurran.messages.events.BroadcastEventBus;
 import com.amlcurran.messages.events.BroadcastEventSubscriber;
 import com.amlcurran.messages.loaders.AndroidPhotoLoader;
 import com.amlcurran.messages.loaders.ConversationLoader;
+import com.amlcurran.messages.loaders.ExecutorConversationLoader;
 import com.amlcurran.messages.loaders.ExecutorMessagesLoader;
 import com.amlcurran.messages.loaders.MemoryMessagesCache;
 import com.amlcurran.messages.loaders.MessagesCache;
@@ -68,9 +69,8 @@ public class MessagesApp extends Application implements BroadcastEventSubscriber
         if (BuildConfig.FLAVOR.equals("demo")) {
             loader = new DemoMessagesLoader(this);
         } else {
-            ExecutorMessagesLoader executorMessagesLoader = new ExecutorMessagesLoader(this, executor, cache, eventBus, uiHandler);
-            loader = executorMessagesLoader;
-            conversationLoader = executorMessagesLoader;
+            loader = new ExecutorMessagesLoader(this, executor, cache, eventBus, uiHandler);
+            conversationLoader = new ExecutorConversationLoader(executor, this, uiHandler);
         }
         photoLoader = new AndroidPhotoLoader(this, cache, executor, uiHandler);
 

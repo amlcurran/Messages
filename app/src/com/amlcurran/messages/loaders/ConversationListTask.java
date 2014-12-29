@@ -41,7 +41,7 @@ class ConversationListTask implements Callable<Object> {
         conversationListLoader = new ConversationListLoader(contentResolver, sort, ConversationListHelperFactory.get());
     }
 
-    public ConversationListTask(ContentResolver contentResolver, ConversationListListener loadListener, Sort sort, MessagesCache cache) {
+    public ConversationListTask(ContentResolver contentResolver, ConversationListListener loadListener, Sort sort) {
         this(contentResolver, null, null, loadListener, sort);
     }
 

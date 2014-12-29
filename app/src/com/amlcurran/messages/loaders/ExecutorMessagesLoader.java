@@ -76,7 +76,22 @@ public class ExecutorMessagesLoader implements MessagesLoader, ConversationLoade
 
     @Override
     public void loadConversationList(final ConversationListListener loadListener, Sort sort) {
-        submit(new ConversationListTask(getResolver(), loadListener, sort, cache));
+        submit(new ConversationListTask(getResolver(), loadListener, sort));
+    }
+
+    @Override
+    public void loadUnreadConversationList(ConversationListListener loadListener) {
+        submit(new UnreadConversationListTask(getResolver(), loadListener));
+    }
+
+    @Override
+    public void deleteThreads(List<Conversation> conversationList, OnThreadDeleteListener threadDeleteListener) {
+        submit(new DeleteThreadTask(getResolver(), conversationList, threadDeleteListener, uiHandler));
+    }
+
+    @Override
+    public void getHasConversationWith(Contact contact, HasConversationListener hasConversationListener) {
+        submit(new HasConversationTask(getResolver(), hasConversationListener, contact, uiHandler));
     }
 
     @Override
@@ -90,11 +105,6 @@ public class ExecutorMessagesLoader implements MessagesLoader, ConversationLoade
     }
 
     @Override
-    public void loadUnreadConversationList(ConversationListListener loadListener) {
-        submit(new UnreadConversationListTask(getResolver(), loadListener));
-    }
-
-    @Override
     public void cancelAll() {
         executor.shutdownNow();
     }
@@ -102,11 +112,6 @@ public class ExecutorMessagesLoader implements MessagesLoader, ConversationLoade
     @Override
     public void queryContact(PhoneNumber phoneNumber, OnContactQueryListener onContactQueryListener) {
         submit(new ContactTask(getResolver(), phoneNumber.flatten(), onContactQueryListener, uiHandler));
-    }
-
-    @Override
-    public void deleteThreads(List<Conversation> conversationList, OnThreadDeleteListener threadDeleteListener) {
-        submit(new DeleteThreadTask(getResolver(), conversationList, threadDeleteListener, uiHandler));
     }
 
     @Override
@@ -122,11 +127,6 @@ public class ExecutorMessagesLoader implements MessagesLoader, ConversationLoade
     @Override
     public void loadContacts(ContactListListener contactListListener) {
         submit(new ContactsTask(getResolver(), contactListListener, uiHandler));
-    }
-
-    @Override
-    public void getHasConversationWith(Contact contact, HasConversationListener hasConversationListener) {
-        submit(new HasConversationTask(getResolver(), hasConversationListener, contact, uiHandler));
     }
 
     @Override
