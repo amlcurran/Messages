@@ -16,7 +16,7 @@
 
 package com.amlcurran.messages;
 
-import com.amlcurran.messages.conversationlist.data.ConversationList;
+import com.amlcurran.messages.core.conversationlist.ConversationList;
 import com.amlcurran.messages.core.data.Conversation;
 import com.amlcurran.messages.notifications.Notifier;
 

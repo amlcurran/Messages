@@ -35,7 +35,7 @@ import com.amlcurran.messages.data.InFlightSmsMessage;
 import com.amlcurran.messages.launch.IntentDataExtractor;
 import com.amlcurran.messages.launch.LaunchAction;
 import com.amlcurran.messages.launch.LaunchAssistant;
-import com.amlcurran.messages.conversationlist.data.ConversationLoader;
+import com.amlcurran.messages.core.conversationlist.ConversationLoader;
 import com.amlcurran.messages.loaders.MessagesLoader;
 import com.amlcurran.messages.loaders.OnThreadDeleteListener;
 import com.amlcurran.messages.notifications.BlockingInUiDialogNotifier;

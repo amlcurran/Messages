@@ -31,8 +31,8 @@ import com.amlcurran.messages.core.loaders.ConversationListChangeListener;
 import com.amlcurran.messages.core.loaders.OnContactQueryListener;
 import com.amlcurran.messages.core.loaders.ThreadListener;
 import com.amlcurran.messages.data.ParcelablePhoneNumber;
-import com.amlcurran.messages.conversationlist.data.ConversationLoader;
-import com.amlcurran.messages.conversationlist.data.HasConversationListener;
+import com.amlcurran.messages.core.conversationlist.ConversationLoader;
+import com.amlcurran.messages.core.conversationlist.HasConversationListener;
 import com.amlcurran.messages.loaders.MessagesLoader;
 import com.amlcurran.messages.loaders.Task;
 

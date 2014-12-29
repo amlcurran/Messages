@@ -23,14 +23,15 @@ import android.preference.PreferenceManager;
 import android.text.SpannableStringBuilder;
 import android.text.util.Linkify;
 
-import com.amlcurran.messages.conversationlist.data.ConversationList;
+import com.amlcurran.messages.core.conversationlist.ConversationList;
+import com.amlcurran.messages.core.CommandQueue;
 import com.amlcurran.messages.core.events.Broadcast;
 import com.amlcurran.messages.core.events.EventBus;
 import com.amlcurran.messages.demo.DemoMessagesLoader;
 import com.amlcurran.messages.events.BroadcastEventBus;
 import com.amlcurran.messages.events.BroadcastEventSubscriber;
 import com.amlcurran.messages.loaders.AndroidPhotoLoader;
-import com.amlcurran.messages.conversationlist.data.ConversationLoader;
+import com.amlcurran.messages.core.conversationlist.ConversationLoader;
 import com.amlcurran.messages.conversationlist.data.ExecutorConversationLoader;
 import com.amlcurran.messages.loaders.ExecutorMessagesLoader;
 import com.amlcurran.messages.loaders.MemoryMessagesCache;
@@ -61,7 +62,7 @@ public class MessagesApp extends Application implements BroadcastEventSubscriber
         super.onCreate();
         PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
         ExecutorService executor = Executors.newCachedThreadPool();
-        Handler uiHandler = new Handler(getMainLooper());
+        final Handler uiHandler = new Handler(getMainLooper());
 
         cache = new MemoryMessagesCache();
         eventBus = new BroadcastEventBus(this);
@@ -85,7 +86,7 @@ public class MessagesApp extends Application implements BroadcastEventSubscriber
 
         updateNotificationListener = new UpdateNotificationListener(notifier);
 
-        conversationList = new ConversationList(conversationLoader, new SharedPreferenceStore(this), uiHandler);
+        conversationList = new ConversationList(conversationLoader, new SharedPreferenceStore(this), new HandlerCommandQueue(uiHandler));
         conversationList.addCallbacks(updateNotificationListener);
 
         primeZygote(executor);
@@ -120,6 +121,21 @@ public class MessagesApp extends Application implements BroadcastEventSubscriber
     public void onMessageReceived() {
         cache.invalidate();
         conversationList.reloadConversations();
+    }
+
+    private static class HandlerCommandQueue implements CommandQueue {
+
+        private final Handler uiHandler;
+
+        public HandlerCommandQueue(Handler uiHandler) {
+            this.uiHandler = uiHandler;
+        }
+
+        @Override
+        public void enqueue(Runnable runnable) {
+            uiHandler.post(runnable);
+        }
+
     }
 
     private class PrimeLinkifyTask implements Callable<Object> {

@@ -14,11 +14,9 @@
  * limitations under the License.
  */
 
-package com.amlcurran.messages.conversationlist.data;
+package com.amlcurran.messages.core.conversationlist;
 
-import android.os.Handler;
-
-import com.amlcurran.messages.core.conversationlist.ConversationListListener;
+import com.amlcurran.messages.core.CommandQueue;
 import com.amlcurran.messages.core.data.Conversation;
 import com.amlcurran.messages.core.preferences.PreferenceStore;
 
@@ -29,15 +27,15 @@ public class ConversationList {
 
     private final ConversationLoader conversationLoader;
     private final PreferenceStore preferenceStore;
-    private final Handler uiHandler;
+    private final CommandQueue uiCommandQueue;
     private final List<Callbacks> callbacksList = new ArrayList<Callbacks>();
     private final List<Conversation> conversationList = new ArrayList<Conversation>();
     private LoadingState state;
 
-    public ConversationList(ConversationLoader conversationLoader, PreferenceStore preferenceStore, Handler uiHandler) {
+    public ConversationList(ConversationLoader conversationLoader, PreferenceStore preferenceStore, CommandQueue uiCommandQueue) {
         this.conversationLoader = conversationLoader;
         this.preferenceStore = preferenceStore;
-        this.uiHandler = uiHandler;
+        this.uiCommandQueue = uiCommandQueue;
         this.state = LoadingState.INITIAL_LOAD;
         this.preferenceStore.listenToPreferenceChanges(new PokeCallbacksListener());
     }
@@ -77,7 +75,7 @@ public class ConversationList {
     }
 
     private void postInvalidated(final Callbacks callbacks, final List<Conversation> conversationList) {
-        uiHandler.post(new Runnable() {
+        uiCommandQueue.enqueue(new Runnable() {
             @Override
             public void run() {
                 callbacks.listInvalidated(conversationList);
@@ -86,7 +84,7 @@ public class ConversationList {
     }
 
     private void postLoading(final Callbacks callbacks) {
-        uiHandler.post(new Runnable() {
+        uiCommandQueue.enqueue(new Runnable() {
             @Override
             public void run() {
                 callbacks.listLoading();
@@ -95,7 +93,7 @@ public class ConversationList {
     }
 
     private void postLoaded(final Callbacks callbacks, final List<Conversation> conversationList) {
-        uiHandler.post(new Runnable() {
+        uiCommandQueue.enqueue(new Runnable() {
             @Override
             public void run() {
                 callbacks.listLoaded(conversationList);
@@ -104,7 +102,7 @@ public class ConversationList {
     }
 
     private void postConversationDeleted(final Callbacks callbacks, final Conversation deletedConversation, final List<Conversation> conversationList) {
-        uiHandler.post(new Runnable() {
+        uiCommandQueue.enqueue(new Runnable() {
             @Override
             public void run() {
                 callbacks.conversationDeleted(deletedConversation, conversationList);
@@ -134,7 +132,7 @@ public class ConversationList {
         conversationList.addAll(conversations);
     }
 
-    void deletedConversations(List<Conversation> deletedConversations) {
+    public void deletedConversations(List<Conversation> deletedConversations) {
         for (Conversation deletedConversation : deletedConversations) {
             conversationList.remove(deletedConversation);
             for (Callbacks callbacks : callbacksList) {

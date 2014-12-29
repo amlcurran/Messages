@@ -22,7 +22,7 @@ import android.os.Handler;
 import android.provider.Telephony;
 
 import com.amlcurran.messages.MessagesLog;
-import com.amlcurran.messages.conversationlist.data.ConversationList;
+import com.amlcurran.messages.core.conversationlist.ConversationList;
 import com.amlcurran.messages.core.data.SmsMessage;
 import com.amlcurran.messages.core.loaders.ConversationListChangeListener;
 import com.amlcurran.messages.core.loaders.ThreadListener;

@@ -17,7 +17,7 @@
 package com.amlcurran.messages.conversationlist;
 
 import com.amlcurran.messages.DependencyRepository;
-import com.amlcurran.messages.conversationlist.data.ConversationList;
+import com.amlcurran.messages.core.conversationlist.ConversationList;
 import com.amlcurran.messages.core.conversationlist.ConversationListView;
 import com.amlcurran.messages.core.data.Conversation;
 import com.amlcurran.messages.core.preferences.PreferenceStore;

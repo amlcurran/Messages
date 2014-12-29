@@ -21,6 +21,7 @@ import android.database.Cursor;
 import android.os.Handler;
 import android.provider.Telephony;
 
+import com.amlcurran.messages.core.conversationlist.HasConversationListener;
 import com.amlcurran.messages.core.data.Contact;
 import com.github.amlcurran.sourcebinder.CursorHelper;
 

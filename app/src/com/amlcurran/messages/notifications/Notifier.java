@@ -28,7 +28,7 @@ import com.amlcurran.messages.core.data.Contact;
 import com.amlcurran.messages.core.data.Conversation;
 import com.amlcurran.messages.core.preferences.PreferenceStore;
 import com.amlcurran.messages.data.InFlightSmsMessage;
-import com.amlcurran.messages.conversationlist.data.ConversationLoader;
+import com.amlcurran.messages.core.conversationlist.ConversationLoader;
 import com.amlcurran.messages.loaders.PhotoLoader;
 import com.amlcurran.messages.preferences.SharedPreferenceStore;
 

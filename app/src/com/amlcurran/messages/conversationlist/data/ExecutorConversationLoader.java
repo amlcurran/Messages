@@ -23,6 +23,8 @@ import android.os.Handler;
 import com.amlcurran.messages.MessagesLog;
 import com.amlcurran.messages.SingletonManager;
 import com.amlcurran.messages.core.conversationlist.ConversationListListener;
+import com.amlcurran.messages.core.conversationlist.ConversationLoader;
+import com.amlcurran.messages.core.conversationlist.HasConversationListener;
 import com.amlcurran.messages.core.data.Contact;
 import com.amlcurran.messages.core.data.Conversation;
 import com.amlcurran.messages.core.data.Sort;
