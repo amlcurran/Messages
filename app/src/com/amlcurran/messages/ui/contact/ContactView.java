@@ -17,10 +17,10 @@
 package com.amlcurran.messages.ui.contact;
 
 import com.amlcurran.messages.core.data.Contact;
-import com.amlcurran.messages.loaders.MessagesLoader;
+import com.amlcurran.messages.loaders.PhotoLoader;
 
 public interface ContactView {
-    void setContact(Contact contact, MessagesLoader loader);
+    void setContact(Contact contact, PhotoLoader loader);
 
     void setClickToView(ContactClickListener callback);
 }

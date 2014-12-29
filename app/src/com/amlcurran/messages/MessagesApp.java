@@ -29,10 +29,12 @@ import com.amlcurran.messages.core.events.EventBus;
 import com.amlcurran.messages.demo.DemoMessagesLoader;
 import com.amlcurran.messages.events.BroadcastEventBus;
 import com.amlcurran.messages.events.BroadcastEventSubscriber;
+import com.amlcurran.messages.loaders.AndroidPhotoLoader;
 import com.amlcurran.messages.loaders.ExecutorMessagesLoader;
 import com.amlcurran.messages.loaders.MemoryMessagesCache;
 import com.amlcurran.messages.loaders.MessagesCache;
 import com.amlcurran.messages.loaders.MessagesLoader;
+import com.amlcurran.messages.loaders.PhotoLoader;
 import com.amlcurran.messages.notifications.Notifier;
 import com.amlcurran.messages.preferences.SharedPreferenceStore;
 
@@ -45,6 +47,7 @@ public class MessagesApp extends Application implements BroadcastEventSubscriber
     private BroadcastEventSubscriber subscriber;
     private MessagesCache cache;
     MessagesLoader loader;
+    PhotoLoader photoLoader;
     Notifier notifier;
     EventBus eventBus;
     ConversationList conversationList;
@@ -65,6 +68,7 @@ public class MessagesApp extends Application implements BroadcastEventSubscriber
         } else {
             loader = new ExecutorMessagesLoader(this, executor, cache, eventBus, uiHandler);
         }
+        photoLoader = new AndroidPhotoLoader(this, cache, executor, uiHandler);
 
         notifier = new Notifier(this);
         subscriber = new BroadcastEventSubscriber(this);

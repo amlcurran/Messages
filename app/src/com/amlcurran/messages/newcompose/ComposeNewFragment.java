@@ -28,6 +28,7 @@ import android.widget.Toast;
 
 import com.amlcurran.messages.DependencyRepository;
 import com.amlcurran.messages.R;
+import com.amlcurran.messages.SingletonManager;
 import com.amlcurran.messages.SmsComposeListener;
 import com.amlcurran.messages.core.data.Contact;
 import com.amlcurran.messages.telephony.DefaultAppChecker;
@@ -82,7 +83,7 @@ public class ComposeNewFragment extends Fragment implements ComposeNewView {
         composeNewController = new ComposeNewController(this, personPicker, dependencyRepository, listener, defaultAppChecker, getResources());
         composeNewController.create(getArgument(EXTRA_ADDRESS), getArgument(EXTRA_MESSAGE));
 
-        SourceBinderAdapter<Contact> adapter = new SourceBinderAdapter<Contact>(getActivity(), composeNewController.getSource(), new ContactBinder(dependencyRepository.getMessagesLoader()));
+        SourceBinderAdapter<Contact> adapter = new SourceBinderAdapter<Contact>(getActivity(), composeNewController.getSource(), new ContactBinder(SingletonManager.getPhotoLoader(getActivity())));
         personListView.setAdapter(adapter);
         personListView.setOnItemClickListener(new NotifyControllerClickListener());
         personListView.setChoiceMode(ListView.CHOICE_MODE_SINGLE);

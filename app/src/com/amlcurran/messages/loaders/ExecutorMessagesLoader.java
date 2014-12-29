@@ -21,17 +21,16 @@ import android.content.Context;
 import android.os.Handler;
 
 import com.amlcurran.messages.MessagesLog;
-import com.amlcurran.messages.conversationlist.PhotoLoadListener;
 import com.amlcurran.messages.core.conversationlist.ConversationListListener;
 import com.amlcurran.messages.core.data.Contact;
 import com.amlcurran.messages.core.data.Conversation;
 import com.amlcurran.messages.core.data.PhoneNumber;
 import com.amlcurran.messages.core.data.Sort;
+import com.amlcurran.messages.core.events.EventBus;
 import com.amlcurran.messages.core.loaders.ContactListListener;
 import com.amlcurran.messages.core.loaders.ConversationListChangeListener;
 import com.amlcurran.messages.core.loaders.OnContactQueryListener;
 import com.amlcurran.messages.core.loaders.ThreadListener;
-import com.amlcurran.messages.core.events.EventBus;
 
 import java.util.Collections;
 import java.util.List;
@@ -87,11 +86,6 @@ public class ExecutorMessagesLoader implements MessagesLoader {
     @Override
     public void markThreadAsRead(String threadId, ConversationListChangeListener listChangeListener) {
         submit(new MarkReadTask(getResolver(), eventBus, Collections.singletonList(threadId)));
-    }
-
-    @Override
-    public Task loadPhoto(Contact contact, PhotoLoadListener photoLoadListener) {
-        return submit(new PhotoLoadTask(getResolver(), context.getResources(), contact, photoLoadListener, cache, uiHandler));
     }
 
     @Override

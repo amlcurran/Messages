@@ -27,7 +27,7 @@ import com.amlcurran.messages.bucket.Truss;
 import com.amlcurran.messages.core.data.Conversation;
 import com.amlcurran.messages.core.data.DraftRepository;
 import com.amlcurran.messages.core.preferences.PreferenceStore;
-import com.amlcurran.messages.loaders.MessagesLoader;
+import com.amlcurran.messages.loaders.PhotoLoader;
 import com.github.amlcurran.sourcebinder.SimpleBinder;
 
 public class ConversationsBinder extends SimpleBinder<Conversation> {
@@ -43,7 +43,7 @@ public class ConversationsBinder extends SimpleBinder<Conversation> {
     private final AdapterPhotoLoader adapterPhotoLoader;
     private final Context context;
 
-    public ConversationsBinder(Context context, TextFormatter textFormatter, Resources resources, MessagesLoader loader, DraftRepository draftRepository, PreferenceStore preferenceStore) {
+    public ConversationsBinder(Context context, TextFormatter textFormatter, Resources resources, PhotoLoader loader, DraftRepository draftRepository, PreferenceStore preferenceStore) {
         this.context = context;
         this.draftRepository = draftRepository;
         this.preferenceStore = preferenceStore;

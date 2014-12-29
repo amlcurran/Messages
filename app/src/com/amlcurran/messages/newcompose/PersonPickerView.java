@@ -54,7 +54,7 @@ class PersonPickerView extends LinearLayout implements PersonPicker {
     @Override
     public void chosenRecipient(Contact contact) {
         personChip.setVisibility(View.VISIBLE);
-        personChip.setContact(contact, SingletonManager.getMessagesLoader(getContext()));
+        personChip.setContact(contact, SingletonManager.getPhotoLoader(getContext()));
         numberEntry.setText(contact.getNumber().flatten());
     }
 

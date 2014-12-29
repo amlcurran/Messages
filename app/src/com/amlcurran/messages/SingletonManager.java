@@ -21,6 +21,7 @@ import android.content.Context;
 import com.amlcurran.messages.conversationlist.ConversationList;
 import com.amlcurran.messages.core.events.EventBus;
 import com.amlcurran.messages.loaders.MessagesLoader;
+import com.amlcurran.messages.loaders.PhotoLoader;
 import com.amlcurran.messages.notifications.Notifier;
 
 public class SingletonManager {
@@ -43,5 +44,9 @@ public class SingletonManager {
 
     public static ConversationList getConversationList(Context context) {
         return getMessagesApp(context).conversationList;
+    }
+
+    public static PhotoLoader getPhotoLoader(Context context) {
+        return getMessagesApp(context).photoLoader;
     }
 }

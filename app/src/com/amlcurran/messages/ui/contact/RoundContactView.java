@@ -23,7 +23,7 @@ import android.widget.LinearLayout;
 
 import com.amlcurran.messages.R;
 import com.amlcurran.messages.core.data.Contact;
-import com.amlcurran.messages.loaders.MessagesLoader;
+import com.amlcurran.messages.loaders.PhotoLoader;
 
 public class RoundContactView extends LinearLayout implements ContactView {
 
@@ -43,7 +43,7 @@ public class RoundContactView extends LinearLayout implements ContactView {
     }
 
     @Override
-    public void setContact(final Contact contact, MessagesLoader loader) {
+    public void setContact(final Contact contact, PhotoLoader loader) {
         photoLoaderManager.stopLoadingPhoto();
         contactFormatter.format(contact);
         viewContactClickListener.contact = contact;

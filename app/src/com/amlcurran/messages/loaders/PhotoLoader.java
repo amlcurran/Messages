@@ -14,13 +14,11 @@
  * limitations under the License.
  */
 
-package com.amlcurran.messages.ui.contact;
+package com.amlcurran.messages.loaders;
 
+import com.amlcurran.messages.conversationlist.PhotoLoadListener;
 import com.amlcurran.messages.core.data.Contact;
-import com.amlcurran.messages.loaders.PhotoLoader;
 
-interface PhotoLoaderManager {
-    void loadContactPhoto(Contact contact, PhotoLoader loader);
-
-    void stopLoadingPhoto();
+public interface PhotoLoader {
+    Task loadPhoto(Contact contact, PhotoLoadListener photoLoadListener);
 }

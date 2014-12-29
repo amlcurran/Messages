@@ -31,10 +31,8 @@ import com.amlcurran.messages.conversationlist.adapter.ConversationsBinder;
 import com.amlcurran.messages.conversationlist.adapter.TextFormatter;
 import com.amlcurran.messages.core.conversationlist.ConversationListView;
 import com.amlcurran.messages.core.data.Conversation;
-import com.amlcurran.messages.loaders.MessagesLoader;
 import com.amlcurran.messages.threads.DefaultContactClickListener;
 import com.amlcurran.messages.ui.control.Master;
-import com.espian.utils.ProviderHelper;
 import com.github.amlcurran.sourcebinder.ArrayListSource;
 import com.github.amlcurran.sourcebinder.SourceBinderAdapter;
 
@@ -63,12 +61,11 @@ public class ConversationListFragment extends ListFragment implements Conversati
         ArrayListSource<Conversation> source = new ArrayListSource<Conversation>();
         MarkAsUnreadViewCallback unreadViewCallback = (MarkAsUnreadViewCallback) getActivity();
         DeleteThreadViewCallback deleteThreadsViewCallback = (DeleteThreadViewCallback) getActivity();
-        MessagesLoader messageLoader = new ProviderHelper<>(MessagesLoader.Provider.class).get(getActivity()).getMessagesLoader();
         DependencyRepository dependencyRepository = (DependencyRepository) getActivity();
         conversationController = new ConversationListViewController(this, source, dependencyRepository, SingletonManager.getConversationList(getActivity()));
 
         TextFormatter textFormatter = new TextFormatter(getActivity());
-        ConversationsBinder binder = new ConversationsBinder(getActivity(), textFormatter, getResources(), messageLoader, dependencyRepository.getDraftRepository(), dependencyRepository.getPreferenceStore());
+        ConversationsBinder binder = new ConversationsBinder(getActivity(), textFormatter, getResources(), SingletonManager.getPhotoLoader(getActivity()), dependencyRepository.getDraftRepository(), dependencyRepository.getPreferenceStore());
         SourceBinderAdapter adapter = new SourceBinderAdapter<>(getActivity(), source, binder);
         setListAdapter(adapter);
         getListView().setChoiceMode(ListView.CHOICE_MODE_MULTIPLE_MODAL);

@@ -21,13 +21,13 @@ import android.content.res.Resources;
 import com.amlcurran.messages.R;
 import com.amlcurran.messages.core.data.Contact;
 import com.amlcurran.messages.core.data.Conversation;
-import com.amlcurran.messages.loaders.MessagesLoader;
+import com.amlcurran.messages.loaders.PhotoLoader;
 
 class AdapterPhotoLoader {
-    private final MessagesLoader loader;
+    private final PhotoLoader loader;
     private final float animationLength;
 
-    public AdapterPhotoLoader(MessagesLoader loader, Resources resources) {
+    public AdapterPhotoLoader(PhotoLoader loader, Resources resources) {
         this.loader = loader;
         this.animationLength = resources.getDimension(R.dimen.photo_animation_length);
     }

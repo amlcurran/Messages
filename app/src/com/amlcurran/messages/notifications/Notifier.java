@@ -29,6 +29,7 @@ import com.amlcurran.messages.core.data.Conversation;
 import com.amlcurran.messages.core.preferences.PreferenceStore;
 import com.amlcurran.messages.data.InFlightSmsMessage;
 import com.amlcurran.messages.loaders.MessagesLoader;
+import com.amlcurran.messages.loaders.PhotoLoader;
 import com.amlcurran.messages.preferences.SharedPreferenceStore;
 
 import java.util.ArrayList;
@@ -47,10 +48,12 @@ public class Notifier {
     private final MessagesLoader loader;
     private final PreferenceStore preferenceStore;
     private final ArrayList<Conversation> postedConversations;
+    private final PhotoLoader photoLoader;
 
     public Notifier(Context context) {
         this.preferenceStore = new SharedPreferenceStore(context);
         this.loader = SingletonManager.getMessagesLoader(context);
+        this.photoLoader = SingletonManager.getPhotoLoader(context);
         this.notificationManager = NotificationManagerCompat.from(context);
         this.notificationBuilder = new NotificationBuilder(context, new SharedPreferenceStore(context));
         this.postedConversations = new ArrayList<Conversation>();
@@ -93,7 +96,7 @@ public class Notifier {
                 // Load the contact photo as well
                 Conversation singleConvo = conversations.get(0);
                 List<Conversation> newConversations = getNewConversations(conversations);
-                loader.loadPhoto(singleConvo.getContact(), new PostUnreadWhenLoadedListener(conversations, newConversations));
+                photoLoader.loadPhoto(singleConvo.getContact(), new PostUnreadWhenLoadedListener(conversations, newConversations));
             } else {
                 List<Conversation> newConversations = getNewConversations(conversations);
                 postUnreadNotification(conversations, null, newConversations);
