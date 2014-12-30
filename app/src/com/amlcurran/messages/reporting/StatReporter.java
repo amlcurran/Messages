@@ -14,14 +14,16 @@
  * limitations under the License.
  */
 
-package com.amlcurran.messages.core.reporting;
+package com.amlcurran.messages.reporting;
+
+import android.app.Activity;
 
 public interface StatReporter {
     void sendUiEvent(String label);
 
-    void start();
+    void start(Activity activity);
 
-    void stop();
+    void stop(Activity activity);
 
     void sendEvent(String label);
 }

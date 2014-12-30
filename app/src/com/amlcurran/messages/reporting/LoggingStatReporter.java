@@ -16,8 +16,9 @@
 
 package com.amlcurran.messages.reporting;
 
+import android.app.Activity;
+
 import com.amlcurran.messages.MessagesLog;
-import com.amlcurran.messages.core.reporting.StatReporter;
 
 public class LoggingStatReporter implements StatReporter {
     @Override
@@ -26,12 +27,12 @@ public class LoggingStatReporter implements StatReporter {
     }
 
     @Override
-    public void start() {
+    public void start(Activity activity) {
 
     }
 
     @Override
-    public void stop() {
+    public void stop(Activity activity) {
 
     }
 

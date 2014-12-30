@@ -42,6 +42,11 @@ import com.amlcurran.messages.loaders.photos.PhotoLoader;
 import com.amlcurran.messages.core.loaders.TaskQueue;
 import com.amlcurran.messages.notifications.Notifier;
 import com.amlcurran.messages.preferences.SharedPreferenceStore;
+import com.amlcurran.messages.reporting.EasyTrackerStatReporter;
+import com.amlcurran.messages.reporting.LoggingStatReporter;
+import com.amlcurran.messages.reporting.StatReporter;
+import com.amlcurran.messages.reporting.UserPreferenceWrappingStatReporter;
+import com.google.analytics.tracking.android.EasyTracker;
 
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
@@ -51,13 +56,14 @@ public class MessagesApp extends Application implements BroadcastEventSubscriber
 
     private BroadcastEventSubscriber subscriber;
     private MessagesCache cache;
+    private UpdateNotificationListener updateNotificationListener;
     MessagesLoader loader;
     ConversationLoader conversationLoader;
     PhotoLoader photoLoader;
     Notifier notifier;
     EventBus eventBus;
     ConversationList conversationList;
-    private UpdateNotificationListener updateNotificationListener;
+    StatReporter stats;
 
     @Override
     public void onCreate() {
@@ -68,6 +74,7 @@ public class MessagesApp extends Application implements BroadcastEventSubscriber
         Handler uiHandler = new Handler(getMainLooper());
         HandlerCommandQueue uiCommandQueue = new HandlerCommandQueue(uiHandler);
 
+        stats = createStatReporter();
         cache = new MemoryMessagesCache();
         eventBus = new BroadcastEventBus(this);
 
@@ -106,6 +113,16 @@ public class MessagesApp extends Application implements BroadcastEventSubscriber
                     .build());
         }
 
+    }
+
+    private StatReporter createStatReporter() {
+        StatReporter reporter;
+        if (BuildConfig.DEBUG) {
+            reporter = new LoggingStatReporter();
+        } else {
+            reporter = new EasyTrackerStatReporter(null, EasyTracker.getInstance(this));
+        }
+        return new UserPreferenceWrappingStatReporter(reporter, new SharedPreferenceStore(this));
     }
 
     private void primeZygote(ExecutorService executor) {

@@ -24,6 +24,7 @@ import com.amlcurran.messages.core.conversationlist.ConversationLoader;
 import com.amlcurran.messages.core.loaders.MessagesLoader;
 import com.amlcurran.messages.loaders.photos.PhotoLoader;
 import com.amlcurran.messages.notifications.Notifier;
+import com.amlcurran.messages.reporting.StatReporter;
 
 public class SingletonManager {
 
@@ -53,5 +54,9 @@ public class SingletonManager {
 
     public static ConversationLoader getConversationLoader(Context context) {
         return getMessagesApp(context).conversationLoader;
+    }
+
+    public static StatReporter getStatReporter(Context context) {
+        return getMessagesApp(context).stats;
     }
 }

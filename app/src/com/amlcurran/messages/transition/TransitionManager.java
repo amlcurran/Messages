@@ -17,7 +17,7 @@
 package com.amlcurran.messages.transition;
 
 import com.amlcurran.messages.ActivityController;
-import com.amlcurran.messages.core.reporting.StatReporter;
+import com.amlcurran.messages.reporting.StatReporter;
 import com.amlcurran.messages.ui.control.FragmentController;
 
 public class TransitionManager {

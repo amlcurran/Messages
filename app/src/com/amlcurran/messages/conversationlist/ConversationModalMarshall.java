@@ -23,26 +23,31 @@ import android.widget.AbsListView;
 
 import com.amlcurran.messages.R;
 import com.amlcurran.messages.core.data.Conversation;
+import com.amlcurran.messages.core.loaders.MessagesLoader;
+import com.amlcurran.messages.reporting.StatReporter;
 import com.amlcurran.messages.ui.contact.ContactClickListener;
 import com.espian.utils.ui.MenuFinder;
 import com.github.amlcurran.sourcebinder.Source;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class ConversationModalMarshall implements AbsListView.MultiChoiceModeListener {
 
     private final Source<Conversation> conversationSource;
     private final ContactClickListener contactClickListener;
     private final ArrayList<Conversation> selectedConversations;
-    private final MarkAsUnreadViewCallback markAsUnreadViewCallback;
     private final DeleteThreadViewCallback deleteThreadsViewCallback;
+    private final StatReporter statReporter;
+    private final MessagesLoader messagesLoader;
 
-    public ConversationModalMarshall(Source<Conversation> conversationSource, ContactClickListener contactClickListener, MarkAsUnreadViewCallback unreadViewCallback, DeleteThreadViewCallback deleteThreadViewCallback) {
+    public ConversationModalMarshall(Source<Conversation> conversationSource, ContactClickListener contactClickListener, DeleteThreadViewCallback deleteThreadViewCallback, StatReporter statReporter, MessagesLoader messagesLoader) {
         this.conversationSource = conversationSource;
         this.contactClickListener = contactClickListener;
-        this.markAsUnreadViewCallback = unreadViewCallback;
         this.deleteThreadsViewCallback = deleteThreadViewCallback;
-        this.selectedConversations = new ArrayList<Conversation>();
+        this.statReporter = statReporter;
+        this.messagesLoader = messagesLoader;
+        this.selectedConversations = new ArrayList<>();
     }
 
     @Override
@@ -81,7 +86,7 @@ public class ConversationModalMarshall implements AbsListView.MultiChoiceModeLis
                 return true;
 
             case R.id.modal_mark_unread:
-                markAsUnreadViewCallback.markAsUnread(copyConversations());
+                markAsUnread();
                 mode.finish();
                 return true;
 
@@ -94,8 +99,18 @@ public class ConversationModalMarshall implements AbsListView.MultiChoiceModeLis
         return false;
     }
 
+    private void markAsUnread() {
+        statReporter.sendUiEvent("mark_thread_unread");
+        List<String> threadIds = new ArrayList<>();
+        for (int i = 0; i < selectedConversations.size(); i++) {
+            Conversation conversation = selectedConversations.get(i);
+            threadIds.add(conversation.getThreadId());
+        }
+        messagesLoader.markThreadsAsUnread(threadIds);
+    }
+
     private ArrayList<Conversation> copyConversations() {
-        return new ArrayList<Conversation>(selectedConversations);
+        return new ArrayList<>(selectedConversations);
     }
 
     @Override

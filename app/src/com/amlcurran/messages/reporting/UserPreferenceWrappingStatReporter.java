@@ -14,7 +14,9 @@
  * limitations under the License.
  */
 
-package com.amlcurran.messages.core.reporting;
+package com.amlcurran.messages.reporting;
+
+import android.app.Activity;
 
 import com.amlcurran.messages.core.preferences.PreferenceStore;
 
@@ -35,12 +37,12 @@ public class UserPreferenceWrappingStatReporter implements StatReporter {
     }
 
     @Override
-    public void start() {
+    public void start(Activity activity) {
         statReporter.start();
     }
 
     @Override
-    public void stop() {
+    public void stop(Activity activity) {
         statReporter.stop();
     }
 

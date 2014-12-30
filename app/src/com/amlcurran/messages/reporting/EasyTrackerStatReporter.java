@@ -16,8 +16,9 @@
 
 package com.amlcurran.messages.reporting;
 
+import android.app.Activity;
+
 import com.amlcurran.messages.MessagesActivity;
-import com.amlcurran.messages.core.reporting.StatReporter;
 import com.google.analytics.tracking.android.EasyTracker;
 import com.google.analytics.tracking.android.MapBuilder;
 
@@ -37,12 +38,12 @@ public class EasyTrackerStatReporter implements StatReporter {
     }
 
     @Override
-    public void start() {
+    public void start(Activity activity) {
         tracker.activityStart(messagesActivity);
     }
 
     @Override
-    public void stop() {
+    public void stop(Activity activity) {
         tracker.activityStop(messagesActivity);
     }
 

@@ -21,7 +21,7 @@ import android.content.ContentResolver;
 import com.amlcurran.messages.core.data.Contact;
 import com.amlcurran.messages.core.data.PhoneNumber;
 import com.amlcurran.messages.data.ContactFactory;
-import com.amlcurran.messages.core.reporting.StatReporter;
+import com.amlcurran.messages.reporting.StatReporter;
 
 public class ExternalEventManager {
     private final ActivityController activityController;

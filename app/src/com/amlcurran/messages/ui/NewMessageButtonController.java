@@ -20,7 +20,7 @@ import android.os.Build;
 import android.view.View;
 import android.view.animation.DecelerateInterpolator;
 
-import com.amlcurran.messages.core.reporting.StatReporter;
+import com.amlcurran.messages.reporting.StatReporter;
 import com.amlcurran.messages.transition.TransitionManager;
 
 public class NewMessageButtonController {

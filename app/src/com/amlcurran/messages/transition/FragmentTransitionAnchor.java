@@ -21,7 +21,7 @@ import android.os.Bundle;
 import com.amlcurran.messages.ActivityController;
 import com.amlcurran.messages.MmsErrorFragment;
 import com.amlcurran.messages.core.data.Contact;
-import com.amlcurran.messages.core.reporting.StatReporter;
+import com.amlcurran.messages.reporting.StatReporter;
 import com.amlcurran.messages.data.ContactFactory;
 import com.amlcurran.messages.newcompose.ComposeNewFragment;
 import com.amlcurran.messages.ui.control.FragmentController;
