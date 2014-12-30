@@ -14,14 +14,16 @@
  * limitations under the License.
  */
 
-package com.amlcurran.messages.core.events;
+package com.amlcurran.messages.core;
 
-public interface EventSubscriber {
-    void startListening(Listener listener, Broadcast... broadcasts);
+public interface Logger {
+    void d(Object object, String message);
 
-    void stopListening();
+    void d(Object object, String message, Object... objects);
 
-    public interface Listener {
-        void onMessageReceived(Broadcast broadcast);
-    }
+    void w(Object object, String message);
+
+    void e(Object object, Throwable throwable);
+
+    void e(Object object, String message);
 }

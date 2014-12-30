@@ -23,6 +23,7 @@ import android.preference.PreferenceManager;
 import android.text.SpannableStringBuilder;
 import android.text.util.Linkify;
 
+import com.amlcurran.messages.core.Log;
 import com.amlcurran.messages.core.conversationlist.ConversationList;
 import com.amlcurran.messages.core.CommandQueue;
 import com.amlcurran.messages.core.events.Broadcast;
@@ -61,6 +62,7 @@ public class MessagesApp extends Application implements BroadcastEventSubscriber
     @Override
     public void onCreate() {
         super.onCreate();
+        Log.setLogger(new NewMessagesLogger());
         PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
         ExecutorService executor = Executors.newCachedThreadPool();
         Handler uiHandler = new Handler(getMainLooper());
@@ -120,7 +122,7 @@ public class MessagesApp extends Application implements BroadcastEventSubscriber
     }
 
     @Override
-    public void onMessageReceived() {
+    public void onMessageReceived(Broadcast broadcast) {
         cache.invalidate();
         conversationList.reloadConversations();
     }

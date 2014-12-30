@@ -59,10 +59,10 @@ public class BroadcastEventSubscriber extends BroadcastReceiver implements Event
         if (matchedActionBroadcast != null && matchedActionBroadcast.hasFilter()) {
             // Only if the filter matches do we notify
             if (matchesFilter(intent, matchedActionBroadcast)) {
-                listener.onMessageReceived();
+                listener.onMessageReceived(matchedActionBroadcast);
             }
         } else {
-            listener.onMessageReceived();
+            listener.onMessageReceived(matchedActionBroadcast);
         }
     }
 

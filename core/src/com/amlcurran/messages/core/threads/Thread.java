@@ -16,6 +16,7 @@
 
 package com.amlcurran.messages.core.threads;
 
+import com.amlcurran.messages.core.Log;
 import com.amlcurran.messages.core.data.PhoneNumber;
 import com.amlcurran.messages.core.data.SmsMessage;
 import com.amlcurran.messages.core.events.Broadcast;
@@ -71,7 +72,22 @@ public class Thread {
 
     private class LoadThreadOnMessage implements EventSubscriber.Listener {
         @Override
-        public void onMessageReceived() {
+        public void onMessageReceived(Broadcast broadcast) {
+            switch (broadcast.getAction()) {
+
+                case EventBus.BROADCAST_MESSAGE_SENT:
+                    Log.getLogger().d(this, "Message sent");
+                    break;
+
+                case EventBus.BROADCAST_MESSAGE_RECEIVED:
+                    Log.getLogger().d(this, "Message received");
+                    break;
+
+                case EventBus.BROADCAST_MESSAGE_SENDING:
+                    Log.getLogger().d(this, "Message sending");
+                    break;
+
+            }
             load();
         }
     }

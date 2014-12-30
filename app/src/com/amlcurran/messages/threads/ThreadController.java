@@ -43,7 +43,6 @@ class ThreadController {
     private final String composedMessage;
     private final ThreadView threadView;
     private final ListSource<SmsMessage> source;
-    private final EventSubscriber messageReceiver;
     private final DefaultAppChecker defaultChecker;
     private final DraftRepository draftRepository;
     private final ExternalEventManager externalEventManager;
@@ -58,7 +57,6 @@ class ThreadController {
         this.threadView = threadView;
         this.unreadViewCallback = unreadViewCallback;
         this.messageLoader = dependencyRepository.getMessagesLoader();
-        this.messageReceiver = messageReceiver;
         this.defaultChecker = defaultChecker;
         this.draftRepository = dependencyRepository.getDraftRepository();
         this.externalEventManager = dependencyRepository.getExternalEventManager();
@@ -76,7 +74,6 @@ class ThreadController {
 
     void stop() {
         thread.unsetCallbacks();
-        messageReceiver.stopListening();
         saveDraft();
     }
 
