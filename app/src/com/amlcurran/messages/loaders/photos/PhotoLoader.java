@@ -18,7 +18,7 @@ package com.amlcurran.messages.loaders.photos;
 
 import com.amlcurran.messages.conversationlist.PhotoLoadListener;
 import com.amlcurran.messages.core.data.Contact;
-import com.amlcurran.messages.loaders.Task;
+import com.amlcurran.messages.core.loaders.Task;
 
 public interface PhotoLoader {
     Task loadPhoto(Contact contact, PhotoLoadListener photoLoadListener);

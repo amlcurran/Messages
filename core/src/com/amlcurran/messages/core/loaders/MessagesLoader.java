@@ -14,12 +14,9 @@
  * limitations under the License.
  */
 
-package com.amlcurran.messages.loaders;
+package com.amlcurran.messages.core.loaders;
 
 import com.amlcurran.messages.core.data.PhoneNumber;
-import com.amlcurran.messages.core.loaders.ContactListListener;
-import com.amlcurran.messages.core.loaders.OnContactQueryListener;
-import com.amlcurran.messages.core.loaders.ThreadListener;
 
 import java.util.List;
 

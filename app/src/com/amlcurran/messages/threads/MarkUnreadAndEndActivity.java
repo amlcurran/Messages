@@ -19,7 +19,7 @@ package com.amlcurran.messages.threads;
 import android.app.Activity;
 
 import com.amlcurran.messages.core.conversationlist.ConversationList;
-import com.amlcurran.messages.loaders.MessagesLoader;
+import com.amlcurran.messages.core.loaders.MessagesLoader;
 
 import java.util.Collections;
 

@@ -14,8 +14,7 @@
  * limitations under the License.
  */
 
-package com.amlcurran.messages.loaders;
+package com.amlcurran.messages.core.threads;
 
-public interface Task {
-    void cancel();
+public class Thread {
 }

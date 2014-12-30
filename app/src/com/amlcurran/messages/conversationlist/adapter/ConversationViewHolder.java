@@ -22,7 +22,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.amlcurran.messages.R;
-import com.amlcurran.messages.loaders.Task;
+import com.amlcurran.messages.core.loaders.Task;
 
 class ConversationViewHolder extends RecyclerView.ViewHolder {
 

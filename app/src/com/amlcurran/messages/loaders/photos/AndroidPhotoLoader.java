@@ -22,8 +22,8 @@ import android.os.Handler;
 import com.amlcurran.messages.conversationlist.PhotoLoadListener;
 import com.amlcurran.messages.core.data.Contact;
 import com.amlcurran.messages.loaders.MessagesCache;
-import com.amlcurran.messages.loaders.Task;
-import com.amlcurran.messages.loaders.TaskQueue;
+import com.amlcurran.messages.core.loaders.Task;
+import com.amlcurran.messages.core.loaders.TaskQueue;
 
 public class AndroidPhotoLoader implements PhotoLoader {
 

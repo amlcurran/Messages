@@ -36,9 +36,9 @@ import com.amlcurran.messages.conversationlist.data.ExecutorConversationLoader;
 import com.amlcurran.messages.loaders.TaskQueueMessagesLoader;
 import com.amlcurran.messages.loaders.MemoryMessagesCache;
 import com.amlcurran.messages.loaders.MessagesCache;
-import com.amlcurran.messages.loaders.MessagesLoader;
+import com.amlcurran.messages.core.loaders.MessagesLoader;
 import com.amlcurran.messages.loaders.photos.PhotoLoader;
-import com.amlcurran.messages.loaders.TaskQueue;
+import com.amlcurran.messages.core.loaders.TaskQueue;
 import com.amlcurran.messages.notifications.Notifier;
 import com.amlcurran.messages.preferences.SharedPreferenceStore;
 

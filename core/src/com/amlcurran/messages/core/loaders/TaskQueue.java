@@ -14,9 +14,7 @@
  * limitations under the License.
  */
 
-package com.amlcurran.messages.loaders;
-
-import com.amlcurran.messages.MessagesLog;
+package com.amlcurran.messages.core.loaders;
 
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
@@ -37,7 +35,6 @@ public class TaskQueue {
                 try {
                     task.call();
                 } catch (Exception e) {
-                    MessagesLog.e(null, e);
                     throw new RuntimeException(e);
                 }
             }
@@ -48,4 +45,4 @@ public class TaskQueue {
     public void cancelAll() {
         executor.shutdownNow();
     }
-}
+}uP

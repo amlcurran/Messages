@@ -23,7 +23,7 @@ import com.amlcurran.messages.R;
 import com.amlcurran.messages.conversationlist.PhotoLoadListener;
 import com.amlcurran.messages.core.data.Contact;
 import com.amlcurran.messages.loaders.photos.PhotoLoader;
-import com.amlcurran.messages.loaders.Task;
+import com.amlcurran.messages.core.loaders.Task;
 
 class EndToEndPhotoManager implements PhotoLoaderManager {
     private final PhotoLoadListener photoLoadListener;

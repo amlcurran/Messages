@@ -21,7 +21,7 @@ import android.content.Context;
 import com.amlcurran.messages.core.conversationlist.ConversationList;
 import com.amlcurran.messages.core.events.EventBus;
 import com.amlcurran.messages.core.conversationlist.ConversationLoader;
-import com.amlcurran.messages.loaders.MessagesLoader;
+import com.amlcurran.messages.core.loaders.MessagesLoader;
 import com.amlcurran.messages.loaders.photos.PhotoLoader;
 import com.amlcurran.messages.notifications.Notifier;
 

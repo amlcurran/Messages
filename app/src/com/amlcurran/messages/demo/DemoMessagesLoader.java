@@ -32,8 +32,8 @@ import com.amlcurran.messages.core.loaders.ThreadListener;
 import com.amlcurran.messages.data.ParcelablePhoneNumber;
 import com.amlcurran.messages.core.conversationlist.ConversationLoader;
 import com.amlcurran.messages.core.conversationlist.HasConversationListener;
-import com.amlcurran.messages.loaders.MessagesLoader;
-import com.amlcurran.messages.loaders.Task;
+import com.amlcurran.messages.core.loaders.MessagesLoader;
+import com.amlcurran.messages.core.loaders.Task;
 
 import java.util.ArrayList;
 import java.util.List;

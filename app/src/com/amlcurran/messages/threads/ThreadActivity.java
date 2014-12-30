@@ -30,7 +30,7 @@ import com.amlcurran.messages.SmsComposeListener;
 import com.amlcurran.messages.core.data.DraftRepository;
 import com.amlcurran.messages.core.preferences.PreferenceStore;
 import com.amlcurran.messages.data.InFlightSmsMessage;
-import com.amlcurran.messages.loaders.MessagesLoader;
+import com.amlcurran.messages.core.loaders.MessagesLoader;
 import com.amlcurran.messages.preferences.PreferenceStoreDraftRepository;
 import com.amlcurran.messages.preferences.SharedPreferenceStore;
 import com.amlcurran.messages.reporting.LoggingStatReporter;

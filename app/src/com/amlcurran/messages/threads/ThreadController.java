@@ -31,7 +31,7 @@ import com.amlcurran.messages.core.events.EventSubscriber;
 import com.amlcurran.messages.core.loaders.OnContactQueryListener;
 import com.amlcurran.messages.core.loaders.ThreadListener;
 import com.amlcurran.messages.events.BroadcastEventBus;
-import com.amlcurran.messages.loaders.MessagesLoader;
+import com.amlcurran.messages.core.loaders.MessagesLoader;
 import com.amlcurran.messages.telephony.DefaultAppChecker;
 import com.github.amlcurran.sourcebinder.ListSource;
 

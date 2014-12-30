@@ -24,8 +24,11 @@ import android.provider.Telephony;
 import com.amlcurran.messages.SingletonManager;
 import com.amlcurran.messages.core.data.PhoneNumber;
 import com.amlcurran.messages.core.loaders.ContactListListener;
+import com.amlcurran.messages.core.loaders.MessagesLoader;
 import com.amlcurran.messages.core.loaders.OnContactQueryListener;
+import com.amlcurran.messages.core.loaders.TaskQueue;
 import com.amlcurran.messages.core.loaders.ThreadListener;
+import com.amlcurran.messages.core.loaders.Task;
 
 import java.util.Collections;
 import java.util.List;

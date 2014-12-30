@@ -14,13 +14,8 @@
  * limitations under the License.
  */
 
-package com.amlcurran.messages;
+package com.amlcurran.messages.core.loaders;
 
-import com.amlcurran.messages.core.data.DraftRepository;
-import com.amlcurran.messages.core.preferences.PreferenceStore;
-import com.amlcurran.messages.core.loaders.MessagesLoader;
-import com.amlcurran.messages.transition.TransitionManager;
-
-public interface DependencyRepository extends ExternalEventManager.Provider,
-        MessagesLoader.Provider, PreferenceStore.Provider, DraftRepository.Provider, TransitionManager.Provider {
+public interface Task {
+    void cancel();
 }

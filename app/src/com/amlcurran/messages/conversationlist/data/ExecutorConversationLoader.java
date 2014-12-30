@@ -27,7 +27,7 @@ import com.amlcurran.messages.core.conversationlist.HasConversationListener;
 import com.amlcurran.messages.core.data.Contact;
 import com.amlcurran.messages.core.data.Conversation;
 import com.amlcurran.messages.core.data.Sort;
-import com.amlcurran.messages.loaders.TaskQueue;
+import com.amlcurran.messages.core.loaders.TaskQueue;
 
 import java.util.List;
 
