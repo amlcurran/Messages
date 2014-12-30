@@ -26,23 +26,21 @@ import com.amlcurran.messages.core.data.Contact;
 import com.amlcurran.messages.core.data.DraftRepository;
 import com.amlcurran.messages.core.data.PhoneNumberOnlyContact;
 import com.amlcurran.messages.core.data.SmsMessage;
-import com.amlcurran.messages.core.events.Broadcast;
 import com.amlcurran.messages.core.events.EventSubscriber;
 import com.amlcurran.messages.core.loaders.MessagesLoader;
 import com.amlcurran.messages.core.loaders.OnContactQueryListener;
-import com.amlcurran.messages.core.loaders.ThreadListener;
 import com.amlcurran.messages.core.threads.Thread;
-import com.amlcurran.messages.events.BroadcastEventBus;
 import com.amlcurran.messages.telephony.DefaultAppChecker;
 import com.github.amlcurran.sourcebinder.ListSource;
 
 import java.util.Collections;
 import java.util.List;
 
-class ThreadController implements ThreadListener {
+class ThreadController {
 
     private final String threadId;
     private final Contact contact;
+    private final String composedMessage;
     private final ThreadView threadView;
     private final ListSource<SmsMessage> source;
     private final EventSubscriber messageReceiver;
@@ -56,6 +54,7 @@ class ThreadController implements ThreadListener {
     public ThreadController(String threadId, Contact contact, String composedMessage, ThreadView threadView, EventSubscriber messageReceiver, DefaultAppChecker defaultChecker, DependencyRepository dependencyRepository, UnreadViewCallback unreadViewCallback) {
         this.threadId = threadId;
         this.contact = contact;
+        this.composedMessage = composedMessage;
         this.threadView = threadView;
         this.unreadViewCallback = unreadViewCallback;
         this.messageLoader = dependencyRepository.getMessagesLoader();
@@ -64,8 +63,21 @@ class ThreadController implements ThreadListener {
         this.draftRepository = dependencyRepository.getDraftRepository();
         this.externalEventManager = dependencyRepository.getExternalEventManager();
         this.source = new ListSource<>();
-        this.thread = new Thread(dependencyRepository.getMessagesLoader());
+        this.thread = new Thread(dependencyRepository.getMessagesLoader(), messageReceiver, contact.getNumber(), threadId);
+    }
+
+    void start() {
+        setUpContactView(contact);
+        defaultChecker.checkSmsApp(threadView);
+        thread.setCallbacks(callbacks);
+        thread.load();
         retrieveDraft(composedMessage);
+    }
+
+    void stop() {
+        thread.unsetCallbacks();
+        messageReceiver.stopListening();
+        saveDraft();
     }
 
     private void retrieveDraft(String composedMessage) {
@@ -76,30 +88,12 @@ class ThreadController implements ThreadListener {
         }
     }
 
-    void start() {
-        setUpContactView(contact);
-        defaultChecker.checkSmsApp(threadView);
-        //messageLoader.loadThread(threadId, this);
-        thread.setCallbacks(callbacks);
-        thread.load(threadId);
-        messageReceiver.startListening(new LoadThreadOnMessage(), getBroadcastsToListenTo());
-    }
-
-    void stop() {
-        thread.unsetCallbacks();
-        messageReceiver.stopListening();
+    private void saveDraft() {
         if (TextUtils.isText(threadView.getComposedMessage())) {
             draftRepository.storeDraft(contact.getNumber(), threadView.getComposedMessage());
         } else {
             draftRepository.clearDraft(contact.getNumber());
         }
-    }
-
-    @Override
-    public void onThreadLoaded(List<SmsMessage> messageList) {
-        Collections.reverse(messageList);
-        source.replace(messageList);
-        messageLoader.markThreadAsRead(threadId);
     }
 
     private Thread.ThreadCallbacks callbacks = new Thread.ThreadCallbacks() {
@@ -113,15 +107,6 @@ class ThreadController implements ThreadListener {
 
     public ListSource<SmsMessage> getSource() {
         return source;
-    }
-
-    private Broadcast[] getBroadcastsToListenTo() {
-        String phoneNumber = contact.getNumber().flatten();
-        return new Broadcast[]{
-                new Broadcast(BroadcastEventBus.BROADCAST_MESSAGE_SENT, phoneNumber),
-                new Broadcast(BroadcastEventBus.BROADCAST_MESSAGE_RECEIVED, phoneNumber),
-                new Broadcast(BroadcastEventBus.BROADCAST_MESSAGE_SENDING, phoneNumber),
-                new Broadcast(BroadcastEventBus.BROADCAST_MESSAGE_DRAFT, phoneNumber)};
     }
 
     private void setUpContactView(Contact contact) {
@@ -157,10 +142,4 @@ class ThreadController implements ThreadListener {
         void setComposedMessage(String composedMessage);
     }
 
-    private class LoadThreadOnMessage implements EventSubscriber.Listener {
-        @Override
-        public void onMessageReceived() {
-            thread.load(threadId);
-        }
-    }
 }
