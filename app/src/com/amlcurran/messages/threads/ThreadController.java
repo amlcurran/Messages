@@ -33,7 +33,7 @@ import com.amlcurran.messages.core.loaders.ThreadListener;
 import com.amlcurran.messages.events.BroadcastEventBus;
 import com.amlcurran.messages.loaders.MessagesLoader;
 import com.amlcurran.messages.telephony.DefaultAppChecker;
-import com.github.amlcurran.sourcebinder.ArrayListSource;
+import com.github.amlcurran.sourcebinder.ListSource;
 
 import java.util.Collections;
 import java.util.List;
@@ -43,7 +43,7 @@ class ThreadController implements ThreadListener {
     private final String threadId;
     private final Contact contact;
     private final ThreadView threadView;
-    private final ArrayListSource<SmsMessage> source;
+    private final ListSource<SmsMessage> source;
     private final EventSubscriber messageReceiver;
     private final DefaultAppChecker defaultChecker;
     private final DraftRepository draftRepository;
@@ -61,7 +61,7 @@ class ThreadController implements ThreadListener {
         this.defaultChecker = defaultChecker;
         this.draftRepository = dependencyRepository.getDraftRepository();
         this.externalEventManager = dependencyRepository.getExternalEventManager();
-        this.source = new ArrayListSource<SmsMessage>();
+        this.source = new ListSource<>();
         retrieveDraft(composedMessage);
     }
 
@@ -93,11 +93,10 @@ class ThreadController implements ThreadListener {
     public void onThreadLoaded(List<SmsMessage> messageList) {
         Collections.reverse(messageList);
         source.replace(messageList);
-        threadView.showThreadList(source.getCount());
         messageLoader.markThreadAsRead(threadId);
     }
 
-    public ArrayListSource<SmsMessage> getSource() {
+    public ListSource<SmsMessage> getSource() {
         return source;
     }
 
@@ -135,7 +134,6 @@ class ThreadController implements ThreadListener {
     }
 
     public interface ThreadView extends DefaultAppChecker.Callback {
-        void showThreadList(int count);
 
         void bindContactToHeader(Contact contact);
 

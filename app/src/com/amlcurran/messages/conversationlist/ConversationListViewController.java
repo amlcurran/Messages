@@ -22,7 +22,7 @@ import com.amlcurran.messages.core.conversationlist.ConversationListView;
 import com.amlcurran.messages.core.data.Conversation;
 import com.amlcurran.messages.core.preferences.PreferenceStore;
 import com.amlcurran.messages.transition.TransitionManager;
-import com.github.amlcurran.sourcebinder.ArrayListSource;
+import com.github.amlcurran.sourcebinder.ListSource;
 
 import java.util.Collections;
 import java.util.List;
@@ -32,9 +32,9 @@ class ConversationListViewController implements ConversationListView.Conversatio
     private final ConversationList conversationList;
     private final PreferenceStore preferenceStore;
     private final TransitionManager transitionManager;
-    private final ArrayListSource<Conversation> source;
+    private final ListSource<Conversation> source;
 
-    public ConversationListViewController(ConversationListView conversationListView, ArrayListSource<Conversation> source, DependencyRepository dependencyRepository, ConversationList conversationList) {
+    public ConversationListViewController(ConversationListView conversationListView, ListSource<Conversation> source, DependencyRepository dependencyRepository, ConversationList conversationList) {
         this.conversationListView = conversationListView;
         this.conversationList = conversationList;
         this.preferenceStore = dependencyRepository.getPreferenceStore();

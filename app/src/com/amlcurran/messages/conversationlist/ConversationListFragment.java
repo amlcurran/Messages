@@ -33,7 +33,7 @@ import com.amlcurran.messages.core.conversationlist.ConversationListView;
 import com.amlcurran.messages.core.data.Conversation;
 import com.amlcurran.messages.threads.DefaultContactClickListener;
 import com.amlcurran.messages.ui.control.Master;
-import com.github.amlcurran.sourcebinder.ArrayListSource;
+import com.github.amlcurran.sourcebinder.ListSource;
 import com.github.amlcurran.sourcebinder.SourceBinderAdapter;
 
 public class ConversationListFragment extends ListFragment implements ConversationListView, Master {
@@ -58,7 +58,7 @@ public class ConversationListFragment extends ListFragment implements Conversati
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        ArrayListSource<Conversation> source = new ArrayListSource<Conversation>();
+        ListSource<Conversation> source = new ListSource<Conversation>();
         MarkAsUnreadViewCallback unreadViewCallback = (MarkAsUnreadViewCallback) getActivity();
         DeleteThreadViewCallback deleteThreadsViewCallback = (DeleteThreadViewCallback) getActivity();
         DependencyRepository dependencyRepository = (DependencyRepository) getActivity();

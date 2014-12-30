@@ -66,7 +66,7 @@ def getVersionCode() {
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     compile 'com.android.support:support-v4:21.0.3'
-    compile 'com.amlcurran:sourcebinder:1.1.1'
+    compile 'uk.co.amlcurran:sourcebinder:1.2-alpha'
     compile project(':core')
     compile 'com.android.support:support-annotations:20.0.0'
     compile 'com.android.support:appcompat-v7:21.0.3'

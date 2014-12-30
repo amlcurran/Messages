@@ -21,17 +21,17 @@ import android.os.Handler;
 
 import com.amlcurran.messages.DependencyRepository;
 import com.amlcurran.messages.SmsComposeListener;
+import com.amlcurran.messages.core.conversationlist.ConversationLoader;
+import com.amlcurran.messages.core.conversationlist.HasConversationListener;
 import com.amlcurran.messages.core.data.Contact;
 import com.amlcurran.messages.core.data.PhoneNumber;
 import com.amlcurran.messages.core.data.Time;
 import com.amlcurran.messages.core.loaders.ContactListListener;
 import com.amlcurran.messages.data.InFlightSmsMessage;
-import com.amlcurran.messages.core.conversationlist.ConversationLoader;
-import com.amlcurran.messages.core.conversationlist.HasConversationListener;
 import com.amlcurran.messages.loaders.MessagesLoader;
 import com.amlcurran.messages.telephony.DefaultAppChecker;
 import com.amlcurran.messages.transition.TransitionManager;
-import com.github.amlcurran.sourcebinder.ArrayListSource;
+import com.github.amlcurran.sourcebinder.ListSource;
 
 import java.util.Calendar;
 import java.util.List;
@@ -47,7 +47,7 @@ class ComposeNewController {
     private final ConversationLoader conversationLoader;
     private final MessagesLoader messagesLoader;
     private final TransitionManager transitionManager;
-    private final ArrayListSource<Contact> source;
+    private final ListSource<Contact> source;
 
     public ComposeNewController(ComposeNewView composeNewView, PersonPicker personPicker, DependencyRepository dependencyRepository, SmsComposeListener smsComposeListener, DefaultAppChecker defaultAppChecker, Resources resources, ConversationLoader conversationLoader) {
         this.composeNewView = composeNewView;
@@ -58,7 +58,7 @@ class ComposeNewController {
         this.conversationLoader = conversationLoader;
         this.messagesLoader = dependencyRepository.getMessagesLoader();
         this.transitionManager = dependencyRepository.getTransitionManager();
-        this.source = new ArrayListSource<Contact>();
+        this.source = new ListSource<>();
     }
 
     public void messageComposed(CharSequence body) {
@@ -77,7 +77,7 @@ class ComposeNewController {
         defaultAppChecker.checkSmsApp(composeNewView);
     }
 
-    public ArrayListSource<Contact> getSource() {
+    public ListSource<Contact> getSource() {
         return source;
     }
 
