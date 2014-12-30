@@ -62,7 +62,8 @@ public class MessagesApp extends Application implements BroadcastEventSubscriber
         super.onCreate();
         PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
         ExecutorService executor = Executors.newCachedThreadPool();
-        final Handler uiHandler = new Handler(getMainLooper());
+        Handler uiHandler = new Handler(getMainLooper());
+        HandlerCommandQueue uiCommandQueue = new HandlerCommandQueue(uiHandler);
 
         cache = new MemoryMessagesCache();
         eventBus = new BroadcastEventBus(this);
@@ -73,7 +74,7 @@ public class MessagesApp extends Application implements BroadcastEventSubscriber
             conversationLoader = demoMessagesLoader;
         } else {
             loader = new ExecutorMessagesLoader(this, executor, uiHandler);
-            conversationLoader = new ExecutorConversationLoader(executor, this, uiHandler);
+            conversationLoader = new ExecutorConversationLoader(executor, this, uiCommandQueue);
         }
         photoLoader = new AndroidPhotoLoader(this, cache, executor, uiHandler);
 
@@ -86,7 +87,7 @@ public class MessagesApp extends Application implements BroadcastEventSubscriber
 
         updateNotificationListener = new UpdateNotificationListener(notifier);
 
-        conversationList = new ConversationList(conversationLoader, new SharedPreferenceStore(this), new HandlerCommandQueue(uiHandler));
+        conversationList = new ConversationList(conversationLoader, new SharedPreferenceStore(this), uiCommandQueue);
         conversationList.addCallbacks(updateNotificationListener);
 
         primeZygote(executor);

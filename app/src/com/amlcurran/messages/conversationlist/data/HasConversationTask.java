@@ -18,9 +18,9 @@ package com.amlcurran.messages.conversationlist.data;
 
 import android.content.ContentResolver;
 import android.database.Cursor;
-import android.os.Handler;
 import android.provider.Telephony;
 
+import com.amlcurran.messages.core.CommandQueue;
 import com.amlcurran.messages.core.conversationlist.HasConversationListener;
 import com.amlcurran.messages.core.data.Contact;
 import com.github.amlcurran.sourcebinder.CursorHelper;
@@ -29,11 +29,11 @@ import java.util.concurrent.Callable;
 
 class HasConversationTask implements Callable {
     private final ContentResolver resolver;
-    private HasConversationListener hasConversationListener;
+    private final HasConversationListener hasConversationListener;
     private final Contact contact;
-    private final Handler uiHandler;
+    private final CommandQueue uiHandler;
 
-    public HasConversationTask(ContentResolver resolver, HasConversationListener hasConversationListener, Contact contact, Handler uiHandler) {
+    public HasConversationTask(ContentResolver resolver, HasConversationListener hasConversationListener, Contact contact, CommandQueue uiHandler) {
         this.resolver = resolver;
         this.hasConversationListener = hasConversationListener;
         this.contact = contact;
@@ -46,7 +46,7 @@ class HasConversationTask implements Callable {
         String[] selectionArgs = { contact.getNumber().flatten() };
         Cursor cursor = resolver.query(Telephony.Sms.CONTENT_URI, null, selection, selectionArgs, Telephony.Sms.DEFAULT_SORT_ORDER);
         if (cursor.getCount() == 0) {
-            uiHandler.post(new Runnable() {
+            uiHandler.enqueue(new Runnable() {
                 @Override
                 public void run() {
                     hasConversationListener.noConversationForNumber();
@@ -55,7 +55,7 @@ class HasConversationTask implements Callable {
         } else {
             cursor.moveToFirst();
             final int threadId = CursorHelper.asInt(cursor, Telephony.Sms.THREAD_ID);
-            uiHandler.post(new Runnable() {
+            uiHandler.enqueue(new Runnable() {
                 @Override
                 public void run() {
                     hasConversationListener.hasConversation(contact, threadId);

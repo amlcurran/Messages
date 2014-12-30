@@ -18,10 +18,10 @@ package com.amlcurran.messages.conversationlist.data;
 
 import android.content.ContentResolver;
 import android.content.Context;
-import android.os.Handler;
 
 import com.amlcurran.messages.MessagesLog;
 import com.amlcurran.messages.SingletonManager;
+import com.amlcurran.messages.core.CommandQueue;
 import com.amlcurran.messages.core.conversationlist.ConversationListListener;
 import com.amlcurran.messages.core.conversationlist.ConversationLoader;
 import com.amlcurran.messages.core.conversationlist.HasConversationListener;
@@ -40,13 +40,13 @@ public class ExecutorConversationLoader implements ConversationLoader {
 
     private final ExecutorService executor;
     private final Context context;
-    private final Handler uiHandler;
+    private final CommandQueue uiCommandQueue;
     private final ContentResolver resolver;
 
-    public ExecutorConversationLoader(ExecutorService executor, Context context, Handler uiHandler) {
+    public ExecutorConversationLoader(ExecutorService executor, Context context, CommandQueue uiCommandQueue) {
         this.executor = executor;
         this.context = context;
-        this.uiHandler = uiHandler;
+        this.uiCommandQueue = uiCommandQueue;
         this.resolver = context.getContentResolver();
     }
 
@@ -82,6 +82,6 @@ public class ExecutorConversationLoader implements ConversationLoader {
 
     @Override
     public void getHasConversationWith(Contact contact, HasConversationListener hasConversationListener) {
-        submit(new HasConversationTask(resolver, hasConversationListener, contact, uiHandler));
+        submit(new HasConversationTask(resolver, hasConversationListener, contact, uiCommandQueue));
     }
 }
