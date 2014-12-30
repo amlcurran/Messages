@@ -14,13 +14,16 @@
  * limitations under the License.
  */
 
-package com.amlcurran.messages.loaders;
+package com.amlcurran.messages.loaders.photos;
 
 import android.content.Context;
 import android.os.Handler;
 
 import com.amlcurran.messages.conversationlist.PhotoLoadListener;
 import com.amlcurran.messages.core.data.Contact;
+import com.amlcurran.messages.loaders.MessagesCache;
+import com.amlcurran.messages.loaders.Task;
+import com.amlcurran.messages.loaders.TaskQueue;
 
 public class AndroidPhotoLoader implements PhotoLoader {
 

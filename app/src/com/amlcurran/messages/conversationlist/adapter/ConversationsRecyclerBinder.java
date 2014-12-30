@@ -22,7 +22,7 @@ import android.view.ViewGroup;
 import com.amlcurran.messages.R;
 import com.amlcurran.messages.core.data.Conversation;
 import com.amlcurran.messages.core.data.DraftRepository;
-import com.amlcurran.messages.loaders.PhotoLoader;
+import com.amlcurran.messages.loaders.photos.PhotoLoader;
 import com.github.amlcurran.sourcebinder.recyclerview.ViewHolderBinder;
 
 public class ConversationsRecyclerBinder implements ViewHolderBinder<Conversation, ConversationViewHolder> {

@@ -17,7 +17,7 @@
 package com.amlcurran.messages.ui.contact;
 
 import com.amlcurran.messages.core.data.Contact;
-import com.amlcurran.messages.loaders.PhotoLoader;
+import com.amlcurran.messages.loaders.photos.PhotoLoader;
 
 public interface ContactView {
     void setContact(Contact contact, PhotoLoader loader);

@@ -21,7 +21,7 @@ import android.content.res.Resources;
 import com.amlcurran.messages.R;
 import com.amlcurran.messages.core.data.Contact;
 import com.amlcurran.messages.core.data.Conversation;
-import com.amlcurran.messages.loaders.PhotoLoader;
+import com.amlcurran.messages.loaders.photos.PhotoLoader;
 
 class AdapterPhotoLoader {
     private final PhotoLoader loader;

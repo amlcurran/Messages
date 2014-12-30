@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.amlcurran.messages.loaders;
+package com.amlcurran.messages.loaders.photos;
 
 import android.content.ContentResolver;
 import android.content.ContentUris;

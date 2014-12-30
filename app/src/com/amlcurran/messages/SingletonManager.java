@@ -22,7 +22,7 @@ import com.amlcurran.messages.core.conversationlist.ConversationList;
 import com.amlcurran.messages.core.events.EventBus;
 import com.amlcurran.messages.core.conversationlist.ConversationLoader;
 import com.amlcurran.messages.loaders.MessagesLoader;
-import com.amlcurran.messages.loaders.PhotoLoader;
+import com.amlcurran.messages.loaders.photos.PhotoLoader;
 import com.amlcurran.messages.notifications.Notifier;
 
 public class SingletonManager {

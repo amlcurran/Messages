@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.amlcurran.messages.loaders;
+package com.amlcurran.messages.loaders.photos;
 
 import android.content.ContentResolver;
 import android.content.res.Resources;
@@ -23,6 +23,7 @@ import android.os.Handler;
 
 import com.amlcurran.messages.conversationlist.PhotoLoadListener;
 import com.amlcurran.messages.core.data.Contact;
+import com.amlcurran.messages.loaders.MessagesCache;
 
 import java.util.concurrent.Callable;
 

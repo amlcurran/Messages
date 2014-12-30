@@ -23,7 +23,7 @@ import android.widget.LinearLayout;
 
 import com.amlcurran.messages.R;
 import com.amlcurran.messages.core.data.Contact;
-import com.amlcurran.messages.loaders.PhotoLoader;
+import com.amlcurran.messages.loaders.photos.PhotoLoader;
 
 public class DefaultRoundContactView extends LinearLayout implements ContactView {
 

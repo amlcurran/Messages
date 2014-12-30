@@ -21,7 +21,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.amlcurran.messages.core.data.Contact;
-import com.amlcurran.messages.loaders.PhotoLoader;
+import com.amlcurran.messages.loaders.photos.PhotoLoader;
 import com.amlcurran.messages.ui.contact.ContactView;
 import com.amlcurran.messages.ui.contact.RoundContactView;
 import com.github.amlcurran.sourcebinder.SimpleBinder;
