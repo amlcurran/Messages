@@ -33,11 +33,12 @@ import com.amlcurran.messages.events.BroadcastEventSubscriber;
 import com.amlcurran.messages.loaders.AndroidPhotoLoader;
 import com.amlcurran.messages.core.conversationlist.ConversationLoader;
 import com.amlcurran.messages.conversationlist.data.ExecutorConversationLoader;
-import com.amlcurran.messages.loaders.ExecutorMessagesLoader;
+import com.amlcurran.messages.loaders.TaskQueueMessagesLoader;
 import com.amlcurran.messages.loaders.MemoryMessagesCache;
 import com.amlcurran.messages.loaders.MessagesCache;
 import com.amlcurran.messages.loaders.MessagesLoader;
 import com.amlcurran.messages.loaders.PhotoLoader;
+import com.amlcurran.messages.loaders.TaskQueue;
 import com.amlcurran.messages.notifications.Notifier;
 import com.amlcurran.messages.preferences.SharedPreferenceStore;
 
@@ -73,10 +74,10 @@ public class MessagesApp extends Application implements BroadcastEventSubscriber
             loader = demoMessagesLoader;
             conversationLoader = demoMessagesLoader;
         } else {
-            loader = new ExecutorMessagesLoader(this, executor, uiHandler);
-            conversationLoader = new ExecutorConversationLoader(executor, this, uiCommandQueue);
+            loader = new TaskQueueMessagesLoader(this, new TaskQueue(executor), uiHandler);
+            conversationLoader = new ExecutorConversationLoader(new TaskQueue(executor), this, uiCommandQueue);
         }
-        photoLoader = new AndroidPhotoLoader(this, cache, executor, uiHandler);
+        photoLoader = new AndroidPhotoLoader(this, cache, new TaskQueue(Executors.newFixedThreadPool(4)), uiHandler);
 
         notifier = new Notifier(this);
         subscriber = new BroadcastEventSubscriber(this);

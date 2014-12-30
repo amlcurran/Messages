@@ -19,7 +19,6 @@ package com.amlcurran.messages.conversationlist.data;
 import android.content.ContentResolver;
 import android.content.Context;
 
-import com.amlcurran.messages.MessagesLog;
 import com.amlcurran.messages.SingletonManager;
 import com.amlcurran.messages.core.CommandQueue;
 import com.amlcurran.messages.core.conversationlist.ConversationListListener;
@@ -28,60 +27,41 @@ import com.amlcurran.messages.core.conversationlist.HasConversationListener;
 import com.amlcurran.messages.core.data.Contact;
 import com.amlcurran.messages.core.data.Conversation;
 import com.amlcurran.messages.core.data.Sort;
-import com.amlcurran.messages.loaders.FutureTask;
-import com.amlcurran.messages.loaders.Task;
+import com.amlcurran.messages.loaders.TaskQueue;
 
 import java.util.List;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Future;
 
 public class ExecutorConversationLoader implements ConversationLoader {
 
-    private final ExecutorService executor;
+    private final TaskQueue taskQueue;
     private final Context context;
     private final CommandQueue uiCommandQueue;
     private final ContentResolver resolver;
 
-    public ExecutorConversationLoader(ExecutorService executor, Context context, CommandQueue uiCommandQueue) {
-        this.executor = executor;
+    public ExecutorConversationLoader(TaskQueue taskQueue, Context context, CommandQueue uiCommandQueue) {
+        this.taskQueue = taskQueue;
         this.context = context;
         this.uiCommandQueue = uiCommandQueue;
         this.resolver = context.getContentResolver();
     }
 
-    private Task submit(final Callable task) {
-        Future result = executor.submit(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    task.call();
-                } catch (Exception e) {
-                    MessagesLog.e(ExecutorConversationLoader.this, e);
-                    throw new RuntimeException(e);
-                }
-            }
-        });
-        return new FutureTask(result);
-    }
-
     @Override
     public void loadConversationList(final ConversationListListener loadListener, Sort sort) {
-        submit(new ConversationListTask(resolver, loadListener, sort));
+        taskQueue.submit(new ConversationListTask(resolver, loadListener, sort));
     }
 
     @Override
     public void loadUnreadConversationList(ConversationListListener loadListener) {
-        submit(new UnreadConversationListTask(resolver, loadListener));
+        taskQueue.submit(new UnreadConversationListTask(resolver, loadListener));
     }
 
     @Override
     public void deleteConversations(List<Conversation> conversationList) {
-        submit(new DeleteThreadTask(resolver, conversationList, SingletonManager.getConversationList(context)));
+        taskQueue.submit(new DeleteThreadTask(resolver, conversationList, SingletonManager.getConversationList(context)));
     }
 
     @Override
     public void getHasConversationWith(Contact contact, HasConversationListener hasConversationListener) {
-        submit(new HasConversationTask(resolver, hasConversationListener, contact, uiCommandQueue));
+        taskQueue.submit(new HasConversationTask(resolver, hasConversationListener, contact, uiCommandQueue));
     }
 }

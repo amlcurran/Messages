@@ -19,45 +19,25 @@ package com.amlcurran.messages.loaders;
 import android.content.Context;
 import android.os.Handler;
 
-import com.amlcurran.messages.MessagesLog;
 import com.amlcurran.messages.conversationlist.PhotoLoadListener;
 import com.amlcurran.messages.core.data.Contact;
-
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Future;
 
 public class AndroidPhotoLoader implements PhotoLoader {
 
     private final Context context;
     private final MessagesCache cache;
-    private final ExecutorService executor;
+    private final TaskQueue executor;
     private final Handler uiHandler;
 
-    public AndroidPhotoLoader(Context context, MessagesCache cache, ExecutorService executor, Handler uiHandler) {
+    public AndroidPhotoLoader(Context context, MessagesCache cache, TaskQueue executor, Handler uiHandler) {
         this.context = context;
         this.cache = cache;
         this.executor = executor;
         this.uiHandler = uiHandler;
     }
 
-    private Task submit(final Callable task) {
-        Future result = executor.submit(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    task.call();
-                } catch (Exception e) {
-                    MessagesLog.e(AndroidPhotoLoader.this, e);
-                    throw new RuntimeException(e);
-                }
-            }
-        });
-        return new FutureTask(result);
-    }
-
     @Override
     public Task loadPhoto(Contact contact, PhotoLoadListener photoLoadListener) {
-        return submit(new PhotoLoadTask(context.getContentResolver(), context.getResources(), contact, photoLoadListener, cache, uiHandler));
+        return executor.submit(new PhotoLoadTask(context.getContentResolver(), context.getResources(), contact, photoLoadListener, cache, uiHandler));
     }
 }

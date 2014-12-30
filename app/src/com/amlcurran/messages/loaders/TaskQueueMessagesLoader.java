@@ -21,7 +21,6 @@ import android.content.Context;
 import android.os.Handler;
 import android.provider.Telephony;
 
-import com.amlcurran.messages.MessagesLog;
 import com.amlcurran.messages.SingletonManager;
 import com.amlcurran.messages.core.data.PhoneNumber;
 import com.amlcurran.messages.core.loaders.ContactListListener;
@@ -30,19 +29,16 @@ import com.amlcurran.messages.core.loaders.ThreadListener;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Future;
 
-public class ExecutorMessagesLoader implements MessagesLoader {
+public class TaskQueueMessagesLoader implements MessagesLoader {
 
     private final Context context;
-    private final ExecutorService executor;
     private final Handler uiHandler;
+    private final TaskQueue taskQueue;
 
-    public ExecutorMessagesLoader(Context context, ExecutorService executor, Handler uiHandler) {
+    public TaskQueueMessagesLoader(Context context, TaskQueue taskQueue, Handler uiHandler) {
         this.context = context;
-        this.executor = executor;
+        this.taskQueue = taskQueue;
         this.uiHandler = uiHandler;
     }
 
@@ -50,54 +46,39 @@ public class ExecutorMessagesLoader implements MessagesLoader {
         return context.getContentResolver();
     }
 
-    private Task submit(final Callable task) {
-        Future result = executor.submit(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    task.call();
-                } catch (Exception e) {
-                    MessagesLog.e(ExecutorMessagesLoader.this, e);
-                    throw new RuntimeException(e);
-                }
-            }
-        });
-        return new FutureTask(result);
-    }
-
     @Override
     public void loadThread(String threadId, ThreadListener threadListener) {
-        submit(new ThreadTask(getResolver(), threadId, Telephony.Sms.CONTENT_URI, threadListener, uiHandler));
+        taskQueue.submit(new ThreadTask(getResolver(), threadId, Telephony.Sms.CONTENT_URI, threadListener, uiHandler));
     }
 
     @Override
     public void markThreadAsRead(String threadId) {
-        submit(new MarkReadTask(getResolver(), SingletonManager.getConversationList(context), Collections.singletonList(threadId)));
+        taskQueue.submit(new MarkReadTask(getResolver(), SingletonManager.getConversationList(context), Collections.singletonList(threadId)));
     }
 
     @Override
     public void cancelAll() {
-        executor.shutdownNow();
+        taskQueue.cancelAll();
     }
 
     @Override
     public void queryContact(PhoneNumber phoneNumber, OnContactQueryListener onContactQueryListener) {
-        submit(new ContactTask(getResolver(), phoneNumber.flatten(), onContactQueryListener, uiHandler));
+        taskQueue.submit(new ContactTask(getResolver(), phoneNumber.flatten(), onContactQueryListener, uiHandler));
     }
 
     @Override
     public void markThreadsAsUnread(List<String> threadIds) {
-        submit(new MarkUnreadTask(getResolver(), SingletonManager.getConversationList(context), threadIds));
+        taskQueue.submit(new MarkUnreadTask(getResolver(), SingletonManager.getConversationList(context), threadIds));
     }
 
     @Override
     public void loadContacts(ContactListListener contactListListener) {
-        submit(new ContactsTask(getResolver(), contactListListener, uiHandler));
+        taskQueue.submit(new ContactsTask(getResolver(), contactListListener, uiHandler));
     }
 
     @Override
     public Task loadUnreadMessages(ThreadListener threadListener) {
-        return submit(new UnreadMessagesTask(getResolver(), threadListener, uiHandler));
+        return taskQueue.submit(new UnreadMessagesTask(getResolver(), threadListener, uiHandler));
     }
 
 }
