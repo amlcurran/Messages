@@ -16,5 +16,49 @@
 
 package com.amlcurran.messages.core.threads;
 
+import com.amlcurran.messages.core.data.SmsMessage;
+import com.amlcurran.messages.core.loaders.MessagesLoader;
+import com.amlcurran.messages.core.loaders.ThreadListener;
+
+import java.util.List;
+
 public class Thread {
+
+    private final MessagesLoader messagesLoader;
+    private ThreadCallbacks callbacks;
+
+    public Thread(MessagesLoader messagesLoader) {
+        this.messagesLoader = messagesLoader;
+    }
+
+    public void setCallbacks(ThreadCallbacks callbacks) {
+        this.callbacks = callbacks;
+    }
+
+    public void unsetCallbacks() {
+        this.callbacks = ThreadCallbacks.NULL_IMPL;
+    }
+
+    public void load(String threadId) {
+        messagesLoader.loadThread(threadId, new ThreadListener() {
+            @Override
+            public void onThreadLoaded(List<SmsMessage> messageList) {
+                callbacks.threadLoaded(messageList);
+            }
+        });
+    }
+
+    public interface ThreadCallbacks {
+
+        ThreadCallbacks NULL_IMPL = new ThreadCallbacks() {
+
+            @Override
+            public void threadLoaded(List<SmsMessage> messageList) {
+
+            }
+        };
+
+        void threadLoaded(List<SmsMessage> messageList);
+    }
+
 }
