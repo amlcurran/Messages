@@ -45,14 +45,12 @@ class ThreadViewController {
     private final DraftRepository draftRepository;
     private final ExternalEventManager externalEventManager;
     private final MessagesLoader messageLoader;
-    private final UnreadViewCallback unreadViewCallback;
     private final Thread thread;
 
-    public ThreadViewController(Thread thread, Contact contact, String composedMessage, ThreadView threadView, DefaultAppChecker defaultChecker, DependencyRepository dependencyRepository, UnreadViewCallback unreadViewCallback) {
+    public ThreadViewController(Thread thread, Contact contact, String composedMessage, ThreadView threadView, DefaultAppChecker defaultChecker, DependencyRepository dependencyRepository) {
         this.contact = contact;
         this.composedMessage = composedMessage;
         this.threadView = threadView;
-        this.unreadViewCallback = unreadViewCallback;
         this.messageLoader = dependencyRepository.getMessagesLoader();
         this.defaultChecker = defaultChecker;
         this.draftRepository = dependencyRepository.getDraftRepository();
@@ -121,7 +119,8 @@ class ThreadViewController {
             externalEventManager.callNumber(contact.getNumber());
             return true;
         } else if (item.getItemId() == R.id.modal_mark_unread) {
-            unreadViewCallback.markUnread(thread.getId());
+            messageLoader.markThreadsAsUnread(Collections.singletonList(thread.getId()));
+            threadView.finish();
             return true;
         }
         return false;
@@ -134,6 +133,8 @@ class ThreadViewController {
         String getComposedMessage();
 
         void setComposedMessage(String composedMessage);
+
+        void finish();
     }
 
 }

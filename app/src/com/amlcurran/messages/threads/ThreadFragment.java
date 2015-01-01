@@ -95,8 +95,7 @@ public class ThreadFragment extends Fragment implements
 
         Thread thread = new Thread(dependencyRepository.getMessagesLoader(), messageReceiver, contact.getNumber(), threadId);
         threadViewController = new ThreadViewController(thread, contact, getArguments().getString(COMPOSED_MESSAGE),
-                this, defaultChecker, dependencyRepository, new MarkUnreadAndEndActivity(getActivity(),
-                dependencyRepository.getMessagesLoader(), SingletonManager.getConversationList(getActivity())));
+                this, defaultChecker, dependencyRepository);
 
         SmsComposeListener listener = new ProviderHelper<>(SmsComposeListener.class).get(getActivity());
         StandardComposeCallbacks composeCallbacks = new StandardComposeCallbacks(getActivity(), contact.getNumber(), listener);
@@ -155,6 +154,11 @@ public class ThreadFragment extends Fragment implements
     @Override
     public void setComposedMessage(String composedMessage) {
         composeView.setText(composedMessage);
+    }
+
+    @Override
+    public void finish() {
+        getActivity().finish();
     }
 
     @Override
