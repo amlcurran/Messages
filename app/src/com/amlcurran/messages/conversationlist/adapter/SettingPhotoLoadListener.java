@@ -46,6 +46,7 @@ class SettingPhotoLoadListener implements PhotoLoadListener {
     @Override
     public void photoLoadedFromCache(final Bitmap photo) {
         imageView.setImageBitmap(photo);
+        imageView.setAlpha(1f);
     }
 
     @Override

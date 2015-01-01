@@ -38,12 +38,12 @@ public class UserPreferenceWrappingStatReporter implements StatReporter {
 
     @Override
     public void start(Activity activity) {
-        statReporter.start();
+        statReporter.start(activity);
     }
 
     @Override
     public void stop(Activity activity) {
-        statReporter.stop();
+        statReporter.stop(activity);
     }
 
     @Override
