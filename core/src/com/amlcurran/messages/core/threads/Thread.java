@@ -70,6 +70,10 @@ public class Thread {
                 new Broadcast(EventBus.BROADCAST_MESSAGE_DRAFT, phoneNumber)};
     }
 
+    public String getId() {
+        return threadId;
+    }
+
     private class LoadThreadOnMessage implements EventSubscriber.Listener {
         @Override
         public void onMessageReceived(Broadcast broadcast) {

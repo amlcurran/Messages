@@ -37,6 +37,7 @@ import com.amlcurran.messages.bucket.BundleBuilder;
 import com.amlcurran.messages.core.data.Contact;
 import com.amlcurran.messages.core.data.SmsMessage;
 import com.amlcurran.messages.core.events.EventSubscriber;
+import com.amlcurran.messages.core.threads.Thread;
 import com.amlcurran.messages.data.ContactFactory;
 import com.amlcurran.messages.events.BroadcastEventSubscriber;
 import com.amlcurran.messages.telephony.DefaultAppChecker;
@@ -47,7 +48,7 @@ import com.espian.utils.ProviderHelper;
 import com.github.amlcurran.sourcebinder.recyclerview.RecyclerSourceBinderAdapter;
 
 public class ThreadFragment extends Fragment implements
-        CustomHeaderFragment<DefaultRoundContactView>, ThreadController.ThreadView, ThreadView {
+        CustomHeaderFragment<DefaultRoundContactView>, ThreadViewController.ThreadView, ThreadView {
 
     static final String THREAD_ID = "threadId";
     static final String CONTACT = "contact";
@@ -55,7 +56,7 @@ public class ThreadFragment extends Fragment implements
 
     private ComposeMessageView composeView;
     private DefaultRoundContactView contactView;
-    private ThreadController threadController;
+    private ThreadViewController threadViewController;
     private RecyclerView recyclerView;
 
     public static ThreadFragment create(String threadId, @NonNull Bundle contactBundle, String composedMessage) {
@@ -92,8 +93,9 @@ public class ThreadFragment extends Fragment implements
         EventSubscriber messageReceiver = new BroadcastEventSubscriber(getActivity());
         DefaultAppChecker defaultChecker = new DefaultAppChecker(getActivity());
 
-        threadController = new ThreadController(threadId, contact, getArguments().getString(COMPOSED_MESSAGE),
-                this, messageReceiver, defaultChecker, dependencyRepository, new MarkUnreadAndEndActivity(getActivity(),
+        Thread thread = new Thread(dependencyRepository.getMessagesLoader(), messageReceiver, contact.getNumber(), threadId);
+        threadViewController = new ThreadViewController(thread, contact, getArguments().getString(COMPOSED_MESSAGE),
+                this, defaultChecker, dependencyRepository, new MarkUnreadAndEndActivity(getActivity(),
                 dependencyRepository.getMessagesLoader(), SingletonManager.getConversationList(getActivity())));
 
         SmsComposeListener listener = new ProviderHelper<>(SmsComposeListener.class).get(getActivity());
@@ -105,20 +107,20 @@ public class ThreadFragment extends Fragment implements
         ResendCallback resendCallback = new DeleteFailedResender(getActivity(), composeCallbacks);
         ThreadRecyclerBinder binder = new ThreadRecyclerBinder(getResources(), resendCallback);
         RecyclerSourceBinderAdapter<SmsMessage, ThreadRecyclerBinder.ViewHolder> binderAdapter =
-                new RecyclerSourceBinderAdapter<>(threadController.getSource(), binder);
+                new RecyclerSourceBinderAdapter<>(threadViewController.getSource(), binder);
         recyclerView.setAdapter(binderAdapter);
     }
 
     @Override
     public void onStart() {
         super.onStart();
-        threadController.start();
+        threadViewController.start();
     }
 
     @Override
     public void onStop() {
         super.onStop();
-        threadController.stop();
+        threadViewController.stop();
     }
 
     @Override
@@ -128,7 +130,7 @@ public class ThreadFragment extends Fragment implements
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        return threadController.menuItemClicked(item) || super.onOptionsItemSelected(item);
+        return threadViewController.menuItemClicked(item) || super.onOptionsItemSelected(item);
     }
 
     @Override

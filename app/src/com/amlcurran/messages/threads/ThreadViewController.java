@@ -26,7 +26,6 @@ import com.amlcurran.messages.core.data.Contact;
 import com.amlcurran.messages.core.data.DraftRepository;
 import com.amlcurran.messages.core.data.PhoneNumberOnlyContact;
 import com.amlcurran.messages.core.data.SmsMessage;
-import com.amlcurran.messages.core.events.EventSubscriber;
 import com.amlcurran.messages.core.loaders.MessagesLoader;
 import com.amlcurran.messages.core.loaders.OnContactQueryListener;
 import com.amlcurran.messages.core.threads.Thread;
@@ -36,9 +35,8 @@ import com.github.amlcurran.sourcebinder.ListSource;
 import java.util.Collections;
 import java.util.List;
 
-class ThreadController {
+class ThreadViewController {
 
-    private final String threadId;
     private final Contact contact;
     private final String composedMessage;
     private final ThreadView threadView;
@@ -50,8 +48,7 @@ class ThreadController {
     private final UnreadViewCallback unreadViewCallback;
     private final Thread thread;
 
-    public ThreadController(String threadId, Contact contact, String composedMessage, ThreadView threadView, EventSubscriber messageReceiver, DefaultAppChecker defaultChecker, DependencyRepository dependencyRepository, UnreadViewCallback unreadViewCallback) {
-        this.threadId = threadId;
+    public ThreadViewController(Thread thread, Contact contact, String composedMessage, ThreadView threadView, DefaultAppChecker defaultChecker, DependencyRepository dependencyRepository, UnreadViewCallback unreadViewCallback) {
         this.contact = contact;
         this.composedMessage = composedMessage;
         this.threadView = threadView;
@@ -61,7 +58,7 @@ class ThreadController {
         this.draftRepository = dependencyRepository.getDraftRepository();
         this.externalEventManager = dependencyRepository.getExternalEventManager();
         this.source = new ListSource<>();
-        this.thread = new Thread(dependencyRepository.getMessagesLoader(), messageReceiver, contact.getNumber(), threadId);
+        this.thread = thread;
     }
 
     void start() {
@@ -98,7 +95,7 @@ class ThreadController {
         public void threadLoaded(List<SmsMessage> messageList) {
             Collections.reverse(messageList);
             source.replace(messageList);
-            messageLoader.markThreadAsRead(threadId);
+            messageLoader.markThreadAsRead(thread.getId());
         }
     };
 
@@ -124,7 +121,7 @@ class ThreadController {
             externalEventManager.callNumber(contact.getNumber());
             return true;
         } else if (item.getItemId() == R.id.modal_mark_unread) {
-            unreadViewCallback.markUnread(threadId);
+            unreadViewCallback.markUnread(thread.getId());
             return true;
         }
         return false;
