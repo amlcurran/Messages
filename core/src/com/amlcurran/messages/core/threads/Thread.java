@@ -34,21 +34,27 @@ public class Thread {
     private final PhoneNumber number;
     private final String threadId;
     private ThreadCallbacks callbacks;
+    private MessageTransport messageTransport;
 
-    public Thread(MessagesLoader messagesLoader, EventSubscriber messageReceiver, PhoneNumber number, String threadId) {
+    public Thread(MessagesLoader messagesLoader, EventSubscriber messageReceiver, PhoneNumber number, String threadId, MessageTransport messageTransport) {
         this.messagesLoader = messagesLoader;
         this.messageReceiver = messageReceiver;
         this.number = number;
         this.threadId = threadId;
+        this.messageTransport = messageTransport;
     }
 
     public void setCallbacks(ThreadCallbacks callbacks) {
         this.callbacks = callbacks;
+        messageTransport.listenToThread(threadId, new MessageTransport.TransportCallbacks() {
+
+        });
         messageReceiver.startListening(new LoadThreadOnMessage(), getBroadcastsToListenTo());
     }
 
     public void unsetCallbacks() {
         messageReceiver.stopListening();
+        messageTransport.stopListeningToThread(threadId);
         this.callbacks = ThreadCallbacks.NULL_IMPL;
     }
 
@@ -72,6 +78,11 @@ public class Thread {
 
     public String getId() {
         return threadId;
+    }
+
+    public void sendMessage(CharSequence messageBody) {
+        InFlightSmsMessage message = InFlightSmsMessage.timestampedNow(messageBody, number, SmsMessage.Type.SENDING);
+        messageTransport.send(message);
     }
 
     private class LoadThreadOnMessage implements EventSubscriber.Listener {

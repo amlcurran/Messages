@@ -41,4 +41,8 @@ public class Time {
     public boolean isLaterThan(Time latest) {
         return millis > latest.millis;
     }
+
+    public static Time now() {
+        return fromMillis(System.currentTimeMillis());
+    }
 }

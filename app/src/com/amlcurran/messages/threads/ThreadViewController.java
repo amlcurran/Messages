@@ -30,12 +30,13 @@ import com.amlcurran.messages.core.loaders.MessagesLoader;
 import com.amlcurran.messages.core.loaders.OnContactQueryListener;
 import com.amlcurran.messages.core.threads.Thread;
 import com.amlcurran.messages.telephony.DefaultAppChecker;
+import com.amlcurran.messages.ui.ComposeMessageView;
 import com.github.amlcurran.sourcebinder.ListSource;
 
 import java.util.Collections;
 import java.util.List;
 
-class ThreadViewController {
+class ThreadViewController implements ComposeMessageView.ComposureCallbacks {
 
     private final Contact contact;
     private final String composedMessage;
@@ -124,6 +125,11 @@ class ThreadViewController {
             return true;
         }
         return false;
+    }
+
+    @Override
+    public void onMessageComposed(CharSequence body) {
+        thread.sendMessage(body);
     }
 
     public interface ThreadView extends DefaultAppChecker.Callback {

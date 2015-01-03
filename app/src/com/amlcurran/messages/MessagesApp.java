@@ -23,23 +23,24 @@ import android.preference.PreferenceManager;
 import android.text.SpannableStringBuilder;
 import android.text.util.Linkify;
 
+import com.amlcurran.messages.conversationlist.data.ExecutorConversationLoader;
+import com.amlcurran.messages.core.CommandQueue;
 import com.amlcurran.messages.core.Log;
 import com.amlcurran.messages.core.conversationlist.ConversationList;
-import com.amlcurran.messages.core.CommandQueue;
+import com.amlcurran.messages.core.conversationlist.ConversationLoader;
 import com.amlcurran.messages.core.events.Broadcast;
 import com.amlcurran.messages.core.events.EventBus;
+import com.amlcurran.messages.core.loaders.MessagesLoader;
+import com.amlcurran.messages.core.loaders.TaskQueue;
+import com.amlcurran.messages.core.threads.MessageTransport;
 import com.amlcurran.messages.demo.DemoMessagesLoader;
 import com.amlcurran.messages.events.BroadcastEventBus;
 import com.amlcurran.messages.events.BroadcastEventSubscriber;
-import com.amlcurran.messages.loaders.photos.AndroidPhotoLoader;
-import com.amlcurran.messages.core.conversationlist.ConversationLoader;
-import com.amlcurran.messages.conversationlist.data.ExecutorConversationLoader;
-import com.amlcurran.messages.loaders.TaskQueueMessagesLoader;
 import com.amlcurran.messages.loaders.MemoryMessagesCache;
 import com.amlcurran.messages.loaders.MessagesCache;
-import com.amlcurran.messages.core.loaders.MessagesLoader;
+import com.amlcurran.messages.loaders.TaskQueueMessagesLoader;
+import com.amlcurran.messages.loaders.photos.AndroidPhotoLoader;
 import com.amlcurran.messages.loaders.photos.PhotoLoader;
-import com.amlcurran.messages.core.loaders.TaskQueue;
 import com.amlcurran.messages.notifications.Notifier;
 import com.amlcurran.messages.preferences.SharedPreferenceStore;
 import com.amlcurran.messages.reporting.EasyTrackerStatReporter;
@@ -64,6 +65,7 @@ public class MessagesApp extends Application implements BroadcastEventSubscriber
     EventBus eventBus;
     ConversationList conversationList;
     StatReporter stats;
+    MessageTransport messageTransport;
 
     @Override
     public void onCreate() {
@@ -77,6 +79,7 @@ public class MessagesApp extends Application implements BroadcastEventSubscriber
         stats = createStatReporter();
         cache = new MemoryMessagesCache();
         eventBus = new BroadcastEventBus(this);
+        messageTransport = new AndroidMessageTransport(this);
 
         if (BuildConfig.FLAVOR.equals("demo")) {
             DemoMessagesLoader demoMessagesLoader = new DemoMessagesLoader(this);

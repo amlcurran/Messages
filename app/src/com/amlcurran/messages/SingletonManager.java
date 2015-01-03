@@ -22,6 +22,7 @@ import com.amlcurran.messages.core.conversationlist.ConversationList;
 import com.amlcurran.messages.core.events.EventBus;
 import com.amlcurran.messages.core.conversationlist.ConversationLoader;
 import com.amlcurran.messages.core.loaders.MessagesLoader;
+import com.amlcurran.messages.core.threads.MessageTransport;
 import com.amlcurran.messages.loaders.photos.PhotoLoader;
 import com.amlcurran.messages.notifications.Notifier;
 import com.amlcurran.messages.reporting.StatReporter;
@@ -59,4 +60,9 @@ public class SingletonManager {
     public static StatReporter getStatReporter(Context context) {
         return getMessagesApp(context).stats;
     }
+
+    public static MessageTransport getMessageTransport(Context context) {
+        return getMessagesApp(context).messageTransport;
+    }
+
 }

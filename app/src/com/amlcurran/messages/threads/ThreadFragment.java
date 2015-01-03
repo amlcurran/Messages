@@ -93,13 +93,12 @@ public class ThreadFragment extends Fragment implements
         EventSubscriber messageReceiver = new BroadcastEventSubscriber(getActivity());
         DefaultAppChecker defaultChecker = new DefaultAppChecker(getActivity());
 
-        Thread thread = new Thread(dependencyRepository.getMessagesLoader(), messageReceiver, contact.getNumber(), threadId);
-        threadViewController = new ThreadViewController(thread, contact, getArguments().getString(COMPOSED_MESSAGE),
-                this, defaultChecker, dependencyRepository);
-
         SmsComposeListener listener = new ProviderHelper<>(SmsComposeListener.class).get(getActivity());
         StandardComposeCallbacks composeCallbacks = new StandardComposeCallbacks(getActivity(), contact.getNumber(), listener);
-        composeView.setComposeListener(composeCallbacks);
+        com.amlcurran.messages.core.threads.Thread thread = new Thread(dependencyRepository.getMessagesLoader(), messageReceiver, contact.getNumber(), threadId, SingletonManager.getMessageTransport(getActivity()));
+        threadViewController = new ThreadViewController(thread, contact, getArguments().getString(COMPOSED_MESSAGE),
+                this, defaultChecker, dependencyRepository);
+        composeView.setComposeListener(threadViewController);
 
         setHasOptionsMenu(true);
 
