@@ -121,7 +121,8 @@ public class ConversationModalMarshall implements AbsListView.MultiChoiceModeLis
     @Override
     public void onItemCheckedStateChanged(ActionMode mode, int position, long id, boolean checked) {
         Conversation checkedConversation = conversationSource.getAtPosition(position);
-        if (checked) {
+        boolean shouldAdd = checked && !selectedConversations.contains(checkedConversation);
+        if (shouldAdd) {
             selectedConversations.add(checkedConversation);
         } else {
             selectedConversations.remove(checkedConversation);

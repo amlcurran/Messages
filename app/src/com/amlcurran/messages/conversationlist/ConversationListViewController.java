@@ -59,6 +59,11 @@ class ConversationListViewController implements ConversationListView.Conversatio
     }
 
     @Override
+    public void secondarySelected(int position) {
+
+    }
+
+    @Override
     public void listLoading() {
         conversationListView.showLoadingUi();
     }

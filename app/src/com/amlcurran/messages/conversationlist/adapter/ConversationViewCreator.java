@@ -22,6 +22,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.amlcurran.messages.R;
+import com.amlcurran.messages.core.conversationlist.ConversationListView;
 import com.amlcurran.messages.core.preferences.PreferenceStore;
 
 class ConversationViewCreator {
@@ -31,7 +32,7 @@ class ConversationViewCreator {
         this.preferenceStore = preferenceStore;
     }
 
-    View createUnreadView(Context context, ViewGroup parent) {
+    View createUnreadView(Context context, ViewGroup parent, ConversationListView.ConversationSelectedListener conversationController) {
         int layoutRes;
         if (preferenceStore.showLargeUnreadPreviews()) {
             layoutRes = R.layout.item_conversation_unread_large;
@@ -39,24 +40,24 @@ class ConversationViewCreator {
             layoutRes = R.layout.item_conversation_unread;
         }
         View view = LayoutInflater.from(context).inflate(layoutRes, parent, false);
-        view.setTag(R.id.tag_view_holder, new ConversationViewHolder(view));
+        view.setTag(R.id.tag_view_holder, new ConversationViewHolder(view, conversationController));
         return view;
     }
 
-    ConversationViewHolder createUnreadViewHolder(Context context, ViewGroup parent) {
+    ConversationViewHolder createUnreadViewHolder(Context context, ViewGroup parent, ConversationListView.ConversationSelectedListener conversationSelectedListener) {
         View view = LayoutInflater.from(context).inflate(R.layout.item_conversation_read, parent, false);
-        return new ConversationViewHolder(view);
+        return new ConversationViewHolder(view, conversationSelectedListener);
     }
 
-    View createReadView(Context context, ViewGroup parent) {
+    View createReadView(Context context, ViewGroup parent, ConversationListView.ConversationSelectedListener conversationController) {
         View view = LayoutInflater.from(context).inflate(R.layout.item_conversation_read, parent, false);
-        view.setTag(R.id.tag_view_holder, new ConversationViewHolder(view));
+        view.setTag(R.id.tag_view_holder, new ConversationViewHolder(view, conversationController));
         return view;
     }
 
-    ConversationViewHolder createReadViewHolder(Context context, ViewGroup parent) {
+    ConversationViewHolder createReadViewHolder(Context context, ViewGroup parent, ConversationListView.ConversationSelectedListener conversationSelectedListener) {
         View view = LayoutInflater.from(context).inflate(R.layout.item_conversation_read, parent, false);
-        return new ConversationViewHolder(view);
+        return new ConversationViewHolder(view, conversationSelectedListener);
     }
 
 }

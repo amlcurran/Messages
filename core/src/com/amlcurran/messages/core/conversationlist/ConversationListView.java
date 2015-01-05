@@ -29,5 +29,7 @@ public interface ConversationListView {
 
     interface ConversationSelectedListener {
         void selectedPosition(int position);
+
+        void secondarySelected(int position);
     }
 }
