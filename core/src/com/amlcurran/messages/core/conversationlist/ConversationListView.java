@@ -27,6 +27,8 @@ public interface ConversationListView {
 
     void hideEmptyUi();
 
+    void itemRemovedAt(int position);
+
     interface ConversationSelectedListener {
         void selectedPosition(int position);
 

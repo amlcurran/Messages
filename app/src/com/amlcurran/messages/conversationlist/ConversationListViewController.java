@@ -87,6 +87,14 @@ class ConversationListViewController implements ConversationListView.Conversatio
 
     @Override
     public void conversationDeleted(Conversation deletedConversation, List<Conversation> conversationList) {
+        //TODO: need a better method of doing this
+        int count = source.getCount();
+        for (int i = 0; i < count; i++) {
+            if (deletedConversation.getThreadId().equals(source.getAtPosition(i).getThreadId())) {
+                conversationListView.itemRemovedAt(i);
+                return;
+            }
+        }
         listLoaded(conversationList);
     }
 }

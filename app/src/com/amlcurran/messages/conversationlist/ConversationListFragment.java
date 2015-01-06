@@ -116,6 +116,11 @@ public class ConversationListFragment extends Fragment implements ConversationLi
     }
 
     @Override
+    public void itemRemovedAt(int position) {
+        adapter.notifyItemRemoved(position);
+    }
+
+    @Override
     public void hideLoadingUi() {
         if (getView() != null) {
             recyclerView.setVisibility(View.VISIBLE);
