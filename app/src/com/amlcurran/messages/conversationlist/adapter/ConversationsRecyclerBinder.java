@@ -23,6 +23,7 @@ import com.amlcurran.messages.R;
 import com.amlcurran.messages.core.conversationlist.ConversationListView;
 import com.amlcurran.messages.core.data.Conversation;
 import com.amlcurran.messages.core.data.DraftRepository;
+import com.amlcurran.messages.core.preferences.PreferenceStore;
 import com.amlcurran.messages.loaders.photos.PhotoLoader;
 import com.github.amlcurran.sourcebinder.recyclerview.ViewHolderBinder;
 
@@ -37,14 +38,16 @@ public class ConversationsRecyclerBinder implements ViewHolderBinder<Conversatio
     private final ConversationListView.ConversationSelectedListener conversationSelectedListener;
     private final ConversationViewCreator viewCreator;
     private final AdapterPhotoLoader adapterPhotoLoader;
+    private final CheckedStateProvider checkedStateProvider;
 
-    public ConversationsRecyclerBinder(DraftRepository draftRepository, Resources resources, PhotoLoader loader, TextFormatter textFormatter, ConversationListView.ConversationSelectedListener conversationSelectedListener) {
+    public ConversationsRecyclerBinder(DraftRepository draftRepository, Resources resources, PhotoLoader loader, TextFormatter textFormatter, ConversationListView.ConversationSelectedListener conversationSelectedListener, CheckedStateProvider checkedStateProvider, PreferenceStore prefereceStore) {
         this.draftRepository = draftRepository;
         this.textFormatter = textFormatter;
         this.conversationSelectedListener = conversationSelectedListener;
+        this.checkedStateProvider = checkedStateProvider;
         this.draftPreamble = resources.getString(R.string.draft_preamble);
         this.fromMePreamble = resources.getString(R.string.from_me_preamble);
-        this.viewCreator = new ConversationViewCreator(null);
+        this.viewCreator = new ConversationViewCreator(prefereceStore);
         this.adapterPhotoLoader = new AdapterPhotoLoader(loader, resources);
     }
 
@@ -63,6 +66,7 @@ public class ConversationsRecyclerBinder implements ViewHolderBinder<Conversatio
         adapterPhotoLoader.loadContactPhoto(viewHolder, item);
 
         viewHolder.nameField.setText(item.getContact().getDisplayName());
+        viewHolder.itemView.setActivated(checkedStateProvider.isChecked(item));
         viewHolder.snippetField.setText(getSummaryText(item));
     }
 

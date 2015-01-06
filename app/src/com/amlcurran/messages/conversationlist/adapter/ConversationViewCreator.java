@@ -45,7 +45,13 @@ class ConversationViewCreator {
     }
 
     ConversationViewHolder createUnreadViewHolder(Context context, ViewGroup parent, ConversationListView.ConversationSelectedListener conversationSelectedListener) {
-        View view = LayoutInflater.from(context).inflate(R.layout.item_conversation_read, parent, false);
+        int layoutRes;
+        if (preferenceStore.showLargeUnreadPreviews()) {
+            layoutRes = R.layout.item_conversation_unread_large;
+        } else {
+            layoutRes = R.layout.item_conversation_unread;
+        }
+        View view = LayoutInflater.from(context).inflate(layoutRes, parent, false);
         return new ConversationViewHolder(view, conversationSelectedListener);
     }
 
