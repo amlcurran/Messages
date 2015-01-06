@@ -24,7 +24,6 @@ import android.view.ActionMode;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 
 import com.amlcurran.messages.DependencyRepository;
 import com.amlcurran.messages.R;
@@ -140,23 +139,12 @@ public class ConversationListFragment extends Fragment implements ConversationLi
     private void updateActionMode() {
         if (selectionStateHolder.hasAnyChecked()) {
             if (actionMode == null) {
-                actionMode = createActionMode();
+                actionMode = recyclerView.startActionMode(listener);
             }
             actionMode.invalidate();
         } else {
             actionMode.finish();
             actionMode = null;
-        }
-    }
-
-    private ActionMode createActionMode() {
-        return recyclerView.startActionMode(listener);
-    }
-
-    private class NotifyControllerClickListener implements android.widget.AdapterView.OnItemClickListener {
-        @Override
-        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-            conversationSelectedListener.selectedPosition(position);
         }
     }
 
