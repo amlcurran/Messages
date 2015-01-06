@@ -22,19 +22,32 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.amlcurran.messages.R;
+import com.amlcurran.messages.core.conversationlist.ConversationListView;
 import com.amlcurran.messages.core.loaders.Task;
 
-class ConversationViewHolder extends RecyclerView.ViewHolder {
+public class ConversationViewHolder extends RecyclerView.ViewHolder {
 
     public final TextView nameField;
     public final TextView snippetField;
     public final ImageView imageView;
     public Task imageTask;
 
-    public ConversationViewHolder(View view) {
+    public ConversationViewHolder(final View view, final ConversationListView.ConversationSelectedListener clickCallback) {
         super(view);
         nameField = ((TextView) view.findViewById(android.R.id.text1));
         snippetField = ((TextView) view.findViewById(android.R.id.text2));
         imageView = ((ImageView) view.findViewById(R.id.image));
+        View.OnClickListener l = new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (v.equals(imageView)) {
+                    clickCallback.secondarySelected(getPosition());
+                } else if (v.equals(view)) {
+                    clickCallback.selectedPosition(getPosition());
+                }
+            }
+        };
+        imageView.setOnClickListener(l);
+        view.setOnClickListener(l);
     }
 }

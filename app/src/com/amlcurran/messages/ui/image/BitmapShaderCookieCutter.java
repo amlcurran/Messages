@@ -23,24 +23,29 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.RectF;
 import android.graphics.Shader;
+import android.graphics.drawable.Drawable;
 
 public class BitmapShaderCookieCutter implements CookieCutter {
 
-    private final Paint paint;
+    private final Paint photoPaint;
     private final Paint borderPaint;
     private final boolean drawOutline;
     private final RectF borderRect;
     private final RectF circleRect;
+    private final Drawable selectorDrawable;
+    private final Paint selectorPaint;
     private int viewHeight;
     private int viewWidth;
     private Bitmap bitmap;
     private boolean paintRequiresUpdate;
 
-    public BitmapShaderCookieCutter(Paint borderPaint, boolean drawOutline) {
-        this.paint = new Paint();
-        this.paint.setAntiAlias(true);
-        this.paint.setColor(Color.WHITE);
-        this.paint.setAlpha(0);
+    public BitmapShaderCookieCutter(Paint borderPaint, boolean drawOutline, Drawable selectorDrawable) {
+        this.selectorDrawable = selectorDrawable;
+        this.photoPaint = new Paint();
+        this.photoPaint.setAntiAlias(true);
+        this.photoPaint.setColor(Color.WHITE);
+        this.photoPaint.setAlpha(0);
+        this.selectorPaint = new Paint();
         this.borderPaint = borderPaint;
         this.drawOutline = drawOutline;
         this.circleRect = new RectF();
@@ -59,7 +64,7 @@ public class BitmapShaderCookieCutter implements CookieCutter {
 
     @Override
     public void draw(Canvas canvas) {
-        canvas.drawOval(circleRect, paint);
+        canvas.drawOval(circleRect, photoPaint);
         if (drawOutline) {
             canvas.drawArc(borderRect, 0, 360, true, borderPaint);
         }
@@ -75,6 +80,7 @@ public class BitmapShaderCookieCutter implements CookieCutter {
     public void updateViewBounds(int height, int width) {
         viewHeight = height;
         viewWidth = width;
+        selectorDrawable.setBounds(0, 0, width, height);
     }
 
     @Override
@@ -82,23 +88,22 @@ public class BitmapShaderCookieCutter implements CookieCutter {
         if (paintRequiresUpdate && bitmap != null && viewWidth > 0 && viewHeight > 0) {
             Bitmap scaledBitmap = Bitmap.createScaledBitmap(bitmap, viewWidth, viewHeight, true);
             BitmapShader shader = new BitmapShader(scaledBitmap, Shader.TileMode.CLAMP, Shader.TileMode.CLAMP);
-            paint.setAlpha(255);
-            paint.setShader(shader);
+            photoPaint.setAlpha(255);
+            photoPaint.setShader(shader);
+
+            Bitmap selectorBitmap = Bitmap.createBitmap(viewWidth, viewHeight, Bitmap.Config.ARGB_4444);
+            selectorDrawable.draw(new Canvas(selectorBitmap));
+            BitmapShader shader2 = new BitmapShader(selectorBitmap, Shader.TileMode.CLAMP, Shader.TileMode.CLAMP);
+            selectorPaint.setShader(shader2);
             paintRequiresUpdate = false;
         }
 
     }
 
-    /*
+    @Override
+    public void drawWithSelector(Canvas canvas) {
+        draw(canvas);
+        canvas.drawOval(circleRect, selectorPaint);
+    }
 
-        float bitmapProportion = viewHeight / ((float) this.bitmap.getHeight());
-        int width = (int) (bitmapProportion * this.bitmap.getWidth());
-
-        Bitmap scaledBitmap;
-        if (viewHeight > 0) {
-            scaledBitmap = Bitmap.createScaledBitmap(this.bitmap, width, viewHeight, true);
-        } else {
-            scaledBitmap = this.bitmap;
-        }
-     */
 }

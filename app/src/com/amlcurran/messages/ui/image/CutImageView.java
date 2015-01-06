@@ -62,7 +62,7 @@ public class CutImageView extends ImageView {
         borderPaint.setColor(Color.WHITE);
         borderPaint.setShadowLayer(borderWidth, 0, 0, Color.GRAY);
 
-        cookieCutter = new BitmapShaderCookieCutter(borderPaint, drawOutline);
+        cookieCutter = new BitmapShaderCookieCutter(borderPaint, drawOutline, getResources().getDrawable(R.drawable.selected_item));
         rectProvider = getCircularRectProvider();
 
         getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
@@ -108,7 +108,11 @@ public class CutImageView extends ImageView {
 
     @Override
     protected void onDraw(Canvas canvas) {
-        cookieCutter.draw(canvas);
+        if (isActivated()) {
+            cookieCutter.drawWithSelector(canvas);
+        } else {
+            cookieCutter.draw(canvas);
+        }
     }
 
 }

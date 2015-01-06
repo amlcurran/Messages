@@ -19,7 +19,6 @@ package com.amlcurran.messages.conversationlist;
 import android.view.ActionMode;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.AbsListView;
 
 import com.amlcurran.messages.R;
 import com.amlcurran.messages.core.data.Conversation;
@@ -27,27 +26,24 @@ import com.amlcurran.messages.core.loaders.MessagesLoader;
 import com.amlcurran.messages.reporting.StatReporter;
 import com.amlcurran.messages.ui.contact.ContactClickListener;
 import com.espian.utils.ui.MenuFinder;
-import com.github.amlcurran.sourcebinder.Source;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class ConversationModalMarshall implements AbsListView.MultiChoiceModeListener {
+public class ConversationModalMarshall implements ActionMode.Callback {
 
-    private final Source<Conversation> conversationSource;
     private final ContactClickListener contactClickListener;
-    private final ArrayList<Conversation> selectedConversations;
     private final DeleteThreadViewCallback deleteThreadsViewCallback;
     private final StatReporter statReporter;
     private final MessagesLoader messagesLoader;
+    private final ConversationSelectionStateHolder selectionStateHolder;
 
-    public ConversationModalMarshall(Source<Conversation> conversationSource, ContactClickListener contactClickListener, DeleteThreadViewCallback deleteThreadViewCallback, StatReporter statReporter, MessagesLoader messagesLoader) {
-        this.conversationSource = conversationSource;
+    public ConversationModalMarshall(ContactClickListener contactClickListener, DeleteThreadViewCallback deleteThreadViewCallback, StatReporter statReporter, MessagesLoader messagesLoader, ConversationSelectionStateHolder selectionStateHolder) {
         this.contactClickListener = contactClickListener;
         this.deleteThreadsViewCallback = deleteThreadViewCallback;
         this.statReporter = statReporter;
         this.messagesLoader = messagesLoader;
-        this.selectedConversations = new ArrayList<>();
+        this.selectionStateHolder = selectionStateHolder;
     }
 
     @Override
@@ -64,11 +60,11 @@ public class ConversationModalMarshall implements AbsListView.MultiChoiceModeLis
     }
 
     private boolean selectedSavedContact() {
-        return selectedConversations.get(0).getContact().isSaved();
+        return selectionStateHolder.firstItem().getContact().isSaved();
     }
 
     private boolean onlyOneSelected() {
-        return selectedConversations.size() == 1;
+        return selectionStateHolder.hasOneChecked();
     }
 
     @Override
@@ -76,7 +72,7 @@ public class ConversationModalMarshall implements AbsListView.MultiChoiceModeLis
         switch (item.getItemId()) {
 
             case R.id.modal_contact:
-                contactClickListener.viewContact(selectedConversations.get(0).getContact());
+                contactClickListener.viewContact(selectionStateHolder.firstItem().getContact());
                 mode.finish();
                 return true;
 
@@ -91,7 +87,7 @@ public class ConversationModalMarshall implements AbsListView.MultiChoiceModeLis
                 return true;
 
             case R.id.modal_contact_add:
-                contactClickListener.addContact(selectedConversations.get(0).getContact());
+                contactClickListener.addContact(selectionStateHolder.firstItem().getContact());
                 mode.finish();
                 return true;
 
@@ -102,31 +98,20 @@ public class ConversationModalMarshall implements AbsListView.MultiChoiceModeLis
     private void markAsUnread() {
         statReporter.sendUiEvent("mark_thread_unread");
         List<String> threadIds = new ArrayList<>();
-        for (int i = 0; i < selectedConversations.size(); i++) {
-            Conversation conversation = selectedConversations.get(i);
+        for (int i = 0; i < selectionStateHolder.checkedItemCount(); i++) {
+            Conversation conversation = selectionStateHolder.itemAt(i);
             threadIds.add(conversation.getThreadId());
         }
         messagesLoader.markThreadsAsUnread(threadIds);
     }
 
     private ArrayList<Conversation> copyConversations() {
-        return new ArrayList<>(selectedConversations);
+        return new ArrayList<>(selectionStateHolder.allItems());
     }
 
     @Override
     public void onDestroyActionMode(ActionMode mode) {
-        selectedConversations.clear();
-    }
-
-    @Override
-    public void onItemCheckedStateChanged(ActionMode mode, int position, long id, boolean checked) {
-        Conversation checkedConversation = conversationSource.getAtPosition(position);
-        if (checked) {
-            selectedConversations.add(checkedConversation);
-        } else {
-            selectedConversations.remove(checkedConversation);
-        }
-        mode.invalidate();
+        selectionStateHolder.clear();
     }
 
 }

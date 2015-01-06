@@ -24,6 +24,7 @@ import android.view.ViewGroup;
 
 import com.amlcurran.messages.R;
 import com.amlcurran.messages.bucket.Truss;
+import com.amlcurran.messages.core.conversationlist.ConversationListView;
 import com.amlcurran.messages.core.data.Conversation;
 import com.amlcurran.messages.core.data.DraftRepository;
 import com.amlcurran.messages.core.preferences.PreferenceStore;
@@ -36,6 +37,7 @@ public class ConversationsBinder extends SimpleBinder<Conversation> {
     private static final int IS_READ = 0;
     private final DraftRepository draftRepository;
     private final PreferenceStore preferenceStore;
+    private final ConversationListView.ConversationSelectedListener conversationSelectedListener;
     private final String draftPreamble;
     private final String fromMePreamble;
     private final TextFormatter textFormatter;
@@ -43,10 +45,11 @@ public class ConversationsBinder extends SimpleBinder<Conversation> {
     private final AdapterPhotoLoader adapterPhotoLoader;
     private final Context context;
 
-    public ConversationsBinder(Context context, TextFormatter textFormatter, Resources resources, PhotoLoader loader, DraftRepository draftRepository, PreferenceStore preferenceStore) {
+    public ConversationsBinder(Context context, TextFormatter textFormatter, Resources resources, PhotoLoader loader, DraftRepository draftRepository, PreferenceStore preferenceStore, ConversationListView.ConversationSelectedListener conversationSelectedListener) {
         this.context = context;
         this.draftRepository = draftRepository;
         this.preferenceStore = preferenceStore;
+        this.conversationSelectedListener = conversationSelectedListener;
         this.draftPreamble = resources.getString(R.string.draft_preamble);
         this.fromMePreamble = resources.getString(R.string.from_me_preamble);
         this.textFormatter = textFormatter;
@@ -71,6 +74,7 @@ public class ConversationsBinder extends SimpleBinder<Conversation> {
         adapterPhotoLoader.stopLoadingPhoto(viewHolder);
         adapterPhotoLoader.loadContactPhoto(viewHolder, item);
 
+        viewHolder.imageView.setTag(R.id.tag_position, position);
         viewHolder.nameField.setText(formatTopLine(item));
         viewHolder.snippetField.setText(getSummaryText(item));
 
@@ -109,9 +113,9 @@ public class ConversationsBinder extends SimpleBinder<Conversation> {
     @Override
     public View createView(Context context, int itemViewType, ViewGroup parent) {
         if (itemViewType == IS_READ) {
-            return viewCreator.createReadView(context, parent);
+            return viewCreator.createReadView(context, parent, conversationSelectedListener);
         } else {
-            return viewCreator.createUnreadView(context, parent);
+            return viewCreator.createUnreadView(context, parent, conversationSelectedListener);
         }
     }
 

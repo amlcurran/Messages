@@ -16,41 +16,50 @@
 
 package com.amlcurran.messages.conversationlist;
 
-import android.app.ListFragment;
+import android.app.Fragment;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.view.ActionMode;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ListView;
 
 import com.amlcurran.messages.DependencyRepository;
 import com.amlcurran.messages.R;
 import com.amlcurran.messages.SingletonManager;
-import com.amlcurran.messages.conversationlist.adapter.ConversationsBinder;
+import com.amlcurran.messages.conversationlist.adapter.ConversationViewHolder;
+import com.amlcurran.messages.conversationlist.adapter.ConversationsRecyclerBinder;
 import com.amlcurran.messages.conversationlist.adapter.TextFormatter;
 import com.amlcurran.messages.core.conversationlist.ConversationListView;
 import com.amlcurran.messages.core.data.Conversation;
 import com.amlcurran.messages.threads.DefaultContactClickListener;
 import com.amlcurran.messages.ui.control.Master;
 import com.github.amlcurran.sourcebinder.ListSource;
-import com.github.amlcurran.sourcebinder.SourceBinderAdapter;
+import com.github.amlcurran.sourcebinder.recyclerview.RecyclerSourceBinderAdapter;
 
-public class ConversationListFragment extends ListFragment implements ConversationListView, Master {
+public class ConversationListFragment extends Fragment implements ConversationListView, Master, ConversationListView.ConversationSelectedListener {
 
     private View loadingView;
     private View emptyView;
     private ConversationListViewController conversationController;
     private ConversationSelectedListener conversationSelectedListener;
+    private RecyclerView recyclerView;
+    private RecyclerSourceBinderAdapter<Conversation, ConversationViewHolder> adapter;
+    private final ListSource<Conversation> source = new ListSource<>();
+    private ConversationSelectionStateHolder selectionStateHolder;
+    private ActionMode actionMode;
+    private ConversationModalMarshall listener;
 
     public ConversationListFragment() {
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_messages, container, false);
+        View view = inflater.inflate(R.layout.fragment_messages_recycler, container, false);
         loadingView = view.findViewById(R.id.loading);
         emptyView = view.findViewById(R.id.empty);
+        recyclerView = (RecyclerView) view.findViewById(R.id.recycler);
         return view;
     }
 
@@ -58,21 +67,19 @@ public class ConversationListFragment extends ListFragment implements Conversati
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        ListSource<Conversation> source = new ListSource<Conversation>();
         DeleteThreadViewCallback deleteThreadsViewCallback = (DeleteThreadViewCallback) getActivity();
         DependencyRepository dependencyRepository = (DependencyRepository) getActivity();
         conversationController = new ConversationListViewController(this, source, dependencyRepository, SingletonManager.getConversationList(getActivity()));
 
+        selectionStateHolder = new ConversationSelectionStateHolder();
+        listener = new ConversationModalMarshall(new DefaultContactClickListener(dependencyRepository), deleteThreadsViewCallback,
+                SingletonManager.getStatReporter(getActivity()), SingletonManager.getMessagesLoader(getActivity()), selectionStateHolder);
+
         TextFormatter textFormatter = new TextFormatter(getActivity());
-        ConversationsBinder binder = new ConversationsBinder(getActivity(), textFormatter, getResources(), SingletonManager.getPhotoLoader(getActivity()), dependencyRepository.getDraftRepository(), dependencyRepository.getPreferenceStore());
-        SourceBinderAdapter adapter = new SourceBinderAdapter<>(getActivity(), source, binder);
-        setListAdapter(adapter);
-        getListView().setChoiceMode(ListView.CHOICE_MODE_MULTIPLE_MODAL);
-        getListView().setDivider(null);
-        getListView().setOnItemClickListener(new NotifyControllerClickListener());
-        ConversationModalMarshall listener = new ConversationModalMarshall(source, new DefaultContactClickListener(dependencyRepository), deleteThreadsViewCallback,
-                SingletonManager.getStatReporter(getActivity()), SingletonManager.getMessagesLoader(getActivity()));
-        getListView().setMultiChoiceModeListener(listener);
+        ConversationsRecyclerBinder binder = new ConversationsRecyclerBinder(dependencyRepository.getDraftRepository(), getResources(), SingletonManager.getPhotoLoader(getActivity()), textFormatter, this, selectionStateHolder, dependencyRepository.getPreferenceStore());
+        adapter = new RecyclerSourceBinderAdapter<>(source, binder);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        recyclerView.setAdapter(adapter);
     }
 
     @Override
@@ -89,7 +96,7 @@ public class ConversationListFragment extends ListFragment implements Conversati
 
     @Override
     public void showLoadingUi() {
-        getListView().setVisibility(View.GONE);
+        recyclerView.setVisibility(View.GONE);
         loadingView.setVisibility(View.VISIBLE);
     }
 
@@ -109,17 +116,41 @@ public class ConversationListFragment extends ListFragment implements Conversati
     }
 
     @Override
+    public void itemRemovedAt(int position) {
+        adapter.notifyItemRemoved(position);
+    }
+
+    @Override
     public void hideLoadingUi() {
         if (getView() != null) {
-            getListView().setVisibility(View.VISIBLE);
+            recyclerView.setVisibility(View.VISIBLE);
             loadingView.setVisibility(View.GONE);
         }
     }
 
-    private class NotifyControllerClickListener implements android.widget.AdapterView.OnItemClickListener {
-        @Override
-        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-            conversationSelectedListener.selectedPosition(position);
+    @Override
+    public void selectedPosition(int position) {
+        conversationSelectedListener.selectedPosition(position);
+    }
+
+    @Override
+    public void secondarySelected(int position) {
+        Conversation item = source.getAtPosition(position);
+        selectionStateHolder.flipItem(item);
+        adapter.notifyItemChanged(position);
+        updateActionMode();
+    }
+
+    private void updateActionMode() {
+        if (selectionStateHolder.hasAnyChecked()) {
+            if (actionMode == null) {
+                actionMode = recyclerView.startActionMode(listener);
+            }
+            actionMode.invalidate();
+        } else {
+            actionMode.finish();
+            actionMode = null;
         }
     }
+
 }
