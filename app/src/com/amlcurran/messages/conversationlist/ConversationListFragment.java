@@ -20,6 +20,7 @@ import android.app.Fragment;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.ActionMode;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -47,7 +48,9 @@ public class ConversationListFragment extends Fragment implements ConversationLi
     private RecyclerView recyclerView;
     private RecyclerSourceBinderAdapter<Conversation, ConversationViewHolder> adapter;
     private final ListSource<Conversation> source = new ListSource<>();
-    private ConversationSelectionStateHolder checkedStateProvider;
+    private ConversationSelectionStateHolder selectionStateHolder;
+    private ActionMode actionMode;
+    private ConversationModalMarshall listener;
 
     public ConversationListFragment() {
     }
@@ -69,12 +72,12 @@ public class ConversationListFragment extends Fragment implements ConversationLi
         DependencyRepository dependencyRepository = (DependencyRepository) getActivity();
         conversationController = new ConversationListViewController(this, source, dependencyRepository, SingletonManager.getConversationList(getActivity()));
 
-        ConversationModalMarshall listener = new ConversationModalMarshall(source, new DefaultContactClickListener(dependencyRepository), deleteThreadsViewCallback,
-                SingletonManager.getStatReporter(getActivity()), SingletonManager.getMessagesLoader(getActivity()));
+        selectionStateHolder = new ConversationSelectionStateHolder();
+        listener = new ConversationModalMarshall(new DefaultContactClickListener(dependencyRepository), deleteThreadsViewCallback,
+                SingletonManager.getStatReporter(getActivity()), SingletonManager.getMessagesLoader(getActivity()), selectionStateHolder);
 
         TextFormatter textFormatter = new TextFormatter(getActivity());
-        checkedStateProvider = new ConversationSelectionStateHolder();
-        ConversationsRecyclerBinder binder = new ConversationsRecyclerBinder(dependencyRepository.getDraftRepository(), getResources(), SingletonManager.getPhotoLoader(getActivity()), textFormatter, this, checkedStateProvider, dependencyRepository.getPreferenceStore());
+        ConversationsRecyclerBinder binder = new ConversationsRecyclerBinder(dependencyRepository.getDraftRepository(), getResources(), SingletonManager.getPhotoLoader(getActivity()), textFormatter, this, selectionStateHolder, dependencyRepository.getPreferenceStore());
         adapter = new RecyclerSourceBinderAdapter<>(source, binder);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.setAdapter(adapter);
@@ -129,8 +132,25 @@ public class ConversationListFragment extends Fragment implements ConversationLi
     @Override
     public void secondarySelected(int position) {
         Conversation item = source.getAtPosition(position);
-        checkedStateProvider.flipItem(item);
+        selectionStateHolder.flipItem(item);
         adapter.notifyItemChanged(position);
+        updateActionMode();
+    }
+
+    private void updateActionMode() {
+        if (selectionStateHolder.hasAnyChecked()) {
+            if (actionMode == null) {
+                actionMode = createActionMode();
+            }
+            actionMode.invalidate();
+        } else {
+            actionMode.finish();
+            actionMode = null;
+        }
+    }
+
+    private ActionMode createActionMode() {
+        return recyclerView.startActionMode(listener);
     }
 
     private class NotifyControllerClickListener implements android.widget.AdapterView.OnItemClickListener {

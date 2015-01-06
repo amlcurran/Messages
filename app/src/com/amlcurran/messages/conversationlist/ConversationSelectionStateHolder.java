@@ -36,4 +36,32 @@ public class ConversationSelectionStateHolder {
             checkedItems.add(item);
         }
     }
+
+    public boolean hasAnyChecked() {
+        return checkedItems.size() > 0;
+    }
+
+    public Conversation firstItem() {
+        return itemAt(0);
+    }
+
+    public boolean hasOneChecked() {
+        return checkedItems.size() == 1;
+    }
+
+    public int checkedItemCount() {
+        return checkedItems.size();
+    }
+
+    public Conversation itemAt(int position) {
+        return checkedItems.get(position);
+    }
+
+    public List<Conversation> allItems() {
+        return checkedItems;
+    }
+
+    public void clear() {
+        checkedItems.clear();
+    }
 }
