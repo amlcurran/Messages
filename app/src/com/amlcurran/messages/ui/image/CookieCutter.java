@@ -33,4 +33,6 @@ public interface CookieCutter {
     void updateViewBounds(int height, int width);
 
     void preDraw();
+
+    void drawWithSelector(Canvas canvas);
 }

@@ -68,6 +68,7 @@ public class ConversationsRecyclerBinder implements ViewHolderBinder<Conversatio
 
         viewHolder.nameField.setText(item.getContact().getDisplayName());
         viewHolder.itemView.setActivated(checkedStateProvider.isChecked(item));
+        viewHolder.imageView.setActivated(checkedStateProvider.isChecked(item));
         viewHolder.snippetField.setText(getSummaryText(item));
     }
 
