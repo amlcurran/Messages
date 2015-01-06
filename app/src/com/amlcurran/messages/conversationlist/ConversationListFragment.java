@@ -28,7 +28,6 @@ import android.widget.AdapterView;
 import com.amlcurran.messages.DependencyRepository;
 import com.amlcurran.messages.R;
 import com.amlcurran.messages.SingletonManager;
-import com.amlcurran.messages.conversationlist.adapter.CheckedStateProvider;
 import com.amlcurran.messages.conversationlist.adapter.ConversationViewHolder;
 import com.amlcurran.messages.conversationlist.adapter.ConversationsRecyclerBinder;
 import com.amlcurran.messages.conversationlist.adapter.TextFormatter;
@@ -39,9 +38,6 @@ import com.amlcurran.messages.ui.control.Master;
 import com.github.amlcurran.sourcebinder.ListSource;
 import com.github.amlcurran.sourcebinder.recyclerview.RecyclerSourceBinderAdapter;
 
-import java.util.HashMap;
-import java.util.Map;
-
 public class ConversationListFragment extends Fragment implements ConversationListView, Master, ConversationListView.ConversationSelectedListener {
 
     private View loadingView;
@@ -49,9 +45,9 @@ public class ConversationListFragment extends Fragment implements ConversationLi
     private ConversationListViewController conversationController;
     private ConversationSelectedListener conversationSelectedListener;
     private RecyclerView recyclerView;
-    private final Map<String, Boolean> checkedItems = new HashMap<>();
     private RecyclerSourceBinderAdapter<Conversation, ConversationViewHolder> adapter;
     private final ListSource<Conversation> source = new ListSource<>();
+    private ConversationSelectionStateHolder checkedStateProvider;
 
     public ConversationListFragment() {
     }
@@ -77,26 +73,11 @@ public class ConversationListFragment extends Fragment implements ConversationLi
                 SingletonManager.getStatReporter(getActivity()), SingletonManager.getMessagesLoader(getActivity()));
 
         TextFormatter textFormatter = new TextFormatter(getActivity());
-        ConversationsRecyclerBinder binder = new ConversationsRecyclerBinder(dependencyRepository.getDraftRepository(), getResources(), SingletonManager.getPhotoLoader(getActivity()), textFormatter, this, new CheckedStateProvider() {
-            @Override
-            public boolean isChecked(Conversation item) {
-                if (checkedItems.containsKey(item.getThreadId())) {
-                    return checkedItems.get(item.getThreadId());
-                }
-                return false;
-            }
-        }, dependencyRepository.getPreferenceStore());
-//        ConversationsBinder binder = new ConversationsBinder(getActivity(), textFormatter, getResources(), SingletonManager.getPhotoLoader(getActivity()), dependencyRepository.getDraftRepository(), dependencyRepository.getPreferenceStore(),
-//                new ModalBridge(listener, this, getListView()));
+        checkedStateProvider = new ConversationSelectionStateHolder();
+        ConversationsRecyclerBinder binder = new ConversationsRecyclerBinder(dependencyRepository.getDraftRepository(), getResources(), SingletonManager.getPhotoLoader(getActivity()), textFormatter, this, checkedStateProvider, dependencyRepository.getPreferenceStore());
         adapter = new RecyclerSourceBinderAdapter<>(source, binder);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.setAdapter(adapter);
-//        SourceBinderAdapter adapter = new SourceBinderAdapter<>(getActivity(), source, binder);
-//        setListAdapter(adapter);
-//        getListView().setChoiceMode(ListView.CHOICE_MODE_MULTIPLE_MODAL);
-//        getListView().setDivider(null);
-//        getListView().setOnItemClickListener(new NotifyControllerClickListener());
-//        getListView().setMultiChoiceModeListener(listener);
     }
 
     @Override
@@ -148,11 +129,7 @@ public class ConversationListFragment extends Fragment implements ConversationLi
     @Override
     public void secondarySelected(int position) {
         Conversation item = source.getAtPosition(position);
-        if (!checkedItems.containsKey(item.getThreadId())) {
-            checkedItems.put(item.getThreadId(), true);
-        } else {
-            checkedItems.remove(item.getThreadId());
-        }
+        checkedStateProvider.flipItem(item);
         adapter.notifyItemChanged(position);
     }
 
@@ -162,4 +139,5 @@ public class ConversationListFragment extends Fragment implements ConversationLi
             conversationSelectedListener.selectedPosition(position);
         }
     }
+
 }
