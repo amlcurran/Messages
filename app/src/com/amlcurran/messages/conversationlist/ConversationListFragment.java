@@ -47,7 +47,7 @@ public class ConversationListFragment extends Fragment implements ConversationLi
     private RecyclerView recyclerView;
     private RecyclerSourceBinderAdapter<Conversation, ConversationViewHolder> adapter;
     private final ListSource<Conversation> source = new ListSource<>();
-    private ConversationSelectionStateHolder selectionStateHolder;
+    private SelectionStateHolder<Conversation> selectionStateHolder;
     private ActionMode actionMode;
     private ConversationModalMarshall listener;
 
@@ -71,7 +71,7 @@ public class ConversationListFragment extends Fragment implements ConversationLi
         DependencyRepository dependencyRepository = (DependencyRepository) getActivity();
         conversationController = new ConversationListViewController(this, source, dependencyRepository, SingletonManager.getConversationList(getActivity()));
 
-        selectionStateHolder = new ConversationSelectionStateHolder();
+        selectionStateHolder = new SelectionStateHolder<>();
         listener = new ConversationModalMarshall(new DefaultContactClickListener(dependencyRepository), deleteThreadsViewCallback,
                 SingletonManager.getStatReporter(getActivity()), SingletonManager.getMessagesLoader(getActivity()), selectionStateHolder);
 

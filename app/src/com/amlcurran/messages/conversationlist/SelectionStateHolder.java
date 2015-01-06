@@ -16,20 +16,18 @@
 
 package com.amlcurran.messages.conversationlist;
 
-import com.amlcurran.messages.core.data.Conversation;
-
 import java.util.ArrayList;
 import java.util.List;
 
-public class ConversationSelectionStateHolder {
+public class SelectionStateHolder<T> {
 
-    private final List<Conversation> checkedItems = new ArrayList<>();
+    private final List<T> checkedItems = new ArrayList<>();
 
-    public boolean isChecked(Conversation item) {
+    public boolean isChecked(T item) {
         return checkedItems.contains(item);
     }
 
-    public void flipItem(Conversation item) {
+    public void flipItem(T item) {
         if (checkedItems.contains(item)) {
             checkedItems.remove(item);
         } else {
@@ -41,7 +39,7 @@ public class ConversationSelectionStateHolder {
         return checkedItems.size() > 0;
     }
 
-    public Conversation firstItem() {
+    public T firstItem() {
         return itemAt(0);
     }
 
@@ -53,11 +51,11 @@ public class ConversationSelectionStateHolder {
         return checkedItems.size();
     }
 
-    public Conversation itemAt(int position) {
+    public T itemAt(int position) {
         return checkedItems.get(position);
     }
 
-    public List<Conversation> allItems() {
+    public List<T> allItems() {
         return checkedItems;
     }
 

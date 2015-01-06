@@ -36,9 +36,9 @@ public class ConversationModalMarshall implements ActionMode.Callback {
     private final DeleteThreadViewCallback deleteThreadsViewCallback;
     private final StatReporter statReporter;
     private final MessagesLoader messagesLoader;
-    private final ConversationSelectionStateHolder selectionStateHolder;
+    private final SelectionStateHolder<Conversation> selectionStateHolder;
 
-    public ConversationModalMarshall(ContactClickListener contactClickListener, DeleteThreadViewCallback deleteThreadViewCallback, StatReporter statReporter, MessagesLoader messagesLoader, ConversationSelectionStateHolder selectionStateHolder) {
+    public ConversationModalMarshall(ContactClickListener contactClickListener, DeleteThreadViewCallback deleteThreadViewCallback, StatReporter statReporter, MessagesLoader messagesLoader, SelectionStateHolder<Conversation> selectionStateHolder) {
         this.contactClickListener = contactClickListener;
         this.deleteThreadsViewCallback = deleteThreadViewCallback;
         this.statReporter = statReporter;

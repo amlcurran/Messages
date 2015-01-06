@@ -20,7 +20,7 @@ import android.content.res.Resources;
 import android.view.ViewGroup;
 
 import com.amlcurran.messages.R;
-import com.amlcurran.messages.conversationlist.ConversationSelectionStateHolder;
+import com.amlcurran.messages.conversationlist.SelectionStateHolder;
 import com.amlcurran.messages.core.conversationlist.ConversationListView;
 import com.amlcurran.messages.core.data.Conversation;
 import com.amlcurran.messages.core.data.DraftRepository;
@@ -39,9 +39,9 @@ public class ConversationsRecyclerBinder implements ViewHolderBinder<Conversatio
     private final ConversationListView.ConversationSelectedListener conversationSelectedListener;
     private final ConversationViewCreator viewCreator;
     private final AdapterPhotoLoader adapterPhotoLoader;
-    private final ConversationSelectionStateHolder checkedStateProvider;
+    private final SelectionStateHolder checkedStateProvider;
 
-    public ConversationsRecyclerBinder(DraftRepository draftRepository, Resources resources, PhotoLoader loader, TextFormatter textFormatter, ConversationListView.ConversationSelectedListener conversationSelectedListener, ConversationSelectionStateHolder checkedStateProvider, PreferenceStore prefereceStore) {
+    public ConversationsRecyclerBinder(DraftRepository draftRepository, Resources resources, PhotoLoader loader, TextFormatter textFormatter, ConversationListView.ConversationSelectedListener conversationSelectedListener, SelectionStateHolder checkedStateProvider, PreferenceStore prefereceStore) {
         this.draftRepository = draftRepository;
         this.textFormatter = textFormatter;
         this.conversationSelectedListener = conversationSelectedListener;
