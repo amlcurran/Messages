@@ -18,25 +18,22 @@ package com.amlcurran.messages.conversationlist;
 
 import com.amlcurran.messages.core.data.Conversation;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ConversationSelectionStateHolder {
 
-    private final Map<String, Boolean> checkedItems = new HashMap<>();
+    private final List<Conversation> checkedItems = new ArrayList<>();
 
     public boolean isChecked(Conversation item) {
-        if (checkedItems.containsKey(item.getThreadId())) {
-            return checkedItems.get(item.getThreadId());
-        }
-        return false;
+        return checkedItems.contains(item);
     }
 
     public void flipItem(Conversation item) {
-        if (!checkedItems.containsKey(item.getThreadId())) {
-            checkedItems.put(item.getThreadId(), true);
+        if (checkedItems.contains(item)) {
+            checkedItems.remove(item);
         } else {
-            checkedItems.remove(item.getThreadId());
+            checkedItems.add(item);
         }
     }
 }
