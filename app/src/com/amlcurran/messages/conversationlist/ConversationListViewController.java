@@ -17,15 +17,14 @@
 package com.amlcurran.messages.conversationlist;
 
 import com.amlcurran.messages.DependencyRepository;
+import com.amlcurran.messages.core.conversationlist.Conversation;
 import com.amlcurran.messages.core.conversationlist.ConversationList;
 import com.amlcurran.messages.core.conversationlist.ConversationListView;
-import com.amlcurran.messages.core.conversationlist.Conversation;
 import com.amlcurran.messages.core.data.Sort;
 import com.amlcurran.messages.core.preferences.PreferenceStore;
 import com.amlcurran.messages.transition.TransitionManager;
 import com.github.amlcurran.sourcebinder.ListSource;
 
-import java.util.Collections;
 import java.util.List;
 
 class ConversationListViewController implements ConversationListView.ConversationSelectedListener, ConversationList.Callbacks {
@@ -71,7 +70,6 @@ class ConversationListViewController implements ConversationListView.Conversatio
 
     @Override
     public void listLoaded(List<Conversation> conversations) {
-        Collections.sort(conversations, preferenceStore.getConversationSortComparator());
         source.replace(conversations);
         conversationListView.hideLoadingUi();
         if (conversations.size() == 0) {

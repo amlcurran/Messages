@@ -46,11 +46,13 @@ public class UpdateNotificationListener implements ConversationList.Callbacks {
 
     @Override
     public void conversationDeleted(Conversation deletedConversation, List<Conversation> conversationList) {
-        notifier.updateUnreadNotification();
+        if (!deletedConversation.isRead()) {
+            notifier.updateUnreadNotification();
+        }
     }
 
     @Override
     public void conversationMarkedUnread(Conversation conversation, List<Conversation> conversationList) {
-
+        notifier.updateUnreadNotification();
     }
 }

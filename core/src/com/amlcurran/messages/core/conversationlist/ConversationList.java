@@ -149,6 +149,7 @@ public class ConversationList {
     public void markedUnread(String threadId) {
         Conversation conversation = findConversationById(threadId);
         conversation.isRead = false;
+        sort();
         for (Callbacks callbacks : callbacksList) {
             postConversationMarkedUnread(callbacks, conversation, conversationList);
         }
