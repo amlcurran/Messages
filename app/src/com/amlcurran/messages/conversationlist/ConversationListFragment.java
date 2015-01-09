@@ -32,7 +32,7 @@ import com.amlcurran.messages.conversationlist.adapter.ConversationViewHolder;
 import com.amlcurran.messages.conversationlist.adapter.ConversationsRecyclerBinder;
 import com.amlcurran.messages.conversationlist.adapter.TextFormatter;
 import com.amlcurran.messages.core.conversationlist.ConversationListView;
-import com.amlcurran.messages.core.data.Conversation;
+import com.amlcurran.messages.core.conversationlist.Conversation;
 import com.amlcurran.messages.threads.DefaultContactClickListener;
 import com.amlcurran.messages.ui.control.Master;
 import com.github.amlcurran.sourcebinder.ListSource;

@@ -19,7 +19,7 @@ package com.amlcurran.messages.conversationlist;
 import com.amlcurran.messages.DependencyRepository;
 import com.amlcurran.messages.core.conversationlist.ConversationList;
 import com.amlcurran.messages.core.conversationlist.ConversationListView;
-import com.amlcurran.messages.core.data.Conversation;
+import com.amlcurran.messages.core.conversationlist.Conversation;
 import com.amlcurran.messages.core.preferences.PreferenceStore;
 import com.amlcurran.messages.transition.TransitionManager;
 import com.github.amlcurran.sourcebinder.ListSource;

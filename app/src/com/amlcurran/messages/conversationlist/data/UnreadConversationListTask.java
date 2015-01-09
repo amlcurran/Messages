@@ -20,7 +20,7 @@ import android.content.ContentResolver;
 import android.provider.Telephony;
 
 import com.amlcurran.messages.core.conversationlist.ConversationListListener;
-import com.amlcurran.messages.core.data.Conversation;
+import com.amlcurran.messages.core.conversationlist.Conversation;
 import com.amlcurran.messages.core.data.Sort;
 import com.amlcurran.messages.loaders.MessagesCache;
 import com.amlcurran.messages.loaders.fudges.ConversationListHelperFactory;

@@ -18,7 +18,7 @@ package com.amlcurran.messages.analysis;
 
 import android.webkit.URLUtil;
 
-import com.amlcurran.messages.core.data.Conversation;
+import com.amlcurran.messages.core.conversationlist.Conversation;
 import com.amlcurran.messages.core.data.Time;
 
 import java.util.List;

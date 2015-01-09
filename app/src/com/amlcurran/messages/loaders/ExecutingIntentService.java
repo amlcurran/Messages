@@ -22,7 +22,7 @@ import android.content.Context;
 import android.content.Intent;
 
 import com.amlcurran.messages.SingletonManager;
-import com.amlcurran.messages.core.data.Conversation;
+import com.amlcurran.messages.core.conversationlist.Conversation;
 
 import java.util.ArrayList;
 import java.util.Collections;

@@ -24,7 +24,7 @@ import android.view.MenuItem;
 
 import com.amlcurran.messages.conversationlist.DeleteThreadViewCallback;
 import com.amlcurran.messages.core.conversationlist.ConversationLoader;
-import com.amlcurran.messages.core.data.Conversation;
+import com.amlcurran.messages.core.conversationlist.Conversation;
 import com.amlcurran.messages.core.data.DraftRepository;
 import com.amlcurran.messages.core.events.EventBus;
 import com.amlcurran.messages.core.loaders.MessagesLoader;

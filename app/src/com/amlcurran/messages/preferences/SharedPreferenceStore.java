@@ -23,7 +23,7 @@ import android.preference.PreferenceManager;
 import com.amlcurran.messages.core.TextUtils;
 import com.amlcurran.messages.core.conversationlist.TimestampComparator;
 import com.amlcurran.messages.core.conversationlist.UnreadComparator;
-import com.amlcurran.messages.core.data.Conversation;
+import com.amlcurran.messages.core.conversationlist.Conversation;
 import com.amlcurran.messages.core.data.Sort;
 import com.amlcurran.messages.core.preferences.PreferenceStore;
 

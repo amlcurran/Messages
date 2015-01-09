@@ -16,8 +16,6 @@
 
 package com.amlcurran.messages.core.conversationlist;
 
-import com.amlcurran.messages.core.data.Conversation;
-
 import java.util.Comparator;
 
 public class UnreadComparator implements Comparator<Conversation> {

@@ -17,7 +17,6 @@
 package com.amlcurran.messages.core.conversationlist;
 
 import com.amlcurran.messages.core.CommandQueue;
-import com.amlcurran.messages.core.data.Conversation;
 import com.amlcurran.messages.core.preferences.PreferenceStore;
 
 import java.util.ArrayList;

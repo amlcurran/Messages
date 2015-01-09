@@ -23,7 +23,7 @@ import android.support.v4.app.NotificationCompat;
 
 import com.amlcurran.messages.analysis.MessageAnalyser;
 import com.amlcurran.messages.core.data.Contact;
-import com.amlcurran.messages.core.data.Conversation;
+import com.amlcurran.messages.core.conversationlist.Conversation;
 import com.amlcurran.messages.core.data.Time;
 
 import java.util.ArrayList;

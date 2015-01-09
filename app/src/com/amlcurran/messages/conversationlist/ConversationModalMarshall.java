@@ -21,7 +21,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.amlcurran.messages.R;
-import com.amlcurran.messages.core.data.Conversation;
+import com.amlcurran.messages.core.conversationlist.Conversation;
 import com.amlcurran.messages.core.loaders.MessagesLoader;
 import com.amlcurran.messages.reporting.StatReporter;
 import com.amlcurran.messages.ui.contact.ContactClickListener;

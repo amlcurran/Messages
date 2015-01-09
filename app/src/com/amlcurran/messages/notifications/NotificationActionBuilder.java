@@ -26,7 +26,7 @@ import android.support.v4.app.RemoteInput;
 import com.amlcurran.messages.R;
 import com.amlcurran.messages.analysis.Link;
 import com.amlcurran.messages.core.data.Contact;
-import com.amlcurran.messages.core.data.Conversation;
+import com.amlcurran.messages.core.conversationlist.Conversation;
 import com.amlcurran.messages.core.data.PhoneNumber;
 import com.amlcurran.messages.loaders.ExecutingIntentService;
 import com.amlcurran.messages.telephony.SmsSender;

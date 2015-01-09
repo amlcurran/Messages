@@ -21,7 +21,7 @@ import android.content.Context;
 import com.amlcurran.messages.R;
 import com.amlcurran.messages.core.conversationlist.ConversationListListener;
 import com.amlcurran.messages.core.data.Contact;
-import com.amlcurran.messages.core.data.Conversation;
+import com.amlcurran.messages.core.conversationlist.Conversation;
 import com.amlcurran.messages.core.data.PhoneNumber;
 import com.amlcurran.messages.core.data.SavedContact;
 import com.amlcurran.messages.core.data.Sort;

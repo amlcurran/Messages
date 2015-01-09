@@ -22,7 +22,7 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import com.amlcurran.messages.MessagesActivity;
-import com.amlcurran.messages.core.data.Conversation;
+import com.amlcurran.messages.core.conversationlist.Conversation;
 import com.amlcurran.messages.data.ContactFactory;
 import com.amlcurran.messages.data.InFlightSmsMessage;
 import com.amlcurran.messages.telephony.SmsSender;

@@ -22,7 +22,7 @@ import android.view.ViewGroup;
 import com.amlcurran.messages.R;
 import com.amlcurran.messages.conversationlist.SelectionStateHolder;
 import com.amlcurran.messages.core.conversationlist.ConversationListView;
-import com.amlcurran.messages.core.data.Conversation;
+import com.amlcurran.messages.core.conversationlist.Conversation;
 import com.amlcurran.messages.core.data.DraftRepository;
 import com.amlcurran.messages.core.preferences.PreferenceStore;
 import com.amlcurran.messages.loaders.photos.PhotoLoader;

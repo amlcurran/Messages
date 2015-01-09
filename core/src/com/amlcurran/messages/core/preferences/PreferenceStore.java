@@ -16,7 +16,7 @@
 
 package com.amlcurran.messages.core.preferences;
 
-import com.amlcurran.messages.core.data.Conversation;
+import com.amlcurran.messages.core.conversationlist.Conversation;
 import com.amlcurran.messages.core.data.Sort;
 
 import java.net.URI;
