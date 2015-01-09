@@ -25,6 +25,7 @@ import com.amlcurran.messages.SingletonManager;
 import com.amlcurran.messages.core.data.Conversation;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -71,5 +72,9 @@ public class ExecutingIntentService extends IntentService {
 
     public static PendingIntent markReadPendingIntent(Context context, List<Conversation> conversations) {
         return PendingIntent.getService(context, 0, markReadIntent(context, conversations), PendingIntent.FLAG_UPDATE_CURRENT);
+    }
+
+    public static PendingIntent markReadPendingIntentSingle(Context context, Conversation conversations) {
+        return PendingIntent.getService(context, conversations.hashCode(), markReadIntent(context, Collections.singletonList(conversations)), PendingIntent.FLAG_UPDATE_CURRENT);
     }
 }

@@ -31,7 +31,6 @@ import com.amlcurran.messages.core.data.PhoneNumber;
 import com.amlcurran.messages.loaders.ExecutingIntentService;
 import com.amlcurran.messages.telephony.SmsSender;
 
-import java.util.Collections;
 import java.util.List;
 
 class NotificationActionBuilder {
@@ -42,7 +41,7 @@ class NotificationActionBuilder {
     }
 
     NotificationCompat.Action buildSingleMarkReadAction(Conversation conversation) {
-        PendingIntent markReadIntent = ExecutingIntentService.markReadPendingIntent(context, Collections.singletonList(conversation));
+        PendingIntent markReadIntent = ExecutingIntentService.markReadPendingIntentSingle(context, conversation);
         String label = context.getString(R.string.mark_as_read);
         return new NotificationCompat.Action.Builder(R.drawable.ic_mark_read, label, markReadIntent).build();
     }
