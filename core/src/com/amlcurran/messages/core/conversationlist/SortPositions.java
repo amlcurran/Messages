@@ -16,30 +16,12 @@
 
 package com.amlcurran.messages.core.conversationlist;
 
-public interface ConversationListView {
-    void hideLoadingUi();
+public class SortPositions {
+    public final int oldPosition;
+    public final int newPosition;
 
-    void showLoadingUi();
-
-    void setConversationSelectedListener(ConversationSelectedListener conversationSelectedListener);
-
-    void showEmptyUi();
-
-    void hideEmptyUi();
-
-    void itemRemovedAt(int position);
-
-    void itemChangedAt(int position);
-
-    void invalidateList();
-
-    void itemMoved(int oldPosition, int newPosition);
-
-    void newList();
-
-    interface ConversationSelectedListener {
-        void selectedPosition(int position);
-
-        void secondarySelected(int position);
+    public SortPositions(int oldPosition, int newPosition) {
+        this.oldPosition = oldPosition;
+        this.newPosition = newPosition;
     }
 }

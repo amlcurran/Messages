@@ -149,9 +149,11 @@ public class ConversationList {
     public void markedUnread(String threadId) {
         Conversation conversation = findConversationById(threadId);
         conversation.isRead = false;
+        int oldPosition = conversationList.indexOf(conversation);
         sort();
+        int newPosition = conversationList.indexOf(conversation);
         for (Callbacks callbacks : callbacksList) {
-            postConversationMarkedUnread(callbacks, conversation, conversationList);
+            postConversationMarkedUnread(callbacks, conversation, conversationList, new SortPositions(oldPosition, newPosition));
         }
     }
 
@@ -164,11 +166,11 @@ public class ConversationList {
         return null;
     }
 
-    private void postConversationMarkedUnread(final Callbacks callbacks, final Conversation conversation, final List<Conversation> conversationList) {
+    private void postConversationMarkedUnread(final Callbacks callbacks, final Conversation conversation, final List<Conversation> conversationList, final SortPositions sortPositions) {
         uiCommandQueue.enqueue(new Runnable() {
             @Override
             public void run() {
-                callbacks.conversationMarkedUnread(conversation, conversationList);
+                callbacks.conversationMarkedUnread(conversation, conversationList, sortPositions);
             }
         });
     }
@@ -182,7 +184,7 @@ public class ConversationList {
 
         void conversationDeleted(Conversation deletedConversation, List<Conversation> conversationList);
 
-        void conversationMarkedUnread(Conversation conversation, List<Conversation> conversationList);
+        void conversationMarkedUnread(Conversation conversation, List<Conversation> conversationList, SortPositions sortPositions);
     }
 
     private enum LoadingState {

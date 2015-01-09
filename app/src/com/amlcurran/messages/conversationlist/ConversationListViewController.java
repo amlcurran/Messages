@@ -20,6 +20,7 @@ import com.amlcurran.messages.DependencyRepository;
 import com.amlcurran.messages.core.conversationlist.Conversation;
 import com.amlcurran.messages.core.conversationlist.ConversationList;
 import com.amlcurran.messages.core.conversationlist.ConversationListView;
+import com.amlcurran.messages.core.conversationlist.SortPositions;
 import com.amlcurran.messages.core.data.Sort;
 import com.amlcurran.messages.core.preferences.PreferenceStore;
 import com.amlcurran.messages.transition.TransitionManager;
@@ -71,6 +72,7 @@ class ConversationListViewController implements ConversationListView.Conversatio
     @Override
     public void listLoaded(List<Conversation> conversations) {
         source.replace(conversations);
+        conversationListView.newList();
         conversationListView.hideLoadingUi();
         if (conversations.size() == 0) {
             conversationListView.showEmptyUi();
@@ -92,13 +94,14 @@ class ConversationListViewController implements ConversationListView.Conversatio
     }
 
     @Override
-    public void conversationMarkedUnread(Conversation conversation, List<Conversation> conversationList) {
+    public void conversationMarkedUnread(Conversation conversation, List<Conversation> conversationList, SortPositions sortPositions) {
         int position = positionInSource(conversation);
-        listLoaded(conversationList);
         if (preferenceStore.getConversationSort() == Sort.DEFAULT) {
             conversationListView.itemChangedAt(position);
         } else {
-            conversationListView.invalidateList();
+            source.replace(conversationList);
+            conversationListView.itemMoved(sortPositions.oldPosition, sortPositions.newPosition);
+            conversationListView.itemChangedAt(sortPositions.newPosition);
         }
     }
 

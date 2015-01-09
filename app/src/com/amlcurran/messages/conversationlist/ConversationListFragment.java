@@ -78,6 +78,7 @@ public class ConversationListFragment extends Fragment implements ConversationLi
         TextFormatter textFormatter = new TextFormatter(getActivity());
         ConversationsRecyclerBinder binder = new ConversationsRecyclerBinder(dependencyRepository.getDraftRepository(), getResources(), SingletonManager.getPhotoLoader(getActivity()), textFormatter, this, selectionStateHolder, dependencyRepository.getPreferenceStore());
         adapter = new RecyclerSourceBinderAdapter<>(source, binder);
+        source.setSourceChangeListener(null);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.setAdapter(adapter);
         recyclerView.setHasFixedSize(dependencyRepository.getPreferenceStore().showLargeUnreadPreviews());
@@ -128,6 +129,16 @@ public class ConversationListFragment extends Fragment implements ConversationLi
 
     @Override
     public void invalidateList() {
+        adapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void itemMoved(int oldPosition, int newPosition) {
+        adapter.notifyItemMoved(oldPosition, newPosition);
+    }
+
+    @Override
+    public void newList() {
         adapter.notifyDataSetChanged();
     }
 

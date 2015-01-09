@@ -18,6 +18,7 @@ package com.amlcurran.messages;
 
 import com.amlcurran.messages.core.conversationlist.ConversationList;
 import com.amlcurran.messages.core.conversationlist.Conversation;
+import com.amlcurran.messages.core.conversationlist.SortPositions;
 import com.amlcurran.messages.notifications.Notifier;
 
 import java.util.List;
@@ -52,7 +53,8 @@ public class UpdateNotificationListener implements ConversationList.Callbacks {
     }
 
     @Override
-    public void conversationMarkedUnread(Conversation conversation, List<Conversation> conversationList) {
-        notifier.updateUnreadNotification();
+    public void conversationMarkedUnread(Conversation conversation, List<Conversation> conversationList, SortPositions sortPositions) {
+
     }
+
 }
