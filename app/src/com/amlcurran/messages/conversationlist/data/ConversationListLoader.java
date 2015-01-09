@@ -23,10 +23,9 @@ import android.provider.ContactsContract;
 import android.provider.Telephony;
 import android.telephony.PhoneNumberUtils;
 
-import com.amlcurran.messages.core.data.Contact;
 import com.amlcurran.messages.core.conversationlist.Conversation;
+import com.amlcurran.messages.core.data.Contact;
 import com.amlcurran.messages.core.data.PhoneNumberOnlyContact;
-import com.amlcurran.messages.core.data.Sort;
 import com.amlcurran.messages.core.data.Time;
 import com.amlcurran.messages.data.ContactFactory;
 import com.amlcurran.messages.data.ParcelablePhoneNumber;
@@ -38,19 +37,17 @@ import java.util.List;
 
 class ConversationListLoader {
     private final ContentResolver contentResolver;
-    private final Sort sort;
     private final ConversationListHelper helper;
 
-    public ConversationListLoader(ContentResolver contentResolver, Sort sort, ConversationListHelper helper) {
+    public ConversationListLoader(ContentResolver contentResolver, ConversationListHelper helper) {
         this.contentResolver = contentResolver;
-        this.sort = sort;
         this.helper = helper;
     }
 
     List<Conversation> loadList(String query, String[] args) {
         final List<Conversation> conversations = new ArrayList<Conversation>();
 
-        Cursor conversationsList = helper.queryConversationList(contentResolver, query, args, getSortString());
+        Cursor conversationsList = helper.queryConversationList(contentResolver, query, args, Telephony.Sms.DEFAULT_SORT_ORDER);
 
         while (conversationsList.moveToNext()) {
 
@@ -96,16 +93,6 @@ class ConversationListLoader {
         }
         peopleCursor.close();
         return contact;
-    }
-
-    private String getSortString() {
-        String sortOrder;
-        if (sort == Sort.UNREAD) {
-            sortOrder = Telephony.Sms.READ + " ASC, " + Telephony.Sms.DEFAULT_SORT_ORDER;
-        } else {
-            sortOrder = Telephony.Sms.DEFAULT_SORT_ORDER;
-        }
-        return sortOrder;
     }
 
     private static Uri createPhoneLookupUri(String phoneRaw) {

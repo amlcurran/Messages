@@ -19,9 +19,8 @@ package com.amlcurran.messages.conversationlist.data;
 import android.content.ContentResolver;
 
 import com.amlcurran.messages.MessagesLog;
-import com.amlcurran.messages.core.conversationlist.ConversationListListener;
 import com.amlcurran.messages.core.conversationlist.Conversation;
-import com.amlcurran.messages.core.data.Sort;
+import com.amlcurran.messages.core.conversationlist.ConversationListListener;
 import com.amlcurran.messages.loaders.fudges.ConversationListHelperFactory;
 
 import java.util.List;
@@ -34,15 +33,15 @@ class ConversationListTask implements Callable<Object> {
     private final ConversationListListener loadListener;
     private final ConversationListLoader conversationListLoader;
 
-    ConversationListTask(ContentResolver contentResolver, String query, String[] args, ConversationListListener loadListener, Sort sort) {
+    ConversationListTask(ContentResolver contentResolver, String query, String[] args, ConversationListListener loadListener) {
         this.query = query;
         this.args = args;
         this.loadListener = loadListener;
-        conversationListLoader = new ConversationListLoader(contentResolver, sort, ConversationListHelperFactory.get());
+        conversationListLoader = new ConversationListLoader(contentResolver, ConversationListHelperFactory.get());
     }
 
-    public ConversationListTask(ContentResolver contentResolver, ConversationListListener loadListener, Sort sort) {
-        this(contentResolver, null, null, loadListener, sort);
+    public ConversationListTask(ContentResolver contentResolver, ConversationListListener loadListener) {
+        this(contentResolver, null, null, loadListener);
     }
 
     @Override

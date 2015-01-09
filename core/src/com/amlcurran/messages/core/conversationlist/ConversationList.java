@@ -20,6 +20,7 @@ import com.amlcurran.messages.core.CommandQueue;
 import com.amlcurran.messages.core.preferences.PreferenceStore;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class ConversationList {
@@ -36,7 +37,7 @@ public class ConversationList {
         this.preferenceStore = preferenceStore;
         this.uiCommandQueue = uiCommandQueue;
         this.state = LoadingState.INITIAL_LOAD;
-        this.preferenceStore.listenToPreferenceChanges(new PokeCallbacksListener());
+        this.preferenceStore.listenToPreferenceChanges(new ResortListener());
     }
 
     public void addCallbacks(Callbacks callbacks) {
@@ -118,17 +119,22 @@ public class ConversationList {
             @Override
             public void onConversationListLoaded(List<Conversation> conversations) {
                 state = LoadingState.LOADED;
-                for (Callbacks callbacks : callbacksList) {
-                    postLoaded(callbacks, conversations);
-                }
                 updateInternalList(conversations);
+                for (Callbacks callbacks : callbacksList) {
+                    postLoaded(callbacks, conversationList);
+                }
             }
-        }, preferenceStore.getConversationSort());
+        });
     }
 
     private void updateInternalList(List<Conversation> conversations) {
         conversationList.clear();
         conversationList.addAll(conversations);
+        sort();
+    }
+
+    private void sort() {
+        Collections.sort(conversationList, preferenceStore.getConversationSortComparator());
     }
 
     public void deletedConversations(List<Conversation> deletedConversations) {
@@ -182,11 +188,12 @@ public class ConversationList {
         INITIAL_LOAD, LOADED, INVALIDATED
     }
 
-    private class PokeCallbacksListener implements PreferenceStore.PreferenceChangedListener {
+    private class ResortListener implements PreferenceStore.PreferenceChangedListener {
         @Override
         public void preferenceChanged(String key) {
             for (Callbacks callbacks : callbacksList) {
-                updateCallback(callbacks);
+                sort();
+                postLoaded(callbacks, conversationList);
             }
         }
     }

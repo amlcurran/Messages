@@ -24,7 +24,6 @@ import com.amlcurran.messages.core.data.Contact;
 import com.amlcurran.messages.core.conversationlist.Conversation;
 import com.amlcurran.messages.core.data.PhoneNumber;
 import com.amlcurran.messages.core.data.SavedContact;
-import com.amlcurran.messages.core.data.Sort;
 import com.amlcurran.messages.core.data.Time;
 import com.amlcurran.messages.core.loaders.ContactListListener;
 import com.amlcurran.messages.core.loaders.OnContactQueryListener;
@@ -46,7 +45,7 @@ public class DemoMessagesLoader implements MessagesLoader, ConversationLoader {
     }
 
     @Override
-    public void loadConversationList(ConversationListListener loadListener, Sort sort) {
+    public void loadConversationList(ConversationListListener loadListener) {
         List<Conversation> fakeConversations = new ArrayList<Conversation>();
         String[] numbers = getStringArray(R.array.demo_numbers);
         String[] bodies = getStringArray(R.array.demo_bodies);

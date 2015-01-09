@@ -26,7 +26,6 @@ import com.amlcurran.messages.core.conversationlist.ConversationLoader;
 import com.amlcurran.messages.core.conversationlist.HasConversationListener;
 import com.amlcurran.messages.core.data.Contact;
 import com.amlcurran.messages.core.conversationlist.Conversation;
-import com.amlcurran.messages.core.data.Sort;
 import com.amlcurran.messages.core.loaders.TaskQueue;
 
 import java.util.List;
@@ -46,8 +45,8 @@ public class ExecutorConversationLoader implements ConversationLoader {
     }
 
     @Override
-    public void loadConversationList(final ConversationListListener loadListener, Sort sort) {
-        taskQueue.submit(new ConversationListTask(resolver, loadListener, sort));
+    public void loadConversationList(final ConversationListListener loadListener) {
+        taskQueue.submit(new ConversationListTask(resolver, loadListener));
     }
 
     @Override

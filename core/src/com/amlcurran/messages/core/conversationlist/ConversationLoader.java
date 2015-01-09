@@ -17,12 +17,11 @@
 package com.amlcurran.messages.core.conversationlist;
 
 import com.amlcurran.messages.core.data.Contact;
-import com.amlcurran.messages.core.data.Sort;
 
 import java.util.List;
 
 public interface ConversationLoader {
-    void loadConversationList(ConversationListListener loadListener, Sort sort);
+    void loadConversationList(ConversationListListener loadListener);
 
     void loadUnreadConversationList(ConversationListListener loadListener);
 

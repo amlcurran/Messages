@@ -21,7 +21,6 @@ import android.provider.Telephony;
 
 import com.amlcurran.messages.core.conversationlist.ConversationListListener;
 import com.amlcurran.messages.core.conversationlist.Conversation;
-import com.amlcurran.messages.core.data.Sort;
 import com.amlcurran.messages.loaders.MessagesCache;
 import com.amlcurran.messages.loaders.fudges.ConversationListHelperFactory;
 
@@ -41,7 +40,7 @@ class UnreadConversationListTask implements Callable<Object> {
         this.args = null;
         this.loadListener = loadListener;
         this.cache = MessagesCache.NO_CACHE;
-        conversationListLoader = new ConversationListLoader(contentResolver, Sort.DEFAULT, ConversationListHelperFactory.get());
+        conversationListLoader = new ConversationListLoader(contentResolver, ConversationListHelperFactory.get());
     }
 
     @Override
