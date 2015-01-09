@@ -20,6 +20,7 @@ import com.amlcurran.messages.DependencyRepository;
 import com.amlcurran.messages.core.conversationlist.ConversationList;
 import com.amlcurran.messages.core.conversationlist.ConversationListView;
 import com.amlcurran.messages.core.conversationlist.Conversation;
+import com.amlcurran.messages.core.data.Sort;
 import com.amlcurran.messages.core.preferences.PreferenceStore;
 import com.amlcurran.messages.transition.TransitionManager;
 import com.github.amlcurran.sourcebinder.ListSource;
@@ -87,14 +88,31 @@ class ConversationListViewController implements ConversationListView.Conversatio
 
     @Override
     public void conversationDeleted(Conversation deletedConversation, List<Conversation> conversationList) {
-        //TODO: need a better method of doing this
+        int position = positionInSource(deletedConversation);
+        listLoaded(conversationList);
+        conversationListView.itemRemovedAt(position);
+    }
+
+    @Override
+    public void conversationMarkedUnread(Conversation conversation, List<Conversation> conversationList) {
+        int position = positionInSource(conversation);
+        listLoaded(conversationList);
+        if (preferenceStore.getConversationSort() == Sort.DEFAULT) {
+            conversationListView.itemChangedAt(position);
+        } else {
+            conversationListView.invalidateList();
+        }
+    }
+
+    private int positionInSource(Conversation deletedConversation) {
+        int position = 0;
         int count = source.getCount();
         for (int i = 0; i < count; i++) {
             if (deletedConversation.getThreadId().equals(source.getAtPosition(i).getThreadId())) {
-                conversationListView.itemRemovedAt(i);
-                return;
+                position = i;
+                break;
             }
         }
-        listLoaded(conversationList);
+        return position;
     }
 }

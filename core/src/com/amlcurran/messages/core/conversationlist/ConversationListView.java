@@ -29,6 +29,10 @@ public interface ConversationListView {
 
     void itemRemovedAt(int position);
 
+    void itemChangedAt(int position);
+
+    void invalidateList();
+
     interface ConversationSelectedListener {
         void selectedPosition(int position);
 

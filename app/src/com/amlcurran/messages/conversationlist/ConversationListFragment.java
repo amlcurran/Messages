@@ -80,6 +80,7 @@ public class ConversationListFragment extends Fragment implements ConversationLi
         adapter = new RecyclerSourceBinderAdapter<>(source, binder);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.setAdapter(adapter);
+        recyclerView.setHasFixedSize(dependencyRepository.getPreferenceStore().showLargeUnreadPreviews());
     }
 
     @Override
@@ -118,6 +119,16 @@ public class ConversationListFragment extends Fragment implements ConversationLi
     @Override
     public void itemRemovedAt(int position) {
         adapter.notifyItemRemoved(position);
+    }
+
+    @Override
+    public void itemChangedAt(int position) {
+        adapter.notifyItemChanged(position);
+    }
+
+    @Override
+    public void invalidateList() {
+        adapter.notifyDataSetChanged();
     }
 
     @Override

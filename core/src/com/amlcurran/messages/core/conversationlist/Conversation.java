@@ -25,7 +25,7 @@ public class Conversation {
     private final PhoneNumber address;
     private final String body;
     private final String threadId;
-    private final boolean isRead;
+    boolean isRead;
     private final Contact contact;
     private final boolean lastFromMe;
     private final Time time;

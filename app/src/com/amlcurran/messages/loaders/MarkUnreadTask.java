@@ -52,10 +52,11 @@ class MarkUnreadTask implements Callable<Object> {
             int updated = contentResolver.update(Telephony.Sms.Inbox.CONTENT_URI, createUnreadContentValues(), selection, args);
             if (updated == 0) {
                 MessagesLog.w(MarkUnreadTask.this, "Couldn't mark conversation " + threadId + " as read");
+            } else {
+                conversationList.markedUnread(threadId);
             }
 
         }
-        conversationList.reloadConversations();
         return null;
     }
 
