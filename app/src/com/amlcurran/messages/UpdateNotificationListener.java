@@ -54,7 +54,7 @@ public class UpdateNotificationListener implements ConversationList.Callbacks {
 
     @Override
     public void conversationMarkedUnread(Conversation conversation, List<Conversation> conversationList, SortPositions sortPositions) {
-
+        notifier.updateUnreadNotification();
     }
 
 }
