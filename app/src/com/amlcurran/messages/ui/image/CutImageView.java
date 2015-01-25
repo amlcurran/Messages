@@ -21,7 +21,6 @@ import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.RectF;
 import android.util.AttributeSet;
@@ -38,11 +37,6 @@ public class CutImageView extends ImageView {
     protected final boolean drawOutline;
     private final CookieCutter cookieCutter;
     private final RectProvider rectProvider;
-    private final RectF destination = new RectF();
-    private final RectF source = new RectF();
-    private final Matrix matrix = new Matrix();
-    private final Paint photoPaint = new Paint();
-    private Paint borderPaint;
 
     public CutImageView(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
@@ -60,11 +54,12 @@ public class CutImageView extends ImageView {
         circleRectF = new RectF();
         borderRectF = new RectF();
 
+        Paint photoPaint = new Paint();
         photoPaint.setFilterBitmap(true);
         photoPaint.setDither(true);
         photoPaint.setAntiAlias(true);
 
-        borderPaint = new Paint();
+        Paint borderPaint = new Paint();
         borderPaint.setStyle(Paint.Style.STROKE);
         borderPaint.setAntiAlias(true);
         borderPaint.setStrokeWidth(borderWidth);

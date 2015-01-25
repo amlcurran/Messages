@@ -32,7 +32,9 @@ public class NewShaderCookieCutter implements CookieCutter {
 
     private final RectF destination = new RectF();
     private final RectF source = new RectF();
+    private final RectF sourceSelector = new RectF();
     private final Matrix matrix = new Matrix();
+    private final Matrix selectorMatrix = new Matrix();
     private final Paint selectorPaint;
     private final Paint photoPaint;
     private final Drawable selectorDrawable;
@@ -42,6 +44,7 @@ public class NewShaderCookieCutter implements CookieCutter {
     private final RectF borderRect;
     private BitmapShader shader;
     private Bitmap bitmap;
+    private final Shader selectorShader;
 
     public NewShaderCookieCutter(Paint borderPaint, boolean drawOutline, Drawable selectorDrawable) {
         this.selectorDrawable = selectorDrawable;
@@ -55,6 +58,19 @@ public class NewShaderCookieCutter implements CookieCutter {
         this.drawOutline = drawOutline;
         this.circleRect = new RectF();
         this.borderRect = new RectF();
+        this.selectorShader = initSelector(selectorDrawable);
+    }
+
+    private Shader initSelector(Drawable selectorDrawable) {
+        Bitmap selectorBitmap = Bitmap.createBitmap(selectorDrawable.getIntrinsicWidth(),
+                selectorDrawable.getIntrinsicHeight(), Bitmap.Config.ARGB_4444);
+        Canvas canvas = new Canvas(selectorBitmap);
+        selectorDrawable.setBounds(0, 0, selectorDrawable.getIntrinsicWidth(), selectorDrawable.getIntrinsicHeight());
+        selectorDrawable.draw(canvas);
+        Shader selectorShader = new BitmapShader(selectorBitmap, Shader.TileMode.CLAMP, Shader.TileMode.CLAMP);
+        selectorPaint.setShader(selectorShader);
+        sourceSelector.set(0, 0, selectorDrawable.getIntrinsicWidth(), selectorDrawable.getIntrinsicHeight());
+        return selectorShader;
     }
 
     @Override
@@ -70,28 +86,22 @@ public class NewShaderCookieCutter implements CookieCutter {
     @Override
     public void draw(Canvas canvas) {
         if (bitmap != null) {
-            MessagesLog.timeStart("Draw w/ new");
-
             matrix.reset();
             matrix.setRectToRect(source, destination, Matrix.ScaleToFit.FILL);
 
             shader.setLocalMatrix(matrix);
-            photoPaint.setShader(shader);
             canvas.drawOval(circleRect, photoPaint);
             canvas.drawArc(borderRect, 0, 360, true, borderPaint);
-
-            MessagesLog.timeEnd("Draw w/ new");
         }
     }
 
     @Override
     public void updateImage(@NonNull Bitmap bitmap) {
-        if (this.bitmap != null && !this.bitmap.isRecycled()) {
-            this.bitmap.recycle();
-        }
+        MessagesLog.d(this, "Image updated");
         this.bitmap = bitmap;
         this.photoPaint.setAlpha(255);
         this.shader = new BitmapShader(bitmap, Shader.TileMode.CLAMP, Shader.TileMode.CLAMP);
+        this.photoPaint.setShader(shader);
         source.set(0, 0, bitmap.getWidth(), bitmap.getHeight());
     }
 
@@ -108,5 +118,9 @@ public class NewShaderCookieCutter implements CookieCutter {
     @Override
     public void drawWithSelector(Canvas canvas) {
         draw(canvas);
+        selectorMatrix.reset();
+        selectorMatrix.setRectToRect(sourceSelector, destination, Matrix.ScaleToFit.FILL);
+        selectorShader.setLocalMatrix(selectorMatrix);
+        canvas.drawOval(circleRect, selectorPaint);
     }
 }
