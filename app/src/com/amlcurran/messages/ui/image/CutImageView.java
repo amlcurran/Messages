@@ -19,16 +19,12 @@ package com.amlcurran.messages.ui.image;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
-import android.graphics.BitmapShader;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.RectF;
-import android.graphics.Shader;
-import android.graphics.drawable.BitmapDrawable;
 import android.util.AttributeSet;
-import android.view.ViewTreeObserver;
 import android.widget.ImageView;
 
 import com.amlcurran.messages.R;
@@ -75,20 +71,17 @@ public class CutImageView extends ImageView {
         borderPaint.setColor(Color.WHITE);
         borderPaint.setShadowLayer(borderWidth, 0, 0, Color.GRAY);
 
-        cookieCutter = new BitmapShaderCookieCutter(borderPaint, drawOutline, getResources().getDrawable(R.drawable.selected_item));
+        cookieCutter = new NewShaderCookieCutter(borderPaint, drawOutline, getResources().getDrawable(R.drawable.selected_item));
         rectProvider = getCircularRectProvider();
 
-        getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
-            @Override
-            public boolean onPreDraw() {
-                cookieCutter.updateViewBounds(getWidth(), getHeight());
-                cookieCutter.preDraw();
-                return true;
-            }
-        });
-
-        //Bitmap defaultImage = ((BitmapDrawable) getResources().getDrawable(R.drawable.ic_contact_picture_unknown)).getBitmap();
-        //setImageBitmap(defaultImage);
+//        getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
+//            @Override
+//            public boolean onPreDraw() {
+//                cookieCutter.updateViewBounds(getWidth(), getHeight());
+//                cookieCutter.preDraw();
+//                return true;
+//            }
+//        });
     }
 
     public RectProvider getCircularRectProvider() {
@@ -121,31 +114,11 @@ public class CutImageView extends ImageView {
 
     @Override
     protected void onDraw(Canvas canvas) {
-        Bitmap bitmap = extractBitmapFromDrawable();
-        if (bitmap != null) {
-
-            source.set(0, 0, bitmap.getWidth(), bitmap.getHeight());
-            destination.set(getPaddingLeft(), getPaddingTop(), getWidth() - getPaddingRight(),
-                    getHeight() - getPaddingBottom());
-            matrix.reset();
-            matrix.setRectToRect(source, destination, Matrix.ScaleToFit.FILL);
-
-            BitmapShader shader = new BitmapShader(bitmap, Shader.TileMode.CLAMP, Shader.TileMode.CLAMP);
-            shader.setLocalMatrix(matrix);
-            photoPaint.setShader(shader);
-            canvas.drawOval(circleRectF, photoPaint);
-            if (drawOutline) {
-                canvas.drawArc(borderRectF, 0, 360, true, borderPaint);
-            }
-
+        if (isActivated()) {
+            cookieCutter.drawWithSelector(canvas);
+        } else {
+            cookieCutter.draw(canvas);
         }
-    }
-
-    private Bitmap extractBitmapFromDrawable() {
-        if (getDrawable() != null && getDrawable() instanceof BitmapDrawable) {
-            return ((BitmapDrawable) getDrawable()).getBitmap();
-        }
-        return null;
     }
 
 }
