@@ -68,15 +68,6 @@ public class CutImageView extends ImageView {
 
         cookieCutter = new NewShaderCookieCutter(borderPaint, drawOutline, getResources().getDrawable(R.drawable.selected_item));
         rectProvider = getCircularRectProvider();
-
-//        getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
-//            @Override
-//            public boolean onPreDraw() {
-//                cookieCutter.updateViewBounds(getWidth(), getHeight());
-//                cookieCutter.preDraw();
-//                return true;
-//            }
-//        });
     }
 
     public RectProvider getCircularRectProvider() {
