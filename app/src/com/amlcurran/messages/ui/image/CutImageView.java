@@ -19,10 +19,14 @@ package com.amlcurran.messages.ui.image;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
+import android.graphics.BitmapShader;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.RectF;
+import android.graphics.Shader;
+import android.graphics.drawable.BitmapDrawable;
 import android.util.AttributeSet;
 import android.view.ViewTreeObserver;
 import android.widget.ImageView;
@@ -38,6 +42,11 @@ public class CutImageView extends ImageView {
     protected final boolean drawOutline;
     private final CookieCutter cookieCutter;
     private final RectProvider rectProvider;
+    private final RectF destination = new RectF();
+    private final RectF source = new RectF();
+    private final Matrix matrix = new Matrix();
+    private final Paint photoPaint = new Paint();
+    private Paint borderPaint;
 
     public CutImageView(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
@@ -55,7 +64,11 @@ public class CutImageView extends ImageView {
         circleRectF = new RectF();
         borderRectF = new RectF();
 
-        Paint borderPaint = new Paint();
+        photoPaint.setFilterBitmap(true);
+        photoPaint.setDither(true);
+        photoPaint.setAntiAlias(true);
+
+        borderPaint = new Paint();
         borderPaint.setStyle(Paint.Style.STROKE);
         borderPaint.setAntiAlias(true);
         borderPaint.setStrokeWidth(borderWidth);
@@ -108,11 +121,31 @@ public class CutImageView extends ImageView {
 
     @Override
     protected void onDraw(Canvas canvas) {
-        if (isActivated()) {
-            cookieCutter.drawWithSelector(canvas);
-        } else {
-            cookieCutter.draw(canvas);
+        Bitmap bitmap = extractBitmapFromDrawable();
+        if (bitmap != null) {
+
+            source.set(0, 0, bitmap.getWidth(), bitmap.getHeight());
+            destination.set(getPaddingLeft(), getPaddingTop(), getWidth() - getPaddingRight(),
+                    getHeight() - getPaddingBottom());
+            matrix.reset();
+            matrix.setRectToRect(source, destination, Matrix.ScaleToFit.FILL);
+
+            BitmapShader shader = new BitmapShader(bitmap, Shader.TileMode.CLAMP, Shader.TileMode.CLAMP);
+            shader.setLocalMatrix(matrix);
+            photoPaint.setShader(shader);
+            canvas.drawOval(circleRectF, photoPaint);
+            if (drawOutline) {
+                canvas.drawArc(borderRectF, 0, 360, true, borderPaint);
+            }
+
         }
+    }
+
+    private Bitmap extractBitmapFromDrawable() {
+        if (getDrawable() != null && getDrawable() instanceof BitmapDrawable) {
+            return ((BitmapDrawable) getDrawable()).getBitmap();
+        }
+        return null;
     }
 
 }
