@@ -141,8 +141,10 @@ public class ThreadFragment extends Fragment implements
 
     @Override
     public void bindContactToHeader(Contact contact) {
-        getHeaderView(getActivity()).setContact(contact, SingletonManager.getPhotoLoader(getActivity()));
-        getHeaderView(getActivity()).setClickToView(new DefaultContactClickListener((DependencyRepository) getActivity()));
+        if (getActivity() != null) {
+            getHeaderView(getActivity()).setContact(contact, SingletonManager.getPhotoLoader(getActivity()));
+            getHeaderView(getActivity()).setClickToView(new DefaultContactClickListener((DependencyRepository) getActivity()));
+        }
     }
 
     @Override
