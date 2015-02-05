@@ -64,12 +64,19 @@ public class Conversation {
 
     @Override
     public boolean equals(Object obj) {
-        return obj instanceof Conversation && threadId.equals(((Conversation) obj).getThreadId());
+        if (obj instanceof Conversation) {
+            if (threadId != null) {
+                return threadId.equals(((Conversation) obj).getThreadId());
+            } else if (((Conversation) obj).getThreadId() == null) {
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override
     public int hashCode() {
-        return threadId.hashCode();
+        return threadId == null ? 0 : threadId.hashCode();
     }
 
     @Override

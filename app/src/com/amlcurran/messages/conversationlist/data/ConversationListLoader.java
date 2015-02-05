@@ -23,6 +23,7 @@ import android.provider.ContactsContract;
 import android.provider.Telephony;
 import android.telephony.PhoneNumberUtils;
 
+import com.amlcurran.messages.core.TextUtils;
 import com.amlcurran.messages.core.conversationlist.Conversation;
 import com.amlcurran.messages.core.data.Contact;
 import com.amlcurran.messages.core.data.PhoneNumberOnlyContact;
@@ -45,11 +46,19 @@ class ConversationListLoader {
     }
 
     List<Conversation> loadList(String query, String[] args) {
-        final List<Conversation> conversations = new ArrayList<Conversation>();
+        final List<Conversation> conversations = new ArrayList<>();
 
         Cursor conversationsList = helper.queryConversationList(contentResolver, query, args, Telephony.Sms.DEFAULT_SORT_ORDER);
 
         while (conversationsList.moveToNext()) {
+
+//            if (BuildConfig.DEBUG) {
+//                MessagesLog.d(this, "===========");
+//                for (int i = 0, n = conversationsList.getColumnCount(); i < n; i++) {
+//                    MessagesLog.d(this, conversationsList.getColumnName(i) + " - " + conversationsList.getString(i));
+//                }
+//                MessagesLog.d(this, "===========");
+//            }
 
             String address = helper.getAddressFromRow(contentResolver, conversationsList);
             Contact contact = getContact(contentResolver, address);
@@ -60,14 +69,8 @@ class ConversationListLoader {
             boolean lastFromMe = CursorHelper.asInt(conversationsList, helper.getTypeKey()) != Telephony.Sms.MESSAGE_TYPE_INBOX;
             long lastMessageTime = CursorHelper.asLong(conversationsList, helper.getDateSentKey());
             int conversationCount = -1;
-            if (threadId != null) {
-                conversationCount = helper.getConversationCount(contentResolver, threadId);
-            }
             Conversation conversation = new Conversation(contact.getNumber(), body, threadId, isRead, contact, lastFromMe, Time.fromMillis(lastMessageTime), conversationCount);
-
-            if (conversation.getThreadId() != null) {
-                conversations.add(conversation);
-            }
+            conversations.add(conversation);
         }
 
         conversationsList.close();
@@ -78,7 +81,11 @@ class ConversationListLoader {
     private Contact getContact(ContentResolver contentResolver, String address) {
         // Deal with cases where the number isn't actually a number
         if (!PhoneNumberUtils.isGlobalPhoneNumber(address)) {
-            return new PhoneNumberOnlyContact(new ParcelablePhoneNumber(address));
+            if (TextUtils.isEmpty(address)) {
+                return new UnknownContact();
+            } else {
+                return new PhoneNumberOnlyContact(new ParcelablePhoneNumber(address));
+            }
         }
 
 
