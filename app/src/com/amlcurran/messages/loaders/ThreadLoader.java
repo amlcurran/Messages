@@ -28,6 +28,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ThreadLoader {
+    private static final String[] PROJECTION = new String[] {Telephony.Sms.BODY, Telephony.Sms._ID, Telephony.Sms.ADDRESS,
+            Telephony.Sms.TYPE, Telephony.Sms.DATE };
     private final Uri contentUri;
     private final ContentResolver contentResolver;
 
@@ -39,7 +41,7 @@ public class ThreadLoader {
     List<SmsMessage> loadSmsList(String threadId) {
         String selection = Telephony.Sms.THREAD_ID + "=?";
         String[] selectionArgs = {threadId};
-        Cursor cursor = contentResolver.query(contentUri, null, selection, selectionArgs, Telephony.Sms.DEFAULT_SORT_ORDER.replace("DESC", "ASC"));
+        Cursor cursor = contentResolver.query(contentUri, PROJECTION, selection, selectionArgs, Telephony.Sms.DEFAULT_SORT_ORDER.replace("DESC", "ASC"));
         List<SmsMessage> messageList = createMessageList(cursor);
         cursor.close();
         return messageList;
