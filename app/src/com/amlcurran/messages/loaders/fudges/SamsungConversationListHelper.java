@@ -41,6 +41,7 @@ class SamsungConversationListHelper implements ConversationListHelper {
         if (cursor.moveToFirst()) {
             return CursorHelper.asString(cursor, "address");
         }
+        cursor.close();
         throw new IllegalArgumentException("Thread has recipient id but no associated address");
     }
 
@@ -56,5 +57,15 @@ class SamsungConversationListHelper implements ConversationListHelper {
 //        int count = query.getCount();
 //        query.close();
         return 0;
+    }
+
+    @Override
+    public String getDateSentKey() {
+        return Telephony.Sms.DATE;
+    }
+
+    @Override
+    public String getTypeKey() {
+        return "message_type";
     }
 }

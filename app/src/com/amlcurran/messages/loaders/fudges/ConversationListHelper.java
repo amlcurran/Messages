@@ -29,4 +29,8 @@ public interface ConversationListHelper {
     String getSnippetCursorKey();
 
     int getConversationCount(ContentResolver contentResolver, String threadId);
+
+    String getDateSentKey();
+
+    String getTypeKey();
 }

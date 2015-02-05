@@ -64,4 +64,13 @@ class ActualAndroidApiConversationListHelper implements ConversationListHelper {
         return 0;
     }
 
+    @Override
+    public String getDateSentKey() {
+        return Telephony.Sms.DATE_SENT;
+    }
+
+    @Override
+    public String getTypeKey() {
+        return Telephony.Sms.TYPE;
+    }
 }

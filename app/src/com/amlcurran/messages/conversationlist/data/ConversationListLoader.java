@@ -57,8 +57,8 @@ class ConversationListLoader {
             String body = CursorHelper.asString(conversationsList, helper.getSnippetCursorKey());
             boolean isRead = "1".equals(CursorHelper.asString(conversationsList, Telephony.Sms.Inbox.READ));
             String threadId = CursorHelper.asString(conversationsList, helper.getThreadIdCursorKey());
-            boolean lastFromMe = CursorHelper.asInt(conversationsList, Telephony.Sms.TYPE) != Telephony.Sms.MESSAGE_TYPE_INBOX;
-            long lastMessageTime = CursorHelper.asLong(conversationsList, Telephony.Sms.DATE_SENT);
+            boolean lastFromMe = CursorHelper.asInt(conversationsList, helper.getTypeKey()) != Telephony.Sms.MESSAGE_TYPE_INBOX;
+            long lastMessageTime = CursorHelper.asLong(conversationsList, helper.getDateSentKey());
             int conversationCount = -1;
             if (threadId != null) {
                 conversationCount = helper.getConversationCount(contentResolver, threadId);
@@ -74,7 +74,7 @@ class ConversationListLoader {
 
         return conversations;
     }
-    
+
     private Contact getContact(ContentResolver contentResolver, String address) {
         // Deal with cases where the number isn't actually a number
         if (!PhoneNumberUtils.isGlobalPhoneNumber(address)) {

@@ -35,6 +35,7 @@ public class TaskQueue {
                 try {
                     task.call();
                 } catch (Exception e) {
+                    e.printStackTrace();
                     throw new RuntimeException(e);
                 }
             }
