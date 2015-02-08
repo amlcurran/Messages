@@ -29,6 +29,7 @@ import android.telephony.SmsManager;
 import com.amlcurran.messages.MessagesLog;
 import com.amlcurran.messages.SingletonManager;
 import com.amlcurran.messages.core.data.PhoneNumber;
+import com.amlcurran.messages.core.data.SmsMessage;
 import com.amlcurran.messages.core.data.Time;
 import com.amlcurran.messages.core.events.EventBus;
 import com.amlcurran.messages.data.InFlightSmsMessage;
@@ -58,7 +59,7 @@ public class SmsSender extends IntentService {
     public SmsSender() {
         super(TAG);
         smsManager = SmsManager.getDefault();
-        smsDatabaseWriter = new SmsDatabaseWriter();
+        smsDatabaseWriter = new SmsDatabaseWriter(this);
         eventBus = new BroadcastEventBus(this);
         setIntentRedelivery(true);
     }
@@ -89,15 +90,29 @@ public class SmsSender extends IntentService {
             int result = intent.getIntExtra(SmsReceiver.EXTRA_RESULT, 0);
             InFlightSmsMessage message = intent.getParcelableExtra(EXTRA_MESSAGE);
             Uri outboxSms = Uri.parse(intent.getStringExtra(EXTRA_OUTBOX_URI));
-            if (result == Activity.RESULT_OK) {
-                deleteOutboxMessages(message.getPhoneNumber());
-                writeMessageToProvider(message);
+            if (messageSendSuccessfully(result)) {
+                messageSent(message, outboxSms);
             } else {
-                notifyFailureToSend(message, result);
-                deleteOutboxMessage(outboxSms);
-                writeFailedToSend(message);
+                messageFailedToSend(result, message, outboxSms);
             }
         }
+    }
+
+    private boolean messageSendSuccessfully(int result) {
+        return result == Activity.RESULT_OK;
+    }
+
+    private void messageFailedToSend(int result, InFlightSmsMessage message, Uri outboxSms) {
+        notifyFailureToSend(message, result);
+        smsDatabaseWriter.changeSmsToType(outboxSms, SmsMessage.Type.FAILED);
+        eventBus.postMessageDrafted(message.getPhoneNumber());
+        //deleteOutboxMessage(outboxSms);
+        //writeFailedToSend(message);
+    }
+
+    private void messageSent(InFlightSmsMessage message, Uri outboxSms) {
+        deleteOutboxMessage(outboxSms);
+        writeMessageToProvider(message);
     }
 
     private void writeFailedToSend(final InFlightSmsMessage message) {
@@ -169,8 +184,7 @@ public class SmsSender extends IntentService {
             @Override
             public void written(Uri inserted) {
                 eventBus.postMessageSending(message.getPhoneNumber());
-                ArrayList<PendingIntent> messageSendIntents = getMessageSendIntents(message, inserted);
-                smsManager.sendMultipartTextMessage(message.getPhoneNumber().flatten(), null, smsManager.divideMessage(message.getBody()), messageSendIntents, null);
+                actuallySendSms(inserted, message);
             }
 
             @Override
@@ -178,6 +192,11 @@ public class SmsSender extends IntentService {
 
             }
         }, message);
+    }
+
+    private void actuallySendSms(Uri inserted, InFlightSmsMessage message) {
+        ArrayList<PendingIntent> messageSendIntents = getMessageSendIntents(message, inserted);
+        smsManager.sendMultipartTextMessage(message.getPhoneNumber().flatten(), null, smsManager.divideMessage(message.getBody()), messageSendIntents, null);
     }
 
     private ArrayList<PendingIntent> getMessageSendIntents(InFlightSmsMessage message, Uri inserted) {

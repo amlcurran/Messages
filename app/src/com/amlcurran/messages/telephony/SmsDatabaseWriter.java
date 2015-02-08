@@ -18,13 +18,21 @@ package com.amlcurran.messages.telephony;
 
 import android.content.ContentResolver;
 import android.content.ContentValues;
+import android.content.Context;
 import android.net.Uri;
 import android.provider.Telephony;
 
+import com.amlcurran.messages.core.data.SmsMessage;
 import com.amlcurran.messages.data.InFlightSmsMessageFactory;
 import com.amlcurran.messages.data.InFlightSmsMessage;
 
 public class SmsDatabaseWriter {
+
+    private final Context context;
+
+    public SmsDatabaseWriter(Context context) {
+        this.context = context;
+    }
 
     public void writeSentMessage(ContentResolver contentResolver, WriteListener sentWriteListener, InFlightSmsMessage message) {
         final ContentValues values = InFlightSmsMessageFactory.toContentValues(message, Telephony.Sms.MESSAGE_TYPE_SENT);
@@ -97,6 +105,16 @@ public class SmsDatabaseWriter {
 
     public int deleteFromUri(ContentResolver contentResolver, Uri outboxSms) {
         return contentResolver.delete(outboxSms, null, null);
+    }
+
+    public void changeSmsToType(Uri uri, SmsMessage.Type type) {
+        context.getContentResolver().update(uri, typeChangedValues(type), null, null);
+    }
+
+    private ContentValues typeChangedValues(SmsMessage.Type type) {
+        ContentValues values = new ContentValues();
+        values.put(Telephony.Sms.TYPE, InFlightSmsMessageFactory.toApi(type));
+        return values;
     }
 
     public interface WriteListener {

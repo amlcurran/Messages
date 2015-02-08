@@ -85,4 +85,25 @@ public class InFlightSmsMessageFactory {
         return SmsMessage.Type.UNKNOWN;
     }
 
+    public static int toApi(SmsMessage.Type type) {
+        switch (type) {
+
+            case INBOX:
+                return Telephony.Sms.MESSAGE_TYPE_INBOX;
+
+            case DRAFT:
+                return Telephony.Sms.MESSAGE_TYPE_DRAFT;
+
+            case FAILED:
+                return Telephony.Sms.MESSAGE_TYPE_FAILED;
+
+            case SENDING:
+                return Telephony.Sms.MESSAGE_TYPE_OUTBOX;
+
+            case SENT:
+                return Telephony.Sms.MESSAGE_TYPE_SENT;
+
+        }
+        return 0;
+    }
 }

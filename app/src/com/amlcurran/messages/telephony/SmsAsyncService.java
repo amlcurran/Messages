@@ -60,7 +60,7 @@ public class SmsAsyncService extends IntentService {
             long id = intent.getLongExtra(EXTRA_MESSAGE_ID, -1);
             if (id > 0) {
                 Uri deleteUri = ContentUris.withAppendedId(Telephony.Sms.CONTENT_URI, id);
-                int deleted = new SmsDatabaseWriter().deleteFromUri(getContentResolver(), deleteUri);
+                int deleted = new SmsDatabaseWriter(this).deleteFromUri(getContentResolver(), deleteUri);
                 if (deleted > 0) {
                     MessagesLog.d(this, "Successfully deleted message");
                 }
@@ -70,7 +70,7 @@ public class SmsAsyncService extends IntentService {
     }
 
     private void writeDraft(final InFlightSmsMessage smsMessage) {
-        SmsDatabaseWriter smsDatabaseWriter = new SmsDatabaseWriter();
+        SmsDatabaseWriter smsDatabaseWriter = new SmsDatabaseWriter(this);
         smsDatabaseWriter.writeDraft(smsMessage, getContentResolver(), new SmsDatabaseWriter.WriteListener() {
 
             @Override
@@ -88,7 +88,7 @@ public class SmsAsyncService extends IntentService {
     }
 
     private void writeInbox(final InFlightSmsMessage smsMessage) {
-        SmsDatabaseWriter smsDatabaseWriter = new SmsDatabaseWriter();
+        SmsDatabaseWriter smsDatabaseWriter = new SmsDatabaseWriter(this);
         smsDatabaseWriter.writeInboxSms(getContentResolver(), new SmsDatabaseWriter.WriteListener() {
 
             @Override
