@@ -16,7 +16,6 @@
 
 package com.amlcurran.messages.telephony;
 
-import android.app.Activity;
 import android.app.IntentService;
 import android.app.PendingIntent;
 import android.content.Context;
@@ -28,8 +27,6 @@ import android.telephony.SmsManager;
 
 import com.amlcurran.messages.MessagesLog;
 import com.amlcurran.messages.SingletonManager;
-import com.amlcurran.messages.core.data.PhoneNumber;
-import com.amlcurran.messages.core.data.SmsMessage;
 import com.amlcurran.messages.core.data.Time;
 import com.amlcurran.messages.core.events.EventBus;
 import com.amlcurran.messages.data.InFlightSmsMessage;
@@ -55,6 +52,7 @@ public class SmsSender extends IntentService {
     private final SmsManager smsManager;
     private final SmsDatabaseWriter smsDatabaseWriter;
     private final EventBus eventBus;
+    private final MessageTransport messageTransport;
 
     public SmsSender() {
         super(TAG);
@@ -62,6 +60,7 @@ public class SmsSender extends IntentService {
         smsDatabaseWriter = new SmsDatabaseWriter(this);
         eventBus = new BroadcastEventBus(this);
         setIntentRedelivery(true);
+        messageTransport = new MessageTransport(smsDatabaseWriter, eventBus);
     }
 
     @Override
@@ -87,50 +86,15 @@ public class SmsSender extends IntentService {
             sendMessage(message);
 
         } else if (isSentNotification(intent)) {
-            int result = intent.getIntExtra(SmsReceiver.EXTRA_RESULT, 0);
             InFlightSmsMessage message = intent.getParcelableExtra(EXTRA_MESSAGE);
             Uri outboxSms = Uri.parse(intent.getStringExtra(EXTRA_OUTBOX_URI));
-            if (messageSendSuccessfully(result)) {
-                messageSent(message, outboxSms);
+            if (messageTransport.successfullySent(intent)) {
+                messageTransport.sent(message, outboxSms);
             } else {
-                messageFailedToSend(result, message, outboxSms);
+                notifyFailureToSend(message);
+                messageTransport.failedToSend(message, outboxSms);
             }
         }
-    }
-
-    private boolean messageSendSuccessfully(int result) {
-        return result == Activity.RESULT_OK;
-    }
-
-    private void messageFailedToSend(int result, InFlightSmsMessage message, Uri outboxSms) {
-        notifyFailureToSend(message, result);
-        smsDatabaseWriter.changeSmsToType(outboxSms, SmsMessage.Type.FAILED);
-        eventBus.postMessageDrafted(message.getPhoneNumber());
-        //deleteOutboxMessage(outboxSms);
-        //writeFailedToSend(message);
-    }
-
-    private void messageSent(InFlightSmsMessage message, Uri outboxSms) {
-        deleteOutboxMessage(outboxSms);
-        writeMessageToProvider(message);
-    }
-
-    private void writeFailedToSend(final InFlightSmsMessage message) {
-        smsDatabaseWriter.writeFailedToSend(message, getContentResolver(), new SmsDatabaseWriter.WriteListener() {
-            @Override
-            public void written(Uri inserted) {
-                eventBus.postMessageDrafted(message.getPhoneNumber());
-            }
-
-            @Override
-            public void failed() {
-
-            }
-        });
-    }
-
-    private void deleteOutboxMessage(Uri outboxSms) {
-        smsDatabaseWriter.deleteFromUri(getContentResolver(), outboxSms);
     }
 
     private InFlightSmsMessage extractInFlightFromWear(Intent intent) {
@@ -155,27 +119,8 @@ public class SmsSender extends IntentService {
         return intent.getIntExtra(EXTRA_FROM_FAILURE, -1) == IS_FROM_FAILURE;
     }
 
-    private void deleteOutboxMessages(PhoneNumber phoneNumber) {
-        smsDatabaseWriter.deleteOutboxMessages(getContentResolver(), phoneNumber.flatten());
-    }
-
-    private void notifyFailureToSend(InFlightSmsMessage message, int result) {
+    private void notifyFailureToSend(InFlightSmsMessage message) {
         SingletonManager.getNotifier(this).showSendError(message);
-    }
-
-    private void writeMessageToProvider(final InFlightSmsMessage message) {
-        smsDatabaseWriter.writeSentMessage(getContentResolver(), new SmsDatabaseWriter.WriteListener() {
-
-            @Override
-            public void written(Uri inserted) {
-                new BroadcastEventBus(SmsSender.this).postMessageSent(message.getPhoneNumber());
-            }
-
-            @Override
-            public void failed() {
-                MessagesLog.e(SmsSender.this, "Failed to write a sent message to the database");
-            }
-        }, message);
     }
 
     private void sendMessage(final InFlightSmsMessage message) {
