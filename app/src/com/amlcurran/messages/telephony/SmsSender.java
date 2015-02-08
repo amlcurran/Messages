@@ -191,11 +191,11 @@ public class SmsSender extends IntentService {
     }
 
     private boolean isSentNotification(Intent intent) {
-        return intent.getAction().equals(ACTION_MESSAGE_SENT);
+        return ACTION_MESSAGE_SENT.equals(intent.getAction());
     }
 
     private boolean isSendRequest(Intent intent) {
-        return intent.getAction().equals(ACTION_SEND_REQUEST);
+        return ACTION_SEND_REQUEST.equals(intent.getAction());
     }
 
     public static Intent sendMessageIntent(Context context, InFlightSmsMessage smsMessage) {
