@@ -63,18 +63,13 @@ public class SmsDatabaseWriter {
         }
     }
 
-    public void writeOutboxSms(ContentResolver contentResolver, WriteListener outboxWriteListener, InFlightSmsMessage message) {
+    public Uri writeOutboxSms(ContentResolver contentResolver, InFlightSmsMessage message) {
         ContentValues contentValues = InFlightSmsMessageFactory.toContentValues(message, Telephony.Sms.Sent.MESSAGE_TYPE_OUTBOX);
-        writeOutboxSmsInternal(contentResolver, outboxWriteListener, contentValues);
+        return writeOutboxSmsInternal(contentResolver, contentValues);
     }
 
-    private static void writeOutboxSmsInternal(ContentResolver resolver, WriteListener writeListener, ContentValues contentValues) {
-        Uri inserted = resolver.insert(Telephony.Sms.Inbox.CONTENT_URI, contentValues);
-        if (inserted != null) {
-            writeListener.written(inserted);
-        } else {
-            writeListener.failed();
-        }
+    private static Uri writeOutboxSmsInternal(ContentResolver resolver, ContentValues contentValues) {
+        return resolver.insert(Telephony.Sms.Inbox.CONTENT_URI, contentValues);
     }
 
     public void deleteOutboxMessages(ContentResolver contentResolver, String outboundAddress) {

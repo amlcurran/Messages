@@ -17,6 +17,7 @@
 package com.amlcurran.messages.telephony;
 
 import android.app.Activity;
+import android.content.ContentResolver;
 import android.content.Intent;
 import android.net.Uri;
 
@@ -24,11 +25,11 @@ import com.amlcurran.messages.core.data.SmsMessage;
 import com.amlcurran.messages.core.events.EventBus;
 import com.amlcurran.messages.data.InFlightSmsMessage;
 
-public class MessageTransport {
+public class MessageRepository {
     private final SmsDatabaseWriter smsDatabaseWriter;
     private final EventBus eventBus;
 
-    public MessageTransport(SmsDatabaseWriter smsDatabaseWriter, EventBus eventBus) {
+    public MessageRepository(SmsDatabaseWriter smsDatabaseWriter, EventBus eventBus) {
         this.smsDatabaseWriter = smsDatabaseWriter;
         this.eventBus = eventBus;
     }
@@ -45,5 +46,9 @@ public class MessageTransport {
 
     boolean successfullySent(Intent intent) {
         return intent.getIntExtra(SmsReceiver.EXTRA_RESULT, 0) == Activity.RESULT_OK;
+    }
+
+    Uri send(InFlightSmsMessage message, ContentResolver contentResolver) {
+        return smsDatabaseWriter.writeOutboxSms(contentResolver, message);
     }
 }
