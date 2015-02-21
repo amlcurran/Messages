@@ -17,6 +17,7 @@
 package com.amlcurran.messages.telephony;
 
 import android.app.IntentService;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -32,12 +33,14 @@ import com.amlcurran.messages.data.InFlightSmsMessage;
 import com.amlcurran.messages.data.ParcelablePhoneNumber;
 import com.amlcurran.messages.events.BroadcastEventBus;
 
+import java.util.ArrayList;
+
 public class SmsSender extends IntentService {
 
     public static final String TAG = SmsSender.class.getSimpleName();
 
     public static final String ACTION_SEND_REQUEST = "send_request";
-    public static final String ACTION_MESSAGE_SENT = "message_send";
+    private static final String ACTION_MESSAGE_SENT = "message_send";
     public static final int IS_FROM_FAILURE = 1;
     static final String EXTRA_MESSAGE = "message";
     static final String EXTRA_OUTBOX_URI = "outbox_uri";
@@ -47,7 +50,7 @@ public class SmsSender extends IntentService {
     public static final String EXTRA_VOICE_REPLY = "voice_reply";
 
     private final MessageRepository messageRepository;
-    private final SmsSenderReal smsSenderReal;
+    private final SmsManager smsManager;
 
     public SmsSender() {
         super(TAG);
@@ -55,7 +58,15 @@ public class SmsSender extends IntentService {
         SmsDatabaseWriter smsDatabaseWriter = new SmsDatabaseWriter(this);
         EventBus eventBus = new BroadcastEventBus(this);
         messageRepository = new MessageRepository(smsDatabaseWriter, eventBus);
-        smsSenderReal = new SmsSenderReal(this, SmsManager.getDefault());
+        smsManager = SmsManager.getDefault();
+    }
+
+    static Intent sentIntent(Context context, Intent intent, int resultCode) {
+        Intent sentIntent = new Intent(context, SmsSender.class);
+        sentIntent.setAction(ACTION_MESSAGE_SENT);
+        sentIntent.putExtras(intent.getExtras());
+        sentIntent.putExtra(SmsReceiver.EXTRA_RESULT, resultCode);
+        return sentIntent;
     }
 
     @Override
@@ -79,7 +90,9 @@ public class SmsSender extends IntentService {
                 message = intent.getParcelableExtra(EXTRA_MESSAGE);
             }
             Uri inserted = messageRepository.send(message, getContentResolver());
-            smsSenderReal.send(message, inserted);
+            ArrayList<PendingIntent> messageSendIntents = getMessageSendIntents(message, inserted);
+            ArrayList<String> parts = smsManager.divideMessage(message.getBody());
+            smsManager.sendMultipartTextMessage(message.getPhoneNumber().flatten(), null, parts, messageSendIntents, null);
 
         } else if (isSentNotification(intent)) {
             InFlightSmsMessage message = intent.getParcelableExtra(EXTRA_MESSAGE);
@@ -91,6 +104,12 @@ public class SmsSender extends IntentService {
                 messageRepository.failedToSend(message, outboxSms);
             }
         }
+    }
+
+    ArrayList<PendingIntent> getMessageSendIntents(InFlightSmsMessage message, Uri inserted) {
+        ArrayList<PendingIntent> pendingIntents = new ArrayList<>();
+        pendingIntents.add(SmsReceiver.broadcast(message, inserted, this));
+        return pendingIntents;
     }
 
     private InFlightSmsMessage extractInFlightFromWear(Intent intent) {

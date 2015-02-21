@@ -16,9 +16,11 @@
 
 package com.amlcurran.messages.telephony;
 
+import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.provider.Telephony;
 
 import com.amlcurran.messages.data.InFlightSmsMessage;
@@ -31,6 +33,13 @@ public class SmsReceiver extends BroadcastReceiver {
     static final String EXTRA_RESULT = "result";
     static final String EXTRA_WRITE_TYPE = "write_type";
 
+    static PendingIntent broadcast(InFlightSmsMessage message, Uri inserted, Context context) {
+        Intent intent = new Intent(context, SmsReceiver.class);
+        intent.putExtra(SmsSender.EXTRA_MESSAGE, message);
+        intent.putExtra(SmsSender.EXTRA_OUTBOX_URI, inserted.toString());
+        return PendingIntent.getBroadcast(context, 2, intent, PendingIntent.FLAG_CANCEL_CURRENT);
+    }
+
     @Override
     public void onReceive(Context context, Intent intent) {
         if (Telephony.Sms.Intents.SMS_DELIVER_ACTION.equals(intent.getAction())) {
@@ -42,14 +51,7 @@ public class SmsReceiver extends BroadcastReceiver {
 
         } else {
 
-            int resultCode = getResultCode();
-
-            Intent sentIntent = new Intent(context, SmsSender.class);
-            sentIntent.setAction(SmsSender.ACTION_MESSAGE_SENT);
-            sentIntent.putExtras(intent.getExtras());
-            sentIntent.putExtra(EXTRA_RESULT, resultCode);
-
-            context.startService(sentIntent);
+            context.startService(SmsSender.sentIntent(context, intent, getResultCode()));
 
         }
     }
