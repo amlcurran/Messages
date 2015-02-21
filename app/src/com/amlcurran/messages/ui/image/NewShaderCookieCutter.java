@@ -26,8 +26,6 @@ import android.graphics.Shader;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
 
-import com.amlcurran.messages.MessagesLog;
-
 public class NewShaderCookieCutter implements CookieCutter {
 
     private final RectF destination = new RectF();
@@ -97,7 +95,6 @@ public class NewShaderCookieCutter implements CookieCutter {
 
     @Override
     public void updateImage(@NonNull Bitmap bitmap) {
-        MessagesLog.d(this, "Image updated");
         this.bitmap = bitmap;
         this.photoPaint.setAlpha(255);
         this.shader = new BitmapShader(bitmap, Shader.TileMode.CLAMP, Shader.TileMode.CLAMP);
