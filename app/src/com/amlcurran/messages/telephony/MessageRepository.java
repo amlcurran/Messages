@@ -16,9 +16,7 @@
 
 package com.amlcurran.messages.telephony;
 
-import android.app.Activity;
 import android.content.ContentResolver;
-import android.content.Intent;
 import android.net.Uri;
 
 import com.amlcurran.messages.core.data.SmsMessage;
@@ -42,10 +40,6 @@ public class MessageRepository {
     void sent(InFlightSmsMessage message, Uri outboxSms) {
         smsDatabaseWriter.changeSmsToType(outboxSms, SmsMessage.Type.SENT);
         eventBus.postMessageSent(message.getPhoneNumber());
-    }
-
-    boolean successfullySent(Intent intent) {
-        return intent.getIntExtra(SmsSentNotificationService.EXTRA_RESULT, 0) == Activity.RESULT_OK;
     }
 
     Uri send(InFlightSmsMessage message, ContentResolver contentResolver) {

@@ -16,6 +16,7 @@
 
 package com.amlcurran.messages.telephony;
 
+import android.app.Activity;
 import android.app.IntentService;
 import android.content.Context;
 import android.content.Intent;
@@ -56,13 +57,17 @@ public class SmsSentNotificationService extends IntentService {
         if (ACTION_MESSAGE_SENT.equals(intent.getAction())) {
             InFlightSmsMessage message = intent.getParcelableExtra(EXTRA_MESSAGE);
             Uri outboxSms = Uri.parse(intent.getStringExtra(EXTRA_OUTBOX_URI));
-            if (messageRepository.successfullySent(intent)) {
+            if (sentSuccessfully(intent)) {
                 messageRepository.sent(message, outboxSms);
             } else {
                 notifyFailureToSend(message);
                 messageRepository.failedToSend(message, outboxSms);
             }
         }
+    }
+
+    private static boolean sentSuccessfully(Intent intent) {
+        return intent.getIntExtra(EXTRA_RESULT, 0) == Activity.RESULT_OK;
     }
 
     private void notifyFailureToSend(InFlightSmsMessage message) {

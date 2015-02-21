@@ -108,15 +108,15 @@ public class SmsSender extends IntentService {
         return null;
     }
 
-    private boolean isFromWear(Intent intent) {
+    private static boolean isFromWear(Intent intent) {
         return intent.getBooleanExtra(FROM_WEAR, false);
     }
 
-    private boolean isFromFailure(Intent intent) {
+    private static boolean isFromFailure(Intent intent) {
         return intent.getIntExtra(EXTRA_FROM_FAILURE, -1) == IS_FROM_FAILURE;
     }
 
-    private boolean isSendRequest(Intent intent) {
+    private static boolean isSendRequest(Intent intent) {
         return ACTION_SEND_REQUEST.equals(intent.getAction());
     }
 
