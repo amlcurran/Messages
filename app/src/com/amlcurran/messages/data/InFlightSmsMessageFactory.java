@@ -60,6 +60,7 @@ public class InFlightSmsMessageFactory {
         contentValues.put(Telephony.Sms.Inbox.DATE, smsMessage.getTimestamp().toMillis());
         contentValues.put(Telephony.Sms.Inbox.DATE_SENT, smsMessage.getTimestamp().toMillis());
         contentValues.put(Telephony.Sms.Inbox.TYPE, messageTypeSent);
+        contentValues.put(Telephony.Sms.Inbox.READ, messageTypeSent == Telephony.Sms.Inbox.MESSAGE_TYPE_INBOX ? 0 : 1);
         return contentValues;
     }
 
