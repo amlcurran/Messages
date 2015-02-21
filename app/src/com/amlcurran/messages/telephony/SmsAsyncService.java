@@ -30,8 +30,11 @@ import com.amlcurran.messages.events.BroadcastEventBus;
 
 public class SmsAsyncService extends IntentService {
 
+    static final String ASYNC_WRITE = "com.amlcurran.messages.smsreceiver.ASYNC_WRITE";
     private static final String ACTION_DELETE = SmsAsyncService.class.getCanonicalName() + ".ACTION_DELETE";
     private static final String EXTRA_MESSAGE_ID = "message_id";
+    static final String EXTRA_MESSAGE = "message";
+    static final String EXTRA_WRITE_TYPE = "write_type";
 
     public SmsAsyncService() {
         super(SmsAsyncService.class.getSimpleName());
@@ -39,10 +42,10 @@ public class SmsAsyncService extends IntentService {
 
     @Override
     protected void onHandleIntent(Intent intent) {
-        if (SmsReceiver.ASYNC_WRITE.equals(intent.getAction())) {
+        if (ASYNC_WRITE.equals(intent.getAction())) {
 
-            WriteType writeType = WriteTypeFactory.fromIntent(intent);
-            InFlightSmsMessage smsMessage = intent.getParcelableExtra(SmsReceiver.EXTRA_MESSAGE);
+            WriteType writeType = WriteType.valueOf(intent.getStringExtra(EXTRA_WRITE_TYPE));
+            InFlightSmsMessage smsMessage = intent.getParcelableExtra(EXTRA_MESSAGE);
 
             switch (writeType) {
 
@@ -106,16 +109,16 @@ public class SmsAsyncService extends IntentService {
 
     public static Intent getAsyncWriteIntent(Context context, InFlightSmsMessage message, WriteType writeType) {
         Intent intent = new Intent(context, SmsAsyncService.class);
-        intent.setAction(SmsReceiver.ASYNC_WRITE);
-        intent.putExtra(SmsReceiver.EXTRA_MESSAGE, message);
-        intent.putExtra(SmsReceiver.EXTRA_WRITE_TYPE, writeType.toString());
+        intent.setAction(ASYNC_WRITE);
+        intent.putExtra(EXTRA_MESSAGE, message);
+        intent.putExtra(EXTRA_WRITE_TYPE, writeType.toString());
         return intent;
     }
 
     public static Intent getAsyncDeleteIntent(Context context, SmsMessage message) {
         Intent intent = new Intent(context, SmsAsyncService.class);
-        intent.setAction(SmsAsyncService.ACTION_DELETE);
-        intent.putExtra(SmsAsyncService.EXTRA_MESSAGE_ID, message.getId());
+        intent.setAction(ACTION_DELETE);
+        intent.putExtra(EXTRA_MESSAGE_ID, message.getId());
         return intent;
     }
 

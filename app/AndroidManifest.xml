@@ -85,6 +85,8 @@
 
         <service android:name=".loaders.ExecutingIntentService" />
 
+        <service android:name=".telephony.SmsSentNotificationService" />
+
         <receiver android:name=".events.BootNotificationReceiver">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />

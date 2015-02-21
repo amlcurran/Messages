@@ -45,7 +45,7 @@ public class MessageRepository {
     }
 
     boolean successfullySent(Intent intent) {
-        return intent.getIntExtra(SmsReceiver.EXTRA_RESULT, 0) == Activity.RESULT_OK;
+        return intent.getIntExtra(SmsSentNotificationService.EXTRA_RESULT, 0) == Activity.RESULT_OK;
     }
 
     Uri send(InFlightSmsMessage message, ContentResolver contentResolver) {

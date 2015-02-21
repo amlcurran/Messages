@@ -40,7 +40,6 @@ public class SmsSender extends IntentService {
     public static final String TAG = SmsSender.class.getSimpleName();
 
     public static final String ACTION_SEND_REQUEST = "send_request";
-    private static final String ACTION_MESSAGE_SENT = "message_send";
     public static final int IS_FROM_FAILURE = 1;
     static final String EXTRA_MESSAGE = "message";
     static final String EXTRA_OUTBOX_URI = "outbox_uri";
@@ -59,14 +58,6 @@ public class SmsSender extends IntentService {
         EventBus eventBus = new BroadcastEventBus(this);
         messageRepository = new MessageRepository(smsDatabaseWriter, eventBus);
         smsManager = SmsManager.getDefault();
-    }
-
-    static Intent sentIntent(Context context, Intent intent, int resultCode) {
-        Intent sentIntent = new Intent(context, SmsSender.class);
-        sentIntent.setAction(ACTION_MESSAGE_SENT);
-        sentIntent.putExtras(intent.getExtras());
-        sentIntent.putExtra(SmsReceiver.EXTRA_RESULT, resultCode);
-        return sentIntent;
     }
 
     @Override
@@ -94,15 +85,6 @@ public class SmsSender extends IntentService {
             ArrayList<String> parts = smsManager.divideMessage(message.getBody());
             smsManager.sendMultipartTextMessage(message.getPhoneNumber().flatten(), null, parts, messageSendIntents, null);
 
-        } else if (isSentNotification(intent)) {
-            InFlightSmsMessage message = intent.getParcelableExtra(EXTRA_MESSAGE);
-            Uri outboxSms = Uri.parse(intent.getStringExtra(EXTRA_OUTBOX_URI));
-            if (messageRepository.successfullySent(intent)) {
-                messageRepository.sent(message, outboxSms);
-            } else {
-                notifyFailureToSend(message);
-                messageRepository.failedToSend(message, outboxSms);
-            }
         }
     }
 
@@ -132,14 +114,6 @@ public class SmsSender extends IntentService {
 
     private boolean isFromFailure(Intent intent) {
         return intent.getIntExtra(EXTRA_FROM_FAILURE, -1) == IS_FROM_FAILURE;
-    }
-
-    private void notifyFailureToSend(InFlightSmsMessage message) {
-        SingletonManager.getNotifier(this).showSendError(message);
-    }
-
-    private boolean isSentNotification(Intent intent) {
-        return ACTION_MESSAGE_SENT.equals(intent.getAction());
     }
 
     private boolean isSendRequest(Intent intent) {

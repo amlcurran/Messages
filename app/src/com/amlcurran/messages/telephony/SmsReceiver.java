@@ -28,15 +28,13 @@ import com.amlcurran.messages.data.InFlightSmsMessageFactory;
 
 public class SmsReceiver extends BroadcastReceiver {
 
-    static final String ASYNC_WRITE = "com.amlcurran.messages.smsreceiver.ASYNC_WRITE";
-    static final String EXTRA_MESSAGE = "message";
-    static final String EXTRA_RESULT = "result";
-    static final String EXTRA_WRITE_TYPE = "write_type";
+    private static final String EXTRA_MESSAGE = "message";
+    private static final String EXTRA_OUTBOX_URI = "outbox_uri";
 
     static PendingIntent broadcast(InFlightSmsMessage message, Uri inserted, Context context) {
         Intent intent = new Intent(context, SmsReceiver.class);
-        intent.putExtra(SmsSender.EXTRA_MESSAGE, message);
-        intent.putExtra(SmsSender.EXTRA_OUTBOX_URI, inserted.toString());
+        intent.putExtra(EXTRA_MESSAGE, message);
+        intent.putExtra(EXTRA_OUTBOX_URI, inserted.toString());
         return PendingIntent.getBroadcast(context, 2, intent, PendingIntent.FLAG_CANCEL_CURRENT);
     }
 
@@ -51,7 +49,9 @@ public class SmsReceiver extends BroadcastReceiver {
 
         } else {
 
-            context.startService(SmsSender.sentIntent(context, intent, getResultCode()));
+            InFlightSmsMessage message = intent.getParcelableExtra(EXTRA_MESSAGE);
+            String outboxUri = intent.getStringExtra(EXTRA_OUTBOX_URI);
+            context.startService(SmsSentNotificationService.sentIntent(context, getResultCode(), message, outboxUri));
 
         }
     }
