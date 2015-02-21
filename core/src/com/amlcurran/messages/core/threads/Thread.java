@@ -35,13 +35,15 @@ public class Thread {
     private final String threadId;
     private ThreadCallbacks callbacks;
     private MessageTransport messageTransport;
+    private final MessagePersister messagePersister;
 
-    public Thread(MessagesLoader messagesLoader, EventSubscriber messageReceiver, PhoneNumber number, String threadId, MessageTransport messageTransport) {
+    public Thread(MessagesLoader messagesLoader, EventSubscriber messageReceiver, PhoneNumber number, String threadId, MessageTransport messageTransport, MessagePersister messagePersister) {
         this.messagesLoader = messagesLoader;
         this.messageReceiver = messageReceiver;
         this.number = number;
         this.threadId = threadId;
         this.messageTransport = messageTransport;
+        this.messagePersister = messagePersister;
     }
 
     public void setCallbacks(ThreadCallbacks callbacks) {
@@ -49,11 +51,11 @@ public class Thread {
         messageTransport.listenToThread(threadId, new MessageTransport.TransportCallbacks() {
 
         });
-        messageReceiver.startListening(new LoadThreadOnMessage(), getBroadcastsToListenTo());
+        //messageReceiver.startListening(new LoadThreadOnMessage(), getBroadcastsToListenTo());
     }
 
     public void unsetCallbacks() {
-        messageReceiver.stopListening();
+        //messageReceiver.stopListening();
         messageTransport.stopListeningToThread(threadId);
         this.callbacks = ThreadCallbacks.NULL_IMPL;
     }
@@ -81,8 +83,15 @@ public class Thread {
     }
 
     public void sendMessage(CharSequence messageBody) {
-        InFlightSmsMessage message = InFlightSmsMessage.timestampedNow(messageBody, number, SmsMessage.Type.SENDING);
-        messageTransport.send(message);
+        final InFlightSmsMessage message = InFlightSmsMessage.timestampedNow(messageBody, number, SmsMessage.Type.SENDING);
+        messagePersister.writeMessageSending(message, new ResultCallback<SmsMessage>() {
+
+            @Override
+            public void success(SmsMessage output) {
+                callbacks.messageAdded(output);
+                messageTransport.send(message);
+            }
+        });
     }
 
     private class LoadThreadOnMessage implements EventSubscriber.Listener {
@@ -115,9 +124,16 @@ public class Thread {
             public void threadLoaded(List<SmsMessage> messageList) {
 
             }
+
+            @Override
+            public void messageAdded(SmsMessage message) {
+
+            }
         };
 
         void threadLoaded(List<SmsMessage> messageList);
+
+        void messageAdded(SmsMessage message);
     }
 
 }

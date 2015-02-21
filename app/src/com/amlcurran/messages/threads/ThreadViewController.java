@@ -96,6 +96,12 @@ class ThreadViewController implements ComposeMessageView.ComposureCallbacks {
             source.replace(messageList);
             messageLoader.markThreadAsRead(thread.getId());
         }
+
+        @Override
+        public void messageAdded(SmsMessage message) {
+            source.add(0, message);
+            threadView.scrollTo(0);
+        }
     };
 
     public ListSource<SmsMessage> getSource() {
@@ -141,6 +147,8 @@ class ThreadViewController implements ComposeMessageView.ComposureCallbacks {
         void setComposedMessage(String composedMessage);
 
         void finish();
+
+        void scrollTo(int position);
     }
 
 }
