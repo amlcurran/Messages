@@ -37,9 +37,6 @@ import com.amlcurran.messages.bucket.BundleBuilder;
 import com.amlcurran.messages.core.data.Contact;
 import com.amlcurran.messages.core.data.SmsMessage;
 import com.amlcurran.messages.core.events.EventSubscriber;
-import com.amlcurran.messages.core.threads.InFlightSmsMessage;
-import com.amlcurran.messages.core.threads.MessagePersister;
-import com.amlcurran.messages.core.threads.ResultCallback;
 import com.amlcurran.messages.core.threads.Thread;
 import com.amlcurran.messages.data.ContactFactory;
 import com.amlcurran.messages.events.BroadcastEventSubscriber;
@@ -98,13 +95,7 @@ public class ThreadFragment extends Fragment implements
 
         SmsComposeListener listener = new ProviderHelper<>(SmsComposeListener.class).get(getActivity());
         StandardComposeCallbacks composeCallbacks = new StandardComposeCallbacks(getActivity(), contact.getNumber(), listener);
-        com.amlcurran.messages.core.threads.Thread thread = new Thread(dependencyRepository.getMessagesLoader(), messageReceiver, contact.getNumber(), threadId, SingletonManager.getMessageTransport(getActivity()), new MessagePersister() {
-
-            @Override
-            public void writeMessageSending(InFlightSmsMessage message, ResultCallback<SmsMessage> resultCallback) {
-                resultCallback.success(new SmsMessage(15, message.getNumber().flatten(), String.valueOf(message.getBody()), message.getTimestamp(), SmsMessage.Type.SENDING));
-            }
-        });
+        com.amlcurran.messages.core.threads.Thread thread = new Thread(dependencyRepository.getMessagesLoader(), messageReceiver, contact.getNumber(), threadId, SingletonManager.getMessageTransport(getActivity()));
 
         threadViewController = new ThreadViewController(thread, contact, getArguments().getString(COMPOSED_MESSAGE),
                 this, defaultChecker, dependencyRepository);

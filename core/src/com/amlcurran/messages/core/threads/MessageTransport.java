@@ -16,13 +16,16 @@
 
 package com.amlcurran.messages.core.threads;
 
+import com.amlcurran.messages.core.data.SmsMessage;
+
 public interface MessageTransport {
-    void send(InFlightSmsMessage message);
+    void sendFromThread(String threadId, InFlightSmsMessage message);
 
     void listenToThread(String threadId, TransportCallbacks transportCallbacks);
 
     void stopListeningToThread(String threadId);
 
     public interface TransportCallbacks {
+        void messageSending(SmsMessage message);
     }
 }
