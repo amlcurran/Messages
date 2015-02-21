@@ -42,6 +42,7 @@ public class AndroidMessageTransport implements MessageTransport {
 
             @Override
             public void act(TransportCallbacks callbacks) {
+                //STOPSHIP incorrect ID
                 SmsMessage sendingMessage = new SmsMessage(15, message.getNumber().flatten(), String.valueOf(message.getBody()), message.getTimestamp(), SmsMessage.Type.SENDING);
                 callbacks.messageSending(sendingMessage);
             }
