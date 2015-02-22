@@ -22,11 +22,19 @@ import android.view.View;
 import android.view.ViewOutlineProvider;
 
 @TargetApi(21)
-public class OvalOutlineProvider extends ViewOutlineProvider {
+public class CenteredOvalOutlineProvider extends ViewOutlineProvider {
+
+    private final int size;
+
+    public CenteredOvalOutlineProvider(int size) {
+        this.size = size;
+    }
 
     @Override
     public void getOutline(View view, Outline outline) {
-        outline.setOval(0, 0, view.getHeight(), view.getWidth());
+        int left = (int) ((view.getWidth() - size) / 2f);
+        int top = (int) ((view.getHeight() - size) / 2f);
+        outline.setOval(left, top, left + size, top + size);
     }
 
 }

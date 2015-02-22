@@ -20,6 +20,7 @@ import android.os.Build;
 import android.view.View;
 import android.view.animation.DecelerateInterpolator;
 
+import com.amlcurran.messages.R;
 import com.amlcurran.messages.reporting.StatReporter;
 import com.amlcurran.messages.transition.TransitionManager;
 
@@ -30,7 +31,7 @@ public class NewMessageButtonController {
         this.newMessageButton = newMessageButton;
         this.newMessageButton.setOnClickListener(new NewMessageClickListener(transitionManager, statReporter));
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            this.newMessageButton.setOutlineProvider(new OvalOutlineProvider());
+            this.newMessageButton.setOutlineProvider(new CenteredOvalOutlineProvider(newMessageButton.getResources().getDimensionPixelOffset(R.dimen.fab_size)));
             this.newMessageButton.setClipToOutline(true);
         }
     }
