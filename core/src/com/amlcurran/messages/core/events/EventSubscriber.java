@@ -16,6 +16,7 @@
 
 package com.amlcurran.messages.core.events;
 
+@Deprecated
 public interface EventSubscriber {
     void startListening(Listener listener, Broadcast... broadcasts);
 

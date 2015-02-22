@@ -43,13 +43,6 @@ public class BroadcastEventBus implements EventBus {
     }
 
     @Override
-    public void postMessageSending(PhoneNumber recipient) {
-        Intent broadcast = new Intent(BROADCAST_MESSAGE_SENDING);
-        broadcast.putExtra(EXTRA_FILTER, recipient.flatten());
-        broadcaster.sendBroadcast(broadcast);
-    }
-
-    @Override
     public void postListLoaded() {
         broadcaster.sendBroadcast(new Intent(BROADCAST_LIST_LOADED));
     }

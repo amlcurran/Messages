@@ -18,6 +18,7 @@ package com.amlcurran.messages.core.events;
 
 import com.amlcurran.messages.core.data.PhoneNumber;
 
+@Deprecated
 public interface EventBus {
 
     public static final String BASE_BROADCAST = "com.amlcurran.messages";
@@ -31,8 +32,6 @@ public interface EventBus {
     void postMessageSent(PhoneNumber phoneNumber);
 
     void postMessageReceived(PhoneNumber phoneNumber);
-
-    void postMessageSending(PhoneNumber recipient);
 
     void postListLoaded();
 
