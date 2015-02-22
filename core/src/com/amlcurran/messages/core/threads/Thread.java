@@ -53,11 +53,13 @@ public class Thread {
                 callbacks.messageAdded(message);
             }
         });
+        messageReceiver.startListening(new LoadThreadOnMessage(), getBroadcastsToListenTo());
     }
 
     public void unsetCallbacks() {
         messageTransport.stopListeningToThread(threadId);
         this.callbacks = ThreadCallbacks.NULL_IMPL;
+        messageReceiver.stopListening();
     }
 
     public void load() {
@@ -74,7 +76,6 @@ public class Thread {
         return new Broadcast[]{
                 new Broadcast(EventBus.BROADCAST_MESSAGE_SENT, phoneNumber),
                 new Broadcast(EventBus.BROADCAST_MESSAGE_RECEIVED, phoneNumber),
-                new Broadcast(EventBus.BROADCAST_MESSAGE_SENDING, phoneNumber),
                 new Broadcast(EventBus.BROADCAST_MESSAGE_DRAFT, phoneNumber)};
     }
 
