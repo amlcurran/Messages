@@ -27,10 +27,11 @@ import com.amlcurran.messages.core.loaders.Task;
 
 public class ConversationViewHolder extends RecyclerView.ViewHolder {
 
-    public final TextView nameField;
-    public final TextView snippetField;
-    public final ImageView imageView;
-    public Task imageTask;
+    private final TextView nameField;
+    private final TextView snippetField;
+    private final ImageView imageView;
+
+    private Task imageTask;
 
     public ConversationViewHolder(final View view, final ConversationListView.ConversationSelectedListener clickCallback) {
         super(view);
@@ -49,5 +50,25 @@ public class ConversationViewHolder extends RecyclerView.ViewHolder {
         };
         imageView.setOnClickListener(l);
         view.setOnClickListener(l);
+    }
+
+    public TextView getNameField() {
+        return nameField;
+    }
+
+    public TextView getSnippetField() {
+        return snippetField;
+    }
+
+    public ImageView getImageView() {
+        return imageView;
+    }
+
+    public Task getImageTask() {
+        return imageTask;
+    }
+
+    public void setImageTask(Task imageTask) {
+        this.imageTask = imageTask;
     }
 }

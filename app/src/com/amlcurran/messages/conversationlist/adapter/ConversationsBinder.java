@@ -74,9 +74,9 @@ public class ConversationsBinder extends SimpleBinder<Conversation> {
         adapterPhotoLoader.stopLoadingPhoto(viewHolder);
         adapterPhotoLoader.loadContactPhoto(viewHolder, item);
 
-        viewHolder.imageView.setTag(R.id.tag_position, position);
-        viewHolder.nameField.setText(formatTopLine(item));
-        viewHolder.snippetField.setText(getSummaryText(item));
+        viewHolder.getImageView().setTag(R.id.tag_position, position);
+        viewHolder.getNameField().setText(formatTopLine(item));
+        viewHolder.getSnippetField().setText(getSummaryText(item));
 
         return convertView;
     }

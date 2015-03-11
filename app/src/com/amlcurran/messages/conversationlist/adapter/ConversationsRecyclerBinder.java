@@ -66,10 +66,10 @@ public class ConversationsRecyclerBinder implements ViewHolderBinder<Conversatio
         adapterPhotoLoader.stopLoadingPhoto(viewHolder);
         adapterPhotoLoader.loadContactPhoto(viewHolder, item);
 
-        viewHolder.nameField.setText(item.getContact().getDisplayName());
+        viewHolder.getNameField().setText(item.getContact().getDisplayName());
         viewHolder.itemView.setActivated(checkedStateProvider.isChecked(item));
-        viewHolder.imageView.setActivated(checkedStateProvider.isChecked(item));
-        viewHolder.snippetField.setText(getSummaryText(item));
+        viewHolder.getImageView().setActivated(checkedStateProvider.isChecked(item));
+        viewHolder.getSnippetField().setText(getSummaryText(item));
     }
 
     private CharSequence getSummaryText(Conversation item) {

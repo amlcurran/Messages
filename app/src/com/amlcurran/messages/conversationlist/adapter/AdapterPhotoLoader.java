@@ -34,13 +34,13 @@ class AdapterPhotoLoader {
 
     void loadContactPhoto(ConversationViewHolder viewHolder, Conversation item) {
         Contact contact = item.getContact();
-        viewHolder.imageView.setImageBitmap(null);
-        viewHolder.imageTask = loader.loadPhoto(contact, new SettingPhotoLoadListener(viewHolder.imageView, animationLength));
+        viewHolder.getImageView().setImageBitmap(null);
+        viewHolder.setImageTask(loader.loadPhoto(contact, new SettingPhotoLoadListener(viewHolder.getImageView(), animationLength)));
     }
 
     void stopLoadingPhoto(ConversationViewHolder viewHolder) {
-        if (viewHolder.imageTask != null) {
-            viewHolder.imageTask.cancel();
+        if (viewHolder.getImageTask() != null) {
+            viewHolder.getImageTask().cancel();
         }
     }
 }
