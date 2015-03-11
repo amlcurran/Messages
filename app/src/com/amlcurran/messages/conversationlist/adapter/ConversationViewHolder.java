@@ -30,7 +30,6 @@ public class ConversationViewHolder extends RecyclerView.ViewHolder {
     private final TextView nameField;
     private final TextView snippetField;
     private final ImageView imageView;
-
     private Task imageTask;
 
     public ConversationViewHolder(final View view, final ConversationListView.ConversationSelectedListener clickCallback) {
@@ -70,5 +69,9 @@ public class ConversationViewHolder extends RecyclerView.ViewHolder {
 
     public void setImageTask(Task imageTask) {
         this.imageTask = imageTask;
+    }
+
+    public View getView() {
+        return itemView;
     }
 }
