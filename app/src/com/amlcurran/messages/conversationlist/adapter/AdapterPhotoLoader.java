@@ -23,7 +23,7 @@ import com.amlcurran.messages.core.data.Contact;
 import com.amlcurran.messages.core.conversationlist.Conversation;
 import com.amlcurran.messages.loaders.photos.PhotoLoader;
 
-class AdapterPhotoLoader {
+public class AdapterPhotoLoader {
     private final PhotoLoader loader;
     private final float animationLength;
 

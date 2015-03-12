@@ -16,33 +16,30 @@
 
 package com.amlcurran.messages.conversationlist.adapter;
 
-import android.content.res.Resources;
 import android.view.ViewGroup;
 
 import com.amlcurran.messages.conversationlist.SelectionStateHolder;
 import com.amlcurran.messages.core.conversationlist.Conversation;
 import com.amlcurran.messages.core.conversationlist.ConversationListView;
-import com.amlcurran.messages.core.data.DraftRepository;
-import com.amlcurran.messages.core.preferences.PreferenceStore;
-import com.amlcurran.messages.loaders.photos.PhotoLoader;
 import com.github.amlcurran.sourcebinder.recyclerview.ViewHolderBinder;
 
 public class ConversationsRecyclerBinder implements ViewHolderBinder<Conversation, ConversationViewHolder> {
 
     private static final int IS_UNREAD = 1;
     private static final int IS_READ = 0;
-    private final DraftRepository draftRepository;
     private final ConversationListView.ConversationSelectedListener conversationSelectedListener;
     private final ConversationViewCreator viewCreator;
     private final AdapterPhotoLoader adapterPhotoLoader;
     private final SelectionStateHolder checkedStateProvider;
 
-    public ConversationsRecyclerBinder(DraftRepository draftRepository, Resources resources, PhotoLoader loader, TextFormatter textFormatter, ConversationListView.ConversationSelectedListener conversationSelectedListener, SelectionStateHolder checkedStateProvider, PreferenceStore prefereceStore) {
-        this.draftRepository = draftRepository;
+    public ConversationsRecyclerBinder(ConversationListView.ConversationSelectedListener conversationSelectedListener,
+                                       SelectionStateHolder checkedStateProvider,
+                                       ConversationViewCreator conversationViewCreator,
+                                       AdapterPhotoLoader adapterPhotoLoader) {
         this.conversationSelectedListener = conversationSelectedListener;
         this.checkedStateProvider = checkedStateProvider;
-        this.viewCreator = new ConversationViewCreator(prefereceStore, textFormatter);
-        this.adapterPhotoLoader = new AdapterPhotoLoader(loader, resources);
+        this.viewCreator = conversationViewCreator;
+        this.adapterPhotoLoader = adapterPhotoLoader;
     }
 
     @Override
@@ -61,7 +58,7 @@ public class ConversationsRecyclerBinder implements ViewHolderBinder<Conversatio
 
         viewHolder.getView().setActivated(checkedStateProvider.isChecked(item));
         viewHolder.getImageView().setActivated(checkedStateProvider.isChecked(item));
-        viewHolder.bind(item, draftRepository);
+        viewHolder.bind(item);
     }
 
     @Override

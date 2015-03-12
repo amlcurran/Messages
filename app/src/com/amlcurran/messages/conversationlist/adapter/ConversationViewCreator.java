@@ -23,15 +23,18 @@ import android.view.ViewGroup;
 
 import com.amlcurran.messages.R;
 import com.amlcurran.messages.core.conversationlist.ConversationListView;
+import com.amlcurran.messages.core.data.DraftRepository;
 import com.amlcurran.messages.core.preferences.PreferenceStore;
 
-class ConversationViewCreator {
+public class ConversationViewCreator {
     private final PreferenceStore preferenceStore;
     private final TextFormatter textFormatter;
+    private final DraftRepository draftRepository;
 
-    public ConversationViewCreator(PreferenceStore preferenceStore, TextFormatter textFormatter) {
+    public ConversationViewCreator(PreferenceStore preferenceStore, TextFormatter textFormatter, DraftRepository draftRepository) {
         this.preferenceStore = preferenceStore;
         this.textFormatter = textFormatter;
+        this.draftRepository = draftRepository;
     }
 
     ConversationViewHolder createUnreadViewHolder(Context context, ViewGroup parent, ConversationListView.ConversationSelectedListener conversationSelectedListener) {
@@ -42,12 +45,12 @@ class ConversationViewCreator {
             layoutRes = R.layout.item_conversation_unread;
         }
         View view = LayoutInflater.from(context).inflate(layoutRes, parent, false);
-        return new ConversationViewHolder(view, conversationSelectedListener, textFormatter);
+        return new ConversationViewHolder(view, conversationSelectedListener, textFormatter, draftRepository);
     }
 
     ConversationViewHolder createReadViewHolder(Context context, ViewGroup parent, ConversationListView.ConversationSelectedListener conversationSelectedListener) {
         View view = LayoutInflater.from(context).inflate(R.layout.item_conversation_read, parent, false);
-        return new ConversationViewHolder(view, conversationSelectedListener, textFormatter);
+        return new ConversationViewHolder(view, conversationSelectedListener, textFormatter, draftRepository);
     }
 
 }

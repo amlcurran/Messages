@@ -28,6 +28,8 @@ import android.view.ViewGroup;
 import com.amlcurran.messages.DependencyRepository;
 import com.amlcurran.messages.R;
 import com.amlcurran.messages.SingletonManager;
+import com.amlcurran.messages.conversationlist.adapter.AdapterPhotoLoader;
+import com.amlcurran.messages.conversationlist.adapter.ConversationViewCreator;
 import com.amlcurran.messages.conversationlist.adapter.ConversationViewHolder;
 import com.amlcurran.messages.conversationlist.adapter.ConversationsRecyclerBinder;
 import com.amlcurran.messages.conversationlist.adapter.TextFormatter;
@@ -76,7 +78,9 @@ public class ConversationListFragment extends Fragment implements ConversationLi
                 SingletonManager.getStatReporter(getActivity()), SingletonManager.getMessagesLoader(getActivity()), selectionStateHolder);
 
         TextFormatter textFormatter = new TextFormatter(getActivity());
-        ConversationsRecyclerBinder binder = new ConversationsRecyclerBinder(dependencyRepository.getDraftRepository(), getResources(), SingletonManager.getPhotoLoader(getActivity()), textFormatter, this, selectionStateHolder, dependencyRepository.getPreferenceStore());
+        ConversationViewCreator conversationViewCreator = new ConversationViewCreator(dependencyRepository.getPreferenceStore(), textFormatter, dependencyRepository.getDraftRepository());
+        AdapterPhotoLoader adapterPhotoLoader = new AdapterPhotoLoader(SingletonManager.getPhotoLoader(getActivity()), getResources());
+        ConversationsRecyclerBinder binder = new ConversationsRecyclerBinder(this, selectionStateHolder, conversationViewCreator, adapterPhotoLoader);
         adapter = new RecyclerSourceBinderAdapter<>(source, binder);
         source.setSourceChangeListener(null);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
