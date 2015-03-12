@@ -17,10 +17,13 @@
 package com.amlcurran.messages.conversationlist.adapter;
 
 import android.content.Context;
+import android.graphics.Typeface;
+import android.text.style.StyleSpan;
 import android.text.style.TextAppearanceSpan;
 
 import com.amlcurran.messages.R;
 import com.amlcurran.messages.bucket.Truss;
+import com.amlcurran.messages.core.conversationlist.Conversation;
 
 public class TextFormatter {
 
@@ -30,21 +33,32 @@ public class TextFormatter {
         this.activity = activity;
     }
 
-    CharSequence constructSummary(String preamble, String text) {
+    CharSequence fromMeSummary(Conversation conversation) {
         return new Truss().pushSpan(new TextAppearanceSpan(activity, R.style.Material_Body2))
-                .append(preamble)
+                .append(activity.getString(R.string.from_me_preamble))
+                .popSpan()
+                .append(" — ")
+                .append(conversation.getSummaryText())
+                .build();
+    }
+
+    CharSequence unread(CharSequence charSequence) {
+        return new Truss().pushSpan(new StyleSpan(Typeface.BOLD))
+                .append(charSequence)
+                .popSpan()
+                .build();
+    }
+
+    CharSequence draftSummary(String text) {
+        return new Truss().pushSpan(new TextAppearanceSpan(activity, R.style.Material_Body2_Coloured))
+                .append(activity.getString(R.string.draft_preamble))
                 .popSpan()
                 .append(" — ")
                 .append(text)
                 .build();
     }
 
-    public CharSequence constructColouredSummary(String preamble, String text) {
-        return new Truss().pushSpan(new TextAppearanceSpan(activity, R.style.Material_Body2_Coloured))
-                .append(preamble)
-                .popSpan()
-                .append(" — ")
-                .append(text)
-                .build();
+    CharSequence fromOtherSummary(Conversation item) {
+        return item.getSummaryText();
     }
 }
