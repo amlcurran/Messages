@@ -16,7 +16,7 @@
 
 package com.amlcurran.messages.conversationlist.adapter;
 
-class UnreadSummaryStyler implements SummaryStyler2 {
+class UnreadSummaryStyler implements SummaryStyler {
 
     private final TextFormatter textFormatter;
 

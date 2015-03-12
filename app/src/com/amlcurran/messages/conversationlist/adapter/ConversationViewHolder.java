@@ -34,10 +34,10 @@ public class ConversationViewHolder extends RecyclerView.ViewHolder {
     private final ImageView imageView;
     private final TextFormatter textFormatter;
     private final DraftRepository draftRepository;
-    private final SummaryStyler2 summaryStyler;
+    private final SummaryStyler summaryStyler;
     private Task imageTask;
 
-    public ConversationViewHolder(final View view, final ConversationListView.ConversationSelectedListener clickCallback, TextFormatter textFormatter, DraftRepository draftRepository, SummaryStyler2 summaryStyler) {
+    public ConversationViewHolder(final View view, final ConversationListView.ConversationSelectedListener clickCallback, TextFormatter textFormatter, DraftRepository draftRepository, SummaryStyler summaryStyler) {
         super(view);
         this.textFormatter = textFormatter;
         this.draftRepository = draftRepository;

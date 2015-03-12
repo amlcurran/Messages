@@ -16,7 +16,7 @@
 
 package com.amlcurran.messages.conversationlist.adapter;
 
-public class ReadSummaryStyler implements SummaryStyler2 {
+public class ReadSummaryStyler implements SummaryStyler {
 
     @Override
     public CharSequence styleSummary(CharSequence summaryText) {
