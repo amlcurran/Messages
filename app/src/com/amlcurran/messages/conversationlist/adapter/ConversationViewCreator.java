@@ -27,21 +27,11 @@ import com.amlcurran.messages.core.preferences.PreferenceStore;
 
 class ConversationViewCreator {
     private final PreferenceStore preferenceStore;
+    private final TextFormatter textFormatter;
 
-    public ConversationViewCreator(PreferenceStore preferenceStore) {
+    public ConversationViewCreator(PreferenceStore preferenceStore, TextFormatter textFormatter) {
         this.preferenceStore = preferenceStore;
-    }
-
-    View createUnreadView(Context context, ViewGroup parent, ConversationListView.ConversationSelectedListener conversationController) {
-        int layoutRes;
-        if (preferenceStore.showLargeUnreadPreviews()) {
-            layoutRes = R.layout.item_conversation_unread_large;
-        } else {
-            layoutRes = R.layout.item_conversation_unread;
-        }
-        View view = LayoutInflater.from(context).inflate(layoutRes, parent, false);
-        view.setTag(R.id.tag_view_holder, new ConversationViewHolder(view, conversationController));
-        return view;
+        this.textFormatter = textFormatter;
     }
 
     ConversationViewHolder createUnreadViewHolder(Context context, ViewGroup parent, ConversationListView.ConversationSelectedListener conversationSelectedListener) {
@@ -52,18 +42,12 @@ class ConversationViewCreator {
             layoutRes = R.layout.item_conversation_unread;
         }
         View view = LayoutInflater.from(context).inflate(layoutRes, parent, false);
-        return new ConversationViewHolder(view, conversationSelectedListener);
-    }
-
-    View createReadView(Context context, ViewGroup parent, ConversationListView.ConversationSelectedListener conversationController) {
-        View view = LayoutInflater.from(context).inflate(R.layout.item_conversation_read, parent, false);
-        view.setTag(R.id.tag_view_holder, new ConversationViewHolder(view, conversationController));
-        return view;
+        return new ConversationViewHolder(view, conversationSelectedListener, textFormatter);
     }
 
     ConversationViewHolder createReadViewHolder(Context context, ViewGroup parent, ConversationListView.ConversationSelectedListener conversationSelectedListener) {
         View view = LayoutInflater.from(context).inflate(R.layout.item_conversation_read, parent, false);
-        return new ConversationViewHolder(view, conversationSelectedListener);
+        return new ConversationViewHolder(view, conversationSelectedListener, textFormatter);
     }
 
 }
