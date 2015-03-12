@@ -26,12 +26,12 @@ import com.amlcurran.messages.core.conversationlist.ConversationListView;
 import com.amlcurran.messages.core.data.DraftRepository;
 import com.amlcurran.messages.core.preferences.PreferenceStore;
 
-public class ConversationViewCreator {
+public class ConversationViewFactory {
     private final PreferenceStore preferenceStore;
     private final TextFormatter textFormatter;
     private final DraftRepository draftRepository;
 
-    public ConversationViewCreator(PreferenceStore preferenceStore, TextFormatter textFormatter, DraftRepository draftRepository) {
+    public ConversationViewFactory(PreferenceStore preferenceStore, TextFormatter textFormatter, DraftRepository draftRepository) {
         this.preferenceStore = preferenceStore;
         this.textFormatter = textFormatter;
         this.draftRepository = draftRepository;

@@ -28,17 +28,17 @@ public class ConversationsRecyclerBinder implements ViewHolderBinder<Conversatio
     private static final int IS_UNREAD = 1;
     private static final int IS_READ = 0;
     private final ConversationListView.ConversationSelectedListener conversationSelectedListener;
-    private final ConversationViewCreator viewCreator;
+    private final ConversationViewFactory viewCreator;
     private final AdapterPhotoLoader adapterPhotoLoader;
     private final SelectionStateHolder checkedStateProvider;
 
     public ConversationsRecyclerBinder(ConversationListView.ConversationSelectedListener conversationSelectedListener,
                                        SelectionStateHolder checkedStateProvider,
-                                       ConversationViewCreator conversationViewCreator,
+                                       ConversationViewFactory conversationViewFactory,
                                        AdapterPhotoLoader adapterPhotoLoader) {
         this.conversationSelectedListener = conversationSelectedListener;
         this.checkedStateProvider = checkedStateProvider;
-        this.viewCreator = conversationViewCreator;
+        this.viewCreator = conversationViewFactory;
         this.adapterPhotoLoader = adapterPhotoLoader;
     }
 
