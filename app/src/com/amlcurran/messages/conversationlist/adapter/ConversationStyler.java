@@ -16,6 +16,6 @@
 
 package com.amlcurran.messages.conversationlist.adapter;
 
-public interface SummaryStyler {
+public interface ConversationStyler {
     CharSequence styleSummary(CharSequence summaryText);
 }

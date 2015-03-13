@@ -45,12 +45,12 @@ public class ConversationViewFactory {
             layoutRes = R.layout.item_conversation_unread;
         }
         View view = LayoutInflater.from(context).inflate(layoutRes, parent, false);
-        return new ConversationViewHolder(view, conversationSelectedListener, textFormatter, draftRepository, new UnreadSummaryStyler(textFormatter));
+        return new ConversationViewHolder(view, conversationSelectedListener, textFormatter, draftRepository, new UnreadConversationStyler(textFormatter));
     }
 
     ConversationViewHolder createReadViewHolder(Context context, ViewGroup parent, ConversationListView.ConversationSelectedListener conversationSelectedListener) {
         View view = LayoutInflater.from(context).inflate(R.layout.item_conversation_read, parent, false);
-        return new ConversationViewHolder(view, conversationSelectedListener, textFormatter, draftRepository, new ReadSummaryStyler());
+        return new ConversationViewHolder(view, conversationSelectedListener, textFormatter, draftRepository, new ReadConversationStyler());
     }
 
 }

@@ -16,10 +16,16 @@
 
 package com.amlcurran.messages.conversationlist.adapter;
 
-public class ReadSummaryStyler implements SummaryStyler {
+class UnreadConversationStyler implements ConversationStyler {
+
+    private final TextFormatter textFormatter;
+
+    public UnreadConversationStyler(TextFormatter textFormatter) {
+        this.textFormatter = textFormatter;
+    }
 
     @Override
     public CharSequence styleSummary(CharSequence summaryText) {
-        return summaryText;
+        return textFormatter.unread(summaryText);
     }
 }

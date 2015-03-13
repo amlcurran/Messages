@@ -34,14 +34,14 @@ public class ConversationViewHolder extends RecyclerView.ViewHolder {
     private final ImageView imageView;
     private final TextFormatter textFormatter;
     private final DraftRepository draftRepository;
-    private final SummaryStyler summaryStyler;
+    private final ConversationStyler conversationStyler;
     private Task imageTask;
 
-    public ConversationViewHolder(final View view, final ConversationListView.ConversationSelectedListener clickCallback, TextFormatter textFormatter, DraftRepository draftRepository, SummaryStyler summaryStyler) {
+    public ConversationViewHolder(final View view, final ConversationListView.ConversationSelectedListener clickCallback, TextFormatter textFormatter, DraftRepository draftRepository, ConversationStyler conversationStyler) {
         super(view);
         this.textFormatter = textFormatter;
         this.draftRepository = draftRepository;
-        this.summaryStyler = summaryStyler;
+        this.conversationStyler = conversationStyler;
         nameField = ((TextView) view.findViewById(android.R.id.text1));
         snippetField = ((TextView) view.findViewById(android.R.id.text2));
         imageView = ((ImageView) view.findViewById(R.id.image));
@@ -77,7 +77,7 @@ public class ConversationViewHolder extends RecyclerView.ViewHolder {
 
     public void bind(Conversation item) {
         nameField.setText(item.getContact().getDisplayName());
-        snippetField.setText(summaryStyler.styleSummary(getSummaryText(item, draftRepository)));
+        snippetField.setText(conversationStyler.styleSummary(getSummaryText(item, draftRepository)));
     }
 
     private CharSequence getSummaryText(Conversation item, DraftRepository draftRepository) {
