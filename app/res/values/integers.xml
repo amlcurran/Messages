@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <integer name="sending_frame_duration">100</integer>
-    <integer name="conversation_preview_lines">1</integer>
+    <integer name="conversation_preview_lines">2</integer>
 </resources>

@@ -42,7 +42,8 @@
         <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@android:id/text1"/>
+                android:id="@android:id/text1"
+                android:maxLines="@integer/conversation_preview_lines"/>
 
         <TextView
                 android:id="@android:id/text2"

@@ -59,7 +59,7 @@
     <style name="ConversationTitle" parent="Material.Title">
         <item name="android:singleLine">true</item>
         <item name="android:ellipsize">end</item>
-        <item name="android:paddingBottom">2dp</item>
+        <item name="android:lineSpacingExtra">2dp</item>
     </style>
 
     <style name="ConversationTitle.Unread">
@@ -122,5 +122,5 @@
 
     <integer name="loading_scale_small">2</integer>
     <integer name="loading_scale_large">1</integer>
-    <integer name="conversation_preview_lines_unread">4</integer>
+    <integer name="conversation_preview_lines_unread">5</integer>
 </resources>

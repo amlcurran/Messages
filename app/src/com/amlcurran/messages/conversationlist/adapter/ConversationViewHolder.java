@@ -22,6 +22,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.amlcurran.messages.R;
+import com.amlcurran.messages.bucket.Truss;
 import com.amlcurran.messages.core.conversationlist.Conversation;
 import com.amlcurran.messages.core.conversationlist.ConversationListView;
 import com.amlcurran.messages.core.data.DraftRepository;
@@ -30,7 +31,6 @@ import com.amlcurran.messages.core.loaders.Task;
 public class ConversationViewHolder extends RecyclerView.ViewHolder {
 
     private final TextView nameField;
-    private final TextView snippetField;
     private final ImageView imageView;
     private final TextFormatter textFormatter;
     private final DraftRepository draftRepository;
@@ -43,7 +43,6 @@ public class ConversationViewHolder extends RecyclerView.ViewHolder {
         this.draftRepository = draftRepository;
         this.conversationStyler = conversationStyler;
         nameField = ((TextView) view.findViewById(android.R.id.text1));
-        snippetField = ((TextView) view.findViewById(android.R.id.text2));
         imageView = ((ImageView) view.findViewById(R.id.image));
         View.OnClickListener l = new View.OnClickListener() {
             @Override
@@ -76,8 +75,14 @@ public class ConversationViewHolder extends RecyclerView.ViewHolder {
     }
 
     public void bind(Conversation item) {
-        nameField.setText(conversationStyler.styleName(item.getContact().getDisplayName()));
-        snippetField.setText(conversationStyler.styleSummary(getSummaryText(item, draftRepository)));
+        CharSequence styledName = conversationStyler.styleName(item.getContact().getDisplayName());
+        CharSequence styledSummary = conversationStyler.styleSummary(getSummaryText(item, draftRepository));
+        CharSequence result = new Truss()
+                .append(styledName)
+                .append("\n")
+                .append(styledSummary)
+                .build();
+        nameField.setText(result);
     }
 
     private CharSequence getSummaryText(Conversation item, DraftRepository draftRepository) {
