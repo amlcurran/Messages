@@ -76,7 +76,7 @@ public class ConversationViewHolder extends RecyclerView.ViewHolder {
     }
 
     public void bind(Conversation item) {
-        nameField.setText(item.getContact().getDisplayName());
+        nameField.setText(conversationStyler.styleName(item.getContact().getDisplayName()));
         snippetField.setText(conversationStyler.styleSummary(getSummaryText(item, draftRepository)));
     }
 

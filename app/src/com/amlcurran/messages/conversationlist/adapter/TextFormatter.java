@@ -18,7 +18,6 @@ package com.amlcurran.messages.conversationlist.adapter;
 
 import android.content.Context;
 import android.graphics.Typeface;
-import android.text.style.ForegroundColorSpan;
 import android.text.style.StyleSpan;
 import android.text.style.TextAppearanceSpan;
 
@@ -45,9 +44,9 @@ public class TextFormatter {
 
     CharSequence unread(CharSequence charSequence) {
         return new Truss().pushSpan(new StyleSpan(Typeface.BOLD))
-                .pushSpan(new ForegroundColorSpan(activity.getResources().getColor(R.color.material_text_standard_dark)))
+//                .pushSpan(new ForegroundColorSpan(activity.getResources().getColor(R.color.material_text_standard_dark)))
                 .append(charSequence)
-                .popSpan()
+//                .popSpan()
                 .popSpan()
                 .build();
     }

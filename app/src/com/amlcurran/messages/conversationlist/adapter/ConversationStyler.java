@@ -18,4 +18,6 @@ package com.amlcurran.messages.conversationlist.adapter;
 
 public interface ConversationStyler {
     CharSequence styleSummary(CharSequence summaryText);
+
+    CharSequence styleName(CharSequence displayName);
 }

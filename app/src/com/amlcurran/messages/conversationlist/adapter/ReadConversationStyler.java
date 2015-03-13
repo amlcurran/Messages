@@ -22,4 +22,9 @@ public class ReadConversationStyler implements ConversationStyler {
     public CharSequence styleSummary(CharSequence summaryText) {
         return summaryText;
     }
+
+    @Override
+    public CharSequence styleName(CharSequence displayName) {
+        return displayName;
+    }
 }

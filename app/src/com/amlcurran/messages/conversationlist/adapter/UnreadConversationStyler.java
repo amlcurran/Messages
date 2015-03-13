@@ -28,4 +28,9 @@ class UnreadConversationStyler implements ConversationStyler {
     public CharSequence styleSummary(CharSequence summaryText) {
         return textFormatter.unread(summaryText);
     }
+
+    @Override
+    public CharSequence styleName(CharSequence displayName) {
+        return textFormatter.unread(displayName);
+    }
 }
