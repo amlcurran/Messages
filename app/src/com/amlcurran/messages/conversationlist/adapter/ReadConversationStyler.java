@@ -18,6 +18,12 @@ package com.amlcurran.messages.conversationlist.adapter;
 
 public class ReadConversationStyler implements ConversationStyler {
 
+    private final TextFormatter textFormatter;
+
+    public ReadConversationStyler(TextFormatter textFormatter) {
+        this.textFormatter = textFormatter;
+    }
+
     @Override
     public CharSequence styleSummary(CharSequence summaryText) {
         return summaryText;
@@ -25,6 +31,6 @@ public class ReadConversationStyler implements ConversationStyler {
 
     @Override
     public CharSequence styleName(CharSequence displayName) {
-        return displayName;
+        return textFormatter.name(displayName);
     }
 }

@@ -42,14 +42,13 @@
         <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@android:id/text1"
-                style="@style/ConversationTitle.Unread"/>
+                android:id="@android:id/text1"/>
 
         <TextView
                 android:id="@android:id/text2"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                style="@style/ConversationText.Unread.Large"/>
+                android:maxLines="@integer/conversation_preview_lines_unread"/>
 
     </LinearLayout>
 

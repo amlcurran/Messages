@@ -18,6 +18,7 @@ package com.amlcurran.messages.conversationlist.adapter;
 
 import android.content.Context;
 import android.graphics.Typeface;
+import android.support.annotation.StyleRes;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.StyleSpan;
 import android.text.style.TextAppearanceSpan;
@@ -69,4 +70,17 @@ public class TextFormatter {
     CharSequence fromOtherSummary(Conversation item) {
         return item.getSummaryText();
     }
+
+    public CharSequence name(CharSequence displayName) {
+        return styled(displayName, R.style.ConversationTitle);
+    }
+
+    public CharSequence styled(CharSequence charSequence, @StyleRes int styleId) {
+        return new Truss()
+                .pushSpan(new TextAppearanceSpan(activity, styleId))
+                .append(charSequence)
+                .popSpan()
+                .build();
+    }
+
 }

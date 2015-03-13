@@ -16,6 +16,8 @@
 
 package com.amlcurran.messages.conversationlist.adapter;
 
+import com.amlcurran.messages.R;
+
 class UnreadConversationStyler implements ConversationStyler {
 
     private final TextFormatter textFormatter;
@@ -31,6 +33,6 @@ class UnreadConversationStyler implements ConversationStyler {
 
     @Override
     public CharSequence styleName(CharSequence displayName) {
-        return textFormatter.unread(displayName);
+        return textFormatter.styled(displayName, R.style.ConversationTitle_Unread);
     }
 }

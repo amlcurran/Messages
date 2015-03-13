@@ -50,7 +50,7 @@ public class ConversationViewFactory {
 
     ConversationViewHolder createReadViewHolder(Context context, ViewGroup parent, ConversationListView.ConversationSelectedListener conversationSelectedListener) {
         View view = LayoutInflater.from(context).inflate(R.layout.item_conversation_read, parent, false);
-        return new ConversationViewHolder(view, conversationSelectedListener, textFormatter, draftRepository, new ReadConversationStyler());
+        return new ConversationViewHolder(view, conversationSelectedListener, textFormatter, draftRepository, new ReadConversationStyler(textFormatter));
     }
 
 }
