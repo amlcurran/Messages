@@ -49,9 +49,7 @@
     </style>
 
     <style name="ConversationText.Unread">
-        <item name="android:textStyle">bold</item>
         <item name="android:maxLines">@integer/conversation_preview_lines</item>
-        <item name="android:textColor">@color/material_text_standard_dark</item>
     </style>
 
     <style name="ConversationText.Unread.Large">
