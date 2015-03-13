@@ -40,16 +40,16 @@ public class ConversationViewFactory {
     ConversationViewHolder createUnreadViewHolder(Context context, ViewGroup parent, ConversationListView.ConversationSelectedListener conversationSelectedListener) {
         int layoutRes;
         if (preferenceStore.showLargeUnreadPreviews()) {
-            layoutRes = R.layout.item_conversation_unread_large;
+            layoutRes = R.layout.item_conversation_large;
         } else {
-            layoutRes = R.layout.item_conversation_unread;
+            layoutRes = R.layout.item_conversation;
         }
         View view = LayoutInflater.from(context).inflate(layoutRes, parent, false);
         return new ConversationViewHolder(view, conversationSelectedListener, textFormatter, draftRepository, new UnreadConversationStyler(textFormatter));
     }
 
     ConversationViewHolder createReadViewHolder(Context context, ViewGroup parent, ConversationListView.ConversationSelectedListener conversationSelectedListener) {
-        View view = LayoutInflater.from(context).inflate(R.layout.item_conversation_read, parent, false);
+        View view = LayoutInflater.from(context).inflate(R.layout.item_conversation, parent, false);
         return new ConversationViewHolder(view, conversationSelectedListener, textFormatter, draftRepository, new ReadConversationStyler(textFormatter));
     }
 
