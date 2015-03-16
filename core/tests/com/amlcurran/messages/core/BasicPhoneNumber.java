@@ -14,12 +14,25 @@
  * limitations under the License.
  */
 
-package com.amlcurran.messages.core.threads;
+package com.amlcurran.messages.core;
 
-import com.amlcurran.messages.core.data.SmsMessage;
+import com.amlcurran.messages.core.data.PhoneNumber;
 
-public interface MessagePersister {
-    void writeMessageSending(InFlightSmsMessage message, ResultCallback<SmsMessage> resultCallback);
+class BasicPhoneNumber implements PhoneNumber {
 
-    void writeIncomingMessage(InFlightSmsMessage message);
+    private final String number;
+
+    public BasicPhoneNumber(String number) {
+        this.number = number;
+    }
+
+    @Override
+    public String flatten() {
+        return number;
+    }
+
+    @Override
+    public boolean isValid() {
+        return true;
+    }
 }
