@@ -36,13 +36,15 @@ public class ConversationViewHolder extends RecyclerView.ViewHolder {
     private final TextFormatter textFormatter;
     private final DraftRepository draftRepository;
     private final ConversationStyler conversationStyler;
+    private final AdapterPhotoLoader adapterPhotoLoader;
     private Task imageTask;
 
-    public ConversationViewHolder(final View view, final ConversationListView.ConversationSelectedListener clickCallback, TextFormatter textFormatter, DraftRepository draftRepository, ConversationStyler conversationStyler) {
+    public ConversationViewHolder(final View view, final ConversationListView.ConversationSelectedListener clickCallback, TextFormatter textFormatter, DraftRepository draftRepository, ConversationStyler conversationStyler, AdapterPhotoLoader adapterPhotoLoader) {
         super(view);
         this.textFormatter = textFormatter;
         this.draftRepository = draftRepository;
         this.conversationStyler = conversationStyler;
+        this.adapterPhotoLoader = adapterPhotoLoader;
         nameField = ((TextView) view.findViewById(android.R.id.text1));
         imageView = ((ImageView) view.findViewById(R.id.image));
         View.OnClickListener l = new View.OnClickListener() {
@@ -71,6 +73,10 @@ public class ConversationViewHolder extends RecyclerView.ViewHolder {
         this.imageTask = imageTask;
     }
 
+    void unbind() {
+        adapterPhotoLoader.stopLoadingPhoto(this);
+    }
+
     public void bind(Conversation item) {
         CharSequence styledName = conversationStyler.styleName(item.getContact().getDisplayName());
         CharSequence styledSummary = conversationStyler.styleSummary(getSummaryText(item, draftRepository));
@@ -80,6 +86,7 @@ public class ConversationViewHolder extends RecyclerView.ViewHolder {
                 .append(styledSummary)
                 .build();
         nameField.setText(result);
+        adapterPhotoLoader.loadContactPhoto(this, item);
     }
 
     void bindCheckedState(Conversation item, SelectionStateHolder<Conversation> checkedStateProvider) {

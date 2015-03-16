@@ -78,9 +78,10 @@ public class ConversationListFragment extends Fragment implements ConversationLi
                 SingletonManager.getStatReporter(getActivity()), SingletonManager.getMessagesLoader(getActivity()), selectionStateHolder);
 
         TextFormatter textFormatter = new TextFormatter(getActivity());
-        ConversationViewFactory conversationViewFactory = new ConversationViewFactory(dependencyRepository.getPreferenceStore(), textFormatter, dependencyRepository.getDraftRepository());
         AdapterPhotoLoader adapterPhotoLoader = new AdapterPhotoLoader(SingletonManager.getPhotoLoader(getActivity()), getResources());
-        ConversationsRecyclerBinder binder = new ConversationsRecyclerBinder(this, selectionStateHolder, conversationViewFactory, adapterPhotoLoader);
+        ConversationViewFactory conversationViewFactory = new ConversationViewFactory(dependencyRepository.getPreferenceStore(), textFormatter, dependencyRepository.getDraftRepository(),
+                adapterPhotoLoader);
+        ConversationsRecyclerBinder binder = new ConversationsRecyclerBinder(this, selectionStateHolder, conversationViewFactory);
         adapter = new RecyclerSourceBinderAdapter<>(source, binder);
         source.setSourceChangeListener(null);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));

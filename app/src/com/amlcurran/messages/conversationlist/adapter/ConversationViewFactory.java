@@ -30,11 +30,13 @@ public class ConversationViewFactory {
     private final PreferenceStore preferenceStore;
     private final TextFormatter textFormatter;
     private final DraftRepository draftRepository;
+    private final AdapterPhotoLoader adapterPhotoLoader;
 
-    public ConversationViewFactory(PreferenceStore preferenceStore, TextFormatter textFormatter, DraftRepository draftRepository) {
+    public ConversationViewFactory(PreferenceStore preferenceStore, TextFormatter textFormatter, DraftRepository draftRepository, AdapterPhotoLoader adapterPhotoLoader) {
         this.preferenceStore = preferenceStore;
         this.textFormatter = textFormatter;
         this.draftRepository = draftRepository;
+        this.adapterPhotoLoader = adapterPhotoLoader;
     }
 
     ConversationViewHolder createUnreadViewHolder(Context context, ViewGroup parent, ConversationListView.ConversationSelectedListener conversationSelectedListener) {
@@ -45,12 +47,12 @@ public class ConversationViewFactory {
             layoutRes = R.layout.item_conversation;
         }
         View view = LayoutInflater.from(context).inflate(layoutRes, parent, false);
-        return new ConversationViewHolder(view, conversationSelectedListener, textFormatter, draftRepository, new UnreadConversationStyler(textFormatter));
+        return new ConversationViewHolder(view, conversationSelectedListener, textFormatter, draftRepository, new UnreadConversationStyler(textFormatter), adapterPhotoLoader);
     }
 
     ConversationViewHolder createReadViewHolder(Context context, ViewGroup parent, ConversationListView.ConversationSelectedListener conversationSelectedListener) {
         View view = LayoutInflater.from(context).inflate(R.layout.item_conversation, parent, false);
-        return new ConversationViewHolder(view, conversationSelectedListener, textFormatter, draftRepository, new ReadConversationStyler(textFormatter));
+        return new ConversationViewHolder(view, conversationSelectedListener, textFormatter, draftRepository, new ReadConversationStyler(textFormatter), adapterPhotoLoader);
     }
 
 }
