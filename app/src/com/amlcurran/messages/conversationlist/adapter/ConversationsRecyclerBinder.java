@@ -30,10 +30,10 @@ public class ConversationsRecyclerBinder implements ViewHolderBinder<Conversatio
     private final ConversationListView.ConversationSelectedListener conversationSelectedListener;
     private final ConversationViewFactory viewCreator;
     private final AdapterPhotoLoader adapterPhotoLoader;
-    private final SelectionStateHolder checkedStateProvider;
+    private final SelectionStateHolder<Conversation> checkedStateProvider;
 
     public ConversationsRecyclerBinder(ConversationListView.ConversationSelectedListener conversationSelectedListener,
-                                       SelectionStateHolder checkedStateProvider,
+                                       SelectionStateHolder<Conversation> checkedStateProvider,
                                        ConversationViewFactory conversationViewFactory,
                                        AdapterPhotoLoader adapterPhotoLoader) {
         this.conversationSelectedListener = conversationSelectedListener;
@@ -56,9 +56,8 @@ public class ConversationsRecyclerBinder implements ViewHolderBinder<Conversatio
         adapterPhotoLoader.stopLoadingPhoto(viewHolder);
         adapterPhotoLoader.loadContactPhoto(viewHolder, item);
 
-        viewHolder.getView().setActivated(checkedStateProvider.isChecked(item));
-        viewHolder.getImageView().setActivated(checkedStateProvider.isChecked(item));
         viewHolder.bind(item);
+        viewHolder.bindCheckedState(item, checkedStateProvider);
     }
 
     @Override

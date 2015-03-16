@@ -23,6 +23,7 @@ import android.widget.TextView;
 
 import com.amlcurran.messages.R;
 import com.amlcurran.messages.bucket.Truss;
+import com.amlcurran.messages.conversationlist.SelectionStateHolder;
 import com.amlcurran.messages.core.conversationlist.Conversation;
 import com.amlcurran.messages.core.conversationlist.ConversationListView;
 import com.amlcurran.messages.core.data.DraftRepository;
@@ -70,10 +71,6 @@ public class ConversationViewHolder extends RecyclerView.ViewHolder {
         this.imageTask = imageTask;
     }
 
-    public View getView() {
-        return itemView;
-    }
-
     public void bind(Conversation item) {
         CharSequence styledName = conversationStyler.styleName(item.getContact().getDisplayName());
         CharSequence styledSummary = conversationStyler.styleSummary(getSummaryText(item, draftRepository));
@@ -83,6 +80,11 @@ public class ConversationViewHolder extends RecyclerView.ViewHolder {
                 .append(styledSummary)
                 .build();
         nameField.setText(result);
+    }
+
+    void bindCheckedState(Conversation item, SelectionStateHolder<Conversation> checkedStateProvider) {
+        itemView.setActivated(checkedStateProvider.isChecked(item));
+        imageView.setActivated(checkedStateProvider.isChecked(item));
     }
 
     private CharSequence getSummaryText(Conversation item, DraftRepository draftRepository) {
