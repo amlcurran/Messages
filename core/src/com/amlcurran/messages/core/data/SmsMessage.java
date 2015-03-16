@@ -16,6 +16,8 @@
 
 package com.amlcurran.messages.core.data;
 
+import com.amlcurran.messages.core.threads.InFlightSmsMessage;
+
 public class SmsMessage {
 
     private final String address;
@@ -58,6 +60,11 @@ public class SmsMessage {
 
     public long getId() {
         return id;
+    }
+
+    public static SmsMessage fromInFlight(long id, InFlightSmsMessage message) {
+        return new SmsMessage(id, message.getNumber().flatten(), String.valueOf(message.getBody()),
+                message.getTimestamp(), message.getType());
     }
 
     public enum Type {

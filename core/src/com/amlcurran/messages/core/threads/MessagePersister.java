@@ -21,5 +21,11 @@ import com.amlcurran.messages.core.data.SmsMessage;
 public interface MessagePersister {
     void writeMessageSending(InFlightSmsMessage message, ResultCallback<SmsMessage> resultCallback);
 
-    void writeIncomingMessage(InFlightSmsMessage message);
+    void writeIncomingMessage(InFlightSmsMessage message, Callbacks callbacks);
+
+    public interface Callbacks {
+
+        void newMessage(SmsMessage message);
+    }
+
 }

@@ -39,6 +39,10 @@ public class InFlightSmsMessage {
         return new InFlightSmsMessage(messageBody, number, type, Time.now());
     }
 
+    public SmsMessage.Type getType() {
+        return type;
+    }
+
     public Time getTimestamp() {
         return time;
     }

@@ -16,6 +16,7 @@
 
 package com.amlcurran.messages.core;
 
+import com.amlcurran.messages.core.data.PhoneNumber;
 import com.amlcurran.messages.core.data.SmsMessage;
 import com.amlcurran.messages.core.data.Time;
 import com.amlcurran.messages.core.threads.InFlightSmsMessage;
@@ -33,25 +34,54 @@ public class IncomingSmsTests {
 
     @Test
     public void testAnIncomingMessageIsSavedToThePersister() {
-        InFlightSmsMessage message = new InFlightSmsMessage("Some sms text", new BasicPhoneNumber("0800 289492"),
-                SmsMessage.Type.INBOX, Time.now());
+        InFlightSmsMessage message = incomingMessage();
 
         new System(new TestPersister()).receivedMessage(message);
 
         assertThat(writtenMessage, is(message));
     }
 
+    @Test
+    public void testWhenAnIncomingMessageIsWritten_ListenersAreNotified() {
+        InFlightSmsMessage message = incomingMessage();
+        System system = new System(new WritingPersister());
+        CapturingThreadListener capturingThreadListener = new CapturingThreadListener();
+        system.listenTo(new BasicPhoneNumber("0800 289492"), capturingThreadListener);
+
+        system.receivedMessage(message);
+
+        assertThat(capturingThreadListener.lastMessage, is(SmsMessage.fromInFlight(14, message)));
+    }
+
     private static class System {
 
         private final MessagePersister messagePersister;
+        private CapturingThreadListener capturingThreadListener;
 
         public System(MessagePersister messagePersister) {
             this.messagePersister = messagePersister;
         }
 
         public void receivedMessage(InFlightSmsMessage message) {
-            messagePersister.writeIncomingMessage(message);
+            messagePersister.writeIncomingMessage(message, persisterCallbacks);
         }
+
+        public void listenTo(PhoneNumber phoneNumber, CapturingThreadListener capturingThreadListener) {
+            this.capturingThreadListener = capturingThreadListener;
+        }
+
+        private MessagePersister.Callbacks persisterCallbacks = new MessagePersister.Callbacks() {
+            @Override
+            public void newMessage(SmsMessage message) {
+                capturingThreadListener.newMessage(message);
+            }
+        };
+
+    }
+
+    private static InFlightSmsMessage incomingMessage() {
+        return new InFlightSmsMessage("Some sms text", new BasicPhoneNumber("0800 289492"),
+                SmsMessage.Type.INBOX, Time.now());
     }
 
     private class TestPersister implements MessagePersister {
@@ -62,10 +92,31 @@ public class IncomingSmsTests {
         }
 
         @Override
-        public void writeIncomingMessage(InFlightSmsMessage message) {
+        public void writeIncomingMessage(InFlightSmsMessage message, Callbacks callbacks) {
             writtenMessage = message;
         }
 
+
+    }
+
+    private class CapturingThreadListener {
+        public SmsMessage lastMessage;
+
+        public void newMessage(SmsMessage message) {
+            lastMessage = message;
+        }
+    }
+
+    private class WritingPersister implements MessagePersister {
+        @Override
+        public void writeMessageSending(InFlightSmsMessage message, ResultCallback<SmsMessage> resultCallback) {
+
+        }
+
+        @Override
+        public void writeIncomingMessage(InFlightSmsMessage message, Callbacks callbacks) {
+            callbacks.newMessage(SmsMessage.fromInFlight(14, message));
+        }
 
     }
 }
