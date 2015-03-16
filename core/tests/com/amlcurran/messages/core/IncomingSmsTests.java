@@ -25,7 +25,12 @@ import com.amlcurran.messages.core.threads.ResultCallback;
 
 import org.junit.Test;
 
+import java.lang.ref.WeakReference;
+import java.util.HashMap;
+import java.util.Map;
+
 import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
 
 public class IncomingSmsTests {
@@ -53,13 +58,26 @@ public class IncomingSmsTests {
         assertThat(capturingThreadListener.lastMessage, is(SmsMessage.fromInFlight(14, message)));
     }
 
+    @Test
+    public void testWhenAnIncomingMessageIsWritten_OtherListenersAreNotNotified() {
+        InFlightSmsMessage message = incomingMessage();
+        System system = new System(new WritingPersister());
+        CapturingThreadListener capturingThreadListener = new CapturingThreadListener();
+        system.listenTo(new BasicPhoneNumber("08001 289492"), capturingThreadListener);
+
+        system.receivedMessage(message);
+
+        assertNull(capturingThreadListener.lastMessage);
+    }
+
     private static class System {
 
         private final MessagePersister messagePersister;
-        private CapturingThreadListener capturingThreadListener;
+        private final Map<String, WeakReference<CapturingThreadListener>> listenerMap;
 
         public System(MessagePersister messagePersister) {
             this.messagePersister = messagePersister;
+            this.listenerMap = new HashMap<>();
         }
 
         public void receivedMessage(InFlightSmsMessage message) {
@@ -67,15 +85,21 @@ public class IncomingSmsTests {
         }
 
         public void listenTo(PhoneNumber phoneNumber, CapturingThreadListener capturingThreadListener) {
-            this.capturingThreadListener = capturingThreadListener;
+            listenerMap.put(phoneNumber.flatten(), new WeakReference<>(capturingThreadListener));
         }
 
         private MessagePersister.Callbacks persisterCallbacks = new MessagePersister.Callbacks() {
             @Override
             public void newMessage(SmsMessage message) {
-                capturingThreadListener.newMessage(message);
+                if (availableListener(message.getAddress()) != null) {
+                    availableListener(message.getAddress()).newMessage(message);
+                }
             }
         };
+
+        private CapturingThreadListener availableListener(String address) {
+            return listenerMap.get(address) != null ? listenerMap.get(address).get() : null;
+        }
 
     }
 
