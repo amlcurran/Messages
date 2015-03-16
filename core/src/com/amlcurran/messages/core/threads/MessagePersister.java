@@ -26,6 +26,8 @@ public interface MessagePersister {
     public interface Callbacks {
 
         void newMessage(SmsMessage message);
+
+        void writeFailed();
     }
 
 }

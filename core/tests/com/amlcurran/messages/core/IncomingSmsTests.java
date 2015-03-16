@@ -70,6 +70,18 @@ public class IncomingSmsTests {
         assertNull(capturingThreadListener.lastMessage);
     }
 
+    @Test
+    public void testWhenAnIncomingMessageFailsToWrite_ListenersAreNotNotified() {
+        InFlightSmsMessage message = incomingMessage();
+        System system = new System(new FailWritingPersister());
+        CapturingThreadListener capturingThreadListener = new CapturingThreadListener();
+        system.listenTo(new BasicPhoneNumber("0800 289492"), capturingThreadListener);
+
+        system.receivedMessage(message);
+
+        assertNull(capturingThreadListener.lastMessage);
+    }
+
     private static class System {
 
         private final MessagePersister messagePersister;
@@ -94,6 +106,11 @@ public class IncomingSmsTests {
                 if (availableListener(message.getAddress()) != null) {
                     availableListener(message.getAddress()).newMessage(message);
                 }
+            }
+
+            @Override
+            public void writeFailed() {
+
             }
         };
 
@@ -142,5 +159,17 @@ public class IncomingSmsTests {
             callbacks.newMessage(SmsMessage.fromInFlight(14, message));
         }
 
+    }
+
+    private class FailWritingPersister implements MessagePersister {
+        @Override
+        public void writeMessageSending(InFlightSmsMessage message, ResultCallback<SmsMessage> resultCallback) {
+
+        }
+
+        @Override
+        public void writeIncomingMessage(InFlightSmsMessage message, Callbacks callbacks) {
+            callbacks.writeFailed();
+        }
     }
 }
