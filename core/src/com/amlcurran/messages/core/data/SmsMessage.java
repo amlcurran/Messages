@@ -20,13 +20,13 @@ import com.amlcurran.messages.core.threads.InFlightSmsMessage;
 
 public class SmsMessage {
 
-    private final String address;
+    private final PhoneNumber address;
     private final String body;
     private final Time timestamp;
     private final Type type;
     private final long id;
 
-    public SmsMessage(long id, String address, String body, Time timestamp, Type type) {
+    public SmsMessage(long id, PhoneNumber address, String body, Time timestamp, Type type) {
         this.id = id;
         this.address = address;
         this.body = body;
@@ -39,7 +39,7 @@ public class SmsMessage {
     }
 
     public String getAddress() {
-        return address;
+        return address.flatten();
     }
 
     public String getBody() {
@@ -63,7 +63,7 @@ public class SmsMessage {
     }
 
     public static SmsMessage fromInFlight(long id, InFlightSmsMessage message) {
-        return new SmsMessage(id, message.getNumber().flatten(), String.valueOf(message.getBody()),
+        return new SmsMessage(id, message.getNumber(), String.valueOf(message.getBody()),
                 message.getTimestamp(), message.getType());
     }
 

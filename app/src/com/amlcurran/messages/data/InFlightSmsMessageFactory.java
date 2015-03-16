@@ -42,7 +42,7 @@ public class InFlightSmsMessageFactory {
         int messageType = CursorHelper.asInt(cursor, Telephony.Sms.TYPE);
         String address = CursorHelper.asString(cursor, Telephony.Sms.ADDRESS);
         long id = CursorHelper.asLong(cursor, Telephony.Sms._ID);
-        return new SmsMessage(id, address, body, Time.fromMillis(timestamp), fromApi(messageType));
+        return new SmsMessage(id, new ParcelablePhoneNumber(address), body, Time.fromMillis(timestamp), fromApi(messageType));
     }
 
     private static String createBody(android.telephony.SmsMessage[] messages) {
