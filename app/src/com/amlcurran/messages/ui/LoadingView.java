@@ -35,6 +35,7 @@ public class LoadingView extends View implements TimeAnimator.TimeListener {
     private final int scaleFactor;
     private final Paint linePaint;
     private final Drawable bubbleDrawable;
+    private final AnimationDirector director;
     private final float fourDip;
     private float duration;
     private int width;
@@ -61,6 +62,11 @@ public class LoadingView extends View implements TimeAnimator.TimeListener {
         } else {
             setUpAnimator();
         }
+
+        director = new AnimationDirector();
+        director.addAnimation(new Line(0));
+        director.addAnimation(new Line(1));
+        director.addAnimation(new Line(2));
     }
 
     private void setUpDimensions() {
@@ -88,35 +94,48 @@ public class LoadingView extends View implements TimeAnimator.TimeListener {
         canvas.scale(1 / (float) scaleFactor, 1 / (float) scaleFactor);
         bubbleDrawable.draw(canvas);
         canvas.restore();
-        for (int i = 0; i < 3; i++) {
-            linePaint.setAlpha((int) (255 * getAlphaFraction(i)));
-            float lineLeft = 2 * fourDip;
-            float lineWidth = 8 * fourDip * getWidthFraction(i);
-            float lineTop = (3 + 2 * i) * fourDip;
-            float lineHeight = fourDip;
-            canvas.drawRect(lineLeft, lineTop, lineLeft + lineWidth, lineTop + lineHeight, linePaint);
-        }
+        linePaint.setAlpha((int) (255 * getAlphaFraction()));
+        director.drawAtProportion(canvas, duration / ANIMATION_DURATION);
     }
 
-    private float getAlphaFraction(int i) {
+    private float getAlphaFraction() {
         float animationFraction = duration / ANIMATION_DURATION;
         animationFraction = (animationFraction - 0.75f) * 4;
-        return bound(1 - animationFraction);
-    }
-
-    private float getWidthFraction(int i) {
-        float animationFraction = duration / ANIMATION_DURATION;
-        return bound(3 * (animationFraction - i * 0.25f));
-    }
-
-    private static float bound(float v) {
-        v = Math.min(v, 1f);
-        return Math.max(v, 0f);
+        return AnimationDirector.bound(1 - animationFraction);
     }
 
     @Override
     public void onTimeUpdate(TimeAnimator animation, long totalTime, long deltaTime) {
         duration = Math.abs(totalTime % ANIMATION_DURATION);
         invalidate();
+    }
+
+    private class Line implements AnimationDirector.Animation {
+
+        private final int offset;
+
+        public Line(int offset) {
+            this.offset = offset;
+        }
+
+        @Override
+        public float startProportion() {
+            return offset * 0.25f;
+        }
+
+        @Override
+        public float endProportion() {
+            return (offset + 1) * 0.25f;
+        }
+
+        @Override
+        public void draw(Canvas canvas, float myProportion) {
+            float lineLeft = 2 * fourDip;
+            float lineWidth = 8 * fourDip * myProportion;
+            float lineTop = (3 + 2 * offset) * fourDip;
+            float lineHeight = fourDip;
+            canvas.drawRect(lineLeft, lineTop, lineLeft + lineWidth, lineTop + lineHeight, linePaint);
+        }
+
     }
 }
