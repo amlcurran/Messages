@@ -48,7 +48,7 @@ class ConversationListTask implements Callable<Object> {
     public Object call() throws Exception {
         long startTime = System.currentTimeMillis();
         List<Conversation> conversations = conversationListLoader.loadList(query, args);
-        //loadListener.onConversationListLoaded(conversations);
+        loadListener.onConversationListLoaded(conversations);
         MessagesLog.d(this, "Load listener of type" + loadListener.getClass().getSimpleName());
         MessagesLog.d(this, String.format("Millis taken: %d", System.currentTimeMillis() - startTime));
         return null;
