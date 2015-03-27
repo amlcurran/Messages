@@ -71,9 +71,9 @@ public class Notifier {
         notificationManager.cancel(NOTIFICATION_UNREAD_MESSAGES);
     }
 
-    public void showSendError(InFlightSmsMessage message) {
+    public void showSendError(InFlightSmsMessage message, Contact contact) {
         if (preferenceStore.showNotifications()) {
-            notificationManager.notify(NOTIFICATION_SEND_ERROR, notificationBuilder.buildFailureToSendNotification(message));
+            notificationManager.notify(NOTIFICATION_SEND_ERROR, notificationBuilder.buildFailureToSendNotification(message, contact));
         }
     }
 

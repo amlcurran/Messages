@@ -23,7 +23,9 @@ import android.content.Intent;
 import android.net.Uri;
 
 import com.amlcurran.messages.SingletonManager;
+import com.amlcurran.messages.core.data.Contact;
 import com.amlcurran.messages.core.events.EventBus;
+import com.amlcurran.messages.core.loaders.OnContactQueryListener;
 import com.amlcurran.messages.data.InFlightSmsMessage;
 import com.amlcurran.messages.events.BroadcastEventBus;
 
@@ -70,7 +72,12 @@ public class SmsSentNotificationService extends IntentService {
         return intent.getIntExtra(EXTRA_RESULT, 0) == Activity.RESULT_OK;
     }
 
-    private void notifyFailureToSend(InFlightSmsMessage message) {
-        SingletonManager.getNotifier(this).showSendError(message);
+    private void notifyFailureToSend(final InFlightSmsMessage message) {
+        SingletonManager.getMessagesLoader(this).queryContact(message.getPhoneNumber(), new OnContactQueryListener() {
+            @Override
+            public void contactLoaded(Contact contact) {
+                SingletonManager.getNotifier(SmsSentNotificationService.this).showSendError(message, contact);
+            }
+        });
     }
 }
