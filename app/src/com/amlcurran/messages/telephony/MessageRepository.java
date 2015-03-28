@@ -17,6 +17,7 @@
 package com.amlcurran.messages.telephony;
 
 import android.content.ContentResolver;
+import android.content.ContentUris;
 import android.net.Uri;
 
 import com.amlcurran.messages.core.data.SmsMessage;
@@ -42,7 +43,8 @@ public class MessageRepository {
         eventBus.postMessageSent(message.getPhoneNumber());
     }
 
-    Uri send(InFlightSmsMessage message, ContentResolver contentResolver) {
-        return smsDatabaseWriter.writeOutboxSms(contentResolver, message);
+    long send(InFlightSmsMessage message, ContentResolver contentResolver) {
+        Uri inserted = smsDatabaseWriter.writeOutboxSms(contentResolver, message);
+        return ContentUris.parseId(inserted);
     }
 }
