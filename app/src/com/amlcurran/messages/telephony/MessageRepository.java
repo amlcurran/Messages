@@ -33,18 +33,18 @@ public class MessageRepository {
         this.eventBus = eventBus;
     }
 
-    void failedToSend(InFlightSmsMessage message, long id) {
+    void failedToSend(long id) {
         smsDatabaseWriter.changeSmsToType(id, SmsMessage.Type.FAILED);
-        eventBus.postMessageDrafted(message.getPhoneNumber());
     }
 
-    void sent(InFlightSmsMessage message, long id) {
+    void sent(long id) {
         smsDatabaseWriter.changeSmsToType(id, SmsMessage.Type.SENT);
-        eventBus.postMessageSent(message.getPhoneNumber());
     }
 
-    long send(InFlightSmsMessage message, ContentResolver contentResolver) {
+    SmsMessage send(InFlightSmsMessage message, ContentResolver contentResolver) {
         Uri inserted = smsDatabaseWriter.writeOutboxSms(contentResolver, message);
-        return ContentUris.parseId(inserted);
+        long id = ContentUris.parseId(inserted);
+        return new SmsMessage(id, message.getPhoneNumber(), message.getBody(), message.getTimestamp(),
+                SmsMessage.Type.SENDING);
     }
 }

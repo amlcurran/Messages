@@ -23,18 +23,20 @@ import android.content.Context;
 import android.content.Intent;
 import android.provider.Telephony;
 
+import com.amlcurran.messages.core.data.PhoneNumber;
+import com.amlcurran.messages.core.data.SmsMessage;
 import com.amlcurran.messages.data.InFlightSmsMessage;
 import com.amlcurran.messages.data.InFlightSmsMessageFactory;
+import com.amlcurran.messages.data.ParcelablePhoneNumber;
 
 public class SmsReceiver extends BroadcastReceiver {
 
-    private static final String EXTRA_MESSAGE = "message";
-    private static final String EXTRA_OUTBOX_URI = "outbox_uri";
     private static final String EXTRA_MESSAGE_ID = "message_id";
+    private static final String EXTRA_PHONE_NUMBER = "phone_number";
 
-    static PendingIntent broadcast(Context context, InFlightSmsMessage message, long messageId) {
+    static PendingIntent broadcast(Context context, SmsMessage message, long messageId) {
         Intent intent = new Intent(context, SmsReceiver.class);
-        intent.putExtra(EXTRA_MESSAGE, message);
+        intent.putExtra(EXTRA_PHONE_NUMBER, ((ParcelablePhoneNumber) message.getAddress()));
         intent.putExtra(EXTRA_MESSAGE_ID, messageId);
         return PendingIntent.getBroadcast(context, 2, intent, PendingIntent.FLAG_CANCEL_CURRENT);
     }
@@ -50,12 +52,12 @@ public class SmsReceiver extends BroadcastReceiver {
 
         } else {
 
-            InFlightSmsMessage message = intent.getParcelableExtra(EXTRA_MESSAGE);
             long messageId = intent.getLongExtra(EXTRA_MESSAGE_ID, -1);
+            PhoneNumber phoneNumber = (ParcelablePhoneNumber) intent.getParcelableExtra(EXTRA_PHONE_NUMBER);
             if (sentSuccessfully()) {
-                context.startService(SmsSentNotificationService.sentIntent(context, message, messageId));
+                context.startService(SmsSentNotificationService.sentIntent(context, messageId, phoneNumber));
             } else {
-                context.startService(SmsSentNotificationService.failedSentIntent(context, message, messageId));
+                context.startService(SmsSentNotificationService.failedSentIntent(context, messageId, phoneNumber));
             }
 
         }

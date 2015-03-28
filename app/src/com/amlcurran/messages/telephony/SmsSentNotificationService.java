@@ -19,12 +19,11 @@ package com.amlcurran.messages.telephony;
 import android.app.IntentService;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Parcelable;
 
-import com.amlcurran.messages.SingletonManager;
-import com.amlcurran.messages.core.data.Contact;
+import com.amlcurran.messages.core.data.PhoneNumber;
 import com.amlcurran.messages.core.events.EventBus;
-import com.amlcurran.messages.core.loaders.OnContactQueryListener;
-import com.amlcurran.messages.data.InFlightSmsMessage;
+import com.amlcurran.messages.data.ParcelablePhoneNumber;
 import com.amlcurran.messages.events.BroadcastEventBus;
 
 public class SmsSentNotificationService extends IntentService {
@@ -34,50 +33,54 @@ public class SmsSentNotificationService extends IntentService {
     private static final String EXTRA_MESSAGE = "message";
     private static final String EXTRA_OUTBOX_URI = "outbox_uri";
     private static final String EXTRA_MESSAGE_ID = "message_id";
+    private static final String EXTRA_PHONE_NUMBER = "phone_number";
     private final MessageRepository messageRepository;
+    private final EventBus eventBus;
 
     public SmsSentNotificationService() {
         super("SmsSendNotificationService");
         setIntentRedelivery(true);
         SmsDatabaseWriter smsDatabaseWriter = new SmsDatabaseWriter(this);
-        EventBus eventBus = new BroadcastEventBus(this);
+        eventBus = new BroadcastEventBus(this);
         messageRepository = new MessageRepository(smsDatabaseWriter, eventBus);
     }
 
-    static Intent sentIntent(Context context, InFlightSmsMessage message, long messageId) {
-        return getIntent(context, messageId, message, ACTION_MESSAGE_SENT);
+    static Intent sentIntent(Context context, long messageId, PhoneNumber phoneNumber) {
+        return getIntent(context, messageId, ACTION_MESSAGE_SENT, phoneNumber);
     }
 
-    public static Intent failedSentIntent(Context context, InFlightSmsMessage message, long messageId) {
-        return getIntent(context, messageId, message, ACTION_MESSAGE_FAILED_SEND);
+    public static Intent failedSentIntent(Context context, long messageId, PhoneNumber phoneNumber) {
+        return getIntent(context, messageId, ACTION_MESSAGE_FAILED_SEND, phoneNumber);
     }
 
-    private static Intent getIntent(Context context, long messageId, InFlightSmsMessage message, String action) {
+    private static Intent getIntent(Context context, long messageId, String action, PhoneNumber phoneNumber) {
         Intent sentIntent = new Intent(context, SmsSentNotificationService.class);
         sentIntent.setAction(action);
-        sentIntent.putExtra(EXTRA_MESSAGE, message);
+        sentIntent.putExtra(EXTRA_PHONE_NUMBER, (Parcelable) phoneNumber);
         sentIntent.putExtra(EXTRA_MESSAGE_ID, messageId);
         return sentIntent;
     }
 
     @Override
     protected void onHandleIntent(Intent intent) {
-        InFlightSmsMessage message = intent.getParcelableExtra(EXTRA_MESSAGE);
         long messageId = intent.getLongExtra(EXTRA_MESSAGE_ID, -1);
+        PhoneNumber phoneNumber = (ParcelablePhoneNumber) intent.getParcelableExtra(EXTRA_PHONE_NUMBER);
         if (ACTION_MESSAGE_SENT.equals(intent.getAction())) {
-            messageRepository.sent(message, messageId);
+            messageRepository.sent(messageId);
+            eventBus.postMessageSent(phoneNumber);
         } else if (ACTION_MESSAGE_FAILED_SEND.equals(intent.getAction())) {
-            notifyFailureToSend(message);
-            messageRepository.failedToSend(message, messageId);
+            notifyFailureToSend();
+            eventBus.postMessageDrafted(phoneNumber);
+            messageRepository.failedToSend(messageId);
         }
     }
 
-    private void notifyFailureToSend(final InFlightSmsMessage message) {
-        SingletonManager.getMessagesLoader(this).queryContact(message.getPhoneNumber(), new OnContactQueryListener() {
-            @Override
-            public void contactLoaded(Contact contact) {
-                SingletonManager.getNotifier(SmsSentNotificationService.this).showSendError(message, contact);
-            }
-        });
+    private void notifyFailureToSend() {
+//        SingletonManager.getMessagesLoader(this).queryContact(message.getPhoneNumber(), new OnContactQueryListener() {
+//            @Override
+//            public void contactLoaded(Contact contact) {
+//                SingletonManager.getNotifier(SmsSentNotificationService.this).showSendError("person", contact);
+//            }
+//        });
     }
 }

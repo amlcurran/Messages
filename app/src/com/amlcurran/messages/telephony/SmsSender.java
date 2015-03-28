@@ -26,6 +26,7 @@ import android.telephony.SmsManager;
 
 import com.amlcurran.messages.MessagesLog;
 import com.amlcurran.messages.SingletonManager;
+import com.amlcurran.messages.core.data.SmsMessage;
 import com.amlcurran.messages.core.data.Time;
 import com.amlcurran.messages.core.events.EventBus;
 import com.amlcurran.messages.data.InFlightSmsMessage;
@@ -79,17 +80,21 @@ public class SmsSender extends IntentService {
             } else {
                 message = intent.getParcelableExtra(EXTRA_MESSAGE);
             }
-            long messageId = messageRepository.send(message, getContentResolver());
-            ArrayList<PendingIntent> messageSendIntents = getMessageSendIntents(message, messageId);
-            ArrayList<String> parts = smsManager.divideMessage(message.getBody());
-            smsManager.sendMultipartTextMessage(message.getPhoneNumber().flatten(), null, parts, messageSendIntents, null);
+            SmsMessage smsMessage = messageRepository.send(message, getContentResolver());
+            sendToApi(smsMessage);
 
         }
     }
 
-    ArrayList<PendingIntent> getMessageSendIntents(InFlightSmsMessage message, long messageId) {
+    private void sendToApi(SmsMessage message) {
+        ArrayList<PendingIntent> messageSendIntents = getMessageSendIntents(message);
+        ArrayList<String> parts = smsManager.divideMessage(message.getBody());
+        smsManager.sendMultipartTextMessage(message.getAddress().flatten(), null, parts, messageSendIntents, null);
+    }
+
+    ArrayList<PendingIntent> getMessageSendIntents(SmsMessage message) {
         ArrayList<PendingIntent> pendingIntents = new ArrayList<>();
-        pendingIntents.add(SmsReceiver.broadcast(this, message, messageId));
+        pendingIntents.add(SmsReceiver.broadcast(this, message, message.getId()));
         return pendingIntents;
     }
 
