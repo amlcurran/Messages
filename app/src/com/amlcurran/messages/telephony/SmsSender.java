@@ -54,7 +54,7 @@ public class SmsSender extends IntentService {
         setIntentRedelivery(true);
         SmsDatabaseWriter smsDatabaseWriter = new SmsDatabaseWriter(this);
         EventBus eventBus = new BroadcastEventBus(this);
-        messageRepository = new MessageRepository(smsDatabaseWriter, eventBus);
+        messageRepository = new MessageRepository(smsDatabaseWriter);
         smsManager = SmsManager.getDefault();
     }
 

@@ -42,7 +42,7 @@ public class SmsSentNotificationService extends IntentService {
         setIntentRedelivery(true);
         SmsDatabaseWriter smsDatabaseWriter = new SmsDatabaseWriter(this);
         eventBus = new BroadcastEventBus(this);
-        messageRepository = new MessageRepository(smsDatabaseWriter, eventBus);
+        messageRepository = new MessageRepository(smsDatabaseWriter);
     }
 
     static Intent sentIntent(Context context, long messageId, PhoneNumber phoneNumber) {

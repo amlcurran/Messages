@@ -21,16 +21,13 @@ import android.content.ContentUris;
 import android.net.Uri;
 
 import com.amlcurran.messages.core.data.SmsMessage;
-import com.amlcurran.messages.core.events.EventBus;
 import com.amlcurran.messages.data.InFlightSmsMessage;
 
 public class MessageRepository {
     private final SmsDatabaseWriter smsDatabaseWriter;
-    private final EventBus eventBus;
 
-    public MessageRepository(SmsDatabaseWriter smsDatabaseWriter, EventBus eventBus) {
+    public MessageRepository(SmsDatabaseWriter smsDatabaseWriter) {
         this.smsDatabaseWriter = smsDatabaseWriter;
-        this.eventBus = eventBus;
     }
 
     void failedToSend(long id) {
