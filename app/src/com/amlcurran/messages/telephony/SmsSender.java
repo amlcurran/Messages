@@ -40,10 +40,8 @@ public class SmsSender extends IntentService {
     public static final String TAG = SmsSender.class.getSimpleName();
 
     public static final String ACTION_SEND_REQUEST = "send_request";
-    public static final int IS_FROM_FAILURE = 1;
+    private static final String ACTION_RESEND = "resent";
     static final String EXTRA_MESSAGE = "message";
-    static final String EXTRA_OUTBOX_URI = "outbox_uri";
-    private static final String EXTRA_FROM_FAILURE = "from_failure";
     public static final String FROM_WEAR = "wear";
     public static final String EXTRA_NUMBER = "number";
     public static final String EXTRA_VOICE_REPLY = "voice_reply";
@@ -70,16 +68,19 @@ public class SmsSender extends IntentService {
         MessagesLog.d(this, intent.toString());
         if (isSendRequest(intent)) {
 
-            if (isFromFailure(intent)) {
-                SingletonManager.getNotifier(this).clearFailureToSendNotification();
-            }
-
             InFlightSmsMessage message;
             if (isFromWear(intent)) {
                 message = extractInFlightFromWear(intent);
             } else {
                 message = intent.getParcelableExtra(EXTRA_MESSAGE);
             }
+            SmsMessage smsMessage = messageRepository.send(message, getContentResolver());
+            sendToApi(smsMessage);
+
+        } else if (ACTION_RESEND.equals(intent.getAction())) {
+
+            SingletonManager.getNotifier(this).clearFailureToSendNotification();
+            InFlightSmsMessage message = intent.getParcelableExtra(EXTRA_MESSAGE);
             SmsMessage smsMessage = messageRepository.send(message, getContentResolver());
             sendToApi(smsMessage);
 
@@ -116,10 +117,6 @@ public class SmsSender extends IntentService {
         return intent.getBooleanExtra(FROM_WEAR, false);
     }
 
-    private static boolean isFromFailure(Intent intent) {
-        return intent.getIntExtra(EXTRA_FROM_FAILURE, -1) == IS_FROM_FAILURE;
-    }
-
     private static boolean isSendRequest(Intent intent) {
         return ACTION_SEND_REQUEST.equals(intent.getAction());
     }
@@ -132,8 +129,9 @@ public class SmsSender extends IntentService {
     }
 
     public static Intent resendMessageIntent(Context context, InFlightSmsMessage smsMessage) {
-        Intent resendMessageIntent = sendMessageIntent(context, smsMessage);
-        resendMessageIntent.putExtra(SmsSender.EXTRA_FROM_FAILURE, SmsSender.IS_FROM_FAILURE);
-        return resendMessageIntent;
+        Intent resendIntent = new Intent(context, SmsSender.class);
+        resendIntent.setAction(SmsSender.ACTION_RESEND);
+        resendIntent.putExtra(SmsSender.EXTRA_MESSAGE, smsMessage);
+        return resendIntent;
     }
 }
