@@ -32,13 +32,13 @@ public class MessageRepository {
         this.eventBus = eventBus;
     }
 
-    void failedToSend(InFlightSmsMessage message, Uri outboxSms) {
-        smsDatabaseWriter.changeSmsToType(outboxSms, SmsMessage.Type.FAILED);
+    void failedToSend(InFlightSmsMessage message, long id) {
+        smsDatabaseWriter.changeSmsToType(id, SmsMessage.Type.FAILED);
         eventBus.postMessageDrafted(message.getPhoneNumber());
     }
 
-    void sent(InFlightSmsMessage message, Uri outboxSms) {
-        smsDatabaseWriter.changeSmsToType(outboxSms, SmsMessage.Type.SENT);
+    void sent(InFlightSmsMessage message, long id) {
+        smsDatabaseWriter.changeSmsToType(id, SmsMessage.Type.SENT);
         eventBus.postMessageSent(message.getPhoneNumber());
     }
 

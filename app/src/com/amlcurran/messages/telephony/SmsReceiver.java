@@ -21,7 +21,6 @@ import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
 import android.provider.Telephony;
 
 import com.amlcurran.messages.data.InFlightSmsMessage;
@@ -31,11 +30,12 @@ public class SmsReceiver extends BroadcastReceiver {
 
     private static final String EXTRA_MESSAGE = "message";
     private static final String EXTRA_OUTBOX_URI = "outbox_uri";
+    private static final String EXTRA_MESSAGE_ID = "message_id";
 
-    static PendingIntent broadcast(InFlightSmsMessage message, Uri inserted, Context context) {
+    static PendingIntent broadcast(Context context, InFlightSmsMessage message, long messageId) {
         Intent intent = new Intent(context, SmsReceiver.class);
         intent.putExtra(EXTRA_MESSAGE, message);
-        intent.putExtra(EXTRA_OUTBOX_URI, inserted.toString());
+        intent.putExtra(EXTRA_MESSAGE_ID, messageId);
         return PendingIntent.getBroadcast(context, 2, intent, PendingIntent.FLAG_CANCEL_CURRENT);
     }
 
@@ -51,11 +51,11 @@ public class SmsReceiver extends BroadcastReceiver {
         } else {
 
             InFlightSmsMessage message = intent.getParcelableExtra(EXTRA_MESSAGE);
-            String outboxUri = intent.getStringExtra(EXTRA_OUTBOX_URI);
+            long messageId = intent.getLongExtra(EXTRA_MESSAGE_ID, -1);
             if (sentSuccessfully()) {
-                context.startService(SmsSentNotificationService.sentIntent(context, message, outboxUri));
+                context.startService(SmsSentNotificationService.sentIntent(context, message, messageId));
             } else {
-                context.startService(SmsSentNotificationService.failedSentIntent(context, message, outboxUri));
+                context.startService(SmsSentNotificationService.failedSentIntent(context, message, messageId));
             }
 
         }

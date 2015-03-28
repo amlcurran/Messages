@@ -19,7 +19,6 @@ package com.amlcurran.messages.telephony;
 import android.app.IntentService;
 import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
 
 import com.amlcurran.messages.SingletonManager;
 import com.amlcurran.messages.core.data.Contact;
@@ -34,6 +33,7 @@ public class SmsSentNotificationService extends IntentService {
     private static final String ACTION_MESSAGE_FAILED_SEND = "failed_send";
     private static final String EXTRA_MESSAGE = "message";
     private static final String EXTRA_OUTBOX_URI = "outbox_uri";
+    private static final String EXTRA_MESSAGE_ID = "message_id";
     private final MessageRepository messageRepository;
 
     public SmsSentNotificationService() {
@@ -44,31 +44,31 @@ public class SmsSentNotificationService extends IntentService {
         messageRepository = new MessageRepository(smsDatabaseWriter, eventBus);
     }
 
-    static Intent sentIntent(Context context, InFlightSmsMessage message, String outboxUri) {
-        return getIntent(context, message, outboxUri, ACTION_MESSAGE_SENT);
+    static Intent sentIntent(Context context, InFlightSmsMessage message, long messageId) {
+        return getIntent(context, messageId, message, ACTION_MESSAGE_SENT);
     }
 
-    public static Intent failedSentIntent(Context context, InFlightSmsMessage message, String outboxUri) {
-        return getIntent(context, message, outboxUri, ACTION_MESSAGE_FAILED_SEND);
+    public static Intent failedSentIntent(Context context, InFlightSmsMessage message, long messageId) {
+        return getIntent(context, messageId, message, ACTION_MESSAGE_FAILED_SEND);
     }
 
-    private static Intent getIntent(Context context, InFlightSmsMessage message, String outboxUri, String action) {
+    private static Intent getIntent(Context context, long messageId, InFlightSmsMessage message, String action) {
         Intent sentIntent = new Intent(context, SmsSentNotificationService.class);
         sentIntent.setAction(action);
         sentIntent.putExtra(EXTRA_MESSAGE, message);
-        sentIntent.putExtra(EXTRA_OUTBOX_URI, outboxUri);
+        sentIntent.putExtra(EXTRA_MESSAGE_ID, messageId);
         return sentIntent;
     }
 
     @Override
     protected void onHandleIntent(Intent intent) {
         InFlightSmsMessage message = intent.getParcelableExtra(EXTRA_MESSAGE);
-        Uri outboxSms = Uri.parse(intent.getStringExtra(EXTRA_OUTBOX_URI));
+        long messageId = intent.getLongExtra(EXTRA_MESSAGE_ID, -1);
         if (ACTION_MESSAGE_SENT.equals(intent.getAction())) {
-            messageRepository.sent(message, outboxSms);
+            messageRepository.sent(message, messageId);
         } else if (ACTION_MESSAGE_FAILED_SEND.equals(intent.getAction())) {
             notifyFailureToSend(message);
-            messageRepository.failedToSend(message, outboxSms);
+            messageRepository.failedToSend(message, messageId);
         }
     }
 

@@ -17,6 +17,7 @@
 package com.amlcurran.messages.telephony;
 
 import android.content.ContentResolver;
+import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
 import android.net.Uri;
@@ -104,6 +105,11 @@ public class SmsDatabaseWriter {
 
     public void changeSmsToType(Uri uri, SmsMessage.Type type) {
         context.getContentResolver().update(uri, typeChangedValues(type), null, null);
+    }
+
+    public void changeSmsToType(long id, SmsMessage.Type type) {
+        Uri uri = ContentUris.withAppendedId(Telephony.Sms.CONTENT_URI, id);
+        changeSmsToType(uri, type);
     }
 
     private ContentValues typeChangedValues(SmsMessage.Type type) {

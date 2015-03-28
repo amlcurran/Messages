@@ -18,6 +18,7 @@ package com.amlcurran.messages.telephony;
 
 import android.app.IntentService;
 import android.app.PendingIntent;
+import android.content.ContentUris;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -81,16 +82,16 @@ public class SmsSender extends IntentService {
                 message = intent.getParcelableExtra(EXTRA_MESSAGE);
             }
             Uri inserted = messageRepository.send(message, getContentResolver());
-            ArrayList<PendingIntent> messageSendIntents = getMessageSendIntents(message, inserted);
+            ArrayList<PendingIntent> messageSendIntents = getMessageSendIntents(message, ContentUris.parseId(inserted));
             ArrayList<String> parts = smsManager.divideMessage(message.getBody());
             smsManager.sendMultipartTextMessage(message.getPhoneNumber().flatten(), null, parts, messageSendIntents, null);
 
         }
     }
 
-    ArrayList<PendingIntent> getMessageSendIntents(InFlightSmsMessage message, Uri inserted) {
+    ArrayList<PendingIntent> getMessageSendIntents(InFlightSmsMessage message, long messageId) {
         ArrayList<PendingIntent> pendingIntents = new ArrayList<>();
-        pendingIntents.add(SmsReceiver.broadcast(message, inserted, this));
+        pendingIntents.add(SmsReceiver.broadcast(this, message, messageId));
         return pendingIntents;
     }
 
