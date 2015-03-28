@@ -16,6 +16,7 @@
 
 package com.amlcurran.messages.telephony;
 
+import android.app.Activity;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -51,9 +52,17 @@ public class SmsReceiver extends BroadcastReceiver {
 
             InFlightSmsMessage message = intent.getParcelableExtra(EXTRA_MESSAGE);
             String outboxUri = intent.getStringExtra(EXTRA_OUTBOX_URI);
-            context.startService(SmsSentNotificationService.sentIntent(context, getResultCode(), message, outboxUri));
+            if (sentSuccessfully()) {
+                context.startService(SmsSentNotificationService.sentIntent(context, message, outboxUri));
+            } else {
+                context.startService(SmsSentNotificationService.failedSentIntent(context, message, outboxUri));
+            }
 
         }
+    }
+
+    private boolean sentSuccessfully() {
+        return getResultCode() == Activity.RESULT_OK;
     }
 
 }
