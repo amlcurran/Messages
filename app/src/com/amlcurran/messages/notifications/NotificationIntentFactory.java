@@ -24,8 +24,6 @@ import android.os.Bundle;
 import com.amlcurran.messages.MessagesActivity;
 import com.amlcurran.messages.core.conversationlist.Conversation;
 import com.amlcurran.messages.data.ContactFactory;
-import com.amlcurran.messages.data.InFlightSmsMessage;
-import com.amlcurran.messages.telephony.SmsSender;
 import com.amlcurran.messages.threads.ThreadActivity;
 
 public class NotificationIntentFactory {
@@ -45,10 +43,6 @@ public class NotificationIntentFactory {
         Intent intent = new Intent(context, MessagesActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         return PendingIntent.getActivity(context, 0, intent, 0);
-    }
-
-    PendingIntent createResendIntent(InFlightSmsMessage message) {
-        return PendingIntent.getService(context, 0, SmsSender.resendMessageIntent(context, message), PendingIntent.FLAG_CANCEL_CURRENT);
     }
 
     public PendingIntent markRead(Conversation conversation) {

@@ -134,4 +134,8 @@ public class SmsSender extends IntentService {
         resendIntent.putExtra(SmsSender.EXTRA_MESSAGE, smsMessage);
         return resendIntent;
     }
+
+    public static PendingIntent resendPendingIntent(InFlightSmsMessage message, Context context) {
+        return PendingIntent.getService(context, 0, resendMessageIntent(context, message), PendingIntent.FLAG_CANCEL_CURRENT);
+    }
 }

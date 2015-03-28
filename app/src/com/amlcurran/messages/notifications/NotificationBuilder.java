@@ -28,6 +28,7 @@ import com.amlcurran.messages.core.data.Contact;
 import com.amlcurran.messages.core.conversationlist.Conversation;
 import com.amlcurran.messages.core.preferences.PreferenceStore;
 import com.amlcurran.messages.data.InFlightSmsMessage;
+import com.amlcurran.messages.telephony.SmsSender;
 
 import java.util.List;
 
@@ -88,7 +89,7 @@ public class NotificationBuilder {
                 .setContentTitle(string(R.string.failed_to_send_message))
                 .setTicker(string(R.string.failed_to_send_message))
                 .setContentText(context.getString(R.string.couldnt_send_to, contact.getDisplayName()))
-                .addAction(R.drawable.ic_send, string(R.string.resend), notificationIntentFactory.createResendIntent(message))
+                .addAction(R.drawable.ic_send, string(R.string.resend), SmsSender.resendPendingIntent(message, context))
                 .setSmallIcon(R.drawable.ic_notify_error)
                 .build();
     }
