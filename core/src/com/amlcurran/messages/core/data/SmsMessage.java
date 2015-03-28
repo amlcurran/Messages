@@ -38,8 +38,8 @@ public class SmsMessage {
         return type;
     }
 
-    public String getAddress() {
-        return address.flatten();
+    public PhoneNumber getAddress() {
+        return address;
     }
 
     public String getBody() {
