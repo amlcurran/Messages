@@ -28,10 +28,8 @@ import com.amlcurran.messages.MessagesLog;
 import com.amlcurran.messages.SingletonManager;
 import com.amlcurran.messages.core.data.SmsMessage;
 import com.amlcurran.messages.core.data.Time;
-import com.amlcurran.messages.core.events.EventBus;
 import com.amlcurran.messages.data.InFlightSmsMessage;
 import com.amlcurran.messages.data.ParcelablePhoneNumber;
-import com.amlcurran.messages.events.BroadcastEventBus;
 
 import java.util.ArrayList;
 
@@ -53,7 +51,6 @@ public class SmsSender extends IntentService {
         super(TAG);
         setIntentRedelivery(true);
         SmsDatabaseWriter smsDatabaseWriter = new SmsDatabaseWriter(this);
-        EventBus eventBus = new BroadcastEventBus(this);
         messageRepository = new MessageRepository(smsDatabaseWriter);
         smsManager = SmsManager.getDefault();
     }
