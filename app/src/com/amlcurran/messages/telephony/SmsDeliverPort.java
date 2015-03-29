@@ -24,7 +24,7 @@ import android.provider.Telephony;
 import com.amlcurran.messages.data.InFlightSmsMessage;
 import com.amlcurran.messages.data.InFlightSmsMessageFactory;
 
-public class SmsReceiver extends BroadcastReceiver {
+public class SmsDeliverPort extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {

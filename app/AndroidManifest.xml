@@ -51,7 +51,7 @@
             </intent-filter>
         </activity>
 
-        <receiver android:name=".telephony.SmsReceiver"
+        <receiver android:name=".telephony.SmsDeliverPort"
             android:permission="android.permission.BROADCAST_SMS">
             <intent-filter>
                 <action android:name="android.provider.Telephony.SMS_DELIVER" />
