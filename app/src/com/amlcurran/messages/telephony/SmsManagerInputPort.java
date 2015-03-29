@@ -16,28 +16,34 @@
 
 package com.amlcurran.messages.telephony;
 
+import android.app.Activity;
 import android.app.IntentService;
+import android.app.PendingIntent;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Parcelable;
 
 import com.amlcurran.messages.core.data.PhoneNumber;
+import com.amlcurran.messages.core.data.SmsMessage;
 import com.amlcurran.messages.core.events.EventBus;
 import com.amlcurran.messages.data.ParcelablePhoneNumber;
 import com.amlcurran.messages.events.BroadcastEventBus;
 
-public class SmsSentNotificationService extends IntentService {
+/**
+ * This class manages the notifications received from
+ * the SmsManager class when an SMS has been sent
+ */
+public class SmsManagerInputPort extends IntentService {
 
     private static final String ACTION_MESSAGE_SENT = "message_send";
     private static final String ACTION_MESSAGE_FAILED_SEND = "failed_send";
-    private static final String EXTRA_MESSAGE = "message";
-    private static final String EXTRA_OUTBOX_URI = "outbox_uri";
     private static final String EXTRA_MESSAGE_ID = "message_id";
     private static final String EXTRA_PHONE_NUMBER = "phone_number";
     private final MessageRepository messageRepository;
     private final EventBus eventBus;
 
-    public SmsSentNotificationService() {
+    public SmsManagerInputPort() {
         super("SmsSendNotificationService");
         setIntentRedelivery(true);
         SmsDatabaseWriter smsDatabaseWriter = new SmsDatabaseWriter(this);
@@ -54,7 +60,7 @@ public class SmsSentNotificationService extends IntentService {
     }
 
     private static Intent getIntent(Context context, long messageId, String action, PhoneNumber phoneNumber) {
-        Intent sentIntent = new Intent(context, SmsSentNotificationService.class);
+        Intent sentIntent = new Intent(context, SmsManagerInputPort.class);
         sentIntent.setAction(action);
         sentIntent.putExtra(EXTRA_PHONE_NUMBER, (Parcelable) phoneNumber);
         sentIntent.putExtra(EXTRA_MESSAGE_ID, messageId);
@@ -83,4 +89,34 @@ public class SmsSentNotificationService extends IntentService {
 //            }
 //        });
     }
+
+    public static final class InputReceiver extends BroadcastReceiver {
+
+        private static final String EXTRA_MESSAGE_ID = "message_id";
+        private static final String EXTRA_PHONE_NUMBER = "phone_number";
+
+        static PendingIntent broadcast(Context context, SmsMessage message, long messageId) {
+            Intent intent = new Intent(context, InputReceiver.class);
+            intent.putExtra(SmsManagerInputPort.EXTRA_PHONE_NUMBER, ((ParcelablePhoneNumber) message.getAddress()));
+            intent.putExtra(SmsManagerInputPort.EXTRA_MESSAGE_ID, messageId);
+            return PendingIntent.getBroadcast(context, 2, intent, PendingIntent.FLAG_CANCEL_CURRENT);
+        }
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            long messageId = intent.getLongExtra(EXTRA_MESSAGE_ID, -1);
+            PhoneNumber phoneNumber = (ParcelablePhoneNumber) intent.getParcelableExtra(EXTRA_PHONE_NUMBER);
+            if (sentSuccessfully()) {
+                context.startService(SmsManagerInputPort.sentIntent(context, messageId, phoneNumber));
+            } else {
+                context.startService(SmsManagerInputPort.failedSentIntent(context, messageId, phoneNumber));
+            }
+        }
+
+        private boolean sentSuccessfully() {
+            return getResultCode() == Activity.RESULT_OK;
+        }
+
+    }
+
 }

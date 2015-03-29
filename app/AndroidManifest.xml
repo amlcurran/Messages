@@ -58,6 +58,8 @@
             </intent-filter>
         </receiver>
 
+        <receiver android:name=".telephony.SmsManagerInputPort$InputReceiver" />
+
         <!-- BroadcastReceiver that listens for incoming MMS messages -->
         <receiver android:name=".telephony.MmsReceiver"
             android:permission="android.permission.BROADCAST_WAP_PUSH">
@@ -85,7 +87,7 @@
 
         <service android:name=".loaders.ExecutingIntentService" />
 
-        <service android:name=".telephony.SmsSentNotificationService" />
+        <service android:name=".telephony.SmsManagerInputPort" />
 
         <receiver android:name=".events.BootNotificationReceiver">
             <intent-filter>
