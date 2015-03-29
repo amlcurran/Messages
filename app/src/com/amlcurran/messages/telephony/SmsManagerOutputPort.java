@@ -33,9 +33,9 @@ import com.amlcurran.messages.data.ParcelablePhoneNumber;
 
 import java.util.ArrayList;
 
-public class SmsSender extends IntentService {
+public class SmsManagerOutputPort extends IntentService {
 
-    public static final String TAG = SmsSender.class.getSimpleName();
+    public static final String TAG = SmsManagerOutputPort.class.getSimpleName();
 
     public static final String ACTION_SEND_REQUEST = "send_request";
     private static final String ACTION_RESEND = "resent";
@@ -47,7 +47,7 @@ public class SmsSender extends IntentService {
     private final MessageRepository messageRepository;
     private final SmsManager smsManager;
 
-    public SmsSender() {
+    public SmsManagerOutputPort() {
         super(TAG);
         setIntentRedelivery(true);
         SmsDatabaseWriter smsDatabaseWriter = new SmsDatabaseWriter(this);
@@ -119,16 +119,16 @@ public class SmsSender extends IntentService {
     }
 
     public static Intent sendMessageIntent(Context context, InFlightSmsMessage smsMessage) {
-        Intent sendMessageIntent = new Intent(context, SmsSender.class);
-        sendMessageIntent.setAction(SmsSender.ACTION_SEND_REQUEST);
-        sendMessageIntent.putExtra(SmsSender.EXTRA_MESSAGE, smsMessage);
+        Intent sendMessageIntent = new Intent(context, SmsManagerOutputPort.class);
+        sendMessageIntent.setAction(SmsManagerOutputPort.ACTION_SEND_REQUEST);
+        sendMessageIntent.putExtra(SmsManagerOutputPort.EXTRA_MESSAGE, smsMessage);
         return sendMessageIntent;
     }
 
     public static Intent resendMessageIntent(Context context, InFlightSmsMessage smsMessage) {
-        Intent resendIntent = new Intent(context, SmsSender.class);
-        resendIntent.setAction(SmsSender.ACTION_RESEND);
-        resendIntent.putExtra(SmsSender.EXTRA_MESSAGE, smsMessage);
+        Intent resendIntent = new Intent(context, SmsManagerOutputPort.class);
+        resendIntent.setAction(SmsManagerOutputPort.ACTION_RESEND);
+        resendIntent.putExtra(SmsManagerOutputPort.EXTRA_MESSAGE, smsMessage);
         return resendIntent;
     }
 

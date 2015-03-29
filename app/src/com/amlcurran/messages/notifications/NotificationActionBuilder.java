@@ -29,7 +29,7 @@ import com.amlcurran.messages.core.data.Contact;
 import com.amlcurran.messages.core.conversationlist.Conversation;
 import com.amlcurran.messages.core.data.PhoneNumber;
 import com.amlcurran.messages.loaders.ExecutingIntentService;
-import com.amlcurran.messages.telephony.SmsSender;
+import com.amlcurran.messages.telephony.SmsManagerOutputPort;
 
 import java.util.List;
 
@@ -47,14 +47,14 @@ class NotificationActionBuilder {
     }
 
     NotificationCompat.Action buildReplyAction(Conversation conversation) {
-        RemoteInput remoteInput = new RemoteInput.Builder(SmsSender.EXTRA_VOICE_REPLY)
+        RemoteInput remoteInput = new RemoteInput.Builder(SmsManagerOutputPort.EXTRA_VOICE_REPLY)
                 .setLabel(context.getString(R.string.reply))
                 .build();
 
-        Intent replyIntent = new Intent(context, SmsSender.class);
-        replyIntent.setAction(SmsSender.ACTION_SEND_REQUEST);
-        replyIntent.putExtra(SmsSender.FROM_WEAR, true);
-        replyIntent.putExtra(SmsSender.EXTRA_NUMBER, conversation.getAddress().flatten());
+        Intent replyIntent = new Intent(context, SmsManagerOutputPort.class);
+        replyIntent.setAction(SmsManagerOutputPort.ACTION_SEND_REQUEST);
+        replyIntent.putExtra(SmsManagerOutputPort.FROM_WEAR, true);
+        replyIntent.putExtra(SmsManagerOutputPort.EXTRA_NUMBER, conversation.getAddress().flatten());
         PendingIntent replyPendingIntent = PendingIntent.getService(context, 0, replyIntent, PendingIntent.FLAG_UPDATE_CURRENT);
         return new NotificationCompat.Action.Builder(R.drawable.ic_wear_reply,
                 context.getString(R.string.reply), replyPendingIntent)

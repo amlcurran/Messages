@@ -34,7 +34,7 @@ import com.amlcurran.messages.core.loaders.MessagesLoader;
 import com.amlcurran.messages.preferences.PreferenceStoreDraftRepository;
 import com.amlcurran.messages.preferences.SharedPreferenceStore;
 import com.amlcurran.messages.reporting.LoggingStatReporter;
-import com.amlcurran.messages.telephony.SmsSender;
+import com.amlcurran.messages.telephony.SmsManagerOutputPort;
 import com.amlcurran.messages.transition.TransitionManager;
 import com.amlcurran.messages.ui.actionbar.ActionBarHeaderCallback;
 import com.amlcurran.messages.ui.actionbar.HoloActionBarController;
@@ -148,6 +148,6 @@ public class ThreadActivity extends ActionBarActivity implements DependencyRepos
 
     @Override
     public void sendSms(InFlightSmsMessage smsMessage) {
-        startService(SmsSender.sendMessageIntent(this, smsMessage));
+        startService(SmsManagerOutputPort.sendMessageIntent(this, smsMessage));
     }
 }

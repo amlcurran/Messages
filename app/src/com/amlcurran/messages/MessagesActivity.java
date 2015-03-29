@@ -40,7 +40,7 @@ import com.amlcurran.messages.preferences.PreferenceStoreDraftRepository;
 import com.amlcurran.messages.preferences.SharedPreferenceStore;
 import com.amlcurran.messages.reporting.StatReporter;
 import com.amlcurran.messages.telephony.DefaultAppChecker;
-import com.amlcurran.messages.telephony.SmsSender;
+import com.amlcurran.messages.telephony.SmsManagerOutputPort;
 import com.amlcurran.messages.transition.TransitionManager;
 import com.amlcurran.messages.ui.NewMessageButtonController;
 import com.amlcurran.messages.ui.actionbar.ActionBarHeaderCallback;
@@ -183,7 +183,7 @@ public class MessagesActivity extends ActionBarActivity implements
 
     @Override
     public void sendSms(InFlightSmsMessage smsMessage) {
-        startService(SmsSender.sendMessageIntent(this, smsMessage));
+        startService(SmsManagerOutputPort.sendMessageIntent(this, smsMessage));
     }
 
     @Override

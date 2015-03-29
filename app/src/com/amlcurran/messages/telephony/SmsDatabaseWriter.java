@@ -24,6 +24,7 @@ import android.net.Uri;
 import android.provider.Telephony;
 
 import com.amlcurran.messages.core.data.SmsMessage;
+import com.amlcurran.messages.core.data.Time;
 import com.amlcurran.messages.data.InFlightSmsMessageFactory;
 import com.amlcurran.messages.data.InFlightSmsMessage;
 
@@ -103,19 +104,39 @@ public class SmsDatabaseWriter {
         return contentResolver.delete(outboxSms, null, null);
     }
 
-    public void changeSmsToType(Uri uri, SmsMessage.Type type) {
-        context.getContentResolver().update(uri, typeChangedValues(type), null, null);
+    public WriteBuilder edit(long id) {
+        return new WriteBuilder(this, id);
     }
 
-    public void changeSmsToType(long id, SmsMessage.Type type) {
-        Uri uri = ContentUris.withAppendedId(Telephony.Sms.CONTENT_URI, id);
-        changeSmsToType(uri, type);
+    public static class WriteBuilder {
+
+        private final ContentValues values = new ContentValues();
+        private final SmsDatabaseWriter smsDatabaseWriter;
+        private final long id;
+
+        private WriteBuilder(SmsDatabaseWriter smsDatabaseWriter, long id) {
+            this.smsDatabaseWriter = smsDatabaseWriter;
+            this.id = id;
+        }
+
+        public WriteBuilder changeSmsToType(SmsMessage.Type type) {
+            values.put(Telephony.Sms.TYPE, InFlightSmsMessageFactory.toApi(type));
+            return this;
+        }
+
+        public void commit() {
+            Uri uri = ContentUris.withAppendedId(Telephony.Sms.CONTENT_URI, id);
+            smsDatabaseWriter.update(uri, values, null, null);
+        }
+
+        public WriteBuilder updateTime() {
+            values.put(Telephony.Sms.DATE_SENT, Time.now().toMillis());
+            return this;
+        }
     }
 
-    private ContentValues typeChangedValues(SmsMessage.Type type) {
-        ContentValues values = new ContentValues();
-        values.put(Telephony.Sms.TYPE, InFlightSmsMessageFactory.toApi(type));
-        return values;
+    private void update(Uri uri, ContentValues values, String selection, String[] args) {
+        context.getContentResolver().update(uri, values, selection, args);
     }
 
     public interface WriteListener {

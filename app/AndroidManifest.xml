@@ -70,7 +70,7 @@
         </receiver>
 
         <!-- Service that delivers messages from the phone "quick response" -->
-        <service android:name=".telephony.SmsSender"
+        <service android:name=".telephony.SmsManagerOutputPort"
             android:permission="android.permission.SEND_RESPOND_VIA_MESSAGE"
             android:exported="true" >
             <intent-filter>

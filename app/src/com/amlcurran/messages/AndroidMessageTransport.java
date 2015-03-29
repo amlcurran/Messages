@@ -19,7 +19,7 @@ package com.amlcurran.messages;
 import com.amlcurran.messages.core.data.SmsMessage;
 import com.amlcurran.messages.core.threads.InFlightSmsMessage;
 import com.amlcurran.messages.core.threads.MessageTransport;
-import com.amlcurran.messages.telephony.SmsSender;
+import com.amlcurran.messages.telephony.SmsManagerOutputPort;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -37,7 +37,7 @@ public class AndroidMessageTransport implements MessageTransport {
     public void sendFromThread(String threadId, final InFlightSmsMessage message) {
         com.amlcurran.messages.data.InFlightSmsMessage newInFlightSms = new com.amlcurran.messages.data.InFlightSmsMessage(message.getNumber(),
                 message.getBody().toString(), message.getTimestamp());
-        messagesApp.startService(SmsSender.sendMessageIntent(messagesApp, newInFlightSms));
+        messagesApp.startService(SmsManagerOutputPort.sendMessageIntent(messagesApp, newInFlightSms));
         notifyListeners(threadId, new CallbackAction() {
 
             @Override

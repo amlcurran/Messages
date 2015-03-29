@@ -31,11 +31,17 @@ public class MessageRepository {
     }
 
     void failedToSend(long id) {
-        smsDatabaseWriter.changeSmsToType(id, SmsMessage.Type.FAILED);
+        smsDatabaseWriter.edit(id)
+                .changeSmsToType(SmsMessage.Type.FAILED)
+                .updateTime()
+                .commit();
     }
 
     void sent(long id) {
-        smsDatabaseWriter.changeSmsToType(id, SmsMessage.Type.SENT);
+        smsDatabaseWriter.edit(id)
+                .changeSmsToType(SmsMessage.Type.SENT)
+                .updateTime()
+                .commit();
     }
 
     SmsMessage send(InFlightSmsMessage message, ContentResolver contentResolver) {
