@@ -21,14 +21,13 @@ import com.amlcurran.messages.core.data.SmsMessage;
 import com.amlcurran.messages.core.threads.InFlightSmsMessage;
 import com.amlcurran.messages.core.threads.MessagePersister;
 
-import java.lang.ref.WeakReference;
 import java.util.HashMap;
 import java.util.Map;
 
 class System {
 
     private final MessagePersister messagePersister;
-    private final Map<PhoneNumber, WeakReference<ThreadListener>> listenerMap;
+    private final Map<PhoneNumber, ThreadListener> listenerMap;
 
     public System(MessagePersister messagePersister) {
         this.messagePersister = messagePersister;
@@ -40,7 +39,7 @@ class System {
     }
 
     public void listenTo(PhoneNumber phoneNumber, ThreadListener threadListener) {
-        listenerMap.put(phoneNumber, new WeakReference<>(threadListener));
+        listenerMap.put(phoneNumber, threadListener);
     }
 
     private MessagePersister.Callbacks persisterCallbacks = new MessagePersister.Callbacks() {
@@ -58,7 +57,7 @@ class System {
     };
 
     private ThreadListener availableListener(PhoneNumber address) {
-        return listenerMap.get(address) != null ? listenerMap.get(address).get() : null;
+        return listenerMap.get(address); //listenerMap.get(address) != null ? listenerMap.get(address).get() : null;
     }
 
 }

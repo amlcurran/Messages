@@ -35,4 +35,14 @@ class BasicPhoneNumber implements PhoneNumber {
     public boolean isValid() {
         return true;
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        return obj instanceof PhoneNumber && ((PhoneNumber) obj).flatten().equals(number);
+    }
+
+    @Override
+    public int hashCode() {
+        return number.hashCode();
+    }
 }

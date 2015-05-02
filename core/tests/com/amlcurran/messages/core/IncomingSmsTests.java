@@ -30,6 +30,7 @@ import static org.junit.Assert.assertThat;
 
 public class IncomingSmsTests {
 
+    public static final String INCOMING_NUMBER = "0800 289492";
     private InFlightSmsMessage writtenMessage;
 
     @Test
@@ -46,7 +47,7 @@ public class IncomingSmsTests {
         InFlightSmsMessage message = incomingMessage();
         System system = new System(new WritingPersister());
         CapturingThreadListener capturingThreadListener = new CapturingThreadListener();
-        system.listenTo(new BasicPhoneNumber("0800 289492"), capturingThreadListener);
+        system.listenTo(new BasicPhoneNumber(INCOMING_NUMBER), capturingThreadListener);
 
         system.receivedMessage(message);
 
@@ -70,7 +71,7 @@ public class IncomingSmsTests {
         InFlightSmsMessage message = incomingMessage();
         System system = new System(new FailWritingPersister());
         CapturingThreadListener capturingThreadListener = new CapturingThreadListener();
-        system.listenTo(new BasicPhoneNumber("0800 289492"), capturingThreadListener);
+        system.listenTo(new BasicPhoneNumber(INCOMING_NUMBER), capturingThreadListener);
 
         system.receivedMessage(message);
 
@@ -78,7 +79,7 @@ public class IncomingSmsTests {
     }
 
     private static InFlightSmsMessage incomingMessage() {
-        return new InFlightSmsMessage("Some sms text", new BasicPhoneNumber("0800 289492"),
+        return new InFlightSmsMessage("Some sms text", new BasicPhoneNumber(INCOMING_NUMBER),
                 SmsMessage.Type.INBOX, Time.now());
     }
 
