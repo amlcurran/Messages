@@ -30,7 +30,7 @@ import android.widget.TextView;
 import com.amlcurran.messages.R;
 import com.amlcurran.messages.core.analysis.SmsMessageAnalyser;
 import com.amlcurran.messages.core.data.SmsMessage;
-import com.github.amlcurran.sourcebinder.SimpleBinder;
+import com.amlcurran.sourcebinder.SimpleBinder;
 
 class ThreadBinder extends SimpleBinder<SmsMessage> {
 

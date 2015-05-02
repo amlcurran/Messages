@@ -21,7 +21,7 @@ import android.view.ViewGroup;
 import com.amlcurran.messages.conversationlist.SelectionStateHolder;
 import com.amlcurran.messages.core.conversationlist.Conversation;
 import com.amlcurran.messages.core.conversationlist.ConversationListView;
-import com.github.amlcurran.sourcebinder.recyclerview.ViewHolderBinder;
+import com.amlcurran.sourcebinder.recyclerview.ViewHolderBinder;
 
 public class ConversationsRecyclerBinder implements ViewHolderBinder<Conversation, ConversationViewHolder> {
 

@@ -21,7 +21,7 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.provider.Telephony;
 
-import com.github.amlcurran.sourcebinder.CursorHelper;
+import com.amlcurran.sourcebinder.CursorHelper;
 
 class SamsungConversationListHelper implements ConversationListHelper {
     @Override

@@ -33,12 +33,12 @@ import com.amlcurran.messages.conversationlist.adapter.ConversationViewFactory;
 import com.amlcurran.messages.conversationlist.adapter.ConversationViewHolder;
 import com.amlcurran.messages.conversationlist.adapter.ConversationsRecyclerBinder;
 import com.amlcurran.messages.conversationlist.adapter.TextFormatter;
-import com.amlcurran.messages.core.conversationlist.ConversationListView;
 import com.amlcurran.messages.core.conversationlist.Conversation;
+import com.amlcurran.messages.core.conversationlist.ConversationListView;
 import com.amlcurran.messages.threads.DefaultContactClickListener;
 import com.amlcurran.messages.ui.control.Master;
-import com.github.amlcurran.sourcebinder.ListSource;
-import com.github.amlcurran.sourcebinder.recyclerview.RecyclerSourceBinderAdapter;
+import com.amlcurran.sourcebinder.ListSource;
+import com.amlcurran.sourcebinder.recyclerview.RecyclerSourceBinderAdapter;
 
 public class ConversationListFragment extends Fragment implements ConversationListView, Master, ConversationListView.ConversationSelectedListener {
 

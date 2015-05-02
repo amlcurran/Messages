@@ -28,7 +28,7 @@ import android.widget.TextView;
 import com.amlcurran.messages.R;
 import com.amlcurran.messages.core.analysis.SmsMessageAnalyser;
 import com.amlcurran.messages.core.data.SmsMessage;
-import com.github.amlcurran.sourcebinder.recyclerview.ViewHolderBinder;
+import com.amlcurran.sourcebinder.recyclerview.ViewHolderBinder;
 
 class ThreadRecyclerBinder implements ViewHolderBinder<SmsMessage, ThreadRecyclerBinder.ViewHolder> {
 

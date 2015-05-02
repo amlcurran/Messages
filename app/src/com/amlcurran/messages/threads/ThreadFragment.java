@@ -44,8 +44,8 @@ import com.amlcurran.messages.telephony.DefaultAppChecker;
 import com.amlcurran.messages.ui.ComposeMessageView;
 import com.amlcurran.messages.ui.CustomHeaderFragment;
 import com.amlcurran.messages.ui.contact.DefaultRoundContactView;
+import com.amlcurran.sourcebinder.recyclerview.RecyclerSourceBinderAdapter;
 import com.espian.utils.ProviderHelper;
-import com.github.amlcurran.sourcebinder.recyclerview.RecyclerSourceBinderAdapter;
 
 public class ThreadFragment extends Fragment implements
         CustomHeaderFragment<DefaultRoundContactView>, ThreadViewController.ThreadView, ThreadView {

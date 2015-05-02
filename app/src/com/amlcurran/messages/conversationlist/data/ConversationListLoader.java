@@ -32,7 +32,7 @@ import com.amlcurran.messages.core.data.Time;
 import com.amlcurran.messages.data.ContactFactory;
 import com.amlcurran.messages.data.ParcelablePhoneNumber;
 import com.amlcurran.messages.loaders.fudges.ConversationListHelper;
-import com.github.amlcurran.sourcebinder.CursorHelper;
+import com.amlcurran.sourcebinder.CursorHelper;
 
 import java.util.ArrayList;
 import java.util.List;

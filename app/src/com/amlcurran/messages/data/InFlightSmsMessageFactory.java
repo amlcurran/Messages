@@ -22,7 +22,7 @@ import android.provider.Telephony;
 
 import com.amlcurran.messages.core.data.SmsMessage;
 import com.amlcurran.messages.core.data.Time;
-import com.github.amlcurran.sourcebinder.CursorHelper;
+import com.amlcurran.sourcebinder.CursorHelper;
 
 public class InFlightSmsMessageFactory {
 

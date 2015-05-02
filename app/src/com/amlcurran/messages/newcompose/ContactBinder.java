@@ -24,7 +24,7 @@ import com.amlcurran.messages.core.data.Contact;
 import com.amlcurran.messages.loaders.photos.PhotoLoader;
 import com.amlcurran.messages.ui.contact.ContactView;
 import com.amlcurran.messages.ui.contact.RoundContactView;
-import com.github.amlcurran.sourcebinder.SimpleBinder;
+import com.amlcurran.sourcebinder.SimpleBinder;
 
 class ContactBinder extends SimpleBinder<Contact> {
 

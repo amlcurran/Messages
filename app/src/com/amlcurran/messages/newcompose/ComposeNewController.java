@@ -27,11 +27,11 @@ import com.amlcurran.messages.core.data.Contact;
 import com.amlcurran.messages.core.data.PhoneNumber;
 import com.amlcurran.messages.core.data.Time;
 import com.amlcurran.messages.core.loaders.ContactListListener;
-import com.amlcurran.messages.data.InFlightSmsMessage;
 import com.amlcurran.messages.core.loaders.MessagesLoader;
+import com.amlcurran.messages.data.InFlightSmsMessage;
 import com.amlcurran.messages.telephony.DefaultAppChecker;
 import com.amlcurran.messages.transition.TransitionManager;
-import com.github.amlcurran.sourcebinder.ListSource;
+import com.amlcurran.sourcebinder.ListSource;
 
 import java.util.Calendar;
 import java.util.List;

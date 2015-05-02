@@ -23,7 +23,7 @@ import android.provider.Telephony;
 import com.amlcurran.messages.core.CommandQueue;
 import com.amlcurran.messages.core.conversationlist.HasConversationListener;
 import com.amlcurran.messages.core.data.Contact;
-import com.github.amlcurran.sourcebinder.CursorHelper;
+import com.amlcurran.sourcebinder.CursorHelper;
 
 import java.util.concurrent.Callable;
 

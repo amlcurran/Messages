@@ -26,7 +26,7 @@ import com.amlcurran.messages.bucket.BundleBuilder;
 import com.amlcurran.messages.core.data.Contact;
 import com.amlcurran.messages.core.data.PhoneNumberOnlyContact;
 import com.amlcurran.messages.core.data.SavedContact;
-import com.github.amlcurran.sourcebinder.CursorHelper;
+import com.amlcurran.sourcebinder.CursorHelper;
 
 public class ContactFactory {
 

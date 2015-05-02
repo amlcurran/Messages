@@ -20,7 +20,7 @@ import android.content.ContentResolver;
 import android.database.Cursor;
 import android.provider.Telephony;
 
-import com.github.amlcurran.sourcebinder.CursorHelper;
+import com.amlcurran.sourcebinder.CursorHelper;
 
 class ActualAndroidApiConversationListHelper implements ConversationListHelper {
 
