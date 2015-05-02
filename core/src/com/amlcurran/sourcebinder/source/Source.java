@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.amlcurran.sourcebinder;
+package com.amlcurran.sourcebinder.source;
 
 import java.util.List;
 

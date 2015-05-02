@@ -24,6 +24,8 @@ import android.database.DataSetObserver;
 import android.net.Uri;
 import android.os.Bundle;
 
+import com.amlcurran.sourcebinder.source.Source;
+
 public abstract class AdaptiveCursorSource<T> implements Source<T> {
 
     private final Cursor NONE = new Cursor() {

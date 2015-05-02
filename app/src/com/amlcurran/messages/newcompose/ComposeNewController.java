@@ -31,7 +31,7 @@ import com.amlcurran.messages.core.loaders.MessagesLoader;
 import com.amlcurran.messages.data.InFlightSmsMessage;
 import com.amlcurran.messages.telephony.DefaultAppChecker;
 import com.amlcurran.messages.transition.TransitionManager;
-import com.amlcurran.sourcebinder.ListSource;
+import com.amlcurran.sourcebinder.source.ListSource;
 
 import java.util.Calendar;
 import java.util.List;

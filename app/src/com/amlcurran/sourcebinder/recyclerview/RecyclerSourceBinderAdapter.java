@@ -19,7 +19,7 @@ package com.amlcurran.sourcebinder.recyclerview;
 import android.support.v7.widget.RecyclerView;
 import android.view.ViewGroup;
 
-import com.amlcurran.sourcebinder.Source;
+import com.amlcurran.sourcebinder.source.Source;
 
 import java.util.List;
 

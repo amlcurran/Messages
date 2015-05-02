@@ -21,6 +21,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 
+import com.amlcurran.sourcebinder.source.Source;
+
 import java.util.List;
 
 public class SourceBinderAdapter<T> extends BaseAdapter implements Source.SourceChangeListener<T> {

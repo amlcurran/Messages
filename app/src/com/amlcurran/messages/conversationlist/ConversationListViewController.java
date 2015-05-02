@@ -24,7 +24,7 @@ import com.amlcurran.messages.core.conversationlist.SortPositions;
 import com.amlcurran.messages.core.data.Sort;
 import com.amlcurran.messages.core.preferences.PreferenceStore;
 import com.amlcurran.messages.transition.TransitionManager;
-import com.amlcurran.sourcebinder.ListSource;
+import com.amlcurran.sourcebinder.source.ListSource;
 
 import java.util.List;
 

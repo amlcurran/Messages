@@ -31,7 +31,7 @@ import com.amlcurran.messages.core.loaders.OnContactQueryListener;
 import com.amlcurran.messages.core.threads.Thread;
 import com.amlcurran.messages.telephony.DefaultAppChecker;
 import com.amlcurran.messages.ui.ComposeMessageView;
-import com.amlcurran.sourcebinder.ListSource;
+import com.amlcurran.sourcebinder.source.ListSource;
 
 import java.util.Collections;
 import java.util.List;

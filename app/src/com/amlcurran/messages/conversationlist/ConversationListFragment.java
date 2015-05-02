@@ -37,7 +37,7 @@ import com.amlcurran.messages.core.conversationlist.Conversation;
 import com.amlcurran.messages.core.conversationlist.ConversationListView;
 import com.amlcurran.messages.threads.DefaultContactClickListener;
 import com.amlcurran.messages.ui.control.Master;
-import com.amlcurran.sourcebinder.ListSource;
+import com.amlcurran.sourcebinder.source.ListSource;
 import com.amlcurran.sourcebinder.recyclerview.RecyclerSourceBinderAdapter;
 
 public class ConversationListFragment extends Fragment implements ConversationListView, Master, ConversationListView.ConversationSelectedListener {
