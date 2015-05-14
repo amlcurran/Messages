@@ -36,6 +36,7 @@ import java.util.List;
 
 class ThreadViewController implements ComposeMessageView.ComposureCallbacks {
 
+    public static final int MARK_READ_DELAY = 1000;
     private final Contact contact;
     private final String composedMessage;
     private final ThreadView threadView;
@@ -71,6 +72,7 @@ class ThreadViewController implements ComposeMessageView.ComposureCallbacks {
     void stop() {
         thread.unsetCallbacks();
         saveDraft();
+        scheduledQueue.removeEvents(runnable);
     }
 
     private void retrieveDraft(String composedMessage) {
@@ -89,18 +91,19 @@ class ThreadViewController implements ComposeMessageView.ComposureCallbacks {
         }
     }
 
+    private Runnable runnable;
     private Thread.ThreadCallbacks callbacks = new Thread.ThreadCallbacks() {
         @Override
         public void threadLoaded(List<SmsMessage> messageList) {
             Collections.reverse(messageList);
             source.replace(messageList);
-            scheduledQueue.executeWithDelay(new Runnable() {
+            runnable = scheduledQueue.executeWithDelay(new Runnable() {
 
                 @Override
                 public void run() {
                     messageLoader.markThreadAsRead(thread.getId());
                 }
-            }, 1000);
+            }, MARK_READ_DELAY);
         }
 
         @Override

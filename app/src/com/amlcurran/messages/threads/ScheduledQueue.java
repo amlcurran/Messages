@@ -17,5 +17,7 @@
 package com.amlcurran.messages.threads;
 
 public interface ScheduledQueue {
-    void executeWithDelay(Runnable runnable, long millisDelay);
+    Runnable executeWithDelay(Runnable runnable, long millisDelay);
+
+    void removeEvents(Runnable runnable);
 }

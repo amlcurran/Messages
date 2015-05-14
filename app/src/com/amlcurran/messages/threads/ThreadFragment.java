@@ -19,6 +19,8 @@ package com.amlcurran.messages.threads;
 import android.app.Fragment;
 import android.content.Context;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -98,12 +100,7 @@ public class ThreadFragment extends Fragment implements
         com.amlcurran.messages.core.threads.Thread thread = new Thread(dependencyRepository.getMessagesLoader(), messageReceiver, contact.getNumber(), threadId, SingletonManager.getMessageTransport(getActivity()));
 
         threadViewController = new ThreadViewController(thread, contact, getArguments().getString(COMPOSED_MESSAGE),
-                this, defaultChecker, dependencyRepository, new ScheduledQueue() {
-            @Override
-            public void executeWithDelay(Runnable runnable, long millisDelay) {
-
-            }
-        });
+                this, defaultChecker, dependencyRepository, new HandlerScheduledQueue(new Handler(Looper.getMainLooper())));
         composeView.setComposeListener(threadViewController);
 
         setHasOptionsMenu(true);
@@ -181,5 +178,25 @@ public class ThreadFragment extends Fragment implements
     @Override
     public void isNotDefaultSmsApp() {
         composeView.isNotDefaultSmsApp();
+    }
+
+    private class HandlerScheduledQueue implements ScheduledQueue {
+
+        private final Handler handler;
+
+        private HandlerScheduledQueue(Handler handler) {
+            this.handler = handler;
+        }
+
+        @Override
+        public Runnable executeWithDelay(Runnable runnable, long millisDelay) {
+            handler.postDelayed(runnable, millisDelay);
+            return runnable;
+        }
+
+        @Override
+        public void removeEvents(Runnable runnable) {
+            handler.removeCallbacks(runnable);
+        }
     }
 }

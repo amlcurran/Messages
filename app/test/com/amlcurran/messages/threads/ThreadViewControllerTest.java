@@ -77,6 +77,25 @@ public class ThreadViewControllerTest {
         verify(loader).markThreadAsRead("14");
     }
 
+    @Test
+    public void testStoppingAThreadBeforeTimeoutDoesNotMarkAsRead() {
+        MessagesLoader loader = mock(MessagesLoader.class);
+        Thread thread = new Thread(loader, mock(EventSubscriber.class), new TestPhoneNumber(), "14", mock(MessageTransport.class));
+        Contact mockContact = mock(Contact.class);
+        DefaultAppChecker mockAppChecker = mock(DefaultAppChecker.class);
+        DependencyRepository mockRepo = mock(DependencyRepository.class);
+        when(mockRepo.getMessagesLoader()).thenReturn(loader);
+        when(mockRepo.getDraftRepository()).thenReturn(mock(DraftRepository.class));
+        ScheduledQueue scheduledQueue = mock(ScheduledQueue.class);
+        ThreadViewController threadViewController = new ThreadViewController(thread, mockContact, null, new NullThreadView(), mockAppChecker, mockRepo, scheduledQueue);
+        doAnswer(new ImmediatelyLoadEmptyThread()).when(loader).loadThread(any(String.class), any(ThreadListener.class));
+
+        threadViewController.start();
+        threadViewController.stop();
+
+        verify(scheduledQueue).removeEvents(any(Runnable.class));
+    }
+
     private static class ImmediatelyLoadEmptyThread implements Answer {
         @Override
         public Object answer(InvocationOnMock invocation) throws Throwable {
@@ -101,8 +120,13 @@ public class ThreadViewControllerTest {
     private static class NeverExecutingScheduledQueue implements ScheduledQueue {
 
         @Override
-        public void executeWithDelay(Runnable runnable, long millisDelay) {
-            // Won't execute
+        public Runnable executeWithDelay(Runnable runnable, long millisDelay) {
+            return null;
+        }
+
+        @Override
+        public void removeEvents(Runnable runnable) {
+
         }
     }
 
@@ -145,8 +169,14 @@ public class ThreadViewControllerTest {
 
     private class ImmediatelyExecutingScheduledQueue implements ScheduledQueue {
         @Override
-        public void executeWithDelay(Runnable runnable, long millisDelay) {
+        public Runnable executeWithDelay(Runnable runnable, long millisDelay) {
             runnable.run();
+            return null;
+        }
+
+        @Override
+        public void removeEvents(Runnable runnable) {
+
         }
     }
 }
