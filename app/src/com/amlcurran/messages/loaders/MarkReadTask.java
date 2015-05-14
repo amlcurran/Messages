@@ -30,25 +30,35 @@ class MarkReadTask implements Callable<Object> {
     private final ContentResolver contentResolver;
     private final ConversationList conversationList;
     private final List<String> threadIds;
+    private final ContentValues readContentValues;
 
     public MarkReadTask(ContentResolver contentResolver, ConversationList conversationList, List<String> threadIds) {
+        this(contentResolver, conversationList, threadIds, createReadContentValues());
+    }
+
+    MarkReadTask(ContentResolver contentResolver, ConversationList conversationList, List<String> threadIds, ContentValues readContentValues) {
         this.contentResolver = contentResolver;
         this.conversationList = conversationList;
         this.threadIds = new ArrayList<>(threadIds);
+        this.readContentValues = readContentValues;
     }
 
     @Override
     public Object call() throws Exception {
+        boolean shouldUpdate = false;
         for (String threadId : threadIds) {
             String selection = String.format("%1$s=? AND (%2$s=? OR %3$s=?)", Telephony.Sms.THREAD_ID, Telephony.Sms.READ, Telephony.Sms.SEEN);
             String[] args = new String[]{threadId, "0", "0"};
-            contentResolver.update(Telephony.Sms.CONTENT_URI, createReadContentValues(), selection, args);
+            int update = contentResolver.update(Telephony.Sms.CONTENT_URI, readContentValues, selection, args);
+            shouldUpdate = shouldUpdate || update > 0;
         }
-        conversationList.reloadConversations();
+        if (shouldUpdate) {
+            conversationList.reloadConversations();
+        }
         return null;
     }
 
-    private ContentValues createReadContentValues() {
+    private static ContentValues createReadContentValues() {
         ContentValues values = new ContentValues();
         values.put(Telephony.Sms.READ, "1");
         values.put(Telephony.Sms.SEEN, "1");
