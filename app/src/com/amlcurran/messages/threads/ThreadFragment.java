@@ -129,7 +129,7 @@ public class ThreadFragment extends Fragment implements
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        return threadViewController.menuItemClicked(item) || super.onOptionsItemSelected(item);
+        return threadViewController.menuItemClicked(item.getItemId()) || super.onOptionsItemSelected(item);
     }
 
     @Override

@@ -16,8 +16,6 @@
 
 package com.amlcurran.messages.threads;
 
-import android.view.MenuItem;
-
 import com.amlcurran.messages.DependencyRepository;
 import com.amlcurran.messages.ExternalEventManager;
 import com.amlcurran.messages.R;
@@ -121,11 +119,11 @@ class ThreadViewController implements ComposeMessageView.ComposureCallbacks {
         }
     }
 
-    public boolean menuItemClicked(MenuItem item) {
-        if (item.getItemId() == R.id.menu_call) {
+    public boolean menuItemClicked(int itemId) {
+        if (itemId == R.id.menu_call) {
             externalEventManager.callNumber(contact.getNumber());
             return true;
-        } else if (item.getItemId() == R.id.modal_mark_unread) {
+        } else if (itemId == R.id.modal_mark_unread) {
             messageLoader.markThreadsAsUnread(Collections.singletonList(thread.getId()));
             threadView.finish();
             return true;

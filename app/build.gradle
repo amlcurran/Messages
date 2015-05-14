@@ -43,6 +43,9 @@ android {
             res.srcDirs = ['res']
             assets.srcDirs = ['assets']
         }
+        test {
+            java.srcDirs = ['test']
+        }
         debug {
             res.srcDirs = ['res-debug']
         }
@@ -68,4 +71,7 @@ dependencies {
     compile 'com.android.support:support-annotations:20.0.0'
     compile 'com.android.support:appcompat-v7:21.0.3'
     compile 'com.android.support:recyclerview-v7:21.0.3'
+    testCompile 'org.mockito:mockito-all:2.0.2-beta'
+    testCompile 'org.hamcrest:hamcrest-junit:2.0.0.0'
+    testCompile 'junit:junit:4.12'
 }
