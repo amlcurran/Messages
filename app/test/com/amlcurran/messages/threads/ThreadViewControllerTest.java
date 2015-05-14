@@ -37,13 +37,14 @@ import java.util.Collections;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 public class ThreadViewControllerTest {
 
     @Test
-    public void testLoadingAThreadMarksItAsRead() {
+    public void testLoadingAThreadDoesNotMarkAsReadBeforeTimeout() {
         MessagesLoader loader = mock(MessagesLoader.class);
         Thread thread = new Thread(loader, mock(EventSubscriber.class), new TestPhoneNumber(), "14", mock(MessageTransport.class));
         Contact mockContact = mock(Contact.class);
@@ -51,7 +52,24 @@ public class ThreadViewControllerTest {
         DependencyRepository mockRepo = mock(DependencyRepository.class);
         when(mockRepo.getMessagesLoader()).thenReturn(loader);
         when(mockRepo.getDraftRepository()).thenReturn(mock(DraftRepository.class));
-        ThreadViewController threadViewController = new ThreadViewController(thread, mockContact, null, new NullThreadView(), mockAppChecker, mockRepo);
+        ThreadViewController threadViewController = new ThreadViewController(thread, mockContact, null, new NullThreadView(), mockAppChecker, mockRepo, new NeverExecutingScheduledQueue());
+        doAnswer(new ImmediatelyLoadEmptyThread()).when(loader).loadThread(any(String.class), any(ThreadListener.class));
+
+        threadViewController.start();
+
+        verify(loader, never()).markThreadAsRead("14");
+    }
+
+    @Test
+    public void testLoadingAThreadMarksAsReadAfterTimeout() {
+        MessagesLoader loader = mock(MessagesLoader.class);
+        Thread thread = new Thread(loader, mock(EventSubscriber.class), new TestPhoneNumber(), "14", mock(MessageTransport.class));
+        Contact mockContact = mock(Contact.class);
+        DefaultAppChecker mockAppChecker = mock(DefaultAppChecker.class);
+        DependencyRepository mockRepo = mock(DependencyRepository.class);
+        when(mockRepo.getMessagesLoader()).thenReturn(loader);
+        when(mockRepo.getDraftRepository()).thenReturn(mock(DraftRepository.class));
+        ThreadViewController threadViewController = new ThreadViewController(thread, mockContact, null, new NullThreadView(), mockAppChecker, mockRepo, new ImmediatelyExecutingScheduledQueue());
         doAnswer(new ImmediatelyLoadEmptyThread()).when(loader).loadThread(any(String.class), any(ThreadListener.class));
 
         threadViewController.start();
@@ -77,6 +95,14 @@ public class ThreadViewControllerTest {
         @Override
         public boolean isValid() {
             return true;
+        }
+    }
+
+    private static class NeverExecutingScheduledQueue implements ScheduledQueue {
+
+        @Override
+        public void executeWithDelay(Runnable runnable, long millisDelay) {
+            // Won't execute
         }
     }
 
@@ -114,6 +140,13 @@ public class ThreadViewControllerTest {
         @Override
         public void isNotDefaultSmsApp() {
 
+        }
+    }
+
+    private class ImmediatelyExecutingScheduledQueue implements ScheduledQueue {
+        @Override
+        public void executeWithDelay(Runnable runnable, long millisDelay) {
+            runnable.run();
         }
     }
 }

@@ -39,6 +39,7 @@ class ThreadViewController implements ComposeMessageView.ComposureCallbacks {
     private final Contact contact;
     private final String composedMessage;
     private final ThreadView threadView;
+    private final ScheduledQueue scheduledQueue;
     private final ListSource<SmsMessage> source;
     private final DefaultAppChecker defaultChecker;
     private final DraftRepository draftRepository;
@@ -46,10 +47,11 @@ class ThreadViewController implements ComposeMessageView.ComposureCallbacks {
     private final MessagesLoader messageLoader;
     private final Thread thread;
 
-    public ThreadViewController(Thread thread, Contact contact, String composedMessage, ThreadView threadView, DefaultAppChecker defaultChecker, DependencyRepository dependencyRepository) {
+    public ThreadViewController(Thread thread, Contact contact, String composedMessage, ThreadView threadView, DefaultAppChecker defaultChecker, DependencyRepository dependencyRepository, ScheduledQueue scheduledQueue) {
         this.contact = contact;
         this.composedMessage = composedMessage;
         this.threadView = threadView;
+        this.scheduledQueue = scheduledQueue;
         this.messageLoader = dependencyRepository.getMessagesLoader();
         this.defaultChecker = defaultChecker;
         this.draftRepository = dependencyRepository.getDraftRepository();
@@ -92,7 +94,13 @@ class ThreadViewController implements ComposeMessageView.ComposureCallbacks {
         public void threadLoaded(List<SmsMessage> messageList) {
             Collections.reverse(messageList);
             source.replace(messageList);
-            messageLoader.markThreadAsRead(thread.getId());
+            scheduledQueue.executeWithDelay(new Runnable() {
+
+                @Override
+                public void run() {
+                    messageLoader.markThreadAsRead(thread.getId());
+                }
+            }, 1000);
         }
 
         @Override

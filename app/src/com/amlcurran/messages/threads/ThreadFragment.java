@@ -98,7 +98,12 @@ public class ThreadFragment extends Fragment implements
         com.amlcurran.messages.core.threads.Thread thread = new Thread(dependencyRepository.getMessagesLoader(), messageReceiver, contact.getNumber(), threadId, SingletonManager.getMessageTransport(getActivity()));
 
         threadViewController = new ThreadViewController(thread, contact, getArguments().getString(COMPOSED_MESSAGE),
-                this, defaultChecker, dependencyRepository);
+                this, defaultChecker, dependencyRepository, new ScheduledQueue() {
+            @Override
+            public void executeWithDelay(Runnable runnable, long millisDelay) {
+
+            }
+        });
         composeView.setComposeListener(threadViewController);
 
         setHasOptionsMenu(true);
