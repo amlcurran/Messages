@@ -70,10 +70,6 @@ public class ThreadViewControllerTest {
         verify(loader, never()).markThreadAsRead("14");
     }
 
-    private static ThreadViewController threadViewController(Thread thread, ScheduledQueue scheduledQueue) {
-        return new ThreadViewController(thread, mock(Contact.class), null, new NullThreadView(), mock(DefaultAppChecker.class), mockRepo, scheduledQueue);
-    }
-
     @Test
     public void testLoadingAThreadMarksAsReadAfterTimeout() {
         ThreadViewController threadViewController = threadViewController(thread, new ImmediatelyExecutingScheduledQueue());
@@ -92,6 +88,10 @@ public class ThreadViewControllerTest {
         threadViewController.stop();
 
         verify(scheduledQueue).removeEvents(any(Runnable.class));
+    }
+
+    private ThreadViewController threadViewController(Thread thread, ScheduledQueue scheduledQueue) {
+        return new ThreadViewController(thread, mock(Contact.class), null, new NullThreadView(), mock(DefaultAppChecker.class), mockRepo, scheduledQueue);
     }
 
     private static class ImmediatelyLoadEmptyThread implements Answer {
