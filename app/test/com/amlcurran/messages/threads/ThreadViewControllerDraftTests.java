@@ -44,6 +44,7 @@ import static org.junit.Assert.assertThat;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 public class ThreadViewControllerDraftTests {
@@ -78,7 +79,7 @@ public class ThreadViewControllerDraftTests {
     }
 
     @Test
-    public void testLoadingWithoutAThreadWithADraftDoesntTheComposeView() {
+    public void testLoadingWithoutAThreadWithADraftDoesntPopulateTheComposeView() {
         when(mockDraftRepo.getDraft(any(PhoneNumber.class))).thenReturn(null);
         AssertingThreadView threadView = new AssertingThreadView();
         ThreadViewController threadViewController = threadViewController(thread, new NeverExecutingScheduledQueue(), threadView);
@@ -86,6 +87,30 @@ public class ThreadViewControllerDraftTests {
         threadViewController.start();
 
         assertNull(threadView.composedMessage);
+    }
+
+    @Test
+    public void testStoppingTheControllerWithAComposedMessageSavesIt() {
+        AssertingThreadView threadView = new AssertingThreadView();
+        ThreadViewController threadViewController = threadViewController(thread, new NeverExecutingScheduledQueue(), threadView);
+
+        threadViewController.start();
+        threadView.setComposedMessage("hello");
+        threadViewController.stop();
+
+        verify(mockDraftRepo).storeDraft(testPhoneNumber, "hello");
+    }
+
+    @Test
+    public void testStoppingTheControllerWithNoComposedMessageClearsTheDraft() {
+        AssertingThreadView threadView = new AssertingThreadView();
+        ThreadViewController threadViewController = threadViewController(thread, new NeverExecutingScheduledQueue(), threadView);
+
+        threadViewController.start();
+        threadView.setComposedMessage(null);
+        threadViewController.stop();
+
+        verify(mockDraftRepo).clearDraft(testPhoneNumber);
     }
 
     private ThreadViewController threadViewController(Thread thread, ScheduledQueue scheduledQueue, ThreadViewController.ThreadView threadView) {
@@ -112,7 +137,7 @@ public class ThreadViewControllerDraftTests {
 
         @Override
         public String getComposedMessage() {
-            return null;
+            return composedMessage;
         }
 
         @Override
