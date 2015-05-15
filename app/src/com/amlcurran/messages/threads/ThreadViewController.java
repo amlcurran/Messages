@@ -41,9 +41,8 @@ class ThreadViewController implements ComposeMessageView.ComposureCallbacks {
     private final ExternalEventManager externalEventManager;
     private final MessagesLoader messageLoader;
     private final Thread thread;
-    private final ComposeMessageViewController composeMessageViewController;
 
-    public ThreadViewController(Thread thread, Contact contact, ThreadView threadView, DependencyRepository dependencyRepository, ScheduledQueue scheduledQueue, ComposeMessageViewController composeMessageViewController) {
+    public ThreadViewController(Thread thread, Contact contact, ThreadView threadView, DependencyRepository dependencyRepository, ScheduledQueue scheduledQueue) {
         this.contact = contact;
         this.threadView = threadView;
         this.scheduledQueue = scheduledQueue;
@@ -51,19 +50,16 @@ class ThreadViewController implements ComposeMessageView.ComposureCallbacks {
         this.externalEventManager = dependencyRepository.getExternalEventManager();
         this.source = new ListSource<>();
         this.thread = thread;
-        this.composeMessageViewController = composeMessageViewController;
     }
 
     void start() {
         setUpContactView(contact);
         thread.setCallbacks(callbacks);
         thread.load();
-        composeMessageViewController.start();
     }
 
     void stop() {
         thread.unsetCallbacks();
-        composeMessageViewController.stop();
         scheduledQueue.removeEvents(runnable);
     }
 

@@ -95,7 +95,7 @@ public class ThreadViewControllerMarkReadTest {
         Contact mockContact = mock(Contact.class);
         DefaultAppChecker mockDefaultAppChecker = mock(DefaultAppChecker.class);
         ComposeMessageViewController mockComposeController = mock(ComposeMessageViewController.class);
-        return new ThreadViewController(thread, mockContact, threadView, mockRepo, scheduledQueue, mockComposeController);
+        return new ThreadViewController(thread, mockContact, threadView, mockRepo, scheduledQueue);
     }
 
     private static class ImmediatelyLoadEmptyThread implements Answer {

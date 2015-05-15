@@ -60,6 +60,7 @@ public class ThreadFragment extends Fragment implements
     private DefaultRoundContactView contactView;
     private ThreadViewController threadViewController;
     private RecyclerView recyclerView;
+    private ComposeMessageViewController composeMessageViewController;
 
     public static ThreadFragment create(String threadId, @NonNull Bundle contactBundle, String composedMessage) {
         Bundle bundle = new BundleBuilder()
@@ -99,10 +100,10 @@ public class ThreadFragment extends Fragment implements
         StandardComposeCallbacks composeCallbacks = new StandardComposeCallbacks(getActivity(), contact.getNumber(), listener);
         com.amlcurran.messages.core.threads.Thread thread = new Thread(dependencyRepository.getMessagesLoader(), messageReceiver, contact.getNumber(), threadId, SingletonManager.getMessageTransport(getActivity()));
 
-        ComposeMessageViewController composeMessageViewController = new ComposeMessageViewController(composeView, dependencyRepository.getDraftRepository(), contact.getNumber(), getArguments().getString(COMPOSED_MESSAGE),
+        composeMessageViewController = new ComposeMessageViewController(composeView, dependencyRepository.getDraftRepository(), contact.getNumber(), getArguments().getString(COMPOSED_MESSAGE),
                 defaultChecker);
         threadViewController = new ThreadViewController(thread, contact,
-                this, dependencyRepository, new HandlerScheduledQueue(new Handler(Looper.getMainLooper())), composeMessageViewController);
+                this, dependencyRepository, new HandlerScheduledQueue(new Handler(Looper.getMainLooper())));
         composeView.setComposeListener(threadViewController);
 
         setHasOptionsMenu(true);
@@ -118,12 +119,14 @@ public class ThreadFragment extends Fragment implements
     public void onStart() {
         super.onStart();
         threadViewController.start();
+        composeMessageViewController.start();
     }
 
     @Override
     public void onStop() {
         super.onStop();
         threadViewController.stop();
+        composeMessageViewController.stop();
     }
 
     @Override

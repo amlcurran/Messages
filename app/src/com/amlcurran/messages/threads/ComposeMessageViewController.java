@@ -23,14 +23,14 @@ import com.amlcurran.messages.telephony.DefaultAppChecker;
 
 public class ComposeMessageViewController implements DefaultAppChecker.Callback {
 
-    private final ComposeView threadView;
+    private final ComposeView composeView;
     private final DraftRepository draftRepository;
     private final PhoneNumber phoneNumber;
     private final String composedMessage;
     private final DefaultAppChecker defaultChecker;
 
-    public ComposeMessageViewController(ComposeView threadView, DraftRepository draftRepository, PhoneNumber phoneNumber, String composedMessage, DefaultAppChecker defaultChecker) {
-        this.threadView = threadView;
+    public ComposeMessageViewController(ComposeView composeView, DraftRepository draftRepository, PhoneNumber phoneNumber, String composedMessage, DefaultAppChecker defaultChecker) {
+        this.composeView = composeView;
         this.draftRepository = draftRepository;
         this.phoneNumber = phoneNumber;
         this.composedMessage = composedMessage;
@@ -39,15 +39,15 @@ public class ComposeMessageViewController implements DefaultAppChecker.Callback 
 
     void retrieveDraft() {
         if (TextUtils.isNotEmpty(composedMessage)) {
-            threadView.setComposedMessage(composedMessage);
+            composeView.setComposedMessage(composedMessage);
         } else {
-            threadView.setComposedMessage(draftRepository.getDraft(phoneNumber));
+            composeView.setComposedMessage(draftRepository.getDraft(phoneNumber));
         }
     }
 
     void saveDraft() {
-        if (TextUtils.isText(threadView.getComposedMessage())) {
-            draftRepository.storeDraft(phoneNumber, threadView.getComposedMessage());
+        if (TextUtils.isText(composeView.getComposedMessage())) {
+            draftRepository.storeDraft(phoneNumber, composeView.getComposedMessage());
         } else {
             draftRepository.clearDraft(phoneNumber);
         }
@@ -55,12 +55,12 @@ public class ComposeMessageViewController implements DefaultAppChecker.Callback 
 
     @Override
     public void isDefaultSmsApp() {
-        threadView.enable();
+        composeView.enable();
     }
 
     @Override
     public void isNotDefaultSmsApp() {
-        threadView.disable();
+        composeView.disable();
     }
 
     void start() {
