@@ -48,43 +48,35 @@ public class ThreadViewControllerTest {
 
     @Mock
     private MessagesLoader loader;
+    @Mock
+    private DependencyRepository mockRepo;
+    private Thread thread;
 
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
         doAnswer(new ImmediatelyLoadEmptyThread()).when(loader).loadThread(any(String.class), any(ThreadListener.class));
+        when(mockRepo.getMessagesLoader()).thenReturn(loader);
+        when(mockRepo.getDraftRepository()).thenReturn(mock(DraftRepository.class));
+        thread = new Thread(loader, mock(EventSubscriber.class), new TestPhoneNumber(), "14", mock(MessageTransport.class));
     }
 
     @Test
     public void testLoadingAThreadDoesNotMarkAsReadBeforeTimeout() {
-        Thread thread = thread(loader);
-        ThreadViewController threadViewController = threadViewController(thread, dependencyRepository(loader), new NeverExecutingScheduledQueue());
+        ThreadViewController threadViewController = threadViewController(thread, new NeverExecutingScheduledQueue());
 
         threadViewController.start();
 
         verify(loader, never()).markThreadAsRead("14");
     }
 
-    private static Thread thread(MessagesLoader loader) {
-        return new Thread(loader, mock(EventSubscriber.class), new TestPhoneNumber(), "14", mock(MessageTransport.class));
-    }
-
-    private static DependencyRepository dependencyRepository(MessagesLoader loader) {
-        DependencyRepository mockRepo = mock(DependencyRepository.class);
-        when(mockRepo.getMessagesLoader()).thenReturn(loader);
-        when(mockRepo.getDraftRepository()).thenReturn(mock(DraftRepository.class));
-        return mockRepo;
-    }
-
-    private static ThreadViewController threadViewController(Thread thread, DependencyRepository mockRepo, ScheduledQueue scheduledQueue) {
+    private static ThreadViewController threadViewController(Thread thread, ScheduledQueue scheduledQueue) {
         return new ThreadViewController(thread, mock(Contact.class), null, new NullThreadView(), mock(DefaultAppChecker.class), mockRepo, scheduledQueue);
     }
 
     @Test
     public void testLoadingAThreadMarksAsReadAfterTimeout() {
-        Thread thread = thread(loader);
-        DependencyRepository mockRepo = dependencyRepository(loader);
-        ThreadViewController threadViewController = threadViewController(thread, mockRepo, new ImmediatelyExecutingScheduledQueue());
+        ThreadViewController threadViewController = threadViewController(thread, new ImmediatelyExecutingScheduledQueue());
 
         threadViewController.start();
 
@@ -93,10 +85,8 @@ public class ThreadViewControllerTest {
 
     @Test
     public void testStoppingAThreadBeforeTimeoutDoesNotMarkAsRead() {
-        Thread thread = thread(loader);
-        DependencyRepository mockRepo = dependencyRepository(loader);
         ScheduledQueue scheduledQueue = mock(ScheduledQueue.class);
-        ThreadViewController threadViewController = threadViewController(thread, mockRepo, scheduledQueue);
+        ThreadViewController threadViewController = threadViewController(thread, scheduledQueue);
 
         threadViewController.start();
         threadViewController.stop();
