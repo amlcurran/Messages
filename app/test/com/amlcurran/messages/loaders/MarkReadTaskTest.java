@@ -66,10 +66,6 @@ public class MarkReadTaskTest {
         verify(mockConversations).reloadConversations();
     }
 
-    private List<String> threeThreads() {
-        return Arrays.asList("0", "1", "2");
-    }
-
     @Test
     public void doesntReloadConversationsWhenNothingIsUpdated() throws Exception {
         ContentResolver mockResolver = mock(ContentResolver.class);
@@ -85,6 +81,10 @@ public class MarkReadTaskTest {
 
     private List<String> onlyOneThread() {
         return Collections.singletonList("1");
+    }
+
+    private List<String> threeThreads() {
+        return Arrays.asList("0", "1", "2");
     }
 
 }
