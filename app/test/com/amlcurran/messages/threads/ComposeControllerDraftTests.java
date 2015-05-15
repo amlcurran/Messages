@@ -46,7 +46,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-public class ThreadViewControllerDraftTests {
+public class ComposeControllerDraftTests {
 
     private final TestPhoneNumber testPhoneNumber = new TestPhoneNumber();
     @Mock
@@ -69,7 +69,7 @@ public class ThreadViewControllerDraftTests {
     @Test
     public void testLoadingAThreadWithADraftPopulatesTheComposeView() {
         when(mockDraftRepo.getDraft(any(PhoneNumber.class))).thenReturn("hello");
-        AssertingThreadView threadView = new AssertingThreadView();
+        AssertingComposeView threadView = new AssertingComposeView();
         ThreadViewController threadViewController = threadViewController(thread, new NeverExecutingScheduledQueue(), threadView);
 
         threadViewController.start();
@@ -80,7 +80,7 @@ public class ThreadViewControllerDraftTests {
     @Test
     public void testLoadingWithoutAThreadWithADraftDoesntPopulateTheComposeView() {
         when(mockDraftRepo.getDraft(any(PhoneNumber.class))).thenReturn(null);
-        AssertingThreadView threadView = new AssertingThreadView();
+        AssertingComposeView threadView = new AssertingComposeView();
         ThreadViewController threadViewController = threadViewController(thread, new NeverExecutingScheduledQueue(), threadView);
 
         threadViewController.start();
@@ -90,7 +90,7 @@ public class ThreadViewControllerDraftTests {
 
     @Test
     public void testStoppingTheControllerWithAComposedMessageSavesIt() {
-        AssertingThreadView threadView = new AssertingThreadView();
+        AssertingComposeView threadView = new AssertingComposeView();
         ThreadViewController threadViewController = threadViewController(thread, new NeverExecutingScheduledQueue(), threadView);
 
         threadViewController.start();
@@ -102,7 +102,7 @@ public class ThreadViewControllerDraftTests {
 
     @Test
     public void testStoppingTheControllerWithNoComposedMessageClearsTheDraft() {
-        AssertingThreadView threadView = new AssertingThreadView();
+        AssertingComposeView threadView = new AssertingComposeView();
         ThreadViewController threadViewController = threadViewController(thread, new NeverExecutingScheduledQueue(), threadView);
 
         threadViewController.start();
@@ -124,22 +124,6 @@ public class ThreadViewControllerDraftTests {
             threadListener.onThreadLoaded(Collections.<SmsMessage>emptyList());
             return null;
         }
-    }
-
-    private class AssertingThreadView implements ComposeView {
-
-        private String composedMessage;
-
-        @Override
-        public String getComposedMessage() {
-            return composedMessage;
-        }
-
-        @Override
-        public void setComposedMessage(String composedMessage) {
-            this.composedMessage = composedMessage;
-        }
-
     }
 
     private static class NeverExecutingScheduledQueue implements ScheduledQueue {

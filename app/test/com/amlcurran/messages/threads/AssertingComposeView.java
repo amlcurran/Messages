@@ -16,10 +16,28 @@
 
 package com.amlcurran.messages.threads;
 
-import com.amlcurran.messages.telephony.DefaultAppChecker;
+class AssertingComposeView implements ComposeView {
 
-public interface ComposeView extends DefaultAppChecker.Callback {
-    String getComposedMessage();
+    String composedMessage;
+    boolean isDefaultApp;
 
-    void setComposedMessage(String composedMessage);
+    @Override
+    public String getComposedMessage() {
+        return composedMessage;
+    }
+
+    @Override
+    public void setComposedMessage(String composedMessage) {
+        this.composedMessage = composedMessage;
+    }
+
+    @Override
+    public void isDefaultSmsApp() {
+        isDefaultApp = true;
+    }
+
+    @Override
+    public void isNotDefaultSmsApp() {
+        isDefaultApp = false;
+    }
 }

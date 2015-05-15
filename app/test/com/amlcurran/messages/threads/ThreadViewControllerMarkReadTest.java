@@ -92,7 +92,10 @@ public class ThreadViewControllerMarkReadTest {
 
     private ThreadViewController threadViewController(Thread thread, ScheduledQueue scheduledQueue) {
         final NullThreadView threadView = new NullThreadView();
-        return new ThreadViewController(thread, mock(Contact.class), threadView, mock(DefaultAppChecker.class), mockRepo, scheduledQueue, mock(ComposeMessageViewController.class));
+        Contact mockContact = mock(Contact.class);
+        DefaultAppChecker mockDefaultAppChecker = mock(DefaultAppChecker.class);
+        ComposeMessageViewController mockComposeController = mock(ComposeMessageViewController.class);
+        return new ThreadViewController(thread, mockContact, threadView, mockDefaultAppChecker, mockRepo, scheduledQueue, mockComposeController);
     }
 
     private static class ImmediatelyLoadEmptyThread implements Answer {
