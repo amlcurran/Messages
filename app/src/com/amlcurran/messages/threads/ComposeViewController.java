@@ -21,7 +21,7 @@ import com.amlcurran.messages.core.data.DraftRepository;
 import com.amlcurran.messages.core.data.PhoneNumber;
 import com.amlcurran.messages.telephony.DefaultAppChecker;
 
-public class ComposeMessageViewController implements DefaultAppChecker.Callback {
+public class ComposeViewController implements DefaultAppChecker.Callback {
 
     private final ComposeView composeView;
     private final DraftRepository draftRepository;
@@ -29,7 +29,7 @@ public class ComposeMessageViewController implements DefaultAppChecker.Callback 
     private final String composedMessage;
     private final DefaultAppChecker defaultChecker;
 
-    public ComposeMessageViewController(ComposeView composeView, DraftRepository draftRepository, PhoneNumber phoneNumber, String composedMessage, DefaultAppChecker defaultChecker) {
+    public ComposeViewController(ComposeView composeView, DraftRepository draftRepository, PhoneNumber phoneNumber, String composedMessage, DefaultAppChecker defaultChecker) {
         this.composeView = composeView;
         this.draftRepository = draftRepository;
         this.phoneNumber = phoneNumber;

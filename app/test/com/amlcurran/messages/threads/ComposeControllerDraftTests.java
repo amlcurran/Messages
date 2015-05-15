@@ -52,7 +52,7 @@ public class ComposeControllerDraftTests {
     public void testLoadingAThreadWithADraftPopulatesTheComposeView() {
         when(mockDraftRepo.getDraft(any(PhoneNumber.class))).thenReturn("hello");
         AssertingComposeView composeView = new AssertingComposeView();
-        ComposeMessageViewController controller = new ComposeMessageViewController(composeView, mockDraftRepo, testPhoneNumber, null, mock(DefaultAppChecker.class));
+        ComposeViewController controller = new ComposeViewController(composeView, mockDraftRepo, testPhoneNumber, null, mock(DefaultAppChecker.class));
 
         controller.start();
 
@@ -63,7 +63,7 @@ public class ComposeControllerDraftTests {
     public void testLoadingWithoutAThreadWithADraftDoesntPopulateTheComposeView() {
         when(mockDraftRepo.getDraft(any(PhoneNumber.class))).thenReturn(null);
         AssertingComposeView composeView = new AssertingComposeView();
-        ComposeMessageViewController controller = new ComposeMessageViewController(composeView, mockDraftRepo, testPhoneNumber, null, mock(DefaultAppChecker.class));
+        ComposeViewController controller = new ComposeViewController(composeView, mockDraftRepo, testPhoneNumber, null, mock(DefaultAppChecker.class));
 
         controller.start();
 
@@ -73,7 +73,7 @@ public class ComposeControllerDraftTests {
     @Test
     public void testStoppingTheControllerWithAComposedMessageSavesIt() {
         AssertingComposeView composeView = new AssertingComposeView();
-        ComposeMessageViewController controller = new ComposeMessageViewController(composeView, mockDraftRepo, testPhoneNumber, null, mock(DefaultAppChecker.class));
+        ComposeViewController controller = new ComposeViewController(composeView, mockDraftRepo, testPhoneNumber, null, mock(DefaultAppChecker.class));
 
         controller.start();
         composeView.setComposedMessage("hello");
@@ -85,7 +85,7 @@ public class ComposeControllerDraftTests {
     @Test
     public void testStoppingTheControllerWithNoComposedMessageClearsTheDraft() {
         AssertingComposeView composeView = new AssertingComposeView();
-        ComposeMessageViewController controller = new ComposeMessageViewController(composeView, mockDraftRepo, testPhoneNumber, null, mock(DefaultAppChecker.class));
+        ComposeViewController controller = new ComposeViewController(composeView, mockDraftRepo, testPhoneNumber, null, mock(DefaultAppChecker.class));
 
         controller.start();
         composeView.setComposedMessage(null);

@@ -49,9 +49,9 @@ public class ComposeControllerDefaultAppTests {
     public void testNotBeingTheDefaultAppDisablesTheComposeView() {
         AssertingComposeView composeView = new AssertingComposeView();
         DefaultApp appChecker = new DefaultApp();
-        ComposeMessageViewController composeMessageViewController = new ComposeMessageViewController(composeView, mockDraftRepo, testPhoneNumber, null, appChecker);
+        ComposeViewController composeViewController = new ComposeViewController(composeView, mockDraftRepo, testPhoneNumber, null, appChecker);
 
-        composeMessageViewController.start();
+        composeViewController.start();
 
         assertThat(composeView.isEnabled, is(false));
     }
@@ -61,9 +61,9 @@ public class ComposeControllerDefaultAppTests {
         AssertingComposeView composeView = new AssertingComposeView();
         DefaultApp appChecker = new DefaultApp();
         appChecker.isDefault = true;
-        ComposeMessageViewController composeMessageViewController = new ComposeMessageViewController(composeView, mockDraftRepo, testPhoneNumber, null, appChecker);
+        ComposeViewController composeViewController = new ComposeViewController(composeView, mockDraftRepo, testPhoneNumber, null, appChecker);
 
-        composeMessageViewController.start();
+        composeViewController.start();
 
         assertThat(composeView.isEnabled, is(true));
     }

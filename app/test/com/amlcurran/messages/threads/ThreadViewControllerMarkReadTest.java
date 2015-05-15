@@ -94,7 +94,7 @@ public class ThreadViewControllerMarkReadTest {
         final NullThreadView threadView = new NullThreadView();
         Contact mockContact = mock(Contact.class);
         DefaultAppChecker mockDefaultAppChecker = mock(DefaultAppChecker.class);
-        ComposeMessageViewController mockComposeController = mock(ComposeMessageViewController.class);
+        ComposeViewController mockComposeController = mock(ComposeViewController.class);
         return new ThreadViewController(thread, mockContact, threadView, mockRepo, scheduledQueue);
     }
 
