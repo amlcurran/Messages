@@ -20,7 +20,6 @@ import com.amlcurran.messages.DependencyRepository;
 import com.amlcurran.messages.ExternalEventManager;
 import com.amlcurran.messages.R;
 import com.amlcurran.messages.core.data.Contact;
-import com.amlcurran.messages.core.data.DraftRepository;
 import com.amlcurran.messages.core.data.PhoneNumberOnlyContact;
 import com.amlcurran.messages.core.data.SmsMessage;
 import com.amlcurran.messages.core.loaders.MessagesLoader;
@@ -37,7 +36,6 @@ class ThreadViewController implements ComposeMessageView.ComposureCallbacks {
 
     public static final int MARK_READ_DELAY = 1000;
     private final Contact contact;
-    private final String composedMessage;
     private final ThreadView threadView;
     private final ScheduledQueue scheduledQueue;
     private final ListSource<SmsMessage> source;
@@ -47,18 +45,16 @@ class ThreadViewController implements ComposeMessageView.ComposureCallbacks {
     private final Thread thread;
     private final ComposeMessageViewController composeMessageViewController;
 
-    public ThreadViewController(Thread thread, Contact contact, String composedMessage, ThreadView threadView, DefaultAppChecker defaultChecker, DependencyRepository dependencyRepository, ScheduledQueue scheduledQueue) {
+    public ThreadViewController(Thread thread, Contact contact, ThreadView threadView, DefaultAppChecker defaultChecker, DependencyRepository dependencyRepository, ScheduledQueue scheduledQueue, ComposeMessageViewController composeMessageViewController) {
         this.contact = contact;
-        this.composedMessage = composedMessage;
         this.threadView = threadView;
         this.scheduledQueue = scheduledQueue;
         this.messageLoader = dependencyRepository.getMessagesLoader();
         this.defaultChecker = defaultChecker;
-        DraftRepository draftRepository = dependencyRepository.getDraftRepository();
         this.externalEventManager = dependencyRepository.getExternalEventManager();
         this.source = new ListSource<>();
         this.thread = thread;
-        this.composeMessageViewController = new ComposeMessageViewController(threadView, draftRepository, contact.getNumber());
+        this.composeMessageViewController = composeMessageViewController;
     }
 
     void start() {
@@ -66,7 +62,7 @@ class ThreadViewController implements ComposeMessageView.ComposureCallbacks {
         defaultChecker.checkSmsApp(threadView);
         thread.setCallbacks(callbacks);
         thread.load();
-        composeMessageViewController.retrieveDraft(composedMessage);
+        composeMessageViewController.retrieveDraft();
     }
 
     void stop() {

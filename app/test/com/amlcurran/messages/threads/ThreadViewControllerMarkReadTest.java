@@ -91,7 +91,8 @@ public class ThreadViewControllerMarkReadTest {
     }
 
     private ThreadViewController threadViewController(Thread thread, ScheduledQueue scheduledQueue) {
-        return new ThreadViewController(thread, mock(Contact.class), null, new NullThreadView(), mock(DefaultAppChecker.class), mockRepo, scheduledQueue);
+        final NullThreadView threadView = new NullThreadView();
+        return new ThreadViewController(thread, mock(Contact.class), threadView, mock(DefaultAppChecker.class), mockRepo, scheduledQueue, new ComposeMessageViewController(threadView, mockRepo.getDraftRepository(), mock(Contact.class).getNumber(), null));
     }
 
     private static class ImmediatelyLoadEmptyThread implements Answer {

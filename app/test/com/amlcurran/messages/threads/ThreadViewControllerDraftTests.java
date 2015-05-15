@@ -114,7 +114,8 @@ public class ThreadViewControllerDraftTests {
     }
 
     private ThreadViewController threadViewController(Thread thread, ScheduledQueue scheduledQueue, ThreadViewController.ThreadView threadView) {
-        return new ThreadViewController(thread, new PhoneNumberOnlyContact(testPhoneNumber), null, threadView, mock(DefaultAppChecker.class), mockRepo, scheduledQueue);
+        final PhoneNumberOnlyContact contact = new PhoneNumberOnlyContact(testPhoneNumber);
+        return new ThreadViewController(thread, contact, threadView, mock(DefaultAppChecker.class), mockRepo, scheduledQueue, new ComposeMessageViewController(threadView, mockDraftRepo, contact.getNumber(), null));
     }
 
     private static class ImmediatelyLoadEmptyThread implements Answer {

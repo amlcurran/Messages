@@ -25,14 +25,16 @@ public class ComposeMessageViewController {
     private final ComposeMessageView threadView;
     private final DraftRepository draftRepository;
     private final PhoneNumber phoneNumber;
+    private final String composedMessage;
 
-    public ComposeMessageViewController(ThreadViewController.ThreadView threadView, DraftRepository draftRepository, PhoneNumber phoneNumber) {
+    public ComposeMessageViewController(ComposeMessageView threadView, DraftRepository draftRepository, PhoneNumber phoneNumber, String composedMessage) {
         this.threadView = threadView;
         this.draftRepository = draftRepository;
         this.phoneNumber = phoneNumber;
+        this.composedMessage = composedMessage;
     }
 
-    void retrieveDraft(String composedMessage) {
+    void retrieveDraft() {
         if (TextUtils.isNotEmpty(composedMessage)) {
             threadView.setComposedMessage(composedMessage);
         } else {
