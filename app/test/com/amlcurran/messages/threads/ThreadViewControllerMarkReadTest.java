@@ -44,7 +44,7 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-public class ThreadViewControllerTest {
+public class ThreadViewControllerMarkReadTest {
 
     @Mock
     private MessagesLoader loader;
