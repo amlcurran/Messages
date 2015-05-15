@@ -90,7 +90,8 @@ public class ComposeControllerDefaultAppTests {
 
     private ThreadViewController threadViewController(Thread thread, ComposeView composeView, DefaultAppChecker appChecker) {
         final PhoneNumberOnlyContact contact = new PhoneNumberOnlyContact(testPhoneNumber);
-        return new ThreadViewController(thread, contact, mock(ThreadViewController.ThreadView.class), appChecker, mockRepo, new NeverExecutingScheduledQueue(), new ComposeMessageViewController(composeView, mockDraftRepo, contact.getNumber(), null));
+        ComposeMessageViewController composeMessageViewController = new ComposeMessageViewController(composeView, mockDraftRepo, contact.getNumber(), null, appChecker);
+        return new ThreadViewController(thread, contact, mock(ThreadViewController.ThreadView.class), mockRepo, new NeverExecutingScheduledQueue(), composeMessageViewController);
     }
 
     private static class ImmediatelyLoadEmptyThread implements Answer {

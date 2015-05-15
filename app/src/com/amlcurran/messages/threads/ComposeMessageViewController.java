@@ -27,12 +27,14 @@ public class ComposeMessageViewController implements DefaultAppChecker.Callback 
     private final DraftRepository draftRepository;
     private final PhoneNumber phoneNumber;
     private final String composedMessage;
+    private final DefaultAppChecker defaultChecker;
 
-    public ComposeMessageViewController(ComposeView threadView, DraftRepository draftRepository, PhoneNumber phoneNumber, String composedMessage) {
+    public ComposeMessageViewController(ComposeView threadView, DraftRepository draftRepository, PhoneNumber phoneNumber, String composedMessage, DefaultAppChecker defaultChecker) {
         this.threadView = threadView;
         this.draftRepository = draftRepository;
         this.phoneNumber = phoneNumber;
         this.composedMessage = composedMessage;
+        this.defaultChecker = defaultChecker;
     }
 
     void retrieveDraft() {
@@ -59,5 +61,14 @@ public class ComposeMessageViewController implements DefaultAppChecker.Callback 
     @Override
     public void isNotDefaultSmsApp() {
         threadView.disable();
+    }
+
+    void start() {
+        defaultChecker.checkSmsApp(this);
+        retrieveDraft();
+    }
+
+    void stop() {
+        saveDraft();
     }
 }

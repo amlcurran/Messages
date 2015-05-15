@@ -99,9 +99,10 @@ public class ThreadFragment extends Fragment implements
         StandardComposeCallbacks composeCallbacks = new StandardComposeCallbacks(getActivity(), contact.getNumber(), listener);
         com.amlcurran.messages.core.threads.Thread thread = new Thread(dependencyRepository.getMessagesLoader(), messageReceiver, contact.getNumber(), threadId, SingletonManager.getMessageTransport(getActivity()));
 
-        ComposeMessageViewController composeMessageViewController = new ComposeMessageViewController(composeView, dependencyRepository.getDraftRepository(), contact.getNumber(), getArguments().getString(COMPOSED_MESSAGE));
+        ComposeMessageViewController composeMessageViewController = new ComposeMessageViewController(composeView, dependencyRepository.getDraftRepository(), contact.getNumber(), getArguments().getString(COMPOSED_MESSAGE),
+                defaultChecker);
         threadViewController = new ThreadViewController(thread, contact,
-                this, defaultChecker, dependencyRepository, new HandlerScheduledQueue(new Handler(Looper.getMainLooper())), composeMessageViewController);
+                this, dependencyRepository, new HandlerScheduledQueue(new Handler(Looper.getMainLooper())), composeMessageViewController);
         composeView.setComposeListener(threadViewController);
 
         setHasOptionsMenu(true);

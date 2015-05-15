@@ -25,7 +25,6 @@ import com.amlcurran.messages.core.data.SmsMessage;
 import com.amlcurran.messages.core.loaders.MessagesLoader;
 import com.amlcurran.messages.core.loaders.OnContactQueryListener;
 import com.amlcurran.messages.core.threads.Thread;
-import com.amlcurran.messages.telephony.DefaultAppChecker;
 import com.amlcurran.messages.ui.ComposeMessageView;
 import com.amlcurran.sourcebinder.source.ListSource;
 
@@ -39,18 +38,16 @@ class ThreadViewController implements ComposeMessageView.ComposureCallbacks {
     private final ThreadView threadView;
     private final ScheduledQueue scheduledQueue;
     private final ListSource<SmsMessage> source;
-    private final DefaultAppChecker defaultChecker;
     private final ExternalEventManager externalEventManager;
     private final MessagesLoader messageLoader;
     private final Thread thread;
     private final ComposeMessageViewController composeMessageViewController;
 
-    public ThreadViewController(Thread thread, Contact contact, ThreadView threadView, DefaultAppChecker defaultChecker, DependencyRepository dependencyRepository, ScheduledQueue scheduledQueue, ComposeMessageViewController composeMessageViewController) {
+    public ThreadViewController(Thread thread, Contact contact, ThreadView threadView, DependencyRepository dependencyRepository, ScheduledQueue scheduledQueue, ComposeMessageViewController composeMessageViewController) {
         this.contact = contact;
         this.threadView = threadView;
         this.scheduledQueue = scheduledQueue;
         this.messageLoader = dependencyRepository.getMessagesLoader();
-        this.defaultChecker = defaultChecker;
         this.externalEventManager = dependencyRepository.getExternalEventManager();
         this.source = new ListSource<>();
         this.thread = thread;
@@ -59,15 +56,14 @@ class ThreadViewController implements ComposeMessageView.ComposureCallbacks {
 
     void start() {
         setUpContactView(contact);
-        defaultChecker.checkSmsApp(composeMessageViewController);
         thread.setCallbacks(callbacks);
         thread.load();
-        composeMessageViewController.retrieveDraft();
+        composeMessageViewController.start();
     }
 
     void stop() {
         thread.unsetCallbacks();
-        composeMessageViewController.saveDraft();
+        composeMessageViewController.stop();
         scheduledQueue.removeEvents(runnable);
     }
 
