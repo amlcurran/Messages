@@ -19,7 +19,7 @@ package com.amlcurran.messages.threads;
 class AssertingComposeView implements ComposeView {
 
     String composedMessage;
-    boolean isDefaultApp;
+    boolean isEnabled;
 
     @Override
     public String getComposedMessage() {
@@ -32,12 +32,13 @@ class AssertingComposeView implements ComposeView {
     }
 
     @Override
-    public void isDefaultSmsApp() {
-        isDefaultApp = true;
+    public void disable() {
+        isEnabled = false;
     }
 
     @Override
-    public void isNotDefaultSmsApp() {
-        isDefaultApp = false;
+    public void enable() {
+        isEnabled = true;
     }
+
 }

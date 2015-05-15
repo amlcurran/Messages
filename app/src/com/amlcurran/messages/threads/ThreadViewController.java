@@ -59,7 +59,7 @@ class ThreadViewController implements ComposeMessageView.ComposureCallbacks {
 
     void start() {
         setUpContactView(contact);
-        defaultChecker.checkSmsApp(threadView);
+        defaultChecker.checkSmsApp(composeMessageViewController);
         thread.setCallbacks(callbacks);
         thread.load();
         composeMessageViewController.retrieveDraft();
@@ -127,7 +127,7 @@ class ThreadViewController implements ComposeMessageView.ComposureCallbacks {
         thread.sendMessage(body);
     }
 
-    public interface ThreadView extends DefaultAppChecker.Callback {
+    public interface ThreadView {
 
         void bindContactToHeader(Contact contact);
 

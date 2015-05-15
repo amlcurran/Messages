@@ -45,7 +45,7 @@ import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-public class ComposeControlleDefaultAppTests {
+public class ComposeControllerDefaultAppTests {
 
     private final TestPhoneNumber testPhoneNumber = new TestPhoneNumber();
     @Mock
@@ -73,7 +73,19 @@ public class ComposeControlleDefaultAppTests {
 
         threadViewController.start();
 
-        assertThat(threadView.isDefaultApp, is(false));
+        assertThat(threadView.isEnabled, is(false));
+    }
+
+    @Test
+    public void testBeingTheDefaultAppEnablesTheComposeView() {
+        AssertingComposeView threadView = new AssertingComposeView();
+        DefaultApp appChecker = new DefaultApp();
+        appChecker.isDefault = true;
+        ThreadViewController threadViewController = threadViewController(thread, threadView, appChecker);
+
+        threadViewController.start();
+
+        assertThat(threadView.isEnabled, is(true));
     }
 
     private ThreadViewController threadViewController(Thread thread, ComposeView composeView, DefaultAppChecker appChecker) {

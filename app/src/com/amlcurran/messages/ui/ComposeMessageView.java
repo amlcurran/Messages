@@ -29,11 +29,11 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.amlcurran.messages.R;
-import com.amlcurran.messages.telephony.DefaultAppChecker;
 import com.amlcurran.messages.telephony.SmsCounter;
+import com.amlcurran.messages.threads.ComposeView;
 
 
-public class ComposeMessageView extends LinearLayout implements View.OnClickListener, TextWatcher, DefaultAppChecker.Callback {
+public class ComposeMessageView extends LinearLayout implements View.OnClickListener, TextWatcher, ComposeView {
 
     private final EditText textEntryField;
     private final ImageButton sendButton;
@@ -118,22 +118,8 @@ public class ComposeMessageView extends LinearLayout implements View.OnClickList
         this.messageComposedListener = messageComposedListener;
     }
 
-    @Override
-    public void isDefaultSmsApp() {
-        sendButton.setEnabled(hasText());
-        textEntryField.setEnabled(true);
-        textEntryField.setHint(R.string.hint_send_message);
-    }
-
     private boolean hasText() {
         return !TextUtils.isEmpty(textEntryField.getText());
-    }
-
-    @Override
-    public void isNotDefaultSmsApp() {
-        sendButton.setEnabled(false);
-        textEntryField.setEnabled(false);
-        textEntryField.setHint(R.string.hint_send_message_disabled);
     }
 
     public void setText(String message) {
@@ -142,6 +128,30 @@ public class ComposeMessageView extends LinearLayout implements View.OnClickList
 
     public String getText() {
         return String.valueOf(textEntryField.getText());
+    }
+
+    @Override
+    public String getComposedMessage() {
+        return getText();
+    }
+
+    @Override
+    public void setComposedMessage(String composedMessage) {
+        setText(composedMessage);
+    }
+
+    @Override
+    public void disable() {
+        sendButton.setEnabled(false);
+        textEntryField.setEnabled(false);
+        textEntryField.setHint(R.string.hint_send_message_disabled);
+    }
+
+    @Override
+    public void enable() {
+        sendButton.setEnabled(hasText());
+        textEntryField.setEnabled(true);
+        textEntryField.setHint(R.string.hint_send_message);
     }
 
     public interface ComposureCallbacks {

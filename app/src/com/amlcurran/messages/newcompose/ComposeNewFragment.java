@@ -116,12 +116,12 @@ public class ComposeNewFragment extends Fragment implements ComposeNewView {
 
     @Override
     public void isDefaultSmsApp() {
-        composeView.isDefaultSmsApp();
+        composeView.enable();
     }
 
     @Override
     public void isNotDefaultSmsApp() {
-        composeView.isNotDefaultSmsApp();
+        composeView.disable();
     }
 
     private class NotifyControllerClickListener implements android.widget.AdapterView.OnItemClickListener {

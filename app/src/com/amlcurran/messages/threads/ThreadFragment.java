@@ -50,7 +50,7 @@ import com.amlcurran.sourcebinder.recyclerview.RecyclerSourceBinderAdapter;
 import com.espian.utils.ProviderHelper;
 
 public class ThreadFragment extends Fragment implements
-        CustomHeaderFragment<DefaultRoundContactView>, ThreadViewController.ThreadView, ComposeView {
+        CustomHeaderFragment<DefaultRoundContactView>, ThreadViewController.ThreadView {
 
     static final String THREAD_ID = "threadId";
     static final String CONTACT = "contact";
@@ -99,8 +99,9 @@ public class ThreadFragment extends Fragment implements
         StandardComposeCallbacks composeCallbacks = new StandardComposeCallbacks(getActivity(), contact.getNumber(), listener);
         com.amlcurran.messages.core.threads.Thread thread = new Thread(dependencyRepository.getMessagesLoader(), messageReceiver, contact.getNumber(), threadId, SingletonManager.getMessageTransport(getActivity()));
 
+        ComposeMessageViewController composeMessageViewController = new ComposeMessageViewController(composeView, dependencyRepository.getDraftRepository(), contact.getNumber(), getArguments().getString(COMPOSED_MESSAGE));
         threadViewController = new ThreadViewController(thread, contact,
-                this, defaultChecker, dependencyRepository, new HandlerScheduledQueue(new Handler(Looper.getMainLooper())), new ComposeMessageViewController(this, dependencyRepository.getDraftRepository(), contact.getNumber(), getArguments().getString(COMPOSED_MESSAGE)));
+                this, defaultChecker, dependencyRepository, new HandlerScheduledQueue(new Handler(Looper.getMainLooper())), composeMessageViewController);
         composeView.setComposeListener(threadViewController);
 
         setHasOptionsMenu(true);
@@ -151,16 +152,6 @@ public class ThreadFragment extends Fragment implements
     }
 
     @Override
-    public String getComposedMessage() {
-        return composeView.getText();
-    }
-
-    @Override
-    public void setComposedMessage(String composedMessage) {
-        composeView.setText(composedMessage);
-    }
-
-    @Override
     public void finish() {
         getActivity().finish();
     }
@@ -168,16 +159,6 @@ public class ThreadFragment extends Fragment implements
     @Override
     public void scrollTo(int position) {
         recyclerView.scrollToPosition(position);
-    }
-
-    @Override
-    public void isDefaultSmsApp() {
-        composeView.isDefaultSmsApp();
-    }
-
-    @Override
-    public void isNotDefaultSmsApp() {
-        composeView.isNotDefaultSmsApp();
     }
 
     private class HandlerScheduledQueue implements ScheduledQueue {

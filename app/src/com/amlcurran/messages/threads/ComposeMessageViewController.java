@@ -19,8 +19,9 @@ package com.amlcurran.messages.threads;
 import com.amlcurran.messages.core.TextUtils;
 import com.amlcurran.messages.core.data.DraftRepository;
 import com.amlcurran.messages.core.data.PhoneNumber;
+import com.amlcurran.messages.telephony.DefaultAppChecker;
 
-public class ComposeMessageViewController {
+public class ComposeMessageViewController implements DefaultAppChecker.Callback {
 
     private final ComposeView threadView;
     private final DraftRepository draftRepository;
@@ -48,5 +49,15 @@ public class ComposeMessageViewController {
         } else {
             draftRepository.clearDraft(phoneNumber);
         }
+    }
+
+    @Override
+    public void isDefaultSmsApp() {
+        threadView.enable();
+    }
+
+    @Override
+    public void isNotDefaultSmsApp() {
+        threadView.disable();
     }
 }

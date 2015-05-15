@@ -16,10 +16,12 @@
 
 package com.amlcurran.messages.threads;
 
-import com.amlcurran.messages.telephony.DefaultAppChecker;
-
-public interface ComposeView extends DefaultAppChecker.Callback {
+public interface ComposeView {
     String getComposedMessage();
 
     void setComposedMessage(String composedMessage);
+
+    void disable();
+
+    void enable();
 }

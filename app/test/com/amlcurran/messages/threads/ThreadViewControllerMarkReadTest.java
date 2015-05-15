@@ -148,15 +148,6 @@ public class ThreadViewControllerMarkReadTest {
 
         }
 
-        @Override
-        public void isDefaultSmsApp() {
-
-        }
-
-        @Override
-        public void isNotDefaultSmsApp() {
-
-        }
     }
 
     private class ImmediatelyExecutingScheduledQueue implements ScheduledQueue {
