@@ -22,12 +22,12 @@ import com.amlcurran.messages.core.data.PhoneNumber;
 
 public class ComposeMessageViewController {
 
-    private final ComposeMessageView threadView;
+    private final ComposeView threadView;
     private final DraftRepository draftRepository;
     private final PhoneNumber phoneNumber;
     private final String composedMessage;
 
-    public ComposeMessageViewController(ComposeMessageView threadView, DraftRepository draftRepository, PhoneNumber phoneNumber, String composedMessage) {
+    public ComposeMessageViewController(ComposeView threadView, DraftRepository draftRepository, PhoneNumber phoneNumber, String composedMessage) {
         this.threadView = threadView;
         this.draftRepository = draftRepository;
         this.phoneNumber = phoneNumber;

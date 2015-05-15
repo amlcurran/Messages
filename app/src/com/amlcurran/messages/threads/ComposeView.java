@@ -16,7 +16,7 @@
 
 package com.amlcurran.messages.threads;
 
-public interface ComposeMessageView {
+public interface ComposeView {
     String getComposedMessage();
 
     void setComposedMessage(String composedMessage);
