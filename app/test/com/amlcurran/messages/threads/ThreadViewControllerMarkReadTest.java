@@ -92,7 +92,7 @@ public class ThreadViewControllerMarkReadTest {
 
     private ThreadViewController threadViewController(Thread thread, ScheduledQueue scheduledQueue) {
         final NullThreadView threadView = new NullThreadView();
-        return new ThreadViewController(thread, mock(Contact.class), threadView, mock(DefaultAppChecker.class), mockRepo, scheduledQueue, new ComposeMessageViewController(threadView, mockRepo.getDraftRepository(), mock(Contact.class).getNumber(), null));
+        return new ThreadViewController(thread, mock(Contact.class), threadView, mock(DefaultAppChecker.class), mockRepo, scheduledQueue, mock(ComposeMessageViewController.class));
     }
 
     private static class ImmediatelyLoadEmptyThread implements Answer {
@@ -132,16 +132,6 @@ public class ThreadViewControllerMarkReadTest {
     private static class NullThreadView implements ThreadViewController.ThreadView {
         @Override
         public void bindContactToHeader(Contact contact) {
-
-        }
-
-        @Override
-        public String getComposedMessage() {
-            return null;
-        }
-
-        @Override
-        public void setComposedMessage(String composedMessage) {
 
         }
 

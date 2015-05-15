@@ -50,7 +50,7 @@ import com.amlcurran.sourcebinder.recyclerview.RecyclerSourceBinderAdapter;
 import com.espian.utils.ProviderHelper;
 
 public class ThreadFragment extends Fragment implements
-        CustomHeaderFragment<DefaultRoundContactView>, ThreadViewController.ThreadView, ThreadView {
+        CustomHeaderFragment<DefaultRoundContactView>, ThreadViewController.ThreadView, ComposeView {
 
     static final String THREAD_ID = "threadId";
     static final String CONTACT = "contact";

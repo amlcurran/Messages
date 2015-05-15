@@ -17,7 +17,6 @@
 package com.amlcurran.messages.threads;
 
 import com.amlcurran.messages.DependencyRepository;
-import com.amlcurran.messages.core.data.Contact;
 import com.amlcurran.messages.core.data.DraftRepository;
 import com.amlcurran.messages.core.data.PhoneNumber;
 import com.amlcurran.messages.core.data.PhoneNumberOnlyContact;
@@ -113,9 +112,9 @@ public class ThreadViewControllerDraftTests {
         verify(mockDraftRepo).clearDraft(testPhoneNumber);
     }
 
-    private ThreadViewController threadViewController(Thread thread, ScheduledQueue scheduledQueue, ThreadViewController.ThreadView threadView) {
+    private ThreadViewController threadViewController(Thread thread, ScheduledQueue scheduledQueue, ComposeView composeView) {
         final PhoneNumberOnlyContact contact = new PhoneNumberOnlyContact(testPhoneNumber);
-        return new ThreadViewController(thread, contact, threadView, mock(DefaultAppChecker.class), mockRepo, scheduledQueue, new ComposeMessageViewController(threadView, mockDraftRepo, contact.getNumber(), null));
+        return new ThreadViewController(thread, contact, mock(ThreadViewController.ThreadView.class), mock(DefaultAppChecker.class), mockRepo, scheduledQueue, new ComposeMessageViewController(composeView, mockDraftRepo, contact.getNumber(), null));
     }
 
     private static class ImmediatelyLoadEmptyThread implements Answer {
@@ -127,14 +126,9 @@ public class ThreadViewControllerDraftTests {
         }
     }
 
-    private class AssertingThreadView implements ThreadViewController.ThreadView {
+    private class AssertingThreadView implements ComposeView {
 
         private String composedMessage;
-
-        @Override
-        public void bindContactToHeader(Contact contact) {
-
-        }
 
         @Override
         public String getComposedMessage() {
@@ -146,25 +140,6 @@ public class ThreadViewControllerDraftTests {
             this.composedMessage = composedMessage;
         }
 
-        @Override
-        public void finish() {
-
-        }
-
-        @Override
-        public void scrollTo(int position) {
-
-        }
-
-        @Override
-        public void isDefaultSmsApp() {
-
-        }
-
-        @Override
-        public void isNotDefaultSmsApp() {
-
-        }
     }
 
     private static class NeverExecutingScheduledQueue implements ScheduledQueue {

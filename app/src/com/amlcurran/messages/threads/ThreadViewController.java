@@ -127,13 +127,14 @@ class ThreadViewController implements ComposeMessageView.ComposureCallbacks {
         thread.sendMessage(body);
     }
 
-    public interface ThreadView extends DefaultAppChecker.Callback, ComposeView {
+    public interface ThreadView extends DefaultAppChecker.Callback {
 
         void bindContactToHeader(Contact contact);
 
         void finish();
 
         void scrollTo(int position);
+
     }
 
 }
