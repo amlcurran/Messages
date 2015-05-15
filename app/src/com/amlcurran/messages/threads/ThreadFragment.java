@@ -102,8 +102,7 @@ public class ThreadFragment extends Fragment implements
 
         composeViewController = new ComposeViewController(composeView, dependencyRepository.getDraftRepository(), contact.getNumber(), getArguments().getString(COMPOSED_MESSAGE),
                 defaultChecker);
-        threadViewController = new ThreadViewController(thread, contact,
-                this, dependencyRepository, new HandlerScheduledQueue(new Handler(Looper.getMainLooper())));
+        threadViewController = new ThreadViewController(thread, contact, this, dependencyRepository, new HandlerScheduledQueue(new Handler(Looper.getMainLooper())));
         composeView.setComposeListener(threadViewController);
 
         setHasOptionsMenu(true);
