@@ -183,7 +183,7 @@ public class MessagesActivity extends ActionBarActivity implements
 
     @Override
     public void sendSms(InFlightSmsMessage smsMessage) {
-        startService(SmsManagerOutputPort.sendMessageIntent(this, smsMessage));
+        startService(SmsManagerOutputPort.sendMessageIntent(this, null, smsMessage));
     }
 
     @Override

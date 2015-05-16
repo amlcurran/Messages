@@ -26,22 +26,19 @@ import com.amlcurran.messages.DependencyRepository;
 import com.amlcurran.messages.ExternalEventManager;
 import com.amlcurran.messages.R;
 import com.amlcurran.messages.SingletonManager;
-import com.amlcurran.messages.SmsComposeListener;
 import com.amlcurran.messages.core.data.DraftRepository;
-import com.amlcurran.messages.core.preferences.PreferenceStore;
-import com.amlcurran.messages.data.InFlightSmsMessage;
 import com.amlcurran.messages.core.loaders.MessagesLoader;
+import com.amlcurran.messages.core.preferences.PreferenceStore;
 import com.amlcurran.messages.preferences.PreferenceStoreDraftRepository;
 import com.amlcurran.messages.preferences.SharedPreferenceStore;
 import com.amlcurran.messages.reporting.LoggingStatReporter;
-import com.amlcurran.messages.telephony.SmsManagerOutputPort;
 import com.amlcurran.messages.transition.TransitionManager;
 import com.amlcurran.messages.ui.actionbar.ActionBarHeaderCallback;
 import com.amlcurran.messages.ui.actionbar.HoloActionBarController;
 import com.amlcurran.messages.ui.control.FragmentController;
 import com.amlcurran.messages.ui.control.TwoPaneFullScreenFragmentViewController;
 
-public class ThreadActivity extends ActionBarActivity implements DependencyRepository, FragmentController.FragmentCallback, SmsComposeListener {
+public class ThreadActivity extends ActionBarActivity implements DependencyRepository, FragmentController.FragmentCallback {
 
     private TransitionManager transitionManager;
     private ExternalEventManager externalEventManager;
@@ -146,8 +143,4 @@ public class ThreadActivity extends ActionBarActivity implements DependencyRepos
 
     }
 
-    @Override
-    public void sendSms(InFlightSmsMessage smsMessage) {
-        startService(SmsManagerOutputPort.sendMessageIntent(this, smsMessage));
-    }
 }

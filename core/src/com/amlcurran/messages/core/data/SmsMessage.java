@@ -18,7 +18,9 @@ package com.amlcurran.messages.core.data;
 
 import com.amlcurran.messages.core.threads.InFlightSmsMessage;
 
-public class SmsMessage {
+import java.io.Serializable;
+
+public class SmsMessage implements Serializable {
 
     private final PhoneNumber address;
     private final String body;

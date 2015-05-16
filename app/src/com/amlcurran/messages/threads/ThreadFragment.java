@@ -34,7 +34,6 @@ import android.view.ViewGroup;
 import com.amlcurran.messages.DependencyRepository;
 import com.amlcurran.messages.R;
 import com.amlcurran.messages.SingletonManager;
-import com.amlcurran.messages.SmsComposeListener;
 import com.amlcurran.messages.bucket.BundleBuilder;
 import com.amlcurran.messages.core.data.Contact;
 import com.amlcurran.messages.core.data.SmsMessage;
@@ -47,7 +46,6 @@ import com.amlcurran.messages.ui.ComposeMessageView;
 import com.amlcurran.messages.ui.CustomHeaderFragment;
 import com.amlcurran.messages.ui.contact.DefaultRoundContactView;
 import com.amlcurran.sourcebinder.recyclerview.RecyclerSourceBinderAdapter;
-import com.espian.utils.ProviderHelper;
 
 public class ThreadFragment extends Fragment implements
         CustomHeaderFragment<DefaultRoundContactView>, ThreadViewController.ThreadView {
@@ -96,8 +94,6 @@ public class ThreadFragment extends Fragment implements
         EventSubscriber messageReceiver = new BroadcastEventSubscriber(getActivity());
         DefaultAppChecker defaultChecker = new DefaultAppChecker(getActivity());
 
-        SmsComposeListener listener = new ProviderHelper<>(SmsComposeListener.class).get(getActivity());
-        StandardComposeCallbacks composeCallbacks = new StandardComposeCallbacks(getActivity(), contact.getNumber(), listener);
         com.amlcurran.messages.core.threads.Thread thread = new Thread(dependencyRepository.getMessagesLoader(), messageReceiver, contact.getNumber(), threadId, SingletonManager.getMessageTransport(getActivity()));
 
         composeViewController = new ComposeViewController(composeView, dependencyRepository.getDraftRepository(), contact.getNumber(), getArguments().getString(COMPOSED_MESSAGE),
@@ -107,7 +103,7 @@ public class ThreadFragment extends Fragment implements
 
         setHasOptionsMenu(true);
 
-        ResendCallback resendCallback = new DeleteFailedResender(getActivity(), composeCallbacks);
+        ResendCallback resendCallback = new DeleteFailedResender(getActivity(), null);
         ThreadRecyclerBinder binder = new ThreadRecyclerBinder(getResources(), resendCallback);
         RecyclerSourceBinderAdapter<SmsMessage, ThreadRecyclerBinder.ViewHolder> binderAdapter =
                 new RecyclerSourceBinderAdapter<>(threadViewController.getSource(), binder);

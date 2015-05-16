@@ -82,6 +82,7 @@ public class MessagesApp extends Application implements BroadcastEventSubscriber
         cache = new MemoryMessagesCache();
         eventBus = new BroadcastEventBus(this);
         messageTransport = new AndroidMessageTransport(this);
+        messageTransport.start();
 
         if (BuildConfig.FLAVOR.equals("demo")) {
             DemoMessagesLoader demoMessagesLoader = new DemoMessagesLoader(this);
@@ -141,6 +142,7 @@ public class MessagesApp extends Application implements BroadcastEventSubscriber
         conversationList.removeCallbacks(updateNotificationListener);
         subscriber.stopListening();
         loader.cancelAll();
+        messageTransport.stop();
     }
 
     @Override

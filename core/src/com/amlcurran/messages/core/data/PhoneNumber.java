@@ -16,7 +16,9 @@
 
 package com.amlcurran.messages.core.data;
 
-public interface PhoneNumber {
+import java.io.Serializable;
+
+public interface PhoneNumber extends Serializable {
     String flatten();
 
     boolean isValid();

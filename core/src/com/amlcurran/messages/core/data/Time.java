@@ -18,7 +18,9 @@ package com.amlcurran.messages.core.data;
 
 import org.joda.time.DateTime;
 
-public class Time {
+import java.io.Serializable;
+
+public class Time implements Serializable {
 
     private final long millis;
 

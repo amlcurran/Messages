@@ -24,6 +24,7 @@ import android.os.Bundle;
 import android.support.v4.app.RemoteInput;
 import android.telephony.SmsManager;
 
+import com.amlcurran.messages.AndroidMessageTransport;
 import com.amlcurran.messages.MessagesLog;
 import com.amlcurran.messages.SingletonManager;
 import com.amlcurran.messages.core.data.SmsMessage;
@@ -43,6 +44,7 @@ public class SmsManagerOutputPort extends IntentService {
     public static final String FROM_WEAR = "wear";
     public static final String EXTRA_NUMBER = "number";
     public static final String EXTRA_VOICE_REPLY = "voice_reply";
+    private static final String EXTRA_THREAD_ID = "thread_id";
 
     private final MessageRepository messageRepository;
     private final SmsManager smsManager;
@@ -65,6 +67,7 @@ public class SmsManagerOutputPort extends IntentService {
         MessagesLog.d(this, intent.toString());
         if (isSendRequest(intent)) {
 
+            String threadId = intent.getStringExtra(EXTRA_THREAD_ID);
             InFlightSmsMessage message;
             if (isFromWear(intent)) {
                 message = extractInFlightFromWear(intent);
@@ -72,6 +75,7 @@ public class SmsManagerOutputPort extends IntentService {
                 message = intent.getParcelableExtra(EXTRA_MESSAGE);
             }
             SmsMessage smsMessage = messageRepository.send(message, getContentResolver());
+            sendBroadcast(AndroidMessageTransport.sendingMessageBroadcast(this, threadId, smsMessage));
             sendToApi(smsMessage);
 
         } else if (ACTION_RESEND.equals(intent.getAction())) {
@@ -118,10 +122,11 @@ public class SmsManagerOutputPort extends IntentService {
         return ACTION_SEND_REQUEST.equals(intent.getAction());
     }
 
-    public static Intent sendMessageIntent(Context context, InFlightSmsMessage smsMessage) {
+    public static Intent sendMessageIntent(Context context, String threadId, InFlightSmsMessage smsMessage) {
         Intent sendMessageIntent = new Intent(context, SmsManagerOutputPort.class);
         sendMessageIntent.setAction(SmsManagerOutputPort.ACTION_SEND_REQUEST);
         sendMessageIntent.putExtra(SmsManagerOutputPort.EXTRA_MESSAGE, smsMessage);
+        sendMessageIntent.putExtra(SmsManagerOutputPort.EXTRA_THREAD_ID, threadId);
         return sendMessageIntent;
     }
 

@@ -25,7 +25,11 @@ public interface MessageTransport {
 
     void stopListeningToThread(String threadId);
 
-    public interface TransportCallbacks {
+    void start();
+
+    void stop();
+
+    interface TransportCallbacks {
         void messageSending(SmsMessage message);
     }
 }

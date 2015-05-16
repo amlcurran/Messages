@@ -97,7 +97,7 @@ public class SmsManagerInputPort extends IntentService {
 
         static PendingIntent broadcast(Context context, SmsMessage message, long messageId) {
             Intent intent = new Intent(context, InputReceiver.class);
-            intent.putExtra(SmsManagerInputPort.EXTRA_PHONE_NUMBER, ((ParcelablePhoneNumber) message.getAddress()));
+            intent.putExtra(SmsManagerInputPort.EXTRA_PHONE_NUMBER, ((Parcelable) message.getAddress()));
             intent.putExtra(SmsManagerInputPort.EXTRA_MESSAGE_ID, messageId);
             return PendingIntent.getBroadcast(context, 2, intent, PendingIntent.FLAG_CANCEL_CURRENT);
         }

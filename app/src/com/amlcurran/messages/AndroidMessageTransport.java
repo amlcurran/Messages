@@ -16,6 +16,11 @@
 
 package com.amlcurran.messages;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
+
 import com.amlcurran.messages.core.data.SmsMessage;
 import com.amlcurran.messages.core.threads.InFlightSmsMessage;
 import com.amlcurran.messages.core.threads.MessageTransport;
@@ -25,7 +30,26 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class AndroidMessageTransport implements MessageTransport {
+    private static final String MESSAGE = "extra_message";
+    private static final String BROADCAST_SENDING = BuildConfig.APPLICATION_ID + ".SENDING";
+    private static final String THREAD_ID = "extra-thread-id";
     private final MessagesApp messagesApp;
+    private final BroadcastReceiver handleInputs = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, final Intent intent) {
+            if (BROADCAST_SENDING.equals(intent.getAction())) {
+                String threadId = intent.getStringExtra(THREAD_ID);
+                notifyListeners(threadId, new CallbackAction() {
+
+                    @Override
+                    public void act(TransportCallbacks callbacks) {
+                        SmsMessage smsMessage = (SmsMessage) intent.getSerializableExtra(MESSAGE);
+                        callbacks.messageSending(smsMessage);
+                    }
+                });
+            }
+        }
+    };
     private final Map<String, TransportCallbacks> callbacksMap;
 
     public AndroidMessageTransport(MessagesApp messagesApp) {
@@ -37,16 +61,7 @@ public class AndroidMessageTransport implements MessageTransport {
     public void sendFromThread(String threadId, final InFlightSmsMessage message) {
         com.amlcurran.messages.data.InFlightSmsMessage newInFlightSms = new com.amlcurran.messages.data.InFlightSmsMessage(message.getNumber(),
                 message.getBody().toString(), message.getTimestamp());
-        messagesApp.startService(SmsManagerOutputPort.sendMessageIntent(messagesApp, newInFlightSms));
-        notifyListeners(threadId, new CallbackAction() {
-
-            @Override
-            public void act(TransportCallbacks callbacks) {
-                //STOPSHIP incorrect ID
-                SmsMessage sendingMessage = new SmsMessage(15, message.getNumber(), String.valueOf(message.getBody()), message.getTimestamp(), SmsMessage.Type.SENDING);
-                callbacks.messageSending(sendingMessage);
-            }
-        });
+        messagesApp.startService(SmsManagerOutputPort.sendMessageIntent(messagesApp, threadId, newInFlightSms));
     }
 
     private void notifyListeners(String threadId, CallbackAction callbackAction) {
@@ -65,8 +80,31 @@ public class AndroidMessageTransport implements MessageTransport {
         callbacksMap.remove(threadId);
     }
 
+    @Override
+    public void start() {
+        messagesApp.registerReceiver(handleInputs, transportFilter());
+    }
+
+    @Override
+    public void stop() {
+        messagesApp.unregisterReceiver(handleInputs);
+    }
+
+    public static Intent sendingMessageBroadcast(Context context, String threadId, SmsMessage smsMessage) {
+        return new Intent(BROADCAST_SENDING)
+                .setPackage(context.getPackageName())
+                .putExtra(MESSAGE, smsMessage)
+                .putExtra(THREAD_ID, threadId);
+    }
+
     private interface CallbackAction {
         void act(TransportCallbacks callbacks);
+    }
+
+    private IntentFilter transportFilter() {
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(BROADCAST_SENDING);
+        return filter;
     }
 
 }
