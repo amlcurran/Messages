@@ -26,7 +26,6 @@ import com.amlcurran.messages.core.loaders.MessagesLoader;
 import com.amlcurran.messages.core.loaders.ThreadListener;
 import com.amlcurran.messages.core.threads.MessageTransport;
 import com.amlcurran.messages.core.threads.Thread;
-import com.amlcurran.messages.telephony.DefaultAppChecker;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -63,7 +62,9 @@ public class ThreadViewControllerMarkReadTest {
 
     @Test
     public void testLoadingAThreadDoesNotMarkAsReadBeforeTimeout() {
-        ThreadViewController threadViewController = threadViewController(thread, new NeverExecutingScheduledQueue());
+        final NullThreadView threadView = new NullThreadView();
+        Contact mockContact = mock(Contact.class);
+        ThreadViewController threadViewController = new ThreadViewController(thread, mockContact, threadView, mockRepo, new NeverExecutingScheduledQueue());
 
         threadViewController.start();
 
@@ -72,7 +73,9 @@ public class ThreadViewControllerMarkReadTest {
 
     @Test
     public void testLoadingAThreadMarksAsReadAfterTimeout() {
-        ThreadViewController threadViewController = threadViewController(thread, new ImmediatelyExecutingScheduledQueue());
+        final NullThreadView threadView = new NullThreadView();
+        Contact mockContact = mock(Contact.class);
+        ThreadViewController threadViewController = new ThreadViewController(thread, mockContact, threadView, mockRepo, new ImmediatelyExecutingScheduledQueue());
 
         threadViewController.start();
 
@@ -82,20 +85,14 @@ public class ThreadViewControllerMarkReadTest {
     @Test
     public void testStoppingAThreadBeforeTimeoutDoesNotMarkAsRead() {
         ScheduledQueue scheduledQueue = mock(ScheduledQueue.class);
-        ThreadViewController threadViewController = threadViewController(thread, scheduledQueue);
+        final NullThreadView threadView = new NullThreadView();
+        Contact mockContact = mock(Contact.class);
+        ThreadViewController threadViewController = new ThreadViewController(thread, mockContact, threadView, mockRepo, scheduledQueue);
 
         threadViewController.start();
         threadViewController.stop();
 
         verify(scheduledQueue).removeEvents(any(Runnable.class));
-    }
-
-    private ThreadViewController threadViewController(Thread thread, ScheduledQueue scheduledQueue) {
-        final NullThreadView threadView = new NullThreadView();
-        Contact mockContact = mock(Contact.class);
-        DefaultAppChecker mockDefaultAppChecker = mock(DefaultAppChecker.class);
-        ComposeViewController mockComposeController = mock(ComposeViewController.class);
-        return new ThreadViewController(thread, mockContact, threadView, mockRepo, scheduledQueue);
     }
 
     private static class ImmediatelyLoadEmptyThread implements Answer {
