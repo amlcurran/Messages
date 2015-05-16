@@ -40,6 +40,7 @@ public class LoadingView extends View implements TimeAnimator.TimeListener {
     private float duration;
     private int width;
     private int height;
+    private TimeAnimator animator;
 
     public LoadingView(Context context, AttributeSet attrs) {
         this(context, attrs, R.style.LoadingView);
@@ -59,8 +60,6 @@ public class LoadingView extends View implements TimeAnimator.TimeListener {
         setUpDimensions();
         if (isInEditMode()) {
             duration = 1200f;
-        } else {
-            setUpAnimator();
         }
 
         director = new AnimationDirector();
@@ -75,8 +74,20 @@ public class LoadingView extends View implements TimeAnimator.TimeListener {
         bubbleDrawable.setBounds(0, 0, bubbleDrawable.getIntrinsicWidth(), bubbleDrawable.getIntrinsicHeight());
     }
 
+    @Override
+    protected void onAttachedToWindow() {
+        super.onAttachedToWindow();
+        setUpAnimator();
+    }
+
+    @Override
+    protected void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
+        animator.cancel();
+    }
+
     private void setUpAnimator() {
-        TimeAnimator animator = new TimeAnimator();
+        animator = new TimeAnimator();
         animator.setInterpolator(new AccelerateDecelerateInterpolator());
         animator.setTimeListener(this);
         animator.start();
