@@ -24,6 +24,7 @@ import android.net.Uri;
 import android.provider.Telephony;
 
 import com.amlcurran.messages.MessagesLog;
+import com.amlcurran.messages.SingletonManager;
 import com.amlcurran.messages.core.data.SmsMessage;
 import com.amlcurran.messages.data.InFlightSmsMessage;
 import com.amlcurran.messages.events.BroadcastEventBus;
@@ -92,19 +93,8 @@ public class SmsAsyncService extends IntentService {
 
     private void writeInbox(final InFlightSmsMessage smsMessage) {
         SmsDatabaseWriter smsDatabaseWriter = new SmsDatabaseWriter(this);
-        smsDatabaseWriter.writeInboxSms(getContentResolver(), new SmsDatabaseWriter.WriteListener() {
-
-            @Override
-            public void written(Uri inserted) {
-                new BroadcastEventBus(SmsAsyncService.this).postMessageReceived(smsMessage.getPhoneNumber());
-            }
-
-            @Override
-            public void failed() {
-                MessagesLog.e(SmsAsyncService.this, "Failed to write message to inbox database");
-            }
-
-        }, smsMessage);
+        SmsMessage message = smsDatabaseWriter.writeInboxSms(getContentResolver(), smsMessage);
+        SingletonManager.getMessageTransport(this).received(message);
     }
 
     public static Intent getAsyncWriteIntent(Context context, InFlightSmsMessage message, WriteType writeType) {

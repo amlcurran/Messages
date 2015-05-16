@@ -52,18 +52,18 @@ public class SmsDatabaseWriter {
         }
     }
 
-    public void writeInboxSms(ContentResolver resolver, WriteListener inboxWriteListener, InFlightSmsMessage message) {
+    public SmsMessage writeInboxSms(ContentResolver resolver, InFlightSmsMessage message) {
         ContentValues contentValues = InFlightSmsMessageFactory.toContentValues(message, Telephony.Sms.Sent.MESSAGE_TYPE_INBOX);
-        writeInboxSmsInternal(resolver, inboxWriteListener, contentValues);
+        return writeInboxSmsInternal(resolver, contentValues);
     }
 
-    private static void writeInboxSmsInternal(ContentResolver resolver, WriteListener inboxWriteListener, ContentValues contentValues) {
+    private SmsMessage writeInboxSmsInternal(ContentResolver resolver, ContentValues contentValues) {
         Uri inserted = resolver.insert(Telephony.Sms.Inbox.CONTENT_URI, contentValues);
-        if (inserted != null) {
-            inboxWriteListener.written(inserted);
-        } else {
-            inboxWriteListener.failed();
+        Cursor query = resolver.query(inserted, null, null, null, null);
+        if (query.moveToFirst()) {
+            return InFlightSmsMessageFactory.fromCursor(query);
         }
+        throw new IllegalStateException("Attempting to query for a message which doesn't exist");
     }
 
     public SmsMessage writeOutboxSms(ContentResolver contentResolver, InFlightSmsMessage message) {

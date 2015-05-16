@@ -31,9 +31,13 @@ public interface MessageTransport {
 
     void sentFromThread(SmsMessage message);
 
+    void received(SmsMessage inFlightSmsMessage);
+
     interface TransportCallbacks {
         void messageSending(SmsMessage message);
 
         void messageSent(SmsMessage message);
+
+        void messageReceived(SmsMessage smsMessage);
     }
 }

@@ -69,17 +69,32 @@ public class RecyclerSourceBinderAdapter<Item, Holder extends RecyclerView.ViewH
     private class UpdateSelfListener implements Source.SourceChangeListener {
         @Override
         public void sourceChanged(List items) {
-            notifyDataSetChanged();
+            handler.post(new Runnable() {
+                @Override
+                public void run() {
+                    notifyDataSetChanged();
+                }
+            });
         }
 
         @Override
-        public void itemAdded(int position, Object item) {
-            notifyItemInserted(position);
+        public void itemAdded(final int position, Object item) {
+            handler.post(new Runnable() {
+                @Override
+                public void run() {
+                    notifyItemInserted(position);
+                }
+            });
         }
 
         @Override
-        public void itemRemoved(int removedIndex, Object item) {
-            notifyItemRemoved(removedIndex);
+        public void itemRemoved(final int removedIndex, Object item) {
+            handler.post(new Runnable() {
+                @Override
+                public void run() {
+                    notifyItemRemoved(removedIndex);
+                }
+            });
         }
 
         @Override

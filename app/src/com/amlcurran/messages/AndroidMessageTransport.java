@@ -100,6 +100,16 @@ public class AndroidMessageTransport implements MessageTransport {
         });
     }
 
+    @Override
+    public void received(final SmsMessage smsMessage) {
+        notifyListeners(smsMessage.getThreadId(), new CallbackAction() {
+            @Override
+            public void act(TransportCallbacks callbacks) {
+                callbacks.messageReceived(smsMessage);
+            }
+        });
+    }
+
     public static Intent sendingMessageBroadcast(Context context, String threadId, SmsMessage smsMessage) {
         return new Intent(BROADCAST_SENDING)
                 .setPackage(context.getPackageName())

@@ -57,6 +57,11 @@ public class Thread {
             public void messageSent(SmsMessage message) {
                 callbacks.messageChanged(message);
             }
+
+            @Override
+            public void messageReceived(SmsMessage message) {
+                callbacks.messageAdded(message);
+            }
         });
         messageReceiver.startListening(new LoadThreadOnMessage(), getBroadcastsToListenTo());
     }
