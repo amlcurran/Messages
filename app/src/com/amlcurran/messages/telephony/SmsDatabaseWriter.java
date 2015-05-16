@@ -20,6 +20,7 @@ import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
 import android.net.Uri;
 import android.provider.Telephony;
 
@@ -65,13 +66,18 @@ public class SmsDatabaseWriter {
         }
     }
 
-    public Uri writeOutboxSms(ContentResolver contentResolver, InFlightSmsMessage message) {
+    public SmsMessage writeOutboxSms(ContentResolver contentResolver, InFlightSmsMessage message) {
         ContentValues contentValues = InFlightSmsMessageFactory.toContentValues(message, Telephony.Sms.Sent.MESSAGE_TYPE_OUTBOX);
         return writeOutboxSmsInternal(contentResolver, contentValues);
     }
 
-    private static Uri writeOutboxSmsInternal(ContentResolver resolver, ContentValues contentValues) {
-        return resolver.insert(Telephony.Sms.Inbox.CONTENT_URI, contentValues);
+    private static SmsMessage writeOutboxSmsInternal(ContentResolver resolver, ContentValues contentValues) {
+        Uri insert = resolver.insert(Telephony.Sms.Inbox.CONTENT_URI, contentValues);
+        Cursor query = resolver.query(insert, null, null, null, null);
+        if (query.moveToFirst()) {
+            return InFlightSmsMessageFactory.fromCursor(query);
+        }
+        throw new IllegalStateException("Attempting to query for a message which doesn't exist");
     }
 
     public void deleteOutboxMessages(ContentResolver contentResolver, String outboundAddress) {

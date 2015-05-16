@@ -29,7 +29,7 @@ import java.util.List;
 
 public class ThreadLoader {
     private static final String[] PROJECTION = new String[] {Telephony.Sms.BODY, Telephony.Sms._ID, Telephony.Sms.ADDRESS,
-            Telephony.Sms.TYPE, Telephony.Sms.DATE };
+            Telephony.Sms.TYPE, Telephony.Sms.DATE, Telephony.Sms.THREAD_ID };
     private final Uri contentUri;
     private final ContentResolver contentResolver;
 

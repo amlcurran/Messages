@@ -16,20 +16,20 @@
 
 package com.amlcurran.messages.core.data;
 
-import com.amlcurran.messages.core.threads.InFlightSmsMessage;
-
 import java.io.Serializable;
 
 public class SmsMessage implements Serializable {
 
+    private final String threadId;
     private final PhoneNumber address;
     private final String body;
     private final Time timestamp;
     private final Type type;
     private final long id;
 
-    public SmsMessage(long id, PhoneNumber address, String body, Time timestamp, Type type) {
+    public SmsMessage(long id, String threadId, PhoneNumber address, String body, Time timestamp, Type type) {
         this.id = id;
+        this.threadId = threadId;
         this.address = address;
         this.body = body;
         this.timestamp = timestamp;
@@ -64,9 +64,8 @@ public class SmsMessage implements Serializable {
         return id;
     }
 
-    public static SmsMessage fromInFlight(long id, InFlightSmsMessage message) {
-        return new SmsMessage(id, message.getNumber(), String.valueOf(message.getBody()),
-                message.getTimestamp(), message.getType());
+    public String getThreadId() {
+        return threadId;
     }
 
     public enum Type {
