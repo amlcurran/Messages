@@ -260,6 +260,11 @@ public abstract class AdaptiveCursorSource<T> implements Source<T> {
         this.changeListener = changeListener;
     }
 
+    @Override
+    public int indexOf(T item) {
+        return 0;
+    }
+
     public abstract T getFromCursorRow(Cursor cursor);
 
 }

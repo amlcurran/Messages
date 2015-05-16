@@ -35,6 +35,7 @@
                 android:layout_height="wrap_content"
                 class="com.amlcurran.messages.ui.LoadingView"
                 app:lv_scale="@integer/loading_scale_small"
+                android:visibility="gone"
                 android:id="@+id/sending_image"
                 android:layout_gravity="center" />
 

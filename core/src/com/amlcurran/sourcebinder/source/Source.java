@@ -25,12 +25,16 @@ public interface Source<T> {
 
     void setSourceChangeListener(SourceChangeListener<T> changeListener);
 
-    public interface SourceChangeListener<T> {
+    int indexOf(T item);
+
+    interface SourceChangeListener<T> {
 
         void sourceChanged(List<T> items);
 
         void itemAdded(int position, T item);
 
         void itemRemoved(int removedIndex, T item);
+
+        void itemChanged(int index, T item);
     }
 }

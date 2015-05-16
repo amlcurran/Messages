@@ -59,11 +59,8 @@ class ThreadRecyclerBinder implements ViewHolderBinder<SmsMessage, ThreadRecycle
                 layoutId = R.layout.item_thread_item_them;
                 break;
 
-            case SENT:
-                layoutId = R.layout.item_thread_item_me;
-                break;
-
             case SENDING:
+            case SENT:
                 layoutId = R.layout.item_thread_item_me_sending;
                 break;
 
@@ -88,13 +85,21 @@ class ThreadRecyclerBinder implements ViewHolderBinder<SmsMessage, ThreadRecycle
 
         if (smsMessage.getType() == SmsMessage.Type.FAILED) {
             showFailedIcon(viewHolder, smsMessage);
-        } else if (smsMessage.getType() == SmsMessage.Type.INBOX || smsMessage.getType() == SmsMessage.Type.SENT) {
+        } else if (smsMessage.getType() == SmsMessage.Type.INBOX) {
             addTimestampView(viewHolder, smsMessage);
+        } else if (smsMessage.getType() == SmsMessage.Type.SENT) {
+            addTimestampView(viewHolder, smsMessage);
+            viewHolder.hideSendingIcon();
+        } else if (smsMessage.getType() == SmsMessage.Type.SENDING) {
+            viewHolder.showSendingIcon();
         }
     }
 
     @Override
     public int getItemViewHolderType(int i, SmsMessage smsMessage) {
+        if (smsMessage.getType() == SmsMessage.Type.SENDING) {
+            return SmsMessage.Type.SENT.ordinal();
+        }
         return smsMessage.getType().ordinal();
     }
 
@@ -116,12 +121,34 @@ class ThreadRecyclerBinder implements ViewHolderBinder<SmsMessage, ThreadRecycle
         private final TextView bodyText;
         private final ImageView icon;
         private final TextView secondaryText;
+        private final View sendingImage;
 
         public ViewHolder(View view) {
             super(view);
             bodyText = ((TextView) view.findViewById(android.R.id.text1));
             icon = ((ImageView) view.findViewById(R.id.failed_to_send_image));
+            sendingImage = view.findViewById(R.id.sending_image);
             secondaryText = ((TextView) view.findViewById(android.R.id.text2));
+        }
+
+        public void hideSendingIcon() {
+            if (sendingImage != null) {
+                sendingImage.animate()
+                        .alpha(0f)
+                        .withEndAction(new Runnable() {
+                            @Override
+                            public void run() {
+                                sendingImage.setVisibility(View.GONE);
+                            }
+                        })
+                        .start();
+            }
+        }
+
+        public void showSendingIcon() {
+            if (sendingImage != null) {
+                sendingImage.setVisibility(View.VISIBLE);
+            }
         }
     }
 }

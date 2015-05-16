@@ -22,12 +22,10 @@ import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Parcelable;
 
-import com.amlcurran.messages.core.data.PhoneNumber;
+import com.amlcurran.messages.SingletonManager;
 import com.amlcurran.messages.core.data.SmsMessage;
 import com.amlcurran.messages.core.events.EventBus;
-import com.amlcurran.messages.data.ParcelablePhoneNumber;
 import com.amlcurran.messages.events.BroadcastEventBus;
 
 /**
@@ -38,8 +36,7 @@ public class SmsManagerInputPort extends IntentService {
 
     private static final String ACTION_MESSAGE_SENT = "message_send";
     private static final String ACTION_MESSAGE_FAILED_SEND = "failed_send";
-    private static final String EXTRA_MESSAGE_ID = "message_id";
-    private static final String EXTRA_PHONE_NUMBER = "phone_number";
+    private static final String EXTRA_MESSAGE = "message_id";
     private final MessageRepository messageRepository;
     private final EventBus eventBus;
 
@@ -51,33 +48,32 @@ public class SmsManagerInputPort extends IntentService {
         messageRepository = new MessageRepository(smsDatabaseWriter);
     }
 
-    static Intent sentIntent(Context context, long messageId, PhoneNumber phoneNumber) {
-        return getIntent(context, messageId, ACTION_MESSAGE_SENT, phoneNumber);
+    static Intent sentIntent(Context context, SmsMessage message) {
+        return getIntent(context, message, ACTION_MESSAGE_SENT);
     }
 
-    public static Intent failedSentIntent(Context context, long messageId, PhoneNumber phoneNumber) {
-        return getIntent(context, messageId, ACTION_MESSAGE_FAILED_SEND, phoneNumber);
+    public static Intent failedSentIntent(Context context, SmsMessage message) {
+        return getIntent(context, message, ACTION_MESSAGE_FAILED_SEND);
     }
 
-    private static Intent getIntent(Context context, long messageId, String action, PhoneNumber phoneNumber) {
+    private static Intent getIntent(Context context, SmsMessage message, String action) {
         Intent sentIntent = new Intent(context, SmsManagerInputPort.class);
         sentIntent.setAction(action);
-        sentIntent.putExtra(EXTRA_PHONE_NUMBER, (Parcelable) phoneNumber);
-        sentIntent.putExtra(EXTRA_MESSAGE_ID, messageId);
+        sentIntent.putExtra(EXTRA_MESSAGE, message);
         return sentIntent;
     }
 
     @Override
     protected void onHandleIntent(Intent intent) {
-        long messageId = intent.getLongExtra(EXTRA_MESSAGE_ID, -1);
-        PhoneNumber phoneNumber = (ParcelablePhoneNumber) intent.getParcelableExtra(EXTRA_PHONE_NUMBER);
+        SmsMessage message = (SmsMessage) intent.getSerializableExtra(EXTRA_MESSAGE);
         if (ACTION_MESSAGE_SENT.equals(intent.getAction())) {
-            messageRepository.sent(messageId);
-            eventBus.postMessageSent(phoneNumber);
+            messageRepository.sent(message.getId());
+            SingletonManager.getMessageTransport(this).sentFromThread(message.changeTypeTo(SmsMessage.Type.SENT));
+            eventBus.postMessageSent(message.getAddress());
         } else if (ACTION_MESSAGE_FAILED_SEND.equals(intent.getAction())) {
             notifyFailureToSend();
-            eventBus.postMessageDrafted(phoneNumber);
-            messageRepository.failedToSend(messageId);
+            eventBus.postMessageDrafted(message.getAddress());
+            messageRepository.failedToSend(message.getId());
         }
     }
 
@@ -95,21 +91,19 @@ public class SmsManagerInputPort extends IntentService {
         private static final String EXTRA_MESSAGE_ID = "message_id";
         private static final String EXTRA_PHONE_NUMBER = "phone_number";
 
-        static PendingIntent broadcast(Context context, SmsMessage message, long messageId) {
+        static PendingIntent broadcast(Context context, SmsMessage message) {
             Intent intent = new Intent(context, InputReceiver.class);
-            intent.putExtra(SmsManagerInputPort.EXTRA_PHONE_NUMBER, ((Parcelable) message.getAddress()));
-            intent.putExtra(SmsManagerInputPort.EXTRA_MESSAGE_ID, messageId);
+            intent.putExtra(SmsManagerInputPort.EXTRA_MESSAGE, message);
             return PendingIntent.getBroadcast(context, 2, intent, PendingIntent.FLAG_CANCEL_CURRENT);
         }
 
         @Override
         public void onReceive(Context context, Intent intent) {
-            long messageId = intent.getLongExtra(EXTRA_MESSAGE_ID, -1);
-            PhoneNumber phoneNumber = (ParcelablePhoneNumber) intent.getParcelableExtra(EXTRA_PHONE_NUMBER);
+            SmsMessage message = (SmsMessage) intent.getSerializableExtra(EXTRA_MESSAGE);
             if (sentSuccessfully()) {
-                context.startService(SmsManagerInputPort.sentIntent(context, messageId, phoneNumber));
+                context.startService(SmsManagerInputPort.sentIntent(context, message));
             } else {
-                context.startService(SmsManagerInputPort.failedSentIntent(context, messageId, phoneNumber));
+                context.startService(SmsManagerInputPort.failedSentIntent(context, message));
             }
         }
 

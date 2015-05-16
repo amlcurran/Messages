@@ -47,6 +47,11 @@ public class ListSource<T> implements Source<T> {
         }
     }
 
+    @Override
+    public int indexOf(T item) {
+        return list.indexOf(item);
+    }
+
     public void replace(List<T> items) {
         list.clear();
         list.addAll(items);
@@ -71,6 +76,11 @@ public class ListSource<T> implements Source<T> {
         }
     }
 
+    public void replaceAt(int index, T item) {
+        list.set(index, item);
+        changeListener.itemChanged(index, item);
+    }
+
     private static class NullSourceChangeListener<T> implements SourceChangeListener<T> {
         @Override
         public void sourceChanged(List<T> items) {
@@ -84,6 +94,11 @@ public class ListSource<T> implements Source<T> {
 
         @Override
         public void itemRemoved(int removedIndex, T item) {
+
+        }
+
+        @Override
+        public void itemChanged(int index, T item) {
 
         }
     }

@@ -25,4 +25,8 @@ public class CursorSource extends AdaptiveCursorSource<Cursor> {
         return cursor;
     }
 
+    @Override
+    public int indexOf(Cursor item) {
+        return 0;
+    }
 }

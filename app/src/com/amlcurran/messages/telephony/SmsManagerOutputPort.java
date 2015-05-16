@@ -96,7 +96,7 @@ public class SmsManagerOutputPort extends IntentService {
 
     ArrayList<PendingIntent> getMessageSendIntents(SmsMessage message) {
         ArrayList<PendingIntent> pendingIntents = new ArrayList<>();
-        pendingIntents.add(SmsManagerInputPort.InputReceiver.broadcast(this, message, message.getId()));
+        pendingIntents.add(SmsManagerInputPort.InputReceiver.broadcast(this, message));
         return pendingIntents;
     }
 

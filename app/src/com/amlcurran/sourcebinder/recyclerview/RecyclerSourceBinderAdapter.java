@@ -16,6 +16,8 @@
 
 package com.amlcurran.sourcebinder.recyclerview;
 
+import android.os.Handler;
+import android.os.Looper;
 import android.support.v7.widget.RecyclerView;
 import android.view.ViewGroup;
 
@@ -27,11 +29,13 @@ public class RecyclerSourceBinderAdapter<Item, Holder extends RecyclerView.ViewH
 
     private final Source<Item> source;
     private final ViewHolderBinder<Item, Holder> viewHolderBinder;
+    private final Handler handler;
 
     public RecyclerSourceBinderAdapter(Source<Item> source, ViewHolderBinder<Item, Holder> viewHolderBinder) {
         this.source = source;
         this.source.setSourceChangeListener(new UpdateSelfListener());
         this.viewHolderBinder = viewHolderBinder;
+        this.handler = new Handler(Looper.getMainLooper());
     }
 
     public void setSourceChangeListener(Source.SourceChangeListener listener) {
@@ -76,6 +80,16 @@ public class RecyclerSourceBinderAdapter<Item, Holder extends RecyclerView.ViewH
         @Override
         public void itemRemoved(int removedIndex, Object item) {
             notifyItemRemoved(removedIndex);
+        }
+
+        @Override
+        public void itemChanged(final int index, Object item) {
+            handler.post(new Runnable() {
+                @Override
+                public void run() {
+                    notifyItemChanged(index);
+                }
+            });
         }
     }
 }

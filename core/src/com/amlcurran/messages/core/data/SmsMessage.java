@@ -68,6 +68,10 @@ public class SmsMessage implements Serializable {
         return threadId;
     }
 
+    public SmsMessage changeTypeTo(Type type) {
+        return new SmsMessage(id, threadId, address, body, timestamp, type);
+    }
+
     public enum Type {
         INBOX, SENDING, DRAFT, FAILED, UNKNOWN, SENT
     }

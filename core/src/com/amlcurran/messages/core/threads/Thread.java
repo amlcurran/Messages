@@ -52,6 +52,11 @@ public class Thread {
             public void messageSending(SmsMessage message) {
                 callbacks.messageAdded(message);
             }
+
+            @Override
+            public void messageSent(SmsMessage message) {
+                callbacks.messageChanged(message);
+            }
         });
         messageReceiver.startListening(new LoadThreadOnMessage(), getBroadcastsToListenTo());
     }
@@ -74,7 +79,6 @@ public class Thread {
     private Broadcast[] getBroadcastsToListenTo() {
         String phoneNumber = number.flatten();
         return new Broadcast[]{
-                new Broadcast(EventBus.BROADCAST_MESSAGE_SENT, phoneNumber),
                 new Broadcast(EventBus.BROADCAST_MESSAGE_RECEIVED, phoneNumber),
                 new Broadcast(EventBus.BROADCAST_MESSAGE_DRAFT, phoneNumber)};
     }
@@ -92,10 +96,6 @@ public class Thread {
         @Override
         public void onMessageReceived(Broadcast broadcast) {
             switch (broadcast.getAction()) {
-
-                case EventBus.BROADCAST_MESSAGE_SENT:
-                    Log.getLogger().d(this, "Message sent");
-                    break;
 
                 case EventBus.BROADCAST_MESSAGE_RECEIVED:
                     Log.getLogger().d(this, "Message received");
@@ -123,11 +123,18 @@ public class Thread {
             public void messageAdded(SmsMessage message) {
 
             }
+
+            @Override
+            public void messageChanged(SmsMessage message) {
+
+            }
         };
 
         void threadLoaded(List<SmsMessage> messageList);
 
         void messageAdded(SmsMessage message);
+
+        void messageChanged(SmsMessage message);
     }
 
 }

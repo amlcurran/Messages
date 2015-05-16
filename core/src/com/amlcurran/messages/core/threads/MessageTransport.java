@@ -29,7 +29,11 @@ public interface MessageTransport {
 
     void stop();
 
+    void sentFromThread(SmsMessage message);
+
     interface TransportCallbacks {
         void messageSending(SmsMessage message);
+
+        void messageSent(SmsMessage message);
     }
 }

@@ -83,6 +83,12 @@ class ThreadViewController implements ComposeMessageView.ComposureCallbacks {
             source.add(0, message);
             threadView.scrollTo(0);
         }
+
+        @Override
+        public void messageChanged(SmsMessage message) {
+            int index = source.indexOf(message);
+            source.replaceAt(index, message);
+        }
     };
 
     public ListSource<SmsMessage> getSource() {
