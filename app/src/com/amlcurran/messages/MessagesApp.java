@@ -48,6 +48,7 @@ import com.amlcurran.messages.reporting.LoggingStatReporter;
 import com.amlcurran.messages.reporting.StatReporter;
 import com.amlcurran.messages.reporting.UserPreferenceWrappingStatReporter;
 import com.google.analytics.tracking.android.EasyTracker;
+import com.squareup.leakcanary.LeakCanary;
 
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
@@ -70,6 +71,7 @@ public class MessagesApp extends Application implements BroadcastEventSubscriber
     @Override
     public void onCreate() {
         super.onCreate();
+        LeakCanary.install(this);
         Log.setLogger(new NewMessagesLogger());
         PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
         ExecutorService executor = Executors.newCachedThreadPool();
