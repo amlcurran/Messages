@@ -30,17 +30,23 @@ import com.amlcurran.messages.core.conversationlist.Conversation;
 public class TextFormatter {
 
     private Context activity;
+    private TextAppearanceSpan lightText;
+    private TextAppearanceSpan darkText;
 
     public TextFormatter(Context activity) {
         this.activity = activity;
+        this.lightText = new TextAppearanceSpan(activity, R.style.Material_Body1);
+        this.darkText = new TextAppearanceSpan(activity, R.style.Material_Body2);
     }
 
     CharSequence fromMeSummary(Conversation conversation) {
-        return new Truss().pushSpan(new TextAppearanceSpan(activity, R.style.Material_Body2))
+        return new Truss().pushSpan(darkText)
                 .append(activity.getString(R.string.from_me_preamble))
                 .popSpan()
                 .append(" — ")
+                .pushSpan(lightText)
                 .append(conversation.getSummaryText())
+                .popSpan()
                 .build();
     }
 
@@ -68,7 +74,9 @@ public class TextFormatter {
     }
 
     CharSequence fromOtherSummary(Conversation item) {
-        return item.getSummaryText();
+        return new Truss().pushSpan(lightText)
+                .append(item.getSummaryText())
+                .build();
     }
 
     public CharSequence name(CharSequence displayName) {
