@@ -39,6 +39,17 @@
                 android:id="@+id/sending_image"
                 android:layout_gravity="center" />
 
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:id="@+id/failed_to_send_image"
+                android:contentDescription="@string/cd_failed_to_send"
+                android:src="@drawable/ic_inline_error"
+                android:background="@drawable/selectable_background_messages"
+                android:visibility="gone"
+                android:scaleType="centerInside"
+                android:layout_gravity="center" />
+
         </FrameLayout>
 
         <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"

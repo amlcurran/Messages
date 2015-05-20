@@ -17,25 +17,19 @@
 package com.amlcurran.messages.threads;
 
 import android.app.Activity;
-import android.content.Intent;
 
+import com.amlcurran.messages.SingletonManager;
 import com.amlcurran.messages.core.data.SmsMessage;
-import com.amlcurran.messages.telephony.SmsAsyncService;
-import com.amlcurran.messages.ui.ComposeMessageView;
 
 class DeleteFailedResender implements ResendCallback {
     private Activity activity;
-    private ComposeMessageView.ComposureCallbacks composureCallbacks;
 
-    public DeleteFailedResender(Activity activity, ComposeMessageView.ComposureCallbacks composureCallbacks) {
+    public DeleteFailedResender(Activity activity) {
         this.activity = activity;
-        this.composureCallbacks = composureCallbacks;
     }
 
     @Override
     public void resend(SmsMessage message) {
-        composureCallbacks.onMessageComposed(message.getBody());
-        Intent deleteFailed = SmsAsyncService.getAsyncDeleteIntent(activity, message);
-        activity.startService(deleteFailed);
+        SingletonManager.getMessageTransport(activity).resendMessage(message);
     }
 }

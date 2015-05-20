@@ -120,9 +120,10 @@ public class SmsDatabaseWriter {
             return this;
         }
 
-        public void commit() {
+        public Uri commit() {
             Uri uri = ContentUris.withAppendedId(Telephony.Sms.CONTENT_URI, id);
             smsDatabaseWriter.update(uri, values, null, null);
+            return uri;
         }
 
         public WriteBuilder updateTime() {

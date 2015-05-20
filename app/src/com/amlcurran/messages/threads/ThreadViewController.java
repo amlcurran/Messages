@@ -80,8 +80,13 @@ class ThreadViewController implements ComposeMessageView.ComposureCallbacks {
 
         @Override
         public void messageAdded(SmsMessage message) {
-            source.add(0, message);
-            threadView.scrollTo(0);
+            int index = source.indexOf(message);
+            if (index == -1) {
+                source.add(0, message);
+                threadView.scrollTo(0);
+            } else {
+                messageChanged(message);
+            }
         }
 
         @Override

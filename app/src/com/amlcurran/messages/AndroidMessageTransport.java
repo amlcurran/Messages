@@ -94,14 +94,14 @@ public class AndroidMessageTransport implements MessageTransport {
     }
 
     @Override
-    public void sentFromThread(final SmsMessage message) {
-        notifyListeners(message.getThreadId(), new CallbackAction() {
+    public void sentFromThread(final SmsMessage smsMessage) {
+        notifyListeners(smsMessage.getThreadId(), new CallbackAction() {
             @Override
             public void act(TransportCallbacks callbacks) {
-                callbacks.messageSent(message);
+                callbacks.messageSent(smsMessage);
             }
         });
-        broadcastEventBus.postMessageSent(message.getAddress());
+        broadcastEventBus.postMessageSent(smsMessage.getAddress());
     }
 
     @Override
@@ -113,6 +113,11 @@ public class AndroidMessageTransport implements MessageTransport {
             }
         });
         broadcastEventBus.postMessageReceived(smsMessage.getAddress());
+    }
+
+    @Override
+    public void resendMessage(SmsMessage smsMessage) {
+        messagesApp.startService(SmsManagerOutputPort.resendMessageIntent(messagesApp, smsMessage));
     }
 
     public static Intent sendingMessageBroadcast(Context context, String threadId, SmsMessage smsMessage) {

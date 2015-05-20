@@ -32,9 +32,11 @@ import com.amlcurran.sourcebinder.recyclerview.ViewHolderBinder;
 
 class ThreadRecyclerBinder implements ViewHolderBinder<SmsMessage, ThreadRecyclerBinder.ViewHolder> {
 
+    private static final int ME = 0;
+    private static final int THEM = 1;
     private final SmsMessageAnalyser smsMessageAnalyser;
-    private Resources resources;
-    private ResendCallback resendCallback;
+    private final Resources resources;
+    private final ResendCallback resendCallback;
 
     public ThreadRecyclerBinder(Resources resources, ResendCallback resendCallback) {
         this.resources = resources;
@@ -42,30 +44,16 @@ class ThreadRecyclerBinder implements ViewHolderBinder<SmsMessage, ThreadRecycle
         this.smsMessageAnalyser = new SmsMessageAnalyser(new ResourcesDifferencesStringProvider(resources));
     }
 
-    private void addTimestampView(ViewHolder viewHolder, SmsMessage smsMessage) {
-        viewHolder.secondaryText.setText(smsMessageAnalyser.getDifferenceToNow(smsMessage.getTimestamp()));
-    }
-
-    private void showFailedIcon(ViewHolder viewHolder, SmsMessage smsMessage) {
-        viewHolder.icon.setColorFilter(resources.getColor(R.color.theme_alt_color_2));
-        viewHolder.icon.setOnClickListener(new ResendClickListener(smsMessage));
-    }
-
-    private int getResourceForMessageType(SmsMessage.Type type) {
+    private int getResourceForMessageType(int type) {
         int layoutId = R.layout.item_thread_item_them;
         switch (type) {
 
-            case INBOX:
+            case THEM:
                 layoutId = R.layout.item_thread_item_them;
                 break;
 
-            case SENDING:
-            case SENT:
+            case ME:
                 layoutId = R.layout.item_thread_item_me_sending;
-                break;
-
-            case FAILED:
-                layoutId = R.layout.item_thread_item_me_failed;
                 break;
         }
         return layoutId;
@@ -73,41 +61,42 @@ class ThreadRecyclerBinder implements ViewHolderBinder<SmsMessage, ThreadRecycle
 
     @Override
     public ViewHolder createViewHolder(ViewGroup viewGroup, int i) {
-        SmsMessage.Type type = SmsMessage.Type.values()[i];
-        View view = LayoutInflater.from(viewGroup.getContext()).inflate(getResourceForMessageType(type), viewGroup, false);
-        return new ViewHolder(view);
+        LayoutInflater layoutInflater = LayoutInflater.from(viewGroup.getContext());
+        View view = layoutInflater.inflate(getResourceForMessageType(i), viewGroup, false);
+        return new ViewHolder(view, smsMessageAnalyser, resendCallback);
     }
 
     @Override
     public void bindViewHolder(ViewHolder viewHolder, SmsMessage smsMessage) {
-        viewHolder.bodyText.setText(smsMessage.getBody());
-        Linkify.addLinks(viewHolder.bodyText, Linkify.ALL);
+        viewHolder.setBodyText(smsMessage);
 
         if (smsMessage.getType() == SmsMessage.Type.FAILED) {
-            showFailedIcon(viewHolder, smsMessage);
+            viewHolder.showFailedText();
+            viewHolder.showFailedIcon(smsMessage, this);
+            viewHolder.hideSendingIcon();
         } else if (smsMessage.getType() == SmsMessage.Type.INBOX) {
-            addTimestampView(viewHolder, smsMessage);
+            viewHolder.addTimestampView(smsMessage);
         } else if (smsMessage.getType() == SmsMessage.Type.SENT) {
-            addTimestampView(viewHolder, smsMessage);
+            viewHolder.addTimestampView(smsMessage);
             viewHolder.hideSendingIcon();
         } else if (smsMessage.getType() == SmsMessage.Type.SENDING) {
             viewHolder.showSendingIcon();
+            viewHolder.hideFailedIcon();
         }
     }
 
     @Override
     public int getItemViewHolderType(int i, SmsMessage smsMessage) {
-        if (smsMessage.getType() == SmsMessage.Type.SENDING) {
-            return SmsMessage.Type.SENT.ordinal();
-        }
-        return smsMessage.getType().ordinal();
+        return smsMessage.isFromMe() ? ME : THEM;
     }
 
-    private class ResendClickListener implements View.OnClickListener {
+    private static class ResendClickListener implements View.OnClickListener {
         private final SmsMessage smsMessage;
+        private final ResendCallback resendCallback;
 
-        public ResendClickListener(SmsMessage smsMessage) {
+        public ResendClickListener(SmsMessage smsMessage, ResendCallback resendCallback) {
             this.smsMessage = smsMessage;
+            this.resendCallback = resendCallback;
         }
 
         @Override
@@ -116,39 +105,70 @@ class ThreadRecyclerBinder implements ViewHolderBinder<SmsMessage, ThreadRecycle
         }
     }
 
-    class ViewHolder extends RecyclerView.ViewHolder {
+    static class ViewHolder extends RecyclerView.ViewHolder {
 
         private final TextView bodyText;
         private final ImageView icon;
         private final TextView secondaryText;
         private final View sendingImage;
+        private final ResendCallback resendCallback;
+        private SmsMessageAnalyser smsMessageAnalyser;
 
-        public ViewHolder(View view) {
+        public ViewHolder(View view, SmsMessageAnalyser smsMessageAnalyser, ResendCallback resendCallback) {
             super(view);
-            bodyText = ((TextView) view.findViewById(android.R.id.text1));
-            icon = ((ImageView) view.findViewById(R.id.failed_to_send_image));
-            sendingImage = view.findViewById(R.id.sending_image);
-            secondaryText = ((TextView) view.findViewById(android.R.id.text2));
+            this.resendCallback = resendCallback;
+            this.bodyText = ((TextView) view.findViewById(android.R.id.text1));
+            this.icon = ((ImageView) view.findViewById(R.id.failed_to_send_image));
+            this.sendingImage = view.findViewById(R.id.sending_image);
+            this.secondaryText = ((TextView) view.findViewById(android.R.id.text2));
+            this.smsMessageAnalyser = smsMessageAnalyser;
         }
 
         public void hideSendingIcon() {
-            if (sendingImage != null) {
-                sendingImage.animate()
-                        .alpha(0f)
-                        .withEndAction(new Runnable() {
-                            @Override
-                            public void run() {
-                                sendingImage.setVisibility(View.GONE);
-                            }
-                        })
-                        .start();
-            }
+            animateOutView(sendingImage);
         }
 
         public void showSendingIcon() {
             if (sendingImage != null) {
                 sendingImage.setVisibility(View.VISIBLE);
             }
+        }
+
+        public void hideFailedIcon() {
+            animateOutView(icon);
+        }
+
+        private void animateOutView(final View icon) {
+            if (icon != null) {
+                icon.animate()
+                        .alpha(0f)
+                        .withEndAction(new Runnable() {
+                            @Override
+                            public void run() {
+                                icon.setVisibility(View.GONE);
+                            }
+                        })
+                        .start();
+            }
+        }
+
+        private void showFailedIcon(SmsMessage smsMessage, ThreadRecyclerBinder threadRecyclerBinder) {
+            icon.setVisibility(View.VISIBLE);
+            icon.setColorFilter(threadRecyclerBinder.resources.getColor(R.color.theme_alt_color_2));
+            icon.setOnClickListener(new ResendClickListener(smsMessage, resendCallback));
+        }
+
+        private void showFailedText() {
+            secondaryText.setText(R.string.failed_to_send_touch_to_resend);
+        }
+
+        private void setBodyText(SmsMessage smsMessage) {
+            bodyText.setText(smsMessage.getBody());
+            Linkify.addLinks(bodyText, Linkify.ALL);
+        }
+
+        private void addTimestampView(SmsMessage smsMessage) {
+            secondaryText.setText(smsMessageAnalyser.getDifferenceToNow(smsMessage.getTimestamp()));
         }
     }
 }

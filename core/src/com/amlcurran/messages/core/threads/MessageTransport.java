@@ -29,9 +29,11 @@ public interface MessageTransport {
 
     void stop();
 
-    void sentFromThread(SmsMessage message);
+    void sentFromThread(SmsMessage smsMessage);
 
-    void received(SmsMessage inFlightSmsMessage);
+    void received(SmsMessage smsMessage);
+
+    void resendMessage(SmsMessage smsMessage);
 
     interface TransportCallbacks {
         void messageSending(SmsMessage message);

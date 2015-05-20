@@ -16,8 +16,10 @@
 
 package com.amlcurran.messages.data;
 
+import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.database.Cursor;
+import android.net.Uri;
 import android.provider.Telephony;
 
 import com.amlcurran.messages.core.data.SmsMessage;
@@ -107,5 +109,15 @@ public class InFlightSmsMessageFactory {
 
         }
         return 0;
+    }
+
+    public static SmsMessage fromUri(Uri messageUri, ContentResolver contentResolver) {
+        Cursor result = contentResolver.query(messageUri, null, null, null, null);
+        SmsMessage message = null;
+        if (result.moveToFirst()) {
+            message = fromCursor(result);
+        }
+        result.close();
+        return message;
     }
 }

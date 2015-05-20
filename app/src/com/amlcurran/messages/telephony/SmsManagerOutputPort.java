@@ -81,8 +81,9 @@ public class SmsManagerOutputPort extends IntentService {
         } else if (ACTION_RESEND.equals(intent.getAction())) {
 
             SingletonManager.getNotifier(this).clearFailureToSendNotification();
-            InFlightSmsMessage message = intent.getParcelableExtra(EXTRA_MESSAGE);
-            SmsMessage smsMessage = messageRepository.send(message, getContentResolver());
+            SmsMessage message = (SmsMessage) intent.getSerializableExtra(EXTRA_MESSAGE);
+            SmsMessage smsMessage = messageRepository.resend(message, getContentResolver());
+            sendBroadcast(AndroidMessageTransport.sendingMessageBroadcast(this, message.getThreadId(), smsMessage));
             sendToApi(smsMessage);
 
         }
@@ -130,7 +131,7 @@ public class SmsManagerOutputPort extends IntentService {
         return sendMessageIntent;
     }
 
-    public static Intent resendMessageIntent(Context context, InFlightSmsMessage smsMessage) {
+    public static Intent resendMessageIntent(Context context, SmsMessage smsMessage) {
         Intent resendIntent = new Intent(context, SmsManagerOutputPort.class);
         resendIntent.setAction(SmsManagerOutputPort.ACTION_RESEND);
         resendIntent.putExtra(SmsManagerOutputPort.EXTRA_MESSAGE, smsMessage);
@@ -138,6 +139,7 @@ public class SmsManagerOutputPort extends IntentService {
     }
 
     public static PendingIntent resendPendingIntent(InFlightSmsMessage message, Context context) {
-        return PendingIntent.getService(context, 0, resendMessageIntent(context, message), PendingIntent.FLAG_CANCEL_CURRENT);
+        throw new UnsupportedOperationException("Fix me maybe?");
+//        return PendingIntent.getService(context, 0, resendMessageIntent(context, message), PendingIntent.FLAG_CANCEL_CURRENT);
     }
 }

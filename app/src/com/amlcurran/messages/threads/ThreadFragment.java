@@ -103,7 +103,7 @@ public class ThreadFragment extends Fragment implements
 
         setHasOptionsMenu(true);
 
-        ResendCallback resendCallback = new DeleteFailedResender(getActivity(), null);
+        ResendCallback resendCallback = new DeleteFailedResender(getActivity());
         ThreadRecyclerBinder binder = new ThreadRecyclerBinder(getResources(), resendCallback);
         RecyclerSourceBinderAdapter<SmsMessage, ThreadRecyclerBinder.ViewHolder> binderAdapter =
                 new RecyclerSourceBinderAdapter<>(threadViewController.getSource(), binder);
