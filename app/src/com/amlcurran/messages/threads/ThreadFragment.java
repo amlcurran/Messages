@@ -105,7 +105,7 @@ public class ThreadFragment extends Fragment implements
 
         ResendCallback resendCallback = new DeleteFailedResender(getActivity());
         ThreadRecyclerBinder binder = new ThreadRecyclerBinder(getResources(), resendCallback);
-        RecyclerSourceBinderAdapter<SmsMessage, ThreadRecyclerBinder.ViewHolder> binderAdapter =
+        RecyclerSourceBinderAdapter<SmsMessage, ViewHolder> binderAdapter =
                 new RecyclerSourceBinderAdapter<>(threadViewController.getSource(), binder);
         recyclerView.setAdapter(binderAdapter);
     }
