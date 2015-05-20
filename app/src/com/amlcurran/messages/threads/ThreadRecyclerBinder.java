@@ -44,6 +44,13 @@ class ThreadRecyclerBinder implements ViewHolderBinder<SmsMessage, ThreadRecycle
         this.smsMessageAnalyser = new SmsMessageAnalyser(new ResourcesDifferencesStringProvider(resources));
     }
 
+    @Override
+    public ViewHolder createViewHolder(ViewGroup viewGroup, int i) {
+        LayoutInflater layoutInflater = LayoutInflater.from(viewGroup.getContext());
+        View view = layoutInflater.inflate(getResourceForMessageType(i), viewGroup, false);
+        return new ViewHolder(view, smsMessageAnalyser, resendCallback);
+    }
+
     private int getResourceForMessageType(int type) {
         int layoutId = R.layout.item_thread_item_them;
         switch (type) {
@@ -57,13 +64,6 @@ class ThreadRecyclerBinder implements ViewHolderBinder<SmsMessage, ThreadRecycle
                 break;
         }
         return layoutId;
-    }
-
-    @Override
-    public ViewHolder createViewHolder(ViewGroup viewGroup, int i) {
-        LayoutInflater layoutInflater = LayoutInflater.from(viewGroup.getContext());
-        View view = layoutInflater.inflate(getResourceForMessageType(i), viewGroup, false);
-        return new ViewHolder(view, smsMessageAnalyser, resendCallback);
     }
 
     @Override
@@ -81,6 +81,7 @@ class ThreadRecyclerBinder implements ViewHolderBinder<SmsMessage, ThreadRecycle
             viewHolder.hideSendingIcon();
         } else if (smsMessage.getType() == SmsMessage.Type.SENDING) {
             viewHolder.showSendingIcon();
+            viewHolder.showSendingText();
             viewHolder.hideFailedIcon();
         }
     }
@@ -131,6 +132,7 @@ class ThreadRecyclerBinder implements ViewHolderBinder<SmsMessage, ThreadRecycle
         public void showSendingIcon() {
             if (sendingImage != null) {
                 sendingImage.setVisibility(View.VISIBLE);
+                sendingImage.setAlpha(1f);
             }
         }
 
@@ -154,6 +156,7 @@ class ThreadRecyclerBinder implements ViewHolderBinder<SmsMessage, ThreadRecycle
 
         private void showFailedIcon(SmsMessage smsMessage, ThreadRecyclerBinder threadRecyclerBinder) {
             icon.setVisibility(View.VISIBLE);
+            icon.setAlpha(1f);
             icon.setColorFilter(threadRecyclerBinder.resources.getColor(R.color.theme_alt_color_2));
             icon.setOnClickListener(new ResendClickListener(smsMessage, resendCallback));
         }
@@ -169,6 +172,10 @@ class ThreadRecyclerBinder implements ViewHolderBinder<SmsMessage, ThreadRecycle
 
         private void addTimestampView(SmsMessage smsMessage) {
             secondaryText.setText(smsMessageAnalyser.getDifferenceToNow(smsMessage.getTimestamp()));
+        }
+
+        public void showSendingText() {
+            secondaryText.setText(R.string.sendingdotdotdot);
         }
     }
 }
