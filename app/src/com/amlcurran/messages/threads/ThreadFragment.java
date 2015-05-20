@@ -156,8 +156,13 @@ public class ThreadFragment extends Fragment implements
     }
 
     @Override
-    public void scrollTo(int position) {
-        recyclerView.scrollToPosition(position);
+    public void scrollTo(final int position) {
+        recyclerView.post(new Runnable() {
+            @Override
+            public void run() {
+                recyclerView.scrollToPosition(position);
+            }
+        });
     }
 
     private class HandlerScheduledQueue implements ScheduledQueue {

@@ -84,7 +84,6 @@ public class Thread {
     private Broadcast[] getBroadcastsToListenTo() {
         String phoneNumber = number.flatten();
         return new Broadcast[]{
-                new Broadcast(EventBus.BROADCAST_MESSAGE_RECEIVED, phoneNumber),
                 new Broadcast(EventBus.BROADCAST_MESSAGE_DRAFT, phoneNumber)};
     }
 

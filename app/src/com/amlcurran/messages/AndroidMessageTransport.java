@@ -24,6 +24,7 @@ import android.content.IntentFilter;
 import com.amlcurran.messages.core.data.SmsMessage;
 import com.amlcurran.messages.core.threads.InFlightSmsMessage;
 import com.amlcurran.messages.core.threads.MessageTransport;
+import com.amlcurran.messages.events.BroadcastEventBus;
 import com.amlcurran.messages.telephony.SmsManagerOutputPort;
 
 import java.util.HashMap;
@@ -51,10 +52,12 @@ public class AndroidMessageTransport implements MessageTransport {
         }
     };
     private final Map<String, TransportCallbacks> callbacksMap;
+    private final BroadcastEventBus broadcastEventBus;
 
     public AndroidMessageTransport(MessagesApp messagesApp) {
         this.messagesApp = messagesApp;
         this.callbacksMap = new HashMap<>();
+        broadcastEventBus = new BroadcastEventBus(messagesApp);
     }
 
     @Override
@@ -98,6 +101,7 @@ public class AndroidMessageTransport implements MessageTransport {
                 callbacks.messageSent(message);
             }
         });
+        broadcastEventBus.postMessageSent(message.getAddress());
     }
 
     @Override
@@ -108,6 +112,7 @@ public class AndroidMessageTransport implements MessageTransport {
                 callbacks.messageReceived(smsMessage);
             }
         });
+        broadcastEventBus.postMessageReceived(smsMessage.getAddress());
     }
 
     public static Intent sendingMessageBroadcast(Context context, String threadId, SmsMessage smsMessage) {
