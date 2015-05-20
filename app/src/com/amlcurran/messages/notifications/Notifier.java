@@ -23,12 +23,12 @@ import android.support.v4.app.NotificationManagerCompat;
 
 import com.amlcurran.messages.SingletonManager;
 import com.amlcurran.messages.conversationlist.PhotoLoadListener;
-import com.amlcurran.messages.core.conversationlist.ConversationListListener;
-import com.amlcurran.messages.core.data.Contact;
 import com.amlcurran.messages.core.conversationlist.Conversation;
-import com.amlcurran.messages.core.preferences.PreferenceStore;
-import com.amlcurran.messages.data.InFlightSmsMessage;
+import com.amlcurran.messages.core.conversationlist.ConversationListListener;
 import com.amlcurran.messages.core.conversationlist.ConversationLoader;
+import com.amlcurran.messages.core.data.Contact;
+import com.amlcurran.messages.core.data.SmsMessage;
+import com.amlcurran.messages.core.preferences.PreferenceStore;
 import com.amlcurran.messages.loaders.photos.PhotoLoader;
 import com.amlcurran.messages.preferences.SharedPreferenceStore;
 
@@ -61,7 +61,6 @@ public class Notifier {
 
     public void updateUnreadNotification() {
         if (preferenceStore.showNotifications()) {
-            //unreadMessageNotificationManager.update();
             UnreadNotificationManager conversationListListener = new UnreadNotificationManager();
             loader.loadUnreadConversationList(conversationListListener);
         }
@@ -71,7 +70,7 @@ public class Notifier {
         notificationManager.cancel(NOTIFICATION_UNREAD_MESSAGES);
     }
 
-    public void showSendError(InFlightSmsMessage message, Contact contact) {
+    public void showSendError(SmsMessage message, Contact contact) {
         if (preferenceStore.showNotifications()) {
             notificationManager.notify(NOTIFICATION_SEND_ERROR, notificationBuilder.buildFailureToSendNotification(message, contact));
         }
@@ -138,7 +137,7 @@ public class Notifier {
     }
 
     private List<Conversation> getNewConversations(List<Conversation> unreadConversations) {
-        List<Conversation> newUnreadConversations = new ArrayList<Conversation>();
+        List<Conversation> newUnreadConversations = new ArrayList<>();
         for (Conversation conversation : unreadConversations) {
             if (not(postedConversations.contains(conversation))) {
                 newUnreadConversations.add(conversation);
@@ -149,7 +148,7 @@ public class Notifier {
     }
 
     private void updatePostedConversations(List<Conversation> unreadConversations) {
-        List<Conversation> newPostedConversations = new ArrayList<Conversation>();
+        List<Conversation> newPostedConversations = new ArrayList<>();
         for (Conversation postedConversation : postedConversations) {
             if (unreadConversations.contains(postedConversation)) {
                 newPostedConversations.add(postedConversation);

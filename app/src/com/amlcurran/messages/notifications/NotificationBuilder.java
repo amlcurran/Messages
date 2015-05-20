@@ -24,10 +24,10 @@ import android.provider.ContactsContract;
 import android.support.v4.app.NotificationCompat;
 
 import com.amlcurran.messages.R;
-import com.amlcurran.messages.core.data.Contact;
 import com.amlcurran.messages.core.conversationlist.Conversation;
+import com.amlcurran.messages.core.data.Contact;
+import com.amlcurran.messages.core.data.SmsMessage;
 import com.amlcurran.messages.core.preferences.PreferenceStore;
-import com.amlcurran.messages.data.InFlightSmsMessage;
 import com.amlcurran.messages.telephony.SmsManagerOutputPort;
 
 import java.util.List;
@@ -84,7 +84,7 @@ public class NotificationBuilder {
         return builder;
     }
 
-    public Notification buildFailureToSendNotification(InFlightSmsMessage message, Contact contact) {
+    public Notification buildFailureToSendNotification(SmsMessage message, Contact contact) {
         return getDefaultBuilder()
                 .setContentTitle(string(R.string.failed_to_send_message))
                 .setTicker(string(R.string.failed_to_send_message))

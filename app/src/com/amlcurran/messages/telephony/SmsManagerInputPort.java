@@ -24,8 +24,10 @@ import android.content.Context;
 import android.content.Intent;
 
 import com.amlcurran.messages.SingletonManager;
+import com.amlcurran.messages.core.data.Contact;
 import com.amlcurran.messages.core.data.SmsMessage;
 import com.amlcurran.messages.core.events.EventBus;
+import com.amlcurran.messages.core.loaders.OnContactQueryListener;
 import com.amlcurran.messages.events.BroadcastEventBus;
 
 /**
@@ -71,19 +73,18 @@ public class SmsManagerInputPort extends IntentService {
             SingletonManager.getMessageTransport(this).sentFromThread(message.changeTypeTo(SmsMessage.Type.SENT));
             eventBus.postMessageSent(message.getAddress());
         } else if (ACTION_MESSAGE_FAILED_SEND.equals(intent.getAction())) {
-            notifyFailureToSend();
-            eventBus.postMessageDrafted(message.getAddress());
+            notifyFailureToSend(message);
             messageRepository.failedToSend(message.getId());
         }
     }
 
-    private void notifyFailureToSend() {
-//        SingletonManager.getMessagesLoader(this).queryContact(message.getPhoneNumber(), new OnContactQueryListener() {
-//            @Override
-//            public void contactLoaded(Contact contact) {
-//                SingletonManager.getNotifier(SmsSentNotificationService.this).showSendError("person", contact);
-//            }
-//        });
+    private void notifyFailureToSend(final SmsMessage message) {
+        SingletonManager.getMessagesLoader(this).queryContact(message.getAddress(), new OnContactQueryListener() {
+            @Override
+            public void contactLoaded(Contact contact) {
+                SingletonManager.getNotifier(SmsManagerInputPort.this).showSendError(message, contact);
+            }
+        });
     }
 
     public static final class InputReceiver extends BroadcastReceiver {

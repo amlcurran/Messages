@@ -138,8 +138,7 @@ public class SmsManagerOutputPort extends IntentService {
         return resendIntent;
     }
 
-    public static PendingIntent resendPendingIntent(InFlightSmsMessage message, Context context) {
-        throw new UnsupportedOperationException("Fix me maybe?");
-//        return PendingIntent.getService(context, 0, resendMessageIntent(context, message), PendingIntent.FLAG_CANCEL_CURRENT);
+    public static PendingIntent resendPendingIntent(SmsMessage message, Context context) {
+        return PendingIntent.getService(context, 0, resendMessageIntent(context, message), PendingIntent.FLAG_CANCEL_CURRENT);
     }
 }
