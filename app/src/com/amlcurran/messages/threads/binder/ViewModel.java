@@ -1,4 +1,4 @@
-package com.amlcurran.messages.threads;
+package com.amlcurran.messages.threads.binder;
 
 import com.amlcurran.messages.core.data.SmsMessage;
 

@@ -42,6 +42,8 @@ import com.amlcurran.messages.core.threads.Thread;
 import com.amlcurran.messages.data.ContactFactory;
 import com.amlcurran.messages.events.BroadcastEventSubscriber;
 import com.amlcurran.messages.telephony.DefaultAppChecker;
+import com.amlcurran.messages.threads.binder.ThreadRecyclerBinder;
+import com.amlcurran.messages.threads.binder.ViewHolder;
 import com.amlcurran.messages.ui.ComposeMessageView;
 import com.amlcurran.messages.ui.CustomHeaderFragment;
 import com.amlcurran.messages.ui.contact.DefaultRoundContactView;

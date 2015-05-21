@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.amlcurran.messages.threads;
+package com.amlcurran.messages.threads.binder;
 
 import android.content.res.Resources;
 import android.view.LayoutInflater;
@@ -24,9 +24,11 @@ import android.view.ViewGroup;
 import com.amlcurran.messages.R;
 import com.amlcurran.messages.core.analysis.SmsMessageAnalyser;
 import com.amlcurran.messages.core.data.SmsMessage;
+import com.amlcurran.messages.threads.ResendCallback;
+import com.amlcurran.messages.threads.ResourcesDifferencesStringProvider;
 import com.amlcurran.sourcebinder.recyclerview.ViewHolderBinder;
 
-class ThreadRecyclerBinder implements ViewHolderBinder<SmsMessage, ViewHolder> {
+public class ThreadRecyclerBinder implements ViewHolderBinder<SmsMessage, ViewHolder> {
 
     private static final int ME = 0;
     private static final int THEM = 1;

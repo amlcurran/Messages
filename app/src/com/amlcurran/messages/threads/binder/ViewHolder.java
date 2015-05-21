@@ -1,4 +1,4 @@
-package com.amlcurran.messages.threads;
+package com.amlcurran.messages.threads.binder;
 
 import android.support.v7.widget.RecyclerView;
 import android.text.util.Linkify;
@@ -9,8 +9,9 @@ import android.widget.TextView;
 import com.amlcurran.messages.R;
 import com.amlcurran.messages.core.analysis.SmsMessageAnalyser;
 import com.amlcurran.messages.core.data.SmsMessage;
+import com.amlcurran.messages.threads.ResendCallback;
 
-class ViewHolder extends RecyclerView.ViewHolder {
+public class ViewHolder extends RecyclerView.ViewHolder {
 
     private final TextView bodyText;
     private final ImageView icon;
@@ -27,7 +28,10 @@ class ViewHolder extends RecyclerView.ViewHolder {
         this.sendingImage = view.findViewById(R.id.sending_image);
         this.secondaryText = ((TextView) view.findViewById(android.R.id.text2));
         this.smsMessageAnalyser = smsMessageAnalyser;
-        this.icon.setColorFilter(view.getResources().getColor(R.color.theme_alt_color_2));
+        if (this.icon != null){
+            //VOM
+            this.icon.setColorFilter(view.getResources().getColor(R.color.theme_alt_color_2));
+        }
     }
 
     void hideSendingIcon() {

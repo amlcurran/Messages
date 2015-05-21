@@ -1,13 +1,14 @@
-package com.amlcurran.messages.threads;
+package com.amlcurran.messages.threads.binder;
 
 import android.view.View;
 
 import com.amlcurran.messages.core.data.SmsMessage;
+import com.amlcurran.messages.threads.ResendCallback;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public class ViewModelFactory {
+class ViewModelFactory {
     private static final Map<SmsMessage.Type, ViewModel> modelMap = createModelMap();
 
     private static Map<SmsMessage.Type, ViewModel> createModelMap() {
