@@ -17,61 +17,61 @@
   -->
 
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
+             xmlns:app="http://schemas.android.com/apk/res-auto"
+             android:layout_width="match_parent"
+             android:layout_height="match_parent">
 
     <LinearLayout
-        android:orientation="horizontal"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent">
-
-        <FrameLayout
-            android:layout_width="@dimen/thread_message_offset_horizontal"
+            android:orientation="horizontal"
+            android:layout_width="fill_parent"
             android:layout_height="fill_parent">
 
+        <FrameLayout
+                android:layout_width="@dimen/thread_message_offset_horizontal"
+                android:layout_height="fill_parent">
+
             <view
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                class="com.amlcurran.messages.ui.LoadingView"
-                app:lv_scale="@integer/loading_scale_small"
-                android:visibility="gone"
-                android:id="@+id/sending_image"
-                android:layout_gravity="center" />
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    class="com.amlcurran.messages.ui.LoadingView"
+                    app:lv_scale="@integer/loading_scale_small"
+                    android:visibility="gone"
+                    android:id="@+id/sending_image"
+                    android:layout_gravity="center"/>
 
             <ImageView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:id="@+id/failed_to_send_image"
-                android:contentDescription="@string/cd_failed_to_send"
-                android:src="@drawable/ic_inline_error"
-                android:background="@drawable/selectable_background_messages"
-                android:visibility="gone"
-                android:scaleType="centerInside"
-                android:layout_gravity="center" />
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:id="@+id/failed_to_send_image"
+                    android:contentDescription="@string/cd_failed_to_send"
+                    android:src="@drawable/ic_inline_error"
+                    android:background="@drawable/selectable_background_messages"
+                    android:visibility="gone"
+                    android:scaleType="centerInside"
+                    android:layout_gravity="center"/>
 
         </FrameLayout>
 
-        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-            android:orientation="vertical"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:padding="8dp">
+        <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:padding="8dp">
 
             <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@android:id/text1"
-                android:gravity="right"
-                style="@style/ThreadMessage" />
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@android:id/text1"
+                    android:gravity="right"
+                    style="@style/ThreadMessage"/>
 
             <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@android:id/text2"
-                android:text="@string/sendingdotdotdot"
-                android:gravity="right"
-                style="@style/ThreadTimeStamp" />
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@android:id/text2"
+                    android:text="@string/sendingdotdotdot"
+                    android:gravity="right"
+                    style="@style/ThreadTimeStamp"/>
         </LinearLayout>
 
     </LinearLayout>
