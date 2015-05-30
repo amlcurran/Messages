@@ -1,40 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout
+<LinearLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
+        android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="64dp"
         android:paddingStart="16dp"
         android:paddingEnd="16dp"
-        android:background="?android:attr/selectableItemBackground">
+        android:background="?android:attr/selectableItemBackground"
+        android:layout_gravity="center_vertical">
 
-    <LinearLayout
-            android:orientation="vertical"
-            android:layout_width="match_parent"
+    <TextView
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical">
+            android:textAllCaps="true"
+            android:id="@+id/point_title"
+            android:singleLine="true"
+            android:ellipsize="end"
+            android:textColor="@color/theme_colour"
+            android:textSize="18sp"
+            android:layout_gravity="center_vertical"/>
 
-        <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="New Text"
-                android:textAllCaps="true"
-                android:id="@+id/point_title"
-                android:singleLine="true"
-                android:ellipsize="end"
-                android:textColor="@color/theme_colour"
-                android:textSize="18sp"
-                android:layout_gravity="center_vertical"/>
-
-        <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="New Text"
-                android:textColor="#9000"
-                android:singleLine="true"
-                android:ellipsize="end"
-                android:fontFamily="sans-serif-condensed"
-                android:id="@+id/point_secondary"
-                android:layout_gravity="center_vertical"/>
-    </LinearLayout>
-
-</FrameLayout>
+    <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="#9000"
+            android:singleLine="true"
+            android:ellipsize="end"
+            android:fontFamily="sans-serif-condensed"
+            android:id="@+id/point_secondary"
+            android:layout_gravity="center_vertical"/>
+</LinearLayout>
