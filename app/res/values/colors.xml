@@ -1,19 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="theme_colour">#1d9900</color>
-    <color name="theme_colour_100">#1d9900</color>
     <color name="theme_colour_40">#661d9900</color>
     <color name="theme_colour_60">#991d9900</color>
     <color name="theme_colour_20">#331d9900</color>
     <color name="theme_colour_light">#93c388</color>
     <color name="theme_colour_dark">#ff117300</color>
     <color name="empty_hint_color">#C0C0C0</color>
-    <color name="time_stamp_colour">#44000000</color>
-    <color name="theme_alt_color_1">#E8A70C</color>
-    <color name="theme_alt_color_1_60">#99E8A70C</color>
     <color name="theme_alt_color_2">#ffff7d00</color>
-    <color name="theme_alt_color_2_60">#99ff7d00</color>
-    <color name="theme_alt_color_3">#260CE8</color>
-    <color name="compose_view_background">#11000000</color>
-    <color name="phone_type_label_bg">#33000000</color>
 </resources>
