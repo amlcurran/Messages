@@ -61,13 +61,4 @@
     <string name="preference_large_unread_summary">Display larger previews on unread conversations</string>
     <string name="no_messages">No messages.\nWhy not send one?</string>
 
-    <plurals name="minutesDifference">
-        <item quantity="one">%1$s minute ago</item>
-        <item quantity="other">%1$s minutes ago</item>
-    </plurals>
-
-    <plurals name="hoursDifference">
-        <item quantity="one">%1$s hour ago</item>
-        <item quantity="other">%1$s hours ago</item>
-    </plurals>
 </resources>
