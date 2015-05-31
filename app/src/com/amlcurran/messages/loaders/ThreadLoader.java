@@ -39,12 +39,32 @@ public class ThreadLoader {
     }
 
     List<SmsMessage> loadSmsList(String threadId) {
-        String selection = Telephony.Sms.THREAD_ID + "=?";
-        String[] selectionArgs = {threadId};
+        String selection = createSelectionStringFor(threadId);
+        String[] selectionArgs = createSelectArgs(threadId);
         Cursor cursor = contentResolver.query(contentUri, PROJECTION, selection, selectionArgs, Telephony.Sms.DEFAULT_SORT_ORDER.replace("DESC", "ASC"));
         List<SmsMessage> messageList = createMessageList(cursor);
         cursor.close();
         return messageList;
+    }
+
+    private static String[] createSelectArgs(String threadId) {
+        String[] selectionArgs;
+        if (threadId != null) {
+            selectionArgs = new String[]{threadId};
+        } else {
+            selectionArgs = null;
+        }
+        return selectionArgs;
+    }
+
+    private static String createSelectionStringFor(String threadId) {
+        String selection;
+        if (threadId != null) {
+            selection = Telephony.Sms.THREAD_ID + "=?";
+        } else {
+            selection = "thread_id is NULL";
+        }
+        return selection;
     }
 
     private List<SmsMessage> createMessageList(Cursor cursor) {

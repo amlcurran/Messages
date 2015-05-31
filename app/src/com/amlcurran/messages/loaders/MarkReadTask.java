@@ -47,8 +47,8 @@ class MarkReadTask implements Callable<Object> {
     public Object call() throws Exception {
         boolean shouldUpdate = false;
         for (String threadId : threadIds) {
-            String selection = String.format("%1$s=? AND (%2$s=? OR %3$s=?)", Telephony.Sms.THREAD_ID, Telephony.Sms.READ, Telephony.Sms.SEEN);
-            String[] args = new String[]{threadId, "0", "0"};
+            String selection = createSelection(threadId);
+            String[] args = createSelectionArgs(threadId);
             int update = contentResolver.update(Telephony.Sms.CONTENT_URI, readContentValues, selection, args);
             shouldUpdate = shouldUpdate || update > 0;
         }
@@ -56,6 +56,22 @@ class MarkReadTask implements Callable<Object> {
             conversationList.reloadConversations();
         }
         return null;
+    }
+
+    private static String createSelection(String threadId) {
+        if (threadId != null) {
+            return String.format("%1$s=? AND (%2$s=? OR %3$s=?)", Telephony.Sms.THREAD_ID, Telephony.Sms.READ, Telephony.Sms.SEEN);
+        } else {
+            return String.format("%1$s IS NULL AND (%2$s=? OR %3$s=?)", Telephony.Sms.THREAD_ID, Telephony.Sms.READ, Telephony.Sms.SEEN);
+        }
+    }
+
+    private static String[] createSelectionArgs(String threadId) {
+        if (threadId != null) {
+            return new String[]{threadId, "0", "0"};
+        } else {
+            return new String[]{"0", "0"};
+        }
     }
 
     private static ContentValues createReadContentValues() {

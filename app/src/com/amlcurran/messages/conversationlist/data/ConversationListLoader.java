@@ -23,7 +23,6 @@ import android.provider.ContactsContract;
 import android.provider.Telephony;
 import android.telephony.PhoneNumberUtils;
 
-import com.amlcurran.messages.core.Log;
 import com.amlcurran.messages.core.TextUtils;
 import com.amlcurran.messages.core.conversationlist.Conversation;
 import com.amlcurran.messages.core.data.Contact;
@@ -72,11 +71,7 @@ class ConversationListLoader {
             int conversationCount = -1;
             Conversation conversation = new Conversation(contact.getNumber(), body, threadId, isRead, contact, lastFromMe, Time.fromMillis(lastMessageTime), conversationCount);
 
-            if (threadId != null) {
-                conversations.add(conversation);
-            } else {
-                Log.getLogger().w(this, "Couldn't add a thread with null ID!!");
-            }
+            conversations.add(conversation);
         }
 
         conversationsList.close();
