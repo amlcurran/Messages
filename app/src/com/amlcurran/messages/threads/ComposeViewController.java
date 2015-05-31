@@ -28,6 +28,7 @@ public class ComposeViewController implements DefaultAppChecker.Callback {
     private final PhoneNumber phoneNumber;
     private final String composedMessage;
     private final DefaultAppChecker defaultChecker;
+    private boolean preventSend = false;
 
     public ComposeViewController(ComposeView composeView, DraftRepository draftRepository, PhoneNumber phoneNumber, String composedMessage, DefaultAppChecker defaultChecker) {
         this.composeView = composeView;
@@ -64,11 +65,18 @@ public class ComposeViewController implements DefaultAppChecker.Callback {
     }
 
     void start() {
-        defaultChecker.checkSmsApp(this);
+        if (!preventSend) {
+            defaultChecker.checkSmsApp(this);
+        }
         retrieveDraft();
     }
 
     void stop() {
         saveDraft();
+    }
+
+    public void cannotSendToSender() {
+        preventSend = true;
+        composeView.disable();
     }
 }

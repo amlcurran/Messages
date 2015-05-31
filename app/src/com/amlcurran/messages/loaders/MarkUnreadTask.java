@@ -47,8 +47,8 @@ class MarkUnreadTask implements Callable<Object> {
             SmsMessage lastMessage = messageList.get(messageList.size() - 1);
 
             // This updates an unread message
-            String selection = String.format("%1$s=? AND %2$s=?", Telephony.Sms.THREAD_ID, Telephony.Sms._ID);
-            String[] args = new String[]{threadId, String.valueOf(lastMessage.getId()) };
+            String selection = createSelection(threadId);
+            String[] args = createSelectionArgs(threadId, lastMessage);
             int updated = contentResolver.update(Telephony.Sms.Inbox.CONTENT_URI, createUnreadContentValues(), selection, args);
             if (updated == 0) {
                 MessagesLog.w(MarkUnreadTask.this, "Couldn't mark conversation " + threadId + " as read");
@@ -58,6 +58,23 @@ class MarkUnreadTask implements Callable<Object> {
 
         }
         return null;
+    }
+
+    private static String[] createSelectionArgs(String threadId, SmsMessage lastMessage) {
+        String lastMessageId = String.valueOf(lastMessage.getId());
+        if (threadId != null) {
+            return new String[]{threadId, lastMessageId};
+        } else {
+            return new String[]{lastMessageId};
+        }
+    }
+
+    private static String createSelection(String threadId) {
+        if (threadId != null) {
+            return String.format("%1$s=? AND %2$s=?", Telephony.Sms.THREAD_ID, Telephony.Sms._ID);
+        } else {
+            return String.format("%1$s IS NULL AND %2$s=?", Telephony.Sms.THREAD_ID, Telephony.Sms._ID);
+        }
     }
 
     private ContentValues createUnreadContentValues() {

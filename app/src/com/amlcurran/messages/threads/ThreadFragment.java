@@ -102,6 +102,9 @@ public class ThreadFragment extends Fragment implements
                 defaultChecker);
         threadViewController = new ThreadViewController(thread, contact, this, dependencyRepository, new HandlerScheduledQueue(new Handler(Looper.getMainLooper())));
         composeView.setComposeListener(threadViewController);
+        if (threadId == null) {
+            composeViewController.cannotSendToSender();
+        }
 
         setHasOptionsMenu(true);
 
