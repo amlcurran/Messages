@@ -24,12 +24,15 @@ import android.provider.ContactsContract;
 import android.support.v4.app.NotificationCompat;
 
 import com.amlcurran.messages.R;
+import com.amlcurran.messages.analysis.MessageAnalyser;
 import com.amlcurran.messages.core.conversationlist.Conversation;
 import com.amlcurran.messages.core.data.Contact;
 import com.amlcurran.messages.core.data.SmsMessage;
+import com.amlcurran.messages.core.data.Time;
 import com.amlcurran.messages.core.preferences.PreferenceStore;
 import com.amlcurran.messages.telephony.SmsManagerOutputPort;
 
+import java.util.Collections;
 import java.util.List;
 
 public class NotificationBuilder {
@@ -39,20 +42,25 @@ public class NotificationBuilder {
     private final Context context;
     private final PreferenceStore preferenceStore;
     private final int notificationColor;
-    private final UnreadNotificationBuilder unreadNotificationBuilder;
+    private final StyledTextFactory styledTextFactory;
+    private final NotificationActionBuilder actionBuilder;
 
     public NotificationBuilder(Context context, PreferenceStore preferenceStore) {
         this.context = context;
         this.preferenceStore = preferenceStore;
         this.notificationIntentFactory = new NotificationIntentFactory(context);
-        StyledTextFactory styledTextFactory = new StyledTextFactory();
-        NotificationActionBuilder actionBuilder = new NotificationActionBuilder(context);
+        this.actionBuilder = new NotificationActionBuilder(context);
         this.notificationColor = context.getResources().getColor(R.color.theme_colour);
-        this.unreadNotificationBuilder = new UnreadNotificationBuilder(context, this, styledTextFactory, actionBuilder, notificationIntentFactory);
+        this.styledTextFactory = new StyledTextFactory();
     }
 
-    public List<Notification> buildUnreadNotification(List<Conversation> conversations, Bitmap photo, List<Conversation> newConversations) {
-        return unreadNotificationBuilder.buildUnreadNotification(conversations, photo, newConversations);
+    public List<Notification> buildUnreadSummaryNotification(List<Conversation> conversations) {
+        CharSequence ticker = styledTextFactory.buildListSummary(context, conversations);
+        if (conversations.size() == 1) {
+            return Collections.emptyList();
+        } else {
+            return Collections.singletonList(buildMultipleSummaryNotification(conversations, ticker));
+        }
     }
 
     static String getContactUri(Contact contact) {
@@ -105,5 +113,55 @@ public class NotificationBuilder {
                 .setContentText(string(R.string.mms_error_text))
                 .setSmallIcon(R.drawable.ic_notify_error)
                 .build();
+    }
+
+    public Notification buildUnreadMessageNotification(Bitmap photo, Contact contact, SmsMessage smsMessage) {
+        NotificationCompat.Action singleUnreadAction = actionBuilder.buildSingleMarkReadAction(smsMessage.getThreadId());
+        NotificationCompat.Action callAction = actionBuilder.call(contact);
+        NotificationCompat.Builder builder = getDefaultBuilder();
+
+//        analyseMessage(conversation, builder);
+//        enableVoiceReply(conversation, builder);
+
+        return builder.addAction(callAction)
+                .addAction(singleUnreadAction)
+                .setTicker(smsMessage.getBody())
+                .setPriority(Notification.PRIORITY_HIGH)
+                .addPerson(NotificationBuilder.getContactUri(contact))
+                .setContentTitle(contact.getDisplayName())
+                .setGroup(NotificationBuilder.UNREAD_MESSAGES)
+                .setLargeIcon(photo)
+                .setContentIntent(notificationIntentFactory.createViewConversationIntent(smsMessage))
+                .setContentText(smsMessage.getBody())
+                .setWhen(smsMessage.getTimestamp().toMillis())
+                .build();
+    }
+
+    Notification buildMultipleSummaryNotification(List<Conversation> conversations, CharSequence ticker) {
+        Time latestMessageTime = MessageAnalyser.getLatestMessageTime(conversations);
+        NotificationCompat.Action markReadAction = actionBuilder.buildMultipleMarkReadAction(conversations);
+
+        NotificationCompat.Builder defaultBuilder = getDefaultBuilder(false);
+        NotificationBinder notificationBinder = new NotificationBinder(defaultBuilder);
+        notificationBinder.setStyle(buildInboxStyle(conversations));
+
+        return notificationBinder.getBaseBuilder()
+                .addAction(markReadAction)
+                .setTicker(ticker)
+                .setGroup(UNREAD_MESSAGES)
+                .setPriority(Notification.PRIORITY_HIGH)
+                .setGroupSummary(true)
+                .setContentText(styledTextFactory.buildSenderList(conversations))
+                .setContentTitle(styledTextFactory.buildListSummary(context, conversations))
+                .setWhen(latestMessageTime.toMillis())
+                .build();
+    }
+
+    NotificationCompat.Style buildInboxStyle(List<Conversation> conversations) {
+        NotificationCompat.InboxStyle inboxStyle = new NotificationCompat.InboxStyle();
+        for (Conversation conversation : conversations) {
+            inboxStyle.addLine(styledTextFactory.getInboxLine(conversation));
+        }
+        return inboxStyle;
     }
 }

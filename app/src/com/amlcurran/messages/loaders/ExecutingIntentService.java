@@ -55,10 +55,10 @@ public class ExecutingIntentService extends IntentService {
         }
     }
 
-    public static Intent markReadIntent(Context context, List<Conversation> conversations) {
+    public static Intent markReadIntent(Context context, List<String> threadIdList) {
         Intent intent = new Intent(context, ExecutingIntentService.class);
         intent.setAction(EXECUTE_MARK_READ);
-        intent.putExtra(EXTRA_THREAD_ID_LIST, buildThreadIdList(conversations));
+        intent.putExtra(EXTRA_THREAD_ID_LIST, new ArrayList<>(threadIdList));
         return intent;
     }
 
@@ -71,10 +71,10 @@ public class ExecutingIntentService extends IntentService {
     }
 
     public static PendingIntent markReadPendingIntent(Context context, List<Conversation> conversations) {
-        return PendingIntent.getService(context, 0, markReadIntent(context, conversations), PendingIntent.FLAG_UPDATE_CURRENT);
+        return PendingIntent.getService(context, 0, markReadIntent(context, buildThreadIdList(conversations)), PendingIntent.FLAG_UPDATE_CURRENT);
     }
 
-    public static PendingIntent markReadPendingIntentSingle(Context context, Conversation conversations) {
-        return PendingIntent.getService(context, conversations.hashCode(), markReadIntent(context, Collections.singletonList(conversations)), PendingIntent.FLAG_UPDATE_CURRENT);
+    public static PendingIntent markReadPendingIntentSingle(Context context, String threadId) {
+        return PendingIntent.getService(context, threadId.hashCode(), markReadIntent(context, Collections.singletonList(threadId)), PendingIntent.FLAG_UPDATE_CURRENT);
     }
 }
