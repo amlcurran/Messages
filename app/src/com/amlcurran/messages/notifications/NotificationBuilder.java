@@ -122,6 +122,7 @@ public class NotificationBuilder {
         return builder.addAction(singleUnreadAction)
                 .addAction(callAction)
                 .setTicker(smsMessage.getBody())
+                .setStyle(buildLargeStyle(contact, smsMessage))
                 .setPriority(Notification.PRIORITY_HIGH)
                 .addPerson(NotificationBuilder.getContactUri(contact))
                 .setContentTitle(contact.getDisplayName())
@@ -131,6 +132,12 @@ public class NotificationBuilder {
                 .setContentText(smsMessage.getBody())
                 .setWhen(smsMessage.getTimestamp().toMillis())
                 .build();
+    }
+
+    private NotificationCompat.Style buildLargeStyle(Contact contact, SmsMessage smsMessage) {
+        return new NotificationCompat.BigTextStyle()
+                .bigText(smsMessage.getBody())
+                .setBigContentTitle(contact.getDisplayName());
     }
 
     Notification buildMultipleSummaryNotification(List<Conversation> conversations, CharSequence ticker) {
