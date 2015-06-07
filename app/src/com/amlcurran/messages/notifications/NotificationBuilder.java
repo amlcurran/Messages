@@ -67,33 +67,29 @@ public class NotificationBuilder {
         return String.valueOf(ContactsContract.Contacts.getLookupUri(contact.getContactId(), contact.getLookupKey()));
     }
 
-    NotificationCompat.Builder getDefaultBuilder() {
-        return getDefaultBuilder(true);
+    NotificationCompat.Builder getBuzzyBuilder() {
+        NotificationCompat.Builder builder = getQuietBuilder();
+        if (preferenceStore.hasRingtoneUri()) {
+            builder.setSound(Uri.parse(preferenceStore.getRingtoneUri().toString()));
+        } else {
+            builder.setDefaults(Notification.DEFAULT_SOUND | Notification.DEFAULT_LIGHTS);
+        }
+        builder.setVibrate(VIBRATE_PATTERN);
+        return builder;
     }
 
-    NotificationCompat.Builder getDefaultBuilder(boolean shouldSoundAndVibrate) {
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(this.context)
+    NotificationCompat.Builder getQuietBuilder() {
+        return new NotificationCompat.Builder(context)
                 .setContentIntent(notificationIntentFactory.createLaunchActivityIntent())
                 .setAutoCancel(true)
                 .setSmallIcon(R.drawable.ic_notify_sms)
                 .setCategory(NotificationCompat.CATEGORY_MESSAGE)
                 .setColor(notificationColor)
                 .setDefaults(Notification.DEFAULT_LIGHTS);
-
-        if (shouldSoundAndVibrate) {
-            if (preferenceStore.hasRingtoneUri()) {
-                builder.setSound(Uri.parse(preferenceStore.getRingtoneUri().toString()));
-            } else {
-                builder.setDefaults(Notification.DEFAULT_SOUND | Notification.DEFAULT_LIGHTS);
-            }
-            builder.setVibrate(VIBRATE_PATTERN);
-        }
-
-        return builder;
     }
 
     public Notification buildFailureToSendNotification(SmsMessage message, Contact contact) {
-        return getDefaultBuilder()
+        return getBuzzyBuilder()
                 .setContentTitle(string(R.string.failed_to_send_message))
                 .setTicker(string(R.string.failed_to_send_message))
                 .setContentText(context.getString(R.string.couldnt_send_to, contact.getDisplayName()))
@@ -107,7 +103,7 @@ public class NotificationBuilder {
     }
 
     public Notification buildMmsErrorNotification() {
-        return getDefaultBuilder()
+        return getBuzzyBuilder()
                 .setContentTitle(string(R.string.mms_error_title))
                 .setTicker(string(R.string.mms_error_title))
                 .setContentText(string(R.string.mms_error_text))
@@ -118,13 +114,13 @@ public class NotificationBuilder {
     public Notification buildUnreadMessageNotification(Bitmap photo, Contact contact, SmsMessage smsMessage) {
         NotificationCompat.Action singleUnreadAction = actionBuilder.buildSingleMarkReadAction(smsMessage.getThreadId());
         NotificationCompat.Action callAction = actionBuilder.call(contact);
-        NotificationCompat.Builder builder = getDefaultBuilder();
+        NotificationCompat.Builder builder = getBuzzyBuilder();
 
 //        analyseMessage(conversation, builder);
 //        enableVoiceReply(conversation, builder);
 
-        return builder.addAction(callAction)
-                .addAction(singleUnreadAction)
+        return builder.addAction(singleUnreadAction)
+                .addAction(callAction)
                 .setTicker(smsMessage.getBody())
                 .setPriority(Notification.PRIORITY_HIGH)
                 .addPerson(NotificationBuilder.getContactUri(contact))
@@ -141,7 +137,7 @@ public class NotificationBuilder {
         Time latestMessageTime = MessageAnalyser.getLatestMessageTime(conversations);
         NotificationCompat.Action markReadAction = actionBuilder.buildMultipleMarkReadAction(conversations);
 
-        NotificationCompat.Builder defaultBuilder = getDefaultBuilder(false);
+        NotificationCompat.Builder defaultBuilder = getQuietBuilder();
         NotificationBinder notificationBinder = new NotificationBinder(defaultBuilder);
         notificationBinder.setStyle(buildInboxStyle(conversations));
 

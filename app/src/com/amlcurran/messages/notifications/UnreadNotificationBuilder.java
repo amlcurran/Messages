@@ -43,7 +43,7 @@ public class UnreadNotificationBuilder {
     NotificationCompat.Builder buildSingleUnreadNotification(Conversation conversation, Bitmap photo, boolean fromNewMessage, CharSequence ticker) {
         NotificationCompat.Action singleUnreadAction = actionBuilder.buildSingleMarkReadAction(conversation.getThreadId());
         NotificationCompat.Action callAction = actionBuilder.call(conversation.getContact());
-        NotificationCompat.Builder builder = notificationBuilder.getDefaultBuilder(fromNewMessage);
+        NotificationCompat.Builder builder = notificationBuilder.getQuietBuilder();
 
         analyseMessage(conversation, builder);
         enableVoiceReply(conversation, builder);
@@ -65,7 +65,7 @@ public class UnreadNotificationBuilder {
     NotificationCompat.Builder buildSingleUnreadNotificationWithoutSounds(Conversation conversation, Bitmap photo, CharSequence ticker) {
         NotificationCompat.Action singleUnreadAction = actionBuilder.buildSingleMarkReadAction(conversation.getThreadId());
         NotificationCompat.Action callAction = actionBuilder.call(conversation.getContact());
-        NotificationCompat.Builder builder = notificationBuilder.getDefaultBuilder(false);
+        NotificationCompat.Builder builder = notificationBuilder.getQuietBuilder();
 
         analyseMessage(conversation, builder);
         enableVoiceReply(conversation, builder);
