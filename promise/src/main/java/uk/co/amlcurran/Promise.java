@@ -19,16 +19,20 @@ package uk.co.amlcurran;
 public final class Promise<From, To> {
 
     private final From input;
-    private final To output;
-    private final Exception fallenException;
+    private final Function<From, To> action;
+    private To output;
+    private Exception fallenException;
 
     private Promise(From input, Function<From, To> action, Exception fallenException) {
         this.input = input;
+        this.action = action;
+        this.fallenException = fallenException;
+        execute();
+    }
+
+    private void execute() {
         Execution<To> execution = executeAction(action);
-        if (execution.caughtException == null) {
-            // propagate previous exception
-            this.fallenException = fallenException;
-        } else {
+        if (execution.caughtException != null) {
             // Overwrite with the latest exception
             this.fallenException = execution.caughtException;
         }
