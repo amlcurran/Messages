@@ -24,7 +24,7 @@ public class PromiseTest {
 
     @Test
     public void testStringsWork() {
-        Promise.direct("hello")
+        Promise.resolve("hello")
                 .then(new Promise.Function<String, String>() {
                     @Override
                     public String act(String s) {
@@ -49,7 +49,7 @@ public class PromiseTest {
 
     @Test
     public void testCrossingOverClasses() {
-        Promise.direct("hello")
+        Promise.resolve("hello")
                 .then(new Promise.Function<String, Integer>() {
                     @Override
                     public Integer act(String s) {
@@ -73,7 +73,7 @@ public class PromiseTest {
 
     @Test
     public void testCatchingOneExceptionsWorks() {
-        Promise.direct("hello")
+        Promise.resolve("hello")
                 .then(new Promise.Function<String, String>() {
                     @Override
                     public String act(String s) {
@@ -96,7 +96,7 @@ public class PromiseTest {
 
     @Test
     public void testCatchingMultipleExceptionsCatchesTheLastOne() {
-        Promise.direct("hello")
+        Promise.resolve("hello")
                 .then(new Promise.Function<String, String>() {
                     @Override
                     public String act(String s) {

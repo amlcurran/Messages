@@ -58,7 +58,7 @@ public final class Promise<From, To> {
         catchFunction.error(fallenException);
     }
 
-    public static <From> Promise<From, From> direct(From input) {
+    public static <From> Promise<From, From> resolve(From input) {
         return new Promise<>(input, new Function<From, From>() {
             @Override
             public From act(From o) {
