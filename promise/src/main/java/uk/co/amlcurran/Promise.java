@@ -16,18 +16,42 @@
 
 package uk.co.amlcurran;
 
-public class Promise<From, To> {
+public final class Promise<From, To> {
 
     private final From input;
     private final To output;
+    private final Exception fallenException;
 
-    public Promise(From input, Function<From, To> action) {
+    private Promise(From input, Function<From, To> action, Exception fallenException) {
         this.input = input;
-        this.output = action.act(this.input);
+        Execution<To> execution = executeAction(action);
+        if (execution.caughtException == null) {
+            // propagate previous exception
+            this.fallenException = fallenException;
+        } else {
+            // Overwrite with the latest exception
+            this.fallenException = execution.caughtException;
+        }
+        this.output = execution.output;
+    }
+
+    private Execution<To> executeAction(Function<From, To> action) {
+        Exception caughtException = null;
+        To output = null;
+        try {
+            output = action.act(input);
+        } catch (Exception exception) {
+            caughtException = exception;
+        }
+        return new Execution<>(output, caughtException);
     }
 
     public <ToAgain> Promise<To, ToAgain> then(Function<To, ToAgain> action) {
-        return new Promise<>(output, action);
+        return new Promise<>(output, action, fallenException);
+    }
+
+    public void catchAll(CatchFunction catchFunction) {
+        catchFunction.error(fallenException);
     }
 
     public static <From> Promise<From, From> direct(From input) {
@@ -36,11 +60,24 @@ public class Promise<From, To> {
             public From act(From o) {
                 return o;
             }
-        });
+        }, null);
     }
 
     interface Function<Input, Output> {
         Output act(Input input);
     }
 
+    interface CatchFunction {
+        void error(Exception exception);
+    }
+
+    private static class Execution<To> {
+        private final To output;
+        private final Exception caughtException;
+
+        public Execution(To output, Exception caughtException) {
+            this.output = output;
+            this.caughtException = caughtException;
+        }
+    }
 }

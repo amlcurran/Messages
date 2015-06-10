@@ -24,8 +24,7 @@ public class PromiseTest {
 
     @Test
     public void testStringsWork() {
-        Promise.
-                direct("hello")
+        Promise.direct("hello")
                 .then(new Promise.Function<String, String>() {
                     @Override
                     public String act(String s) {
@@ -50,8 +49,7 @@ public class PromiseTest {
 
     @Test
     public void testCrossingOverClasses() {
-        Promise.
-                direct("hello")
+        Promise.direct("hello")
                 .then(new Promise.Function<String, Integer>() {
                     @Override
                     public Integer act(String s) {
@@ -69,6 +67,52 @@ public class PromiseTest {
                     public String act(String s) {
                         assertThat(s).isEqualTo(String.valueOf("hello".hashCode()));
                         return s;
+                    }
+                });
+    }
+
+    @Test
+    public void testCatchingOneExceptionsWorks() {
+        Promise.direct("hello")
+                .then(new Promise.Function<String, String>() {
+                    @Override
+                    public String act(String s) {
+                        return s.substring(0, 3);
+                    }
+                })
+                .then(new Promise.Function<String, String>() {
+                    @Override
+                    public String act(String s) {
+                        throw new IllegalStateException();
+                    }
+                })
+                .catchAll(new Promise.CatchFunction() {
+                    @Override
+                    public void error(Exception exception) {
+                        assertThat(exception).isInstanceOf(IllegalStateException.class);
+                    }
+                });
+    }
+
+    @Test
+    public void testCatchingMultipleExceptionsCatchesTheLastOne() {
+        Promise.direct("hello")
+                .then(new Promise.Function<String, String>() {
+                    @Override
+                    public String act(String s) {
+                        throw new NullPointerException();
+                    }
+                })
+                .then(new Promise.Function<String, String>() {
+                    @Override
+                    public String act(String s) {
+                        throw new IllegalStateException();
+                    }
+                })
+                .catchAll(new Promise.CatchFunction() {
+                    @Override
+                    public void error(Exception exception) {
+                        assertThat(exception).isInstanceOf(IllegalStateException.class);
                     }
                 });
     }
