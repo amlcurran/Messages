@@ -20,28 +20,54 @@ import org.junit.Test;
 
 import static org.fest.assertions.api.Assertions.assertThat;
 
-public class StringPromiseTest {
+public class PromiseTest {
 
     @Test
     public void testStringsWork() {
-        StringPromise
-                .direct("hello")
-                .then(new StringPromise.Function<String, String>() {
+        Promise.
+                direct("hello")
+                .then(new Promise.Function<String, String>() {
                     @Override
                     public String act(String s) {
                         return s.substring(0, 3);
                     }
                 })
-                .then(new StringPromise.Function<String, String>() {
+                .then(new Promise.Function<String, String>() {
                     @Override
                     public String act(String s) {
                         return s + "woo";
                     }
                 })
-                .then(new StringPromise.Function<String, String>() {
+                .then(new Promise.Function<String, String>() {
                     @Override
                     public String act(String s) {
                         assertThat(s).isEqualTo("helwoo");
+                        return s;
+                    }
+                });
+    }
+
+
+    @Test
+    public void testCrossingOverClasses() {
+        Promise.
+                direct("hello")
+                .then(new Promise.Function<String, Integer>() {
+                    @Override
+                    public Integer act(String s) {
+                        return s.hashCode();
+                    }
+                })
+                .then(new Promise.Function<Integer, String>() {
+                    @Override
+                    public String act(Integer s) {
+                        return String.valueOf(s);
+                    }
+                })
+                .then(new Promise.Function<String, String>() {
+                    @Override
+                    public String act(String s) {
+                        assertThat(s).isEqualTo(String.valueOf("hello".hashCode()));
                         return s;
                     }
                 });

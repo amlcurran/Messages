@@ -16,22 +16,27 @@
 
 package uk.co.amlcurran;
 
-public class StringPromise {
+public class Promise<From, To> {
 
-    private final String input;
-    private final String output;
+    private final From input;
+    private final To output;
 
-    public StringPromise(String input, Function<String, String> action) {
+    public Promise(From input, Function<From, To> action) {
         this.input = input;
         this.output = action.act(this.input);
     }
 
-    public StringPromise then(Function<String, String> action) {
-        return new StringPromise(output, action);
+    public <ToAgain> Promise<To, ToAgain> then(Function<To, ToAgain> action) {
+        return new Promise<>(output, action);
     }
 
-    public static StringPromise direct(String input) {
-        return new StringPromise(input, new IdentityFunction());
+    public static <From> Promise<From, From> direct(From input) {
+        return new Promise<>(input, new Function<From, From>() {
+            @Override
+            public From act(From o) {
+                return o;
+            }
+        });
     }
 
     interface Function<Input, Output> {
