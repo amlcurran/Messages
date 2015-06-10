@@ -43,10 +43,4 @@ public class Promise<From, To> {
         Output act(Input input);
     }
 
-    private static class IdentityFunction implements Function<String, String> {
-        @Override
-        public String act(String s) {
-            return s;
-        }
-    }
 }

@@ -38,11 +38,11 @@ public class PromiseTest {
                         return s + "woo";
                     }
                 })
-                .then(new Promise.Function<String, String>() {
+                .then(new Promise.Function<String, Void>() {
                     @Override
-                    public String act(String s) {
+                    public Void act(String s) {
                         assertThat(s).isEqualTo("helwoo");
-                        return s;
+                        return null;
                     }
                 });
     }
