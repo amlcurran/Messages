@@ -25,19 +25,19 @@ public class PromiseTest {
     @Test
     public void testStringsWork() {
         Promise.resolve("hello")
-                .then(new Promise.Function<String, String>() {
+                .then(new Function<String, String>() {
                     @Override
                     public String act(String s) {
                         return s.substring(0, 3);
                     }
                 })
-                .then(new Promise.Function<String, String>() {
+                .then(new Function<String, String>() {
                     @Override
                     public String act(String s) {
                         return s + "woo";
                     }
                 })
-                .then(new Promise.Function<String, Void>() {
+                .then(new Function<String, Void>() {
                     @Override
                     public Void act(String s) {
                         assertThat(s).isEqualTo("helwoo");
@@ -50,19 +50,19 @@ public class PromiseTest {
     @Test
     public void testCrossingOverClasses() {
         Promise.resolve("hello")
-                .then(new Promise.Function<String, Integer>() {
+                .then(new Function<String, Integer>() {
                     @Override
                     public Integer act(String s) {
                         return s.hashCode();
                     }
                 })
-                .then(new Promise.Function<Integer, String>() {
+                .then(new Function<Integer, String>() {
                     @Override
                     public String act(Integer s) {
                         return String.valueOf(s);
                     }
                 })
-                .then(new Promise.Function<String, String>() {
+                .then(new Function<String, String>() {
                     @Override
                     public String act(String s) {
                         assertThat(s).isEqualTo(String.valueOf("hello".hashCode()));
@@ -74,19 +74,19 @@ public class PromiseTest {
     @Test
     public void testCatchingOneExceptionsWorks() {
         Promise.resolve("hello")
-                .then(new Promise.Function<String, String>() {
+                .then(new Function<String, String>() {
                     @Override
                     public String act(String s) {
                         return s.substring(0, 3);
                     }
                 })
-                .then(new Promise.Function<String, String>() {
+                .then(new Function<String, String>() {
                     @Override
                     public String act(String s) {
                         throw new IllegalStateException();
                     }
                 })
-                .catchAll(new Promise.CatchFunction() {
+                .catchAll(new CatchFunction() {
                     @Override
                     public void error(Exception exception) {
                         assertThat(exception).isInstanceOf(IllegalStateException.class);
@@ -97,19 +97,19 @@ public class PromiseTest {
     @Test
     public void testCatchingMultipleExceptionsCatchesTheLastOne() {
         Promise.resolve("hello")
-                .then(new Promise.Function<String, String>() {
+                .then(new Function<String, String>() {
                     @Override
                     public String act(String s) {
                         throw new NullPointerException();
                     }
                 })
-                .then(new Promise.Function<String, String>() {
+                .then(new Function<String, String>() {
                     @Override
                     public String act(String s) {
                         throw new IllegalStateException();
                     }
                 })
-                .catchAll(new Promise.CatchFunction() {
+                .catchAll(new CatchFunction() {
                     @Override
                     public void error(Exception exception) {
                         assertThat(exception).isInstanceOf(IllegalStateException.class);

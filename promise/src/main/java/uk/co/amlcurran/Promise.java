@@ -67,14 +67,6 @@ public final class Promise<From, To> {
         }, null);
     }
 
-    interface Function<Input, Output> {
-        Output act(Input input);
-    }
-
-    interface CatchFunction {
-        void error(Exception exception);
-    }
-
     private static class Execution<To> {
         private final To output;
         private final Exception caughtException;
