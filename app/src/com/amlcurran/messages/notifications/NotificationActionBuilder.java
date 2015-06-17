@@ -25,8 +25,8 @@ import android.support.v4.app.RemoteInput;
 
 import com.amlcurran.messages.R;
 import com.amlcurran.messages.analysis.Link;
-import com.amlcurran.messages.core.data.Contact;
 import com.amlcurran.messages.core.conversationlist.Conversation;
+import com.amlcurran.messages.core.data.Contact;
 import com.amlcurran.messages.core.data.PhoneNumber;
 import com.amlcurran.messages.loaders.ExecutingIntentService;
 import com.amlcurran.messages.telephony.SmsManagerOutputPort;
@@ -40,8 +40,8 @@ class NotificationActionBuilder {
         this.context = context;
     }
 
-    NotificationCompat.Action buildSingleMarkReadAction(Conversation conversation) {
-        PendingIntent markReadIntent = ExecutingIntentService.markReadPendingIntentSingle(context, conversation);
+    NotificationCompat.Action buildSingleMarkReadAction(String threadId) {
+        PendingIntent markReadIntent = ExecutingIntentService.markReadPendingIntentSingle(context, threadId);
         String label = context.getString(R.string.mark_as_read);
         return new NotificationCompat.Action.Builder(R.drawable.ic_mark_read, label, markReadIntent).build();
     }
@@ -88,4 +88,5 @@ class NotificationActionBuilder {
         String label = context.getString(R.string.open_link);
         return new NotificationCompat.Action.Builder(R.drawable.ic_website, label, linkIntent).build();
     }
+
 }

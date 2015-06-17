@@ -28,6 +28,8 @@ import com.amlcurran.messages.core.conversationlist.ConversationListListener;
 import com.amlcurran.messages.core.conversationlist.ConversationLoader;
 import com.amlcurran.messages.core.data.Contact;
 import com.amlcurran.messages.core.data.SmsMessage;
+import com.amlcurran.messages.core.loaders.MessagesLoader;
+import com.amlcurran.messages.core.loaders.OnContactQueryListener;
 import com.amlcurran.messages.core.preferences.PreferenceStore;
 import com.amlcurran.messages.loaders.photos.PhotoLoader;
 import com.amlcurran.messages.preferences.SharedPreferenceStore;
@@ -46,14 +48,16 @@ public class Notifier {
     public static final String ACTION_VIEW_CONVERSATION = "com.amlcurran.messages.notification.VIEW_CONVERSATION";
     private final NotificationManagerCompat notificationManager;
     private final NotificationBuilder notificationBuilder;
-    private final ConversationLoader loader;
+    private final ConversationLoader conversationLoader;
     private final PreferenceStore preferenceStore;
     private final ArrayList<Conversation> postedConversations;
     private final PhotoLoader photoLoader;
+    private final MessagesLoader messagesLoader;
 
     public Notifier(Context context) {
         this.preferenceStore = new SharedPreferenceStore(context);
-        this.loader = SingletonManager.getConversationLoader(context);
+        this.conversationLoader = SingletonManager.getConversationLoader(context);
+        this.messagesLoader = SingletonManager.getMessagesLoader(context);
         this.photoLoader = SingletonManager.getPhotoLoader(context);
         this.notificationManager = NotificationManagerCompat.from(context);
         this.notificationBuilder = new NotificationBuilder(context, new SharedPreferenceStore(context));
@@ -63,7 +67,7 @@ public class Notifier {
     public void updateUnreadNotification() {
         if (preferenceStore.showNotifications()) {
             UnreadNotificationManager conversationListListener = new UnreadNotificationManager();
-            loader.loadUnreadConversationList(conversationListListener);
+            conversationLoader.loadUnreadConversationList(conversationListListener);
         }
     }
 
@@ -87,6 +91,30 @@ public class Notifier {
 
     public void showResentMessage(long threadId) {
         notificationManager.notify(NOTIFICATION_RESENT, notificationBuilder.buildResentNotification(threadId));
+    }
+
+    public void addNewMessageNotification(final SmsMessage smsMessage) {
+        messagesLoader.queryContact(smsMessage.getAddress(), new OnContactQueryListener() {
+            @Override
+            public void contactLoaded(final Contact contact) {
+                photoLoader.loadPhoto(contact, new PhotoLoadListener() {
+                    @Override
+                    public void photoLoaded(Bitmap photo) {
+                        notificationManager.notify(smsMessage.getThreadId().hashCode(), notificationBuilder.buildUnreadMessageNotification(photo, contact, smsMessage));
+                    }
+
+                    @Override
+                    public void photoLoadedFromCache(Bitmap photo) {
+                        notificationManager.notify(smsMessage.getThreadId().hashCode(), notificationBuilder.buildUnreadMessageNotification(photo, contact, smsMessage));
+                    }
+
+                    @Override
+                    public void beforePhotoLoad(Contact contact) {
+
+                    }
+                });
+            }
+        });
     }
 
     private class UnreadNotificationManager implements ConversationListListener {
@@ -133,7 +161,7 @@ public class Notifier {
         }
 
         private void postUnreadNotification(List<Conversation> conversations, Bitmap photo, List<Conversation> newConversations) {
-            List<Notification> notifications = notificationBuilder.buildUnreadNotification(conversations, photo, newConversations);
+            List<Notification> notifications = notificationBuilder.buildUnreadSummaryNotification(conversations);
             for (int i = 0; i < notifications.size(); i++) {
                 notificationManager.notify(NOTIFICATION_UNREAD_MESSAGES + i, notifications.get(i));
             }

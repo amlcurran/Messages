@@ -106,6 +106,7 @@ public class AndroidMessageTransport implements MessageTransport {
 
     @Override
     public void received(final SmsMessage smsMessage) {
+        SingletonManager.getNotifier(messagesApp).addNewMessageNotification(smsMessage);
         notifyListeners(smsMessage.getThreadId(), new CallbackAction() {
             @Override
             public void act(TransportCallbacks callbacks) {
