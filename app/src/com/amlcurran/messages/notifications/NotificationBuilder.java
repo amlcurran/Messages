@@ -106,4 +106,11 @@ public class NotificationBuilder {
                 .setSmallIcon(R.drawable.ic_notify_error)
                 .build();
     }
+
+    public Notification buildResentNotification(long threadId) {
+        return getDefaultBuilder(false)
+                .setContentTitle(string(R.string.resent_success))
+                .setSmallIcon(R.drawable.ic_notify_success)
+                .build();
+    }
 }

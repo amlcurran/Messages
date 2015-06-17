@@ -39,6 +39,7 @@ public class SmsManagerInputPort extends IntentService {
     private static final String ACTION_MESSAGE_SENT = "message_send";
     private static final String ACTION_MESSAGE_FAILED_SEND = "failed_send";
     private static final String EXTRA_MESSAGE = "message_id";
+    private static final String EXTRA_RESENT = "resent";
     private final MessageRepository messageRepository;
     private final EventBus eventBus;
 
@@ -52,6 +53,11 @@ public class SmsManagerInputPort extends IntentService {
 
     static Intent sentIntent(Context context, SmsMessage message) {
         return getIntent(context, message, ACTION_MESSAGE_SENT);
+    }
+
+    private static Intent resentIntent(Context context, SmsMessage message) {
+        return getIntent(context, message, ACTION_MESSAGE_SENT)
+                .putExtra(EXTRA_RESENT, true);
     }
 
     public static Intent failedSentIntent(Context context, SmsMessage message) {
@@ -72,6 +78,9 @@ public class SmsManagerInputPort extends IntentService {
             messageRepository.sent(message.getId());
             SingletonManager.getMessageTransport(this).sentFromThread(message.changeTypeTo(SmsMessage.Type.SENT));
             eventBus.postMessageSent(message.getAddress());
+            if (intent.getBooleanExtra(EXTRA_RESENT, false)) {
+                SingletonManager.getNotifier(this).showResentMessage(message.getId());
+            }
         } else if (ACTION_MESSAGE_FAILED_SEND.equals(intent.getAction())) {
             notifyFailureToSend(message);
             messageRepository.failedToSend(message.getId());
@@ -98,14 +107,29 @@ public class SmsManagerInputPort extends IntentService {
             return PendingIntent.getBroadcast(context, 2, intent, PendingIntent.FLAG_CANCEL_CURRENT);
         }
 
+        static PendingIntent broadcastResent(Context context, SmsMessage message) {
+            Intent intent = new Intent(context, InputReceiver.class);
+            intent.putExtra(SmsManagerInputPort.EXTRA_MESSAGE, message);
+            intent.putExtra(SmsManagerInputPort.EXTRA_RESENT, true);
+            return PendingIntent.getBroadcast(context, 2, intent, PendingIntent.FLAG_CANCEL_CURRENT);
+        }
+
         @Override
         public void onReceive(Context context, Intent intent) {
             SmsMessage message = (SmsMessage) intent.getSerializableExtra(EXTRA_MESSAGE);
             if (sentSuccessfully()) {
-                context.startService(SmsManagerInputPort.sentIntent(context, message));
+                if (isResent(intent)) {
+                    context.startService(SmsManagerInputPort.resentIntent(context, message));
+                } else {
+                    context.startService(SmsManagerInputPort.sentIntent(context, message));
+                }
             } else {
                 context.startService(SmsManagerInputPort.failedSentIntent(context, message));
             }
+        }
+
+        private boolean isResent(Intent intent) {
+            return intent.getBooleanExtra(EXTRA_RESENT, false);
         }
 
         private boolean sentSuccessfully() {
