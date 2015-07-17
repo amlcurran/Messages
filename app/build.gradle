@@ -47,7 +47,9 @@ android {
             java.srcDirs = ['test']
         }
         debug {
+            manifest.srcFile 'AndroidManifest-debug.xml'
             res.srcDirs = ['res-debug']
+            java.srcDirs = ['src-debug']
         }
         demo {
             res.srcDirs = ['res-demo']
