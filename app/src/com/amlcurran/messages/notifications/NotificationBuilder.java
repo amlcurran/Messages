@@ -153,6 +153,7 @@ public class NotificationBuilder {
                 .setTicker(ticker)
                 .setGroup(UNREAD_MESSAGES)
                 .setPriority(Notification.PRIORITY_HIGH)
+                .setAutoCancel(false)
                 .setGroupSummary(true)
                 .setContentText(styledTextFactory.buildSenderList(conversations))
                 .setContentTitle(styledTextFactory.buildListSummary(context, conversations))
