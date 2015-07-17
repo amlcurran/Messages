@@ -31,23 +31,27 @@ public final class Promise<From, To> {
     }
 
     private void execute() {
-        Execution<To> execution = executeAction(action);
-        if (execution.caughtException != null) {
-            // Overwrite with the latest exception
-            this.fallenException = execution.caughtException;
-        }
-        this.output = execution.output;
+        executeAction(action, new Execution.Callback<To>() {
+
+            @Override
+            public void completed(To output) {
+                Promise.this.output = output;
+            }
+
+            @Override
+            public void failed(Exception exception) {
+                Promise.this.fallenException = exception;
+            }
+        });
     }
 
-    private Execution<To> executeAction(Function<From, To> action) {
-        Exception caughtException = null;
-        To output = null;
+    private void executeAction(Function<From, To> action, Execution.Callback<To> callback) {
         try {
             output = action.act(input);
+            callback.completed(output);
         } catch (Exception exception) {
-            caughtException = exception;
+            callback.failed(exception);
         }
-        return new Execution<>(output, caughtException);
     }
 
     public <ToAgain> Promise<To, ToAgain> then(Function<To, ToAgain> action) {
@@ -75,5 +79,12 @@ public final class Promise<From, To> {
             this.output = output;
             this.caughtException = caughtException;
         }
+
+        public interface Callback<To> {
+            void completed(To output);
+
+            void failed(Exception exception);
+        }
+
     }
 }
