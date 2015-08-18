@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg width="96px" height="96px" viewBox="0 0 96 96" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:sketch="http://www.bohemiancoding.com/sketch/ns">
+    <!-- Generator: Sketch 3.3.2 (12043) - http://www.bohemiancoding.com/sketch -->
+    <title>ic_notify_success@1x</title>
+    <desc>Created with Sketch.</desc>
+    <defs>
+        <path d="M40.9105339,54.6862915 L26.7683983,40.5441559 L21.111544,46.2010101 L40.9105339,66 L43.7573593,63.1531746 L74.888456,32.0220779 L69.2316017,26.3652237 L40.9105339,54.6862915 Z M16.0000511,8 C11.5817449,8 8,11.5827987 8,15.9976794 L8,72.0023206 C8,76.4193169 11.5797863,80 16.0000511,80 L79.9999489,80 C84.4182551,80 88,76.4172013 88,72.0023206 L88,15.9976794 C88,11.5806831 84.4202137,8 79.9999489,8 L16.0000511,8 Z M48,92 L36,80 L60,80 L48,92 Z" id="path-1"></path>
+    </defs>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" sketch:type="MSPage">
+        <g id="ic_notify_success" sketch:type="MSArtboardGroup">
+            <g id="Slices" sketch:type="MSLayerGroup"></g>
+            <g id="Group" sketch:type="MSLayerGroup">
+                <rect id="Rectangle-1" fill="#7ED321" sketch:type="MSShapeGroup" x="0" y="0" width="96" height="96"></rect>
+                <mask id="mask-2" sketch:name="Mask" fill="white">
+                    <use xlink:href="#path-1"></use>
+                </mask>
+                <use id="Mask" fill="#FFFFFF" sketch:type="MSShapeGroup" xlink:href="#path-1"></use>
+                <g id="Internal" mask="url(#mask-2)">
+                    <g transform="translate(13.333333, 24.000000)"></g>
+                </g>
+            </g>
+            <g id="Rectangle-96-+-Rectangle-96-Copy" sketch:type="MSLayerGroup" transform="translate(48.000000, 48.000000) rotate(45.000000) translate(-48.000000, -48.000000) translate(33.000000, 19.000000)"></g>
+        </g>
+    </g>
+</svg>
