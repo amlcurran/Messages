@@ -23,6 +23,8 @@ import android.os.Bundle;
 
 import com.amlcurran.messages.MessagesActivity;
 import com.amlcurran.messages.core.conversationlist.Conversation;
+import com.amlcurran.messages.core.data.PhoneNumber;
+import com.amlcurran.messages.core.data.SmsMessage;
 import com.amlcurran.messages.data.ContactFactory;
 import com.amlcurran.messages.threads.ThreadActivity;
 
@@ -34,9 +36,14 @@ public class NotificationIntentFactory {
     }
 
     PendingIntent createViewConversationIntent(Conversation conversation) {
-        Bundle smooshed = ContactFactory.smooshContact(ContactFactory.fromAddress(conversation.getAddress().flatten()));
-        Intent intent = ThreadActivity.intent(context, conversation.getThreadId(), smooshed, null);
-        return PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT);
+        String threadId = conversation.getThreadId();
+        return viewThread(threadId, conversation.getAddress());
+    }
+
+    private PendingIntent viewThread(String threadId, PhoneNumber address) {
+        Bundle smooshed = ContactFactory.smooshContact(ContactFactory.fromAddress(address.flatten()));
+        Intent intent = ThreadActivity.intent(context, threadId, smooshed, null);
+        return PendingIntent.getActivity(context, threadId.hashCode(), intent, PendingIntent.FLAG_CANCEL_CURRENT);
     }
 
     PendingIntent createLaunchActivityIntent() {
@@ -47,5 +54,9 @@ public class NotificationIntentFactory {
 
     public PendingIntent markRead(Conversation conversation) {
         return null;
+    }
+
+    public PendingIntent createViewConversationIntent(SmsMessage smsMessage) {
+        return viewThread(smsMessage.getThreadId(), smsMessage.getAddress());
     }
 }
