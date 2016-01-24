@@ -149,6 +149,7 @@ public class NotificationBuilder {
         notificationBinder.setStyle(buildInboxStyle(conversations));
 
         return notificationBinder.getBaseBuilder()
+                .setAutoCancel(false)
                 .addAction(markReadAction)
                 .setTicker(ticker)
                 .setGroup(UNREAD_MESSAGES)
@@ -167,5 +168,12 @@ public class NotificationBuilder {
             inboxStyle.addLine(styledTextFactory.getInboxLine(conversation));
         }
         return inboxStyle;
+    }
+
+    public Notification buildResentNotification(long threadId) {
+        return getQuietBuilder()
+                .setContentTitle(string(R.string.resent_success))
+                .setSmallIcon(R.drawable.ic_notify_success)
+                .build();
     }
 }

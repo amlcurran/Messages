@@ -21,10 +21,10 @@ import android.app.Activity;
 import com.amlcurran.messages.SingletonManager;
 import com.amlcurran.messages.core.data.SmsMessage;
 
-class DeleteFailedResender implements ResendCallback {
+class Resender implements ResendCallback {
     private Activity activity;
 
-    public DeleteFailedResender(Activity activity) {
+    public Resender(Activity activity) {
         this.activity = activity;
     }
 

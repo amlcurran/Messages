@@ -44,6 +44,7 @@ public class Notifier {
     private static final int NOTIFICATION_UNREAD_MESSAGES = 22;
     private static final int NOTIFICATION_SEND_ERROR = 44;
     private static final int NOTIFICATION_MMS_ERROR = 66;
+    private static final int NOTIFICATION_RESENT = 42;
     public static final String ACTION_VIEW_CONVERSATION = "com.amlcurran.messages.notification.VIEW_CONVERSATION";
     private final NotificationManagerCompat notificationManager;
     private final NotificationBuilder notificationBuilder;
@@ -86,6 +87,10 @@ public class Notifier {
 
     public void clearFailureToSendNotification() {
         notificationManager.cancel(NOTIFICATION_SEND_ERROR);
+    }
+
+    public void showResentMessage(long threadId) {
+        notificationManager.notify(NOTIFICATION_RESENT, notificationBuilder.buildResentNotification(threadId));
     }
 
     public void addNewMessageNotification(final SmsMessage smsMessage) {

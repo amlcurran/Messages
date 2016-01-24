@@ -84,21 +84,36 @@ public class SmsManagerOutputPort extends IntentService {
             SmsMessage message = (SmsMessage) intent.getSerializableExtra(EXTRA_MESSAGE);
             SmsMessage smsMessage = messageRepository.resend(message, getContentResolver());
             sendBroadcast(AndroidMessageTransport.sendingMessageBroadcast(this, message.getThreadId(), smsMessage));
-            sendToApi(smsMessage);
+            resendToApi(smsMessage);
 
         }
     }
 
+    private void resendToApi(SmsMessage smsMessage) {
+        ArrayList<PendingIntent> messageSendIntents = getMessageResendIntents(smsMessage);
+        send(smsMessage, messageSendIntents);
+    }
+
+    ArrayList<PendingIntent> getMessageResendIntents(SmsMessage message) {
+        ArrayList<PendingIntent> pendingIntents = new ArrayList<>();
+        pendingIntents.add(SmsManagerInputPort.InputReceiver.broadcastResent(this, message));
+        return pendingIntents;
+    }
+
     private void sendToApi(SmsMessage message) {
         ArrayList<PendingIntent> messageSendIntents = getMessageSendIntents(message);
-        ArrayList<String> parts = smsManager.divideMessage(message.getBody());
-        smsManager.sendMultipartTextMessage(message.getAddress().flatten(), null, parts, messageSendIntents, null);
+        send(message, messageSendIntents);
     }
 
     ArrayList<PendingIntent> getMessageSendIntents(SmsMessage message) {
         ArrayList<PendingIntent> pendingIntents = new ArrayList<>();
         pendingIntents.add(SmsManagerInputPort.InputReceiver.broadcast(this, message));
         return pendingIntents;
+    }
+
+    private void send(SmsMessage message, ArrayList<PendingIntent> messageSendIntents) {
+        ArrayList<String> parts = smsManager.divideMessage(message.getBody());
+        smsManager.sendMultipartTextMessage(message.getAddress().flatten(), null, parts, messageSendIntents, null);
     }
 
     private InFlightSmsMessage extractInFlightFromWear(Intent intent) {
