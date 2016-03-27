@@ -19,6 +19,7 @@ package com.amlcurran.messages.notifications;
 import android.app.Notification;
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationManagerCompat;
 
 import com.amlcurran.messages.SingletonManager;
@@ -37,10 +38,9 @@ import com.amlcurran.messages.preferences.SharedPreferenceStore;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.espian.utils.Verbose.not;
-
 public class Notifier {
 
+    private static final int NOTIFICATION_UNREAD_MESSAGES_SUMMARY = 21;
     private static final int NOTIFICATION_UNREAD_MESSAGES = 22;
     private static final int NOTIFICATION_SEND_ERROR = 44;
     private static final int NOTIFICATION_MMS_ERROR = 66;
@@ -127,31 +127,28 @@ public class Notifier {
             } else if (conversations.size() == 1) {
                 // Load the contact photo as well
                 Conversation singleConvo = conversations.get(0);
-                List<Conversation> newConversations = getNewConversations(conversations);
-                photoLoader.loadPhoto(singleConvo.getContact(), new PostUnreadWhenLoadedListener(conversations, newConversations));
+                removeSummaryNotification();
+                photoLoader.loadPhoto(singleConvo.getContact(), new PostUnreadWhenLoadedListener(conversations));
             } else {
-                List<Conversation> newConversations = getNewConversations(conversations);
-                postUnreadNotification(conversations, null, newConversations);
+                postUnreadNotification(conversations, null);
             }
         }
 
         private class PostUnreadWhenLoadedListener implements PhotoLoadListener {
             private final List<Conversation> conversations;
-            private final List<Conversation> newConversations;
 
-            public PostUnreadWhenLoadedListener(List<Conversation> conversations, List<Conversation> newConversations) {
+            public PostUnreadWhenLoadedListener(List<Conversation> conversations) {
                 this.conversations = conversations;
-                this.newConversations = newConversations;
             }
 
             @Override
             public void photoLoaded(Bitmap photo) {
-                postUnreadNotification(conversations, photo, newConversations);
+                postUnreadNotification(conversations, photo);
             }
 
             @Override
             public void photoLoadedFromCache(Bitmap photo) {
-                postUnreadNotification(conversations, photo, newConversations);
+                postUnreadNotification(conversations, photo);
             }
 
             @Override
@@ -160,24 +157,17 @@ public class Notifier {
             }
         }
 
-        private void postUnreadNotification(List<Conversation> conversations, Bitmap photo, List<Conversation> newConversations) {
-            List<Notification> notifications = notificationBuilder.buildUnreadSummaryNotification(conversations);
-            for (int i = 0; i < notifications.size(); i++) {
-                notificationManager.notify(NOTIFICATION_UNREAD_MESSAGES + i, notifications.get(i));
+        private void postUnreadNotification(List<Conversation> conversations, @Nullable Bitmap photo) {
+            Notification notification = notificationBuilder.buildUnreadNotification(conversations, photo);
+            if (notification != null) {
+                notificationManager.notify(NOTIFICATION_UNREAD_MESSAGES_SUMMARY, notification);
             }
         }
 
     }
 
-    private List<Conversation> getNewConversations(List<Conversation> unreadConversations) {
-        List<Conversation> newUnreadConversations = new ArrayList<>();
-        for (Conversation conversation : unreadConversations) {
-            if (not(postedConversations.contains(conversation))) {
-                newUnreadConversations.add(conversation);
-                postedConversations.add(conversation);
-            }
-        }
-        return newUnreadConversations;
+    private void removeSummaryNotification() {
+        notificationManager.cancel(NOTIFICATION_UNREAD_MESSAGES_SUMMARY);
     }
 
     private void updatePostedConversations(List<Conversation> unreadConversations) {

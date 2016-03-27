@@ -21,6 +21,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.provider.ContactsContract;
+import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationCompat;
 
 import com.amlcurran.messages.R;
@@ -32,7 +33,6 @@ import com.amlcurran.messages.core.data.Time;
 import com.amlcurran.messages.core.preferences.PreferenceStore;
 import com.amlcurran.messages.telephony.SmsManagerOutputPort;
 
-import java.util.Collections;
 import java.util.List;
 
 public class NotificationBuilder {
@@ -52,15 +52,6 @@ public class NotificationBuilder {
         this.actionBuilder = new NotificationActionBuilder(context);
         this.notificationColor = context.getResources().getColor(R.color.theme_colour);
         this.styledTextFactory = new StyledTextFactory();
-    }
-
-    public List<Notification> buildUnreadSummaryNotification(List<Conversation> conversations) {
-        CharSequence ticker = styledTextFactory.buildListSummary(context, conversations);
-        if (conversations.size() == 1) {
-            return Collections.emptyList();
-        } else {
-            return Collections.singletonList(buildMultipleSummaryNotification(conversations, ticker));
-        }
     }
 
     static String getContactUri(Contact contact) {
@@ -174,6 +165,37 @@ public class NotificationBuilder {
         return getQuietBuilder()
                 .setContentTitle(string(R.string.resent_success))
                 .setSmallIcon(R.drawable.ic_notify_success)
+                .build();
+    }
+
+    @Nullable
+    public Notification buildUnreadNotification(List<Conversation> conversations, @Nullable Bitmap photo) {
+        CharSequence ticker = styledTextFactory.buildListSummary(context, conversations);
+        if (conversations.size() == 1) {
+            return buildSingleNotification(conversations.get(0), photo);
+        } else {
+            return buildMultipleSummaryNotification(conversations, ticker);
+        }
+    }
+
+    private Notification buildSingleNotification(Conversation conversation, Bitmap photo) {
+        NotificationCompat.Action markReadAction = actionBuilder.buildSingleMarkReadAction(conversation.getThreadId());
+        NotificationCompat.Builder defaultBuilder = getQuietBuilder();
+        NotificationCompat.BigTextStyle bigTextStyle = new NotificationCompat.BigTextStyle()
+                .bigText(conversation.getSummaryText())
+                .setBigContentTitle(conversation.getContact().getDisplayName());
+        defaultBuilder.setStyle(bigTextStyle);
+        return defaultBuilder
+                .setLargeIcon(photo)
+                .setAutoCancel(false)
+                .addAction(markReadAction)
+                .setTicker(conversation.getSummaryText())
+                .setGroup(UNREAD_MESSAGES)
+                .setPriority(Notification.PRIORITY_HIGH)
+                .setAutoCancel(false)
+                .setContentText(conversation.getSummaryText())
+                .setContentTitle(conversation.getContact().getDisplayName())
+                .setWhen(conversation.getTimeOfLastMessage().toMillis())
                 .build();
     }
 }
